@@ -42,6 +42,22 @@ export function BrandMark({
               animation: "brand-halo 2.6s ease-in-out 0.6s infinite",
             }}
           />
+          {/* Border Scan — anel de luz girando em volta da logo */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -inset-[3px] rounded-[30%]"
+            style={{
+              background:
+                "conic-gradient(from 0deg, transparent 0 65%, color-mix(in oklab, var(--brand-magenta) 100%, transparent) 78%, color-mix(in oklab, var(--brand-blue) 100%, transparent) 90%, transparent 100%)",
+              padding: "2px",
+              WebkitMask:
+                "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+              animation: "brand-scan 3s linear infinite",
+              filter: "drop-shadow(0 0 6px color-mix(in oklab, var(--brand-magenta) 80%, transparent))",
+            }}
+          />
         </>
       )}
       <span
@@ -66,6 +82,9 @@ export function BrandMark({
           @keyframes brand-halo {
             0%, 100% { opacity: .55; transform: scale(1); }
             50%      { opacity: 1;   transform: scale(1.12); }
+          }
+          @keyframes brand-scan {
+            to { transform: rotate(360deg); }
           }
         `}</style>
       )}
