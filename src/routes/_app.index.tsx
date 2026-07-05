@@ -108,23 +108,28 @@ async function loadMetrics(): Promise<Metrics> {
   since.setDate(since.getDate() - 6);
   since.setHours(0, 0, 0, 0);
 
-  const [txAll, clientes, txRecentes] = await Promise.all([
-    supabase.from("payment_transactions").select("valor,status,created_at"),
-    supabase.from("clientes").select("id", { count: "exact", head: true }),
+  const [viewRes, txRecentes, clientesUlt, ticketsRes] = await Promise.all([
+    supabase.from("v_dashboard_metricas").select("*").maybeSingle(),
     supabase
       .from("payment_transactions")
       .select("valor,status,created_at")
       .gte("created_at", since.toISOString()),
+    supabase
+      .from("clientes")
+      .select("created_at")
+      .gte("created_at", since.toISOString()),
+    supabase
+      .from("notificacoes")
+      .select("id", { count: "exact", head: true })
+      .eq("categoria", "suporte")
+      .eq("lida", false),
   ]);
 
-  const rows = txAll.data ?? [];
-  const aprovados = rows.filter((r) => r.status === "aprovado");
-  const receitaTotal = aprovados.reduce(
-    (s, r) => s + Number(r.valor ?? 0),
-    0,
-  );
-  const total = rows.length;
-  const conversao = total > 0 ? (aprovados.length / total) * 100 : 0;
+  const v = (viewRes.data ?? {}) as {
+    receita_total?: number;
+    clientes?: number;
+    conversao?: number;
+  };
 
   const days = last7Days();
   const chartValues = days.map((d) => {
@@ -143,14 +148,8 @@ async function loadMetrics(): Promise<Metrics> {
     d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }),
   );
 
-  // sparklines: distribute totals for hint of trend, using last 7 days aprovados
   const receitaSpark = chartValues.length ? chartValues : [0, 0, 0, 0, 0, 0, 0];
 
-  // clientes por dia (últimos 7)
-  const clientesUlt = await supabase
-    .from("clientes")
-    .select("created_at")
-    .gte("created_at", since.toISOString());
   const clientesSpark = days.map((d) => {
     const dEnd = new Date(d);
     dEnd.setDate(dEnd.getDate() + 1);
@@ -172,10 +171,10 @@ async function loadMetrics(): Promise<Metrics> {
   });
 
   return {
-    receitaTotal,
-    novosClientes: clientes.count ?? 0,
-    conversao,
-    ticketsAbertos: 0,
+    receitaTotal: Number(v.receita_total ?? 0),
+    novosClientes: Number(v.clientes ?? 0),
+    conversao: Number(v.conversao ?? 0),
+    ticketsAbertos: ticketsRes.count ?? 0,
     receitaSpark,
     clientesSpark,
     conversaoSpark,
@@ -184,6 +183,7 @@ async function loadMetrics(): Promise<Metrics> {
     chartValues,
   };
 }
+
 
 const EVENT_META: Record<
   string,
