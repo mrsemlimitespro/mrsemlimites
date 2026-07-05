@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Pencil, Plus, Search, Trash2, Upload, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Pencil, Plus, Search, Trash2, Upload, X } from "lucide-react";
+import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -65,31 +66,45 @@ function ResourcePage() {
 function ResourceView({ resource }: { resource: Resource }) {
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const pageSize = 25;
   const [editing, setEditing] = useState<Row | null>(null);
   const [creating, setCreating] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Row | null>(null);
 
-  const { data: rows = [], isLoading } = useQuery({
-    queryKey: ["admin-list", resource.table],
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setPage(0);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-list", resource.table, debouncedSearch, page, pageSize],
     queryFn: async () => {
-      let q = (supabase as any).from(resource.table).select("*");
+      let q = (supabase as any)
+        .from(resource.table)
+        .select("*", { count: "exact" });
+      if (debouncedSearch && resource.searchColumns?.length) {
+        const term = debouncedSearch.replace(/[%,]/g, "");
+        q = q.or(resource.searchColumns.map((c) => `${c}.ilike.%${term}%`).join(","));
+      }
       if (resource.orderBy) {
         q = q.order(resource.orderBy.column, { ascending: resource.orderBy.ascending });
       }
-      const { data, error } = await q;
+      q = q.range(page * pageSize, page * pageSize + pageSize - 1);
+      const { data, error, count } = await q;
       if (error) throw error;
-      return (data ?? []) as Row[];
+      return { rows: (data ?? []) as Row[], total: count ?? 0 };
     },
   });
 
-  const filtered = useMemo(() => {
-    if (!search.trim()) return rows;
-    const s = search.trim().toLowerCase();
-    const cols = resource.searchColumns ?? [];
-    return rows.filter((r) =>
-      cols.some((c) => String(r[c] ?? "").toLowerCase().includes(s)),
-    );
-  }, [rows, search, resource.searchColumns]);
+  const rows = data?.rows ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const filtered = rows;
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -116,9 +131,11 @@ function ResourceView({ resource }: { resource: Resource }) {
             <span className="gradient-text-warm">{resource.label}</span>
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {rows.length} registro{rows.length === 1 ? "" : "s"}
+            {total} registro{total === 1 ? "" : "s"}
+            {totalPages > 1 ? ` · página ${page + 1} de ${totalPages}` : ""}
           </p>
         </div>
+
         <Button className="gradient-primary" onClick={() => setCreating(true)}>
           <Plus className="size-4" /> Novo{resource.singular.endsWith("a") ? "a" : ""}{" "}
           {resource.singular.toLowerCase()}
@@ -203,6 +220,32 @@ function ResourceView({ resource }: { resource: Resource }) {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={page === 0}
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+          >
+            <ChevronLeft className="size-4" /> Anterior
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            {page + 1} / {totalPages}
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={page + 1 >= totalPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Próxima <ChevronRight className="size-4" />
+          </Button>
+        </div>
+      )}
+
+
 
       {(creating || editing) && (
         <ResourceFormDialog
@@ -297,6 +340,31 @@ function ResourceFormDialog({
         if (f.type === "number" && v !== null) v = Number(v);
         payload[f.key] = v;
       }
+      // Validação zod dinâmica a partir do metadata do recurso
+      const shape: Record<string, z.ZodTypeAny> = {};
+      for (const f of resource.fields) {
+        let s: z.ZodTypeAny;
+        if (f.type === "boolean") s = z.boolean();
+        else if (f.type === "number") {
+          s = z.number({ invalid_type_error: `${f.label} deve ser numérico` }).finite();
+        } else if (f.type === "datetime") {
+          s = z.string().datetime({ offset: true }).or(z.string().min(1));
+        } else if (f.key === "email" || /email/i.test(f.label)) {
+          s = z.string().trim().email(`${f.label} inválido`).max(255);
+        } else if (f.type === "textarea") {
+          s = z.string().max(2000);
+        } else {
+          s = z.string().trim().max(500);
+        }
+        if (!f.required) s = s.nullable().optional();
+        shape[f.key] = s;
+      }
+      const parsed = z.object(shape).safeParse(payload);
+      if (!parsed.success) {
+        const first = parsed.error.errors[0];
+        throw new Error(first?.message ?? "Dados inválidos");
+      }
+
       if (isEdit) {
         const { error } = await (supabase as any)
           .from(resource.table)
