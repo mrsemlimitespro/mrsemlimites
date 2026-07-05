@@ -136,6 +136,8 @@ function LicencasPage() {
   const [openTeste, setOpenTeste] = useState(false);
   const [rows, setRows] = useState<LicencaRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [historyOf, setHistoryOf] = useState<LicencaRow | null>(null);
+  const [renovarOf, setRenovarOf] = useState<LicencaRow | null>(null);
 
   async function reload() {
     setLoading(true);
@@ -154,7 +156,15 @@ function LicencasPage() {
 
   useEffect(() => {
     reload();
+    const ch = supabase
+      .channel("licencas-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload())
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
   }, []);
+
 
   const licenses = rows.map(computeView);
 
