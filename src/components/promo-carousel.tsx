@@ -76,7 +76,7 @@ export function PromoCarousel() {
               className={`neon-card group relative flex h-24 w-56 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br ${n.grad} transition-transform hover:scale-[1.08]`}
               style={{
                 ["--neon" as never]: n.glow,
-                boxShadow: `0 0 0 2px rgba(${n.glow},0.9), 0 0 18px rgba(${n.glow},0.7), 0 0 40px rgba(${n.glow},0.5), inset 0 0 20px rgba(255,255,255,0.15)`,
+                boxShadow: `0 0 0 1px rgba(${n.glow},0.5), 0 0 8px rgba(${n.glow},0.35), 0 0 18px rgba(${n.glow},0.2), inset 0 0 12px rgba(255,255,255,0.08)`,
                 animation: `neon-pulse 2.4s ease-in-out ${i * 0.15}s infinite`,
               }}
             >
