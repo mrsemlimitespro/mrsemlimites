@@ -10,6 +10,11 @@ import {
   GraduationCap,
   Megaphone,
   LayoutGrid,
+  Store,
+  Boxes,
+  UserCog,
+  Bell,
+  Sparkles,
 } from "lucide-react";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
@@ -47,6 +52,7 @@ export type Resource = {
   listColumns: { key: string; label: string; format?: "text" | "boolean" | "date" | "currency" | "number" }[];
   orderBy?: { column: string; ascending: boolean };
   searchColumns?: string[];
+  group?: string;
 };
 
 const statusOptions = [
@@ -63,6 +69,7 @@ export const resources: Resource[] = [
     singular: "Licença",
     table: "licencas",
     icon: KeyRound,
+    group: "Comercial",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["chave", "plano"],
     fields: [
@@ -91,6 +98,7 @@ export const resources: Resource[] = [
     singular: "Cliente",
     table: "clientes",
     icon: Users,
+    group: "Comercial",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["nome", "email", "telefone"],
     fields: [
@@ -107,11 +115,45 @@ export const resources: Resource[] = [
     ],
   },
   {
+    key: "revendedores",
+    label: "Revendedores",
+    singular: "Revendedor",
+    table: "revendedores",
+    icon: UserCog,
+    group: "Comercial",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["nome", "email", "telefone"],
+    fields: [
+      { key: "nome", label: "Nome", type: "text", required: true },
+      { key: "email", label: "E-mail", type: "text" },
+      { key: "telefone", label: "Telefone", type: "text" },
+      { key: "comissao", label: "Comissão (%)", type: "number", step: 0.5 },
+      {
+        key: "status",
+        label: "Status",
+        type: "select",
+        options: [
+          { value: "ativo", label: "Ativo" },
+          { value: "inativo", label: "Inativo" },
+          { value: "pendente", label: "Pendente" },
+        ],
+      },
+      { key: "observacoes", label: "Observações", type: "textarea" },
+    ],
+    listColumns: [
+      { key: "nome", label: "Nome" },
+      { key: "email", label: "E-mail" },
+      { key: "comissao", label: "Comissão %", format: "number" },
+      { key: "status", label: "Status" },
+    ],
+  },
+  {
     key: "produtos",
     label: "Produtos",
     singular: "Produto",
     table: "produtos",
     icon: Package,
+    group: "Loja",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["nome"],
     fields: [
@@ -129,11 +171,50 @@ export const resources: Resource[] = [
     ],
   },
   {
+    key: "estoque",
+    label: "Estoque",
+    singular: "Item de estoque",
+    table: "estoque",
+    icon: Boxes,
+    group: "Loja",
+    orderBy: { column: "item", ascending: true },
+    searchColumns: ["item"],
+    fields: [
+      { key: "item", label: "Item", type: "text", required: true },
+      {
+        key: "produto_id",
+        label: "Produto vinculado",
+        type: "select_from_table",
+        fromTable: { table: "produtos", labelKey: "nome" },
+      },
+      { key: "quantidade", label: "Quantidade", type: "number", required: true },
+      { key: "minimo", label: "Mínimo", type: "number" },
+      {
+        key: "status",
+        label: "Status",
+        type: "select",
+        options: [
+          { value: "disponivel", label: "Disponível" },
+          { value: "baixo", label: "Estoque baixo" },
+          { value: "esgotado", label: "Esgotado" },
+        ],
+      },
+      { key: "observacoes", label: "Observações", type: "textarea" },
+    ],
+    listColumns: [
+      { key: "item", label: "Item" },
+      { key: "quantidade", label: "Qtd.", format: "number" },
+      { key: "minimo", label: "Mínimo", format: "number" },
+      { key: "status", label: "Status" },
+    ],
+  },
+  {
     key: "creditos",
     label: "Créditos",
     singular: "Pacote de créditos",
     table: "creditos_packs",
     icon: Coins,
+    group: "Loja",
     orderBy: { column: "quantidade", ascending: true },
     searchColumns: ["nome"],
     fields: [
@@ -156,6 +237,7 @@ export const resources: Resource[] = [
     singular: "Promoção",
     table: "promocoes",
     icon: Percent,
+    group: "Marketing",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["titulo"],
     fields: [
@@ -179,6 +261,7 @@ export const resources: Resource[] = [
     singular: "Banner",
     table: "banners",
     icon: LayoutGrid,
+    group: "Marketing",
     orderBy: { column: "ordem", ascending: true },
     searchColumns: ["titulo"],
     fields: [
@@ -195,41 +278,25 @@ export const resources: Resource[] = [
     ],
   },
   {
-    key: "imagens",
-    label: "Imagens",
-    singular: "Imagem",
-    table: "imagens",
-    icon: ImageIcon,
-    orderBy: { column: "created_at", ascending: false },
-    searchColumns: ["titulo", "categoria"],
-    fields: [
-      { key: "titulo", label: "Título", type: "text", required: true },
-      { key: "url", label: "Arquivo", type: "image", required: true },
-      { key: "categoria", label: "Categoria", type: "text" },
-    ],
-    listColumns: [
-      { key: "titulo", label: "Título" },
-      { key: "categoria", label: "Categoria" },
-      { key: "created_at", label: "Enviada", format: "date" },
-    ],
-  },
-  {
-    key: "videos",
-    label: "Vídeos",
-    singular: "Vídeo",
-    table: "videos",
-    icon: Video,
+    key: "propagandas",
+    label: "Propagandas",
+    singular: "Propaganda",
+    table: "propagandas",
+    icon: Megaphone,
+    group: "Marketing",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["titulo"],
     fields: [
       { key: "titulo", label: "Título", type: "text", required: true },
-      { key: "url", label: "URL do vídeo", type: "text", required: true, placeholder: "https://... ou cole a URL do YouTube" },
-      { key: "thumbnail_url", label: "Thumbnail", type: "image" },
-      { key: "descricao", label: "Descrição", type: "textarea" },
+      { key: "texto", label: "Texto", type: "textarea" },
+      { key: "imagem_url", label: "Imagem", type: "image" },
+      { key: "link", label: "Link (URL)", type: "text" },
+      { key: "ativo", label: "Ativa", type: "boolean" },
     ],
     listColumns: [
       { key: "titulo", label: "Título" },
-      { key: "created_at", label: "Criado", format: "date" },
+      { key: "ativo", label: "Ativa", format: "boolean" },
+      { key: "created_at", label: "Criada", format: "date" },
     ],
   },
   {
@@ -238,6 +305,7 @@ export const resources: Resource[] = [
     singular: "Aula",
     table: "aulas",
     icon: GraduationCap,
+    group: "Conteúdo",
     orderBy: { column: "ordem", ascending: true },
     searchColumns: ["titulo"],
     fields: [
@@ -255,26 +323,119 @@ export const resources: Resource[] = [
     ],
   },
   {
-    key: "propagandas",
-    label: "Propagandas",
-    singular: "Propaganda",
-    table: "propagandas",
-    icon: Megaphone,
+    key: "imagens",
+    label: "Upload de Imagens",
+    singular: "Imagem",
+    table: "imagens",
+    icon: ImageIcon,
+    group: "Conteúdo",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["titulo", "categoria"],
+    fields: [
+      { key: "titulo", label: "Título", type: "text", required: true },
+      { key: "url", label: "Arquivo", type: "image", required: true },
+      { key: "categoria", label: "Categoria", type: "text" },
+    ],
+    listColumns: [
+      { key: "titulo", label: "Título" },
+      { key: "categoria", label: "Categoria" },
+      { key: "created_at", label: "Enviada", format: "date" },
+    ],
+  },
+  {
+    key: "videos",
+    label: "Upload de Vídeos",
+    singular: "Vídeo",
+    table: "videos",
+    icon: Video,
+    group: "Conteúdo",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["titulo"],
     fields: [
       { key: "titulo", label: "Título", type: "text", required: true },
-      { key: "texto", label: "Texto", type: "textarea" },
-      { key: "imagem_url", label: "Imagem", type: "image" },
-      { key: "link", label: "Link (URL)", type: "text" },
+      { key: "url", label: "URL do vídeo / Upload", type: "image", required: true, placeholder: "https://... ou envie o arquivo" },
+      { key: "thumbnail_url", label: "Thumbnail", type: "image" },
+      { key: "descricao", label: "Descrição", type: "textarea" },
+    ],
+    listColumns: [
+      { key: "titulo", label: "Título" },
+      { key: "created_at", label: "Criado", format: "date" },
+    ],
+  },
+  {
+    key: "logos",
+    label: "Upload de Logos",
+    singular: "Logo",
+    table: "logos",
+    icon: Sparkles,
+    group: "Conteúdo",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["titulo"],
+    fields: [
+      { key: "titulo", label: "Título", type: "text", required: true },
+      { key: "url", label: "Arquivo", type: "image", required: true },
+      {
+        key: "escopo",
+        label: "Escopo",
+        type: "select",
+        options: [
+          { value: "principal", label: "Principal" },
+          { value: "secundaria", label: "Secundária" },
+          { value: "favicon", label: "Favicon" },
+          { value: "email", label: "E-mail" },
+        ],
+      },
+      { key: "ativo", label: "Ativo", type: "boolean" },
+    ],
+    listColumns: [
+      { key: "titulo", label: "Título" },
+      { key: "escopo", label: "Escopo" },
+      { key: "ativo", label: "Ativo", format: "boolean" },
+    ],
+  },
+  {
+    key: "notificacoes",
+    label: "Notificações",
+    singular: "Notificação",
+    table: "notificacoes",
+    icon: Bell,
+    group: "Sistema",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["titulo"],
+    fields: [
+      { key: "titulo", label: "Título", type: "text", required: true },
+      { key: "mensagem", label: "Mensagem", type: "textarea", required: true },
+      {
+        key: "tipo",
+        label: "Tipo",
+        type: "select",
+        options: [
+          { value: "info", label: "Info" },
+          { value: "sucesso", label: "Sucesso" },
+          { value: "aviso", label: "Aviso" },
+          { value: "erro", label: "Erro" },
+        ],
+      },
+      {
+        key: "destino",
+        label: "Destino",
+        type: "select",
+        options: [
+          { value: "todos", label: "Todos" },
+          { value: "clientes", label: "Clientes" },
+          { value: "revendedores", label: "Revendedores" },
+        ],
+      },
       { key: "ativo", label: "Ativa", type: "boolean" },
     ],
     listColumns: [
       { key: "titulo", label: "Título" },
+      { key: "tipo", label: "Tipo" },
+      { key: "destino", label: "Destino" },
       { key: "ativo", label: "Ativa", format: "boolean" },
-      { key: "created_at", label: "Criada", format: "date" },
     ],
   },
 ];
 
+export { Store };
 export const resourceByKey = new Map(resources.map((r) => [r.key, r]));
