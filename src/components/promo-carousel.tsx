@@ -128,10 +128,10 @@ export function PromoCarousel() {
         }
         @keyframes neon-pulse {
           0%, 100% {
-            filter: brightness(1) saturate(1.2);
+            filter: brightness(0.92) saturate(1);
           }
           50% {
-            filter: brightness(1.25) saturate(1.6);
+            filter: brightness(1.05) saturate(1.15);
           }
         }
       `}</style>
