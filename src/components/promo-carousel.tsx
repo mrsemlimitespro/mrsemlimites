@@ -126,6 +126,14 @@ export function PromoCarousel() {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
+        @keyframes neon-pulse {
+          0%, 100% {
+            filter: brightness(1) saturate(1.2);
+          }
+          50% {
+            filter: brightness(1.25) saturate(1.6);
+          }
+        }
       `}</style>
     </section>
   );
