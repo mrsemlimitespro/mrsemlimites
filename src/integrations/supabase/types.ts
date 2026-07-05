@@ -983,6 +983,7 @@ export type Database = {
         }
         Returns: number
       }
+      admin_password_configured: { Args: never; Returns: boolean }
       approve_pagamento: { Args: { _pagamento_id: string }; Returns: undefined }
       create_revendedor_profile: {
         Args: { _nome?: string; _telefone?: string }
