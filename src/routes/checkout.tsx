@@ -134,10 +134,11 @@ function CheckoutPage() {
         revendedor_id,
         plano_id: plano.id,
         gateway_slug: gateway,
-        valor: plano.preco,
+        valor: valorFinal,
         moeda: "BRL",
         status: "pendente",
         metodo: gateway,
+        metadata: promo ? { promo_id: promo.id, desconto_pct: descontoPct } : null,
       })
       .select("id, valor")
       .single();
