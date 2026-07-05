@@ -11,6 +11,10 @@ import {
   Hourglass,
   Loader2,
   RotateCcw,
+  History,
+  CalendarPlus,
+  Ban,
+  PlayCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -35,6 +39,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+
 
 export const Route = createFileRoute("/_app/licencas")({
   head: () => ({
