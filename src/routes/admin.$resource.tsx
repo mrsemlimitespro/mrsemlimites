@@ -340,6 +340,31 @@ function ResourceFormDialog({
         if (f.type === "number" && v !== null) v = Number(v);
         payload[f.key] = v;
       }
+      // Validação zod dinâmica a partir do metadata do recurso
+      const shape: Record<string, z.ZodTypeAny> = {};
+      for (const f of resource.fields) {
+        let s: z.ZodTypeAny;
+        if (f.type === "boolean") s = z.boolean();
+        else if (f.type === "number") {
+          s = z.number({ invalid_type_error: `${f.label} deve ser numérico` }).finite();
+        } else if (f.type === "datetime") {
+          s = z.string().datetime({ offset: true }).or(z.string().min(1));
+        } else if (f.key === "email" || /email/i.test(f.label)) {
+          s = z.string().trim().email(`${f.label} inválido`).max(255);
+        } else if (f.type === "textarea") {
+          s = z.string().max(2000);
+        } else {
+          s = z.string().trim().max(500);
+        }
+        if (!f.required) s = s.nullable().optional();
+        shape[f.key] = s;
+      }
+      const parsed = z.object(shape).safeParse(payload);
+      if (!parsed.success) {
+        const first = parsed.error.errors[0];
+        throw new Error(first?.message ?? "Dados inválidos");
+      }
+
       if (isEdit) {
         const { error } = await (supabase as any)
           .from(resource.table)
