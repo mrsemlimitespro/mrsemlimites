@@ -13,6 +13,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
 import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
@@ -37,6 +38,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AdminResourceRoute = AdminResourceRouteImport.update({
+  id: '/$resource',
+  path: '/$resource',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AppPerfilRoute = AppPerfilRouteImport.update({
   id: '/perfil',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/creditos': typeof AppCreditosRoute
   '/licencas': typeof AppLicencasRoute
   '/perfil': typeof AppPerfilRoute
+  '/admin/$resource': typeof AdminResourceRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/creditos': typeof AppCreditosRoute
   '/licencas': typeof AppLicencasRoute
   '/perfil': typeof AppPerfilRoute
+  '/admin/$resource': typeof AdminResourceRoute
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/_app/creditos': typeof AppCreditosRoute
   '/_app/licencas': typeof AppLicencasRoute
   '/_app/perfil': typeof AppPerfilRoute
+  '/admin/$resource': typeof AdminResourceRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/creditos'
     | '/licencas'
     | '/perfil'
+    | '/admin/$resource'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
     | '/creditos'
     | '/licencas'
     | '/perfil'
+    | '/admin/$resource'
     | '/'
     | '/admin'
   id:
@@ -124,6 +135,7 @@ export interface FileRouteTypes {
     | '/_app/creditos'
     | '/_app/licencas'
     | '/_app/perfil'
+    | '/admin/$resource'
     | '/_app/'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -162,6 +174,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/admin/$resource': {
+      id: '/admin/$resource'
+      path: '/$resource'
+      fullPath: '/admin/$resource'
+      preLoaderRoute: typeof AdminResourceRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_app/perfil': {
       id: '/_app/perfil'
@@ -222,10 +241,12 @@ const AppRouteChildren: AppRouteChildren = {
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AdminRouteChildren {
+  AdminResourceRoute: typeof AdminResourceRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminResourceRoute: AdminResourceRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
