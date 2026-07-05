@@ -2,6 +2,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { TopBar } from "@/components/top-bar";
+import { FirePromosButton } from "@/components/fire-promos-button";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -17,6 +18,7 @@ function AppLayout() {
           <Outlet />
         </main>
       </div>
+      <FirePromosButton />
     </div>
   );
 }
