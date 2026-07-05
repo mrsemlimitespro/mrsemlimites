@@ -13,6 +13,7 @@ import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { BRAND_NAME, BrandMark } from "@/components/brand";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
