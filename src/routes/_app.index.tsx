@@ -24,6 +24,7 @@ import {
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
+import { BrandMark } from "@/components/brand";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
