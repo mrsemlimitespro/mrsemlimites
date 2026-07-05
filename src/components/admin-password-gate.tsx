@@ -42,25 +42,14 @@ export function AdminPasswordDialog({
 
   useEffect(() => {
     if (!open) return;
-    // Check whether a password has been set yet by trying to verify empty string.
+    let active = true;
     (async () => {
-      const { data, error } = await (supabase as any).rpc("verify_admin_password", {
-        _password: "__probe__" + crypto.randomUUID(),
-      });
-      // If error or explicit false with no hash yet, offer setup. We can't tell
-      // difference between "no hash" and "wrong password", so use a marker fetch:
-      const { data: probe } = await (supabase as any)
-        .from("admin_settings")
-        .select("id")
-        .limit(1)
-        .maybeSingle();
-      void data;
-      void error;
-      void probe;
-      // Use a lightweight second check: call set_admin_password with empty current
-      // — if it succeeds it means no password existed. We won't do that here to
-      // avoid side effects. Fallback: show setup UI if user clicks "Definir senha".
+      const { data } = await (supabase as any).rpc("admin_password_configured");
+      if (active) setNeedsSetup(data === false);
     })();
+    return () => {
+      active = false;
+    };
   }, [open]);
 
   async function handleUnlock(e: React.FormEvent) {
@@ -72,6 +61,12 @@ export function AdminPasswordDialog({
       });
       if (error) throw error;
       if (!data) {
+        const { data: configured } = await (supabase as any).rpc("admin_password_configured");
+        if (configured === false) {
+          setNeedsSetup(true);
+          toast.message("Cadastre a senha inicial do administrador.");
+          return;
+        }
         toast.error("Senha incorreta ou senha ainda não configurada.");
         return;
       }
