@@ -1,15 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Copy,
+  ClipboardPaste,
   MoreHorizontal,
   Plus,
   Search,
   FlaskConical,
   KeyRound,
   Hourglass,
+  Loader2,
+  RotateCcw,
 } from "lucide-react";
+import { toast } from "sonner";
 
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,35 +46,98 @@ export const Route = createFileRoute("/_app/licencas")({
   component: LicencasPage,
 });
 
+type LicencaRow = {
+  id: string;
+  chave: string;
+  cliente_id: string | null;
+  email: string | null;
+  status: string;
+  device_id: string | null;
+  expira_em: string | null;
+  ativada_em: string | null;
+  duracao_dias: number | null;
+  clientes?: { nome: string | null } | null;
+};
+
+type ViewStatus = "ativa" | "expirada" | "revogada";
+
 type License = {
+  id: string;
   key: string;
   client: string | null;
   email: string;
-  status: "ativa" | "expirada" | "revogada";
+  status: ViewStatus;
   device: string | null;
   expires: string;
   expiresState: "waiting" | "active" | "expired";
 };
 
-const licenses: License[] = [
-  {
-    key: "75HKS-66300-27TEV-89W03",
-    client: null,
-    email: "estoque",
-    status: "ativa",
-    device: null,
-    expires: "30d (aguardando)",
-    expiresState: "waiting",
-  },
-];
-
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas";
+
+function computeView(row: LicencaRow): License {
+  const now = Date.now();
+  const exp = row.expira_em ? new Date(row.expira_em).getTime() : null;
+  let status: ViewStatus = "ativa";
+  if (row.status === "revogada") status = "revogada";
+  else if (exp !== null && exp < now) status = "expirada";
+
+  let expiresLabel = "—";
+  let expiresState: License["expiresState"] = "waiting";
+  if (!row.cliente_id) {
+    expiresLabel = `${row.duracao_dias ?? 30}d (aguardando)`;
+    expiresState = "waiting";
+  } else if (exp !== null) {
+    const diff = exp - now;
+    if (diff <= 0) {
+      expiresLabel = "expirada";
+      expiresState = "expired";
+    } else {
+      const days = Math.ceil(diff / 86400000);
+      expiresLabel = `${days}d restantes`;
+      expiresState = "active";
+    }
+  }
+
+  return {
+    id: row.id,
+    key: row.chave,
+    client: row.clientes?.nome ?? null,
+    email: row.email ?? (row.cliente_id ? "" : "estoque"),
+    status,
+    device: row.device_id,
+    expires: expiresLabel,
+    expiresState,
+  };
+}
 
 function LicencasPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("todos");
   const [openNova, setOpenNova] = useState(false);
   const [openTeste, setOpenTeste] = useState(false);
+  const [rows, setRows] = useState<LicencaRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  async function reload() {
+    setLoading(true);
+    const { data, error } = await (supabase as any)
+      .from("licencas")
+      .select("id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, clientes(nome)")
+      .order("created_at", { ascending: false });
+    if (error) {
+      toast.error(error.message);
+      setRows([]);
+    } else {
+      setRows((data ?? []) as LicencaRow[]);
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    reload();
+  }, []);
+
+  const licenses = rows.map(computeView);
 
   const filtered = licenses.filter((l) => {
     const q = query.trim().toLowerCase();
@@ -88,6 +156,15 @@ function LicencasPage() {
 
   const available = licenses.filter((l) => l.status === "ativa" && !l.client).length;
   const total = licenses.length;
+
+  async function resetDevice(id: string) {
+    const { error } = await (supabase as any).rpc("resetar_device_licenca", {
+      _licenca_id: id,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Dispositivo liberado");
+    reload();
+  }
 
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
@@ -171,7 +248,11 @@ function LicencasPage() {
           <div />
         </div>
 
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center px-6 py-14 text-sm text-muted-foreground">
+            <Loader2 className="mr-2 size-4 animate-spin" /> Carregando...
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="px-6 py-14 text-center text-sm text-muted-foreground">
             Nenhuma licença encontrada.
           </div>
@@ -179,7 +260,7 @@ function LicencasPage() {
           <ul>
             {filtered.map((l) => (
               <li
-                key={l.key}
+                key={l.id}
                 className="grid grid-cols-[minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
               >
                 <div className="flex items-center gap-2">
@@ -189,7 +270,10 @@ function LicencasPage() {
                   <button
                     type="button"
                     aria-label="Copiar chave"
-                    onClick={() => navigator.clipboard?.writeText(l.key)}
+                    onClick={() => {
+                      navigator.clipboard?.writeText(l.key);
+                      toast.success("Chave copiada");
+                    }}
                     className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
                   >
                     <Copy className="size-3.5" strokeWidth={2} />
@@ -200,7 +284,21 @@ function LicencasPage() {
                 <div>
                   <StatusPill status={l.status} />
                 </div>
-                <div className="text-muted-foreground">{l.device ?? "—"}</div>
+                <div className="text-muted-foreground">
+                  {l.device ? (
+                    <button
+                      type="button"
+                      onClick={() => resetDevice(l.id)}
+                      title="Resetar dispositivo"
+                      className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 hover:bg-white/5 hover:text-foreground"
+                    >
+                      <RotateCcw className="size-3" strokeWidth={2} />
+                      <span className="truncate max-w-[120px]">{l.device}</span>
+                    </button>
+                  ) : (
+                    "—"
+                  )}
+                </div>
                 <div className="flex items-center gap-1.5 text-foreground/85">
                   <Hourglass className="size-3.5 text-primary" strokeWidth={2} />
                   <span className="text-sm">{l.expires}</span>
@@ -218,8 +316,16 @@ function LicencasPage() {
         )}
       </div>
 
-      <NovaLicencaModal open={openNova} onOpenChange={setOpenNova} />
-      <ChaveTesteModal open={openTeste} onOpenChange={setOpenTeste} />
+      <NovaLicencaModal
+        open={openNova}
+        onOpenChange={setOpenNova}
+        onSaved={reload}
+      />
+      <ChaveTesteModal
+        open={openTeste}
+        onOpenChange={setOpenTeste}
+        onSaved={reload}
+      />
     </div>
   );
 }
@@ -266,37 +372,60 @@ function StatusPill({ status }: { status: License["status"] }) {
 function NovaLicencaModal({
   open,
   onOpenChange,
+  onSaved,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  onSaved: () => void;
 }) {
+  const [quantidade, setQuantidade] = useState(1);
+  const [duracao, setDuracao] = useState(30);
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await (supabase as any).rpc("gerar_licencas", {
+      _quantidade: quantidade,
+      _duracao_dias: duracao,
+      _revendedor_id: null,
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`${quantidade} licença(s) geradas`);
+    onSaved();
+    onOpenChange(false);
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="glass-strong sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Criar Nova Licença</DialogTitle>
-          <DialogDescription>Gere uma nova chave de licença</DialogDescription>
+          <DialogDescription>
+            Gera chaves únicas no seu estoque. Vincule ao cliente ao cadastrá-lo.
+          </DialogDescription>
         </DialogHeader>
 
-        <form
-          className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onOpenChange(false);
-          }}
-        >
-          <Field label="Nome do cliente">
-            <Input placeholder="Ex: João Silva" autoFocus />
-          </Field>
-          <Field label="Email do cliente">
-            <Input type="email" placeholder="cliente@exemplo.com" />
-          </Field>
+        <form className="space-y-4" onSubmit={submit}>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Duração (dias)">
-              <Input type="number" defaultValue={30} min={1} />
+            <Field label="Quantidade">
+              <Input
+                type="number"
+                min={1}
+                max={500}
+                value={quantidade}
+                onChange={(e) => setQuantidade(parseInt(e.target.value) || 1)}
+                autoFocus
+              />
             </Field>
-            <Field label="Preço (R$)">
-              <Input type="number" step="0.01" defaultValue="0.00" />
+            <Field label="Duração (dias)">
+              <Input
+                type="number"
+                min={1}
+                value={duracao}
+                onChange={(e) => setDuracao(parseInt(e.target.value) || 30)}
+              />
             </Field>
           </div>
           <Field label="Observações">
@@ -304,18 +433,15 @@ function NovaLicencaModal({
           </Field>
 
           <DialogFooter className="pt-2">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button
               type="submit"
+              disabled={busy}
               className="gradient-primary text-primary-foreground"
             >
-              Criar Licença
+              {busy ? <Loader2 className="size-4 animate-spin" /> : "Gerar chaves"}
             </Button>
           </DialogFooter>
         </form>
@@ -327,47 +453,122 @@ function NovaLicencaModal({
 function ChaveTesteModal({
   open,
   onOpenChange,
+  onSaved,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  onSaved: () => void;
 }) {
+  const [chave, setChave] = useState("");
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function pasteKey() {
+    try {
+      const text = await navigator.clipboard.readText();
+      setChave(text.trim());
+    } catch {
+      toast.error("Não foi possível colar");
+    }
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!chave.trim() || !email.trim() || !nome.trim()) {
+      toast.error("Preencha nome, e-mail e chave");
+      return;
+    }
+    setBusy(true);
+    try {
+      // 1. Cria cliente (consome crédito) — se o revendedor não tiver, admin pode inserir direto
+      const { data: cli, error: cliErr } = await (supabase as any)
+        .from("clientes")
+        .insert({ nome, email })
+        .select("id")
+        .single();
+      if (cliErr) throw cliErr;
+
+      // 2. Atribui a chave
+      const { error: linkErr } = await (supabase as any).rpc(
+        "atribuir_licenca_cliente",
+        { _chave: chave.trim(), _cliente_id: cli.id, _email: email.trim() },
+      );
+      if (linkErr) throw linkErr;
+
+      toast.success("Licença vinculada ao cliente");
+      setChave("");
+      setNome("");
+      setEmail("");
+      onSaved();
+      onOpenChange(false);
+    } catch (err: any) {
+      toast.error(err?.message ?? "Falha ao salvar");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="glass-strong sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Criar Chave Teste</DialogTitle>
+          <DialogTitle>Vincular Chave ao Cliente</DialogTitle>
           <DialogDescription>
-            Chave de 10 minutos, sem custo de crédito. Expira automaticamente.
+            Cole uma chave do estoque e vincule ao cliente.
           </DialogDescription>
         </DialogHeader>
 
-        <form
-          className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onOpenChange(false);
-          }}
-        >
+        <form className="space-y-4" onSubmit={submit}>
+          <Field label="Chave">
+            <div className="flex items-center gap-2">
+              <Input
+                value={chave}
+                onChange={(e) => setChave(e.target.value)}
+                placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+                className="font-mono"
+              />
+              <button
+                type="button"
+                aria-label="Colar chave"
+                onClick={pasteKey}
+                className="grid size-9 place-items-center rounded-md border border-border/60 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+              >
+                <ClipboardPaste className="size-4" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                aria-label="Copiar chave"
+                onClick={() => {
+                  if (chave) {
+                    navigator.clipboard?.writeText(chave);
+                    toast.success("Chave copiada");
+                  }
+                }}
+                className="grid size-9 place-items-center rounded-md border border-border/60 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+              >
+                <Copy className="size-4" strokeWidth={2} />
+              </button>
+            </div>
+          </Field>
           <Field label="Nome do cliente">
-            <Input placeholder="Ex: João Silva" autoFocus />
+            <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex: João Silva" />
           </Field>
           <Field label="Email do cliente">
-            <Input type="email" placeholder="cliente@exemplo.com" />
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="cliente@exemplo.com"
+            />
           </Field>
 
           <DialogFooter className="pt-2">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button
-              type="submit"
-              className="gradient-primary text-primary-foreground"
-            >
-              Criar Teste
+            <Button type="submit" disabled={busy} className="gradient-primary text-primary-foreground">
+              {busy ? <Loader2 className="size-4 animate-spin" /> : "Vincular"}
             </Button>
           </DialogFooter>
         </form>
