@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { resources } from "@/lib/admin/resources";
+import { BRAND_NAME, BrandMark } from "@/components/brand";
 import {
   AdminPasswordDialog,
   adminGatePassed,
