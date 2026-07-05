@@ -77,17 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MR Lova" },
+      { title: "MR SEM LIMITES" },
       {
         name: "description",
         content:
-          "MR Lova — premium dark workspace com glassmorphism, gradientes neon e componentes refinados.",
+          "MR SEM LIMITES — painel premium dark com glassmorphism, gradientes neon e componentes refinados.",
       },
-      { property: "og:title", content: "MR Lova" },
+      { property: "og:title", content: "MR SEM LIMITES" },
       {
         property: "og:description",
         content:
-          "MR Lova — premium dark workspace com glassmorphism, gradientes neon e componentes refinados.",
+          "MR SEM LIMITES — painel premium dark com glassmorphism, gradientes neon e componentes refinados.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -97,7 +97,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      {
+        rel: "icon",
+        href: "/__l5e/assets-v1/1bc3d617-832b-4776-8034-4f21ad64a531/mr-sem-limites-logo.png",
+        type: "image/png",
+      },
     ],
   }),
   shellComponent: RootShell,
