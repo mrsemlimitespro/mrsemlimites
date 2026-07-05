@@ -24,6 +24,7 @@ import {
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
+import { BrandMark } from "@/components/brand";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -109,13 +110,8 @@ function DashboardPage() {
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
       {/* Hero */}
-      <section className="pt-2">
-        <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-          Olá, Lucas! <span className="ml-1 align-middle text-3xl md:text-4xl">👋</span>
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground md:text-base">
-          Aqui está o que está acontecendo hoje.
-        </p>
+      <section className="flex justify-center pt-2">
+        <BrandMark size={160} />
       </section>
 
       {/* KPI row */}
