@@ -77,17 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MR SEM LIMITES" },
+      { title: "MR Lova" },
       {
         name: "description",
         content:
-          "MR SEM LIMITES — painel premium dark com glassmorphism, gradientes neon e componentes refinados.",
+          "MR Lova — painel premium dark com glassmorphism, gradientes neon e componentes refinados.",
       },
-      { property: "og:title", content: "MR SEM LIMITES" },
+      { property: "og:title", content: "MR Lova" },
       {
         property: "og:description",
         content:
-          "MR SEM LIMITES — painel premium dark com glassmorphism, gradientes neon e componentes refinados.",
+          "MR Lova — painel premium dark com glassmorphism, gradientes neon e componentes refinados.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
