@@ -221,6 +221,7 @@ export const resources: Resource[] = [
       { key: "nome", label: "Nome", type: "text", required: true },
       { key: "quantidade", label: "Quantidade de créditos", type: "number", required: true },
       { key: "preco", label: "Preço (R$)", type: "number", step: 0.01, required: true },
+      { key: "imagem_url", label: "Imagem do pacote", type: "image" },
       { key: "descricao", label: "Descrição", type: "textarea" },
       { key: "ativo", label: "Ativo", type: "boolean" },
     ],
@@ -243,6 +244,7 @@ export const resources: Resource[] = [
     fields: [
       { key: "titulo", label: "Título", type: "text", required: true },
       { key: "descricao", label: "Descrição", type: "textarea" },
+      { key: "imagem_url", label: "Imagem da promoção", type: "image" },
       { key: "desconto_percentual", label: "Desconto (%)", type: "number", step: 0.5 },
       { key: "inicio", label: "Início", type: "datetime" },
       { key: "fim", label: "Fim", type: "datetime" },
