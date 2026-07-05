@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_logs: {
+        Row: {
+          auth_user_id: string | null
+          cliente_id: string | null
+          created_at: string
+          event: string
+          id: string
+          ip: string | null
+          metadata: Json
+          revendedor_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          auth_user_id?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          event: string
+          id?: string
+          ip?: string | null
+          metadata?: Json
+          revendedor_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          auth_user_id?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          event?: string
+          id?: string
+          ip?: string | null
+          metadata?: Json
+          revendedor_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "access_logs_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "access_logs_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_settings: {
         Row: {
           accent_color: string
@@ -138,31 +189,95 @@ export type Database = {
         Row: {
           created_at: string
           email: string | null
+          expira_em: string | null
           id: string
           nome: string
           observacoes: string | null
+          plano: string | null
+          revendedor_id: string | null
+          status: string
           telefone: string | null
+          ultimo_acesso: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           email?: string | null
+          expira_em?: string | null
           id?: string
           nome: string
           observacoes?: string | null
+          plano?: string | null
+          revendedor_id?: string | null
+          status?: string
           telefone?: string | null
+          ultimo_acesso?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           email?: string | null
+          expira_em?: string | null
           id?: string
           nome?: string
           observacoes?: string | null
+          plano?: string | null
+          revendedor_id?: string | null
+          status?: string
           telefone?: string | null
+          ultimo_acesso?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "clientes_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creditos_movimentos: {
+        Row: {
+          created_at: string
+          delta: number
+          id: string
+          motivo: string
+          referencia_id: string | null
+          referencia_tipo: string | null
+          revendedor_id: string
+          saldo_apos: number
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          id?: string
+          motivo: string
+          referencia_id?: string | null
+          referencia_tipo?: string | null
+          revendedor_id: string
+          saldo_apos: number
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          id?: string
+          motivo?: string
+          referencia_id?: string | null
+          referencia_tipo?: string | null
+          revendedor_id?: string
+          saldo_apos?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creditos_movimentos_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       creditos_packs: {
         Row: {
@@ -276,6 +391,7 @@ export type Database = {
           expira_em: string | null
           id: string
           plano: string | null
+          revendedor_id: string | null
           status: string
           updated_at: string
         }
@@ -286,6 +402,7 @@ export type Database = {
           expira_em?: string | null
           id?: string
           plano?: string | null
+          revendedor_id?: string | null
           status?: string
           updated_at?: string
         }
@@ -296,6 +413,7 @@ export type Database = {
           expira_em?: string | null
           id?: string
           plano?: string | null
+          revendedor_id?: string | null
           status?: string
           updated_at?: string
         }
@@ -305,6 +423,13 @@ export type Database = {
             columns: ["cliente_id"]
             isOneToOne: false
             referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licencas_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
             referencedColumns: ["id"]
           },
         ]
@@ -485,39 +610,82 @@ export type Database = {
       }
       payment_transactions: {
         Row: {
+          aprovado_em: string | null
           cliente_nome: string | null
           created_at: string
+          creditos_liberados: number
           external_id: string | null
           gateway_slug: string
           id: string
+          metadata: Json
           metodo: string | null
           moeda: string
+          pack_id: string | null
+          plano_id: string | null
+          revendedor_id: string | null
           status: string
+          updated_at: string
           valor: number
         }
         Insert: {
+          aprovado_em?: string | null
           cliente_nome?: string | null
           created_at?: string
+          creditos_liberados?: number
           external_id?: string | null
           gateway_slug: string
           id?: string
+          metadata?: Json
           metodo?: string | null
           moeda?: string
+          pack_id?: string | null
+          plano_id?: string | null
+          revendedor_id?: string | null
           status?: string
+          updated_at?: string
           valor?: number
         }
         Update: {
+          aprovado_em?: string | null
           cliente_nome?: string | null
           created_at?: string
+          creditos_liberados?: number
           external_id?: string | null
           gateway_slug?: string
           id?: string
+          metadata?: Json
           metodo?: string | null
           moeda?: string
+          pack_id?: string | null
+          plano_id?: string | null
+          revendedor_id?: string | null
           status?: string
+          updated_at?: string
           valor?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "creditos_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_plano_id_fkey"
+            columns: ["plano_id"]
+            isOneToOne: false
+            referencedRelation: "planos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payment_webhook_logs: {
         Row: {
@@ -546,6 +714,45 @@ export type Database = {
           payload?: Json | null
           received_at?: string
           status?: string
+        }
+        Relationships: []
+      }
+      planos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          creditos_incluidos: number
+          descricao: string | null
+          duracao_dias: number
+          id: string
+          nome: string
+          preco: number
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          creditos_incluidos?: number
+          descricao?: string | null
+          duracao_dias?: number
+          id?: string
+          nome: string
+          preco?: number
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          creditos_incluidos?: number
+          descricao?: string | null
+          duracao_dias?: number
+          id?: string
+          nome?: string
+          preco?: number
+          tipo?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -653,39 +860,62 @@ export type Database = {
       }
       revendedores: {
         Row: {
+          auth_user_id: string | null
+          bloqueado: boolean
           comissao: number | null
           created_at: string
           email: string | null
           id: string
           nome: string
           observacoes: string | null
+          plano_expira_em: string | null
+          plano_id: string | null
+          saldo_creditos: number
           status: string
           telefone: string | null
           updated_at: string
         }
         Insert: {
+          auth_user_id?: string | null
+          bloqueado?: boolean
           comissao?: number | null
           created_at?: string
           email?: string | null
           id?: string
           nome: string
           observacoes?: string | null
+          plano_expira_em?: string | null
+          plano_id?: string | null
+          saldo_creditos?: number
           status?: string
           telefone?: string | null
           updated_at?: string
         }
         Update: {
+          auth_user_id?: string | null
+          bloqueado?: boolean
           comissao?: number | null
           created_at?: string
           email?: string | null
           id?: string
           nome?: string
           observacoes?: string | null
+          plano_expira_em?: string | null
+          plano_id?: string | null
+          saldo_creditos?: number
           status?: string
           telefone?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "revendedores_plano_id_fkey"
+            columns: ["plano_id"]
+            isOneToOne: false
+            referencedRelation: "planos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -743,6 +973,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_credits: {
+        Args: {
+          _delta: number
+          _motivo: string
+          _ref_id?: string
+          _ref_tipo?: string
+          _revendedor_id: string
+        }
+        Returns: number
+      }
+      approve_pagamento: { Args: { _pagamento_id: string }; Returns: undefined }
+      create_revendedor_profile: {
+        Args: { _nome?: string; _telefone?: string }
+        Returns: string
+      }
+      current_revendedor_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -750,6 +996,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_revendedor: { Args: { _uid: string }; Returns: boolean }
       set_admin_password: {
         Args: { _current_password?: string; _new_password: string }
         Returns: boolean
