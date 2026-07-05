@@ -66,45 +66,47 @@ function ResourcePage() {
 function ResourceView({ resource }: { resource: Resource }) {
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const pageSize = 25;
   const [editing, setEditing] = useState<Row | null>(null);
   const [creating, setCreating] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Row | null>(null);
 
-  const { data: rows = [], isLoading } = useQuery({
-    queryKey: ["admin-list", resource.table],
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setPage(0);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-list", resource.table, debouncedSearch, page, pageSize],
     queryFn: async () => {
-      let q = (supabase as any).from(resource.table).select("*");
+      let q = (supabase as any)
+        .from(resource.table)
+        .select("*", { count: "exact" });
+      if (debouncedSearch && resource.searchColumns?.length) {
+        const term = debouncedSearch.replace(/[%,]/g, "");
+        q = q.or(resource.searchColumns.map((c) => `${c}.ilike.%${term}%`).join(","));
+      }
       if (resource.orderBy) {
         q = q.order(resource.orderBy.column, { ascending: resource.orderBy.ascending });
       }
-      const { data, error } = await q;
+      q = q.range(page * pageSize, page * pageSize + pageSize - 1);
+      const { data, error, count } = await q;
       if (error) throw error;
-      return (data ?? []) as Row[];
+      return { rows: (data ?? []) as Row[], total: count ?? 0 };
     },
   });
 
-  const filtered = useMemo(() => {
-    if (!search.trim()) return rows;
-    const s = search.trim().toLowerCase();
-    const cols = resource.searchColumns ?? [];
-    return rows.filter((r) =>
-      cols.some((c) => String(r[c] ?? "").toLowerCase().includes(s)),
-    );
-  }, [rows, search, resource.searchColumns]);
+  const rows = data?.rows ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const filtered = rows;
+  useMemo(() => null, []);
 
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await (supabase as any).from(resource.table).delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("Excluído");
-      qc.invalidateQueries({ queryKey: ["admin-list", resource.table] });
-      qc.invalidateQueries({ queryKey: ["admin-count", resource.table] });
-      setConfirmDelete(null);
-    },
-    onError: (err: Error) => toast.error(err.message),
-  });
 
   return (
     <div className="mx-auto max-w-6xl space-y-5">
