@@ -41,7 +41,7 @@ function AdminLayout() {
     const { data } = await supabase.auth.getUser();
     const user = data.user;
     if (!user) return setState({ status: "signed_out" });
-    const { data: role } = await supabase
+    const { data: role } = await (supabase as any)
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id)
