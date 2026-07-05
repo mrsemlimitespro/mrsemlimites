@@ -122,7 +122,8 @@ async function loadMetrics(): Promise<Metrics> {
       .from("notificacoes")
       .select("id", { count: "exact", head: true })
       .eq("categoria", "suporte")
-      .eq("lida", false),
+      .is("lida_em", null),
+
   ]);
 
   const v = (viewRes.data ?? {}) as {
