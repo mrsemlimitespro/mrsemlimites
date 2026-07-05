@@ -92,6 +92,8 @@ function LojaPage() {
 
       {active === "loja" ? (
         <LojaContent />
+      ) : active === "creditos" ? (
+        <CreditosLovableMaintenance />
       ) : (
         <div className="glass rounded-2xl p-14 text-center text-sm text-muted-foreground">
           Envie o print desta aba para eu reconstruí-la fielmente.
