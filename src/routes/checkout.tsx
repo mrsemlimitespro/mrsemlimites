@@ -278,7 +278,11 @@ function CheckoutPage() {
         disabled={loading || !plano}
         className={`${primaryBtn} mt-5`}
       >
-        {loading ? "Processando..." : plano ? `Continuar — ${brl(Number(plano.preco))}` : "Continuar"}
+        {loading
+          ? "Processando..."
+          : plano
+            ? `Continuar — ${brl(valorFinal)}${descontoPct > 0 ? ` (de ${brl(Number(plano.preco))})` : ""}`
+            : "Continuar"}
       </button>
 
       {authed === false && (
