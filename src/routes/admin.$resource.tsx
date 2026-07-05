@@ -303,8 +303,8 @@ function ResourceFormDialog({
         payload[f.key] = v;
       }
       if (isEdit) {
-        const { error } = await supabase
-          .from(resource.table as never)
+        const { error } = await (supabase as any)
+          .from(resource.table)
           .update(payload)
           .eq("id", initial!.id);
         if (error) throw error;
