@@ -8,24 +8,22 @@ import {
   UserCircle2,
   Package,
   Coins,
-  Plus,
-  BarChart3,
-  Link2,
-  Zap,
   UserPlus,
   CreditCard,
   MessageCircle,
   FileText,
-  MoreHorizontal,
-  Layers,
-  Smartphone,
-  LineChart,
-  Cable,
+  LogIn,
+  KeyRound,
+  XCircle,
+  Settings,
   ChevronDown,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { BRAND_LOGO_URL, BRAND_NAME } from "@/components/brand";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -43,74 +41,9 @@ type Kpi = {
   label: string;
   value: string;
   icon: IconType;
-  trend: number;
-  trendDirection: "up" | "down";
   color: string;
   sparkline: number[];
 };
-
-const kpis: Kpi[] = [
-  {
-    label: "Receita Total",
-    value: "R$ 98.764,21",
-    icon: DollarSign,
-    trend: 12.5,
-    trendDirection: "up",
-    color: "var(--brand-violet)",
-    sparkline: [12, 18, 14, 22, 20, 28, 24, 32, 30, 38, 34, 44],
-  },
-  {
-    label: "Novos Clientes",
-    value: "1.256",
-    icon: Users,
-    trend: 8.2,
-    trendDirection: "up",
-    color: "var(--brand-blue)",
-    sparkline: [22, 18, 26, 20, 30, 24, 34, 28, 38, 32, 40, 36],
-  },
-  {
-    label: "Conversão",
-    value: "24.8%",
-    icon: Target,
-    trend: 15.3,
-    trendDirection: "up",
-    color: "var(--brand-magenta)",
-    sparkline: [8, 14, 12, 18, 16, 22, 20, 26, 24, 30, 28, 34],
-  },
-  {
-    label: "Tickets Abertos",
-    value: "32",
-    icon: MessageSquare,
-    trend: 4.1,
-    trendDirection: "down",
-    color: "var(--brand-orange)",
-    sparkline: [10, 18, 14, 22, 18, 26, 22, 30, 24, 32, 28, 34],
-  },
-];
-
-type Quick = { label: string; icon: IconType };
-const quickActions: Quick[] = [
-  { label: "Criar projeto", icon: Plus },
-  { label: "Gerar relatório", icon: BarChart3 },
-  { label: "Conectar dados", icon: Link2 },
-  { label: "Nova automação", icon: Zap },
-];
-
-type Activity = { label: string; time: string; icon: IconType; color: string };
-const activities: Activity[] = [
-  { label: "Novo usuário registrado", time: "há 2 min", icon: UserPlus, color: "var(--brand-emerald)" },
-  { label: "Pagamento aprovado", time: "há 5 min", icon: CreditCard, color: "var(--brand-blue)" },
-  { label: "Novo ticket criado", time: "há 7 min", icon: MessageCircle, color: "var(--brand-magenta)" },
-  { label: "Relatório gerado", time: "há 10 min", icon: FileText, color: "var(--brand-violet)" },
-];
-
-type Project = { label: string; sub: string; icon: IconType; color: string };
-const projects: Project[] = [
-  { label: "Landing Page Nova", sub: "Atualizado há 2h", icon: Layers, color: "var(--brand-magenta)" },
-  { label: "App Mobile v2", sub: "Atualizado há 4h", icon: Smartphone, color: "var(--brand-blue)" },
-  { label: "Dashboard Analytics", sub: "Atualizado há 6h", icon: LineChart, color: "var(--brand-emerald)" },
-  { label: "Integração API", sub: "Atualizado há 1d", icon: Cable, color: "var(--brand-orange)" },
-];
 
 type MenuItem = { label: string; icon: IconType };
 const innerMenu: MenuItem[] = [
@@ -120,38 +53,284 @@ const innerMenu: MenuItem[] = [
   { label: "Créditos", icon: Coins },
 ];
 
+type Metrics = {
+  receitaTotal: number;
+  novosClientes: number;
+  conversao: number;
+  ticketsAbertos: number;
+  receitaSpark: number[];
+  clientesSpark: number[];
+  conversaoSpark: number[];
+  ticketsSpark: number[];
+  chartDays: string[];
+  chartValues: number[];
+};
+
+type PaymentRow = {
+  id: string;
+  cliente_nome: string | null;
+  valor: number | null;
+  status: string | null;
+  created_at: string;
+  metodo: string | null;
+  gateway_slug: string | null;
+};
+
+type ActivityRow = {
+  id: string;
+  event: string;
+  created_at: string;
+  metadata: Record<string, unknown> | null;
+};
+
+const brl = (n: number) =>
+  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+function startOfDayUTC(d: Date) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+
+function last7Days() {
+  const days: Date[] = [];
+  const today = startOfDayUTC(new Date());
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    days.push(d);
+  }
+  return days;
+}
+
+async function loadMetrics(): Promise<Metrics> {
+  const since = new Date();
+  since.setDate(since.getDate() - 6);
+  since.setHours(0, 0, 0, 0);
+
+  const [txAll, clientes, txRecentes] = await Promise.all([
+    supabase.from("payment_transactions").select("valor,status,created_at"),
+    supabase.from("clientes").select("id", { count: "exact", head: true }),
+    supabase
+      .from("payment_transactions")
+      .select("valor,status,created_at")
+      .gte("created_at", since.toISOString()),
+  ]);
+
+  const rows = txAll.data ?? [];
+  const aprovados = rows.filter((r) => r.status === "aprovado");
+  const receitaTotal = aprovados.reduce(
+    (s, r) => s + Number(r.valor ?? 0),
+    0,
+  );
+  const total = rows.length;
+  const conversao = total > 0 ? (aprovados.length / total) * 100 : 0;
+
+  const days = last7Days();
+  const chartValues = days.map((d) => {
+    const dEnd = new Date(d);
+    dEnd.setDate(dEnd.getDate() + 1);
+    return (txRecentes.data ?? [])
+      .filter((r) => {
+        if (r.status !== "aprovado") return false;
+        const t = new Date(r.created_at).getTime();
+        return t >= d.getTime() && t < dEnd.getTime();
+      })
+      .reduce((s, r) => s + Number(r.valor ?? 0), 0);
+  });
+
+  const chartDays = days.map((d) =>
+    d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }),
+  );
+
+  // sparklines: distribute totals for hint of trend, using last 7 days aprovados
+  const receitaSpark = chartValues.length ? chartValues : [0, 0, 0, 0, 0, 0, 0];
+
+  // clientes por dia (últimos 7)
+  const clientesUlt = await supabase
+    .from("clientes")
+    .select("created_at")
+    .gte("created_at", since.toISOString());
+  const clientesSpark = days.map((d) => {
+    const dEnd = new Date(d);
+    dEnd.setDate(dEnd.getDate() + 1);
+    return (clientesUlt.data ?? []).filter((r) => {
+      const t = new Date(r.created_at).getTime();
+      return t >= d.getTime() && t < dEnd.getTime();
+    }).length;
+  });
+
+  const conversaoSpark = days.map((d) => {
+    const dEnd = new Date(d);
+    dEnd.setDate(dEnd.getDate() + 1);
+    const inDay = (txRecentes.data ?? []).filter((r) => {
+      const t = new Date(r.created_at).getTime();
+      return t >= d.getTime() && t < dEnd.getTime();
+    });
+    if (inDay.length === 0) return 0;
+    return (inDay.filter((r) => r.status === "aprovado").length / inDay.length) * 100;
+  });
+
+  return {
+    receitaTotal,
+    novosClientes: clientes.count ?? 0,
+    conversao,
+    ticketsAbertos: 0,
+    receitaSpark,
+    clientesSpark,
+    conversaoSpark,
+    ticketsSpark: [0, 0, 0, 0, 0, 0, 0],
+    chartDays,
+    chartValues,
+  };
+}
+
+const EVENT_META: Record<
+  string,
+  { label: string; icon: IconType; color: string }
+> = {
+  novo_cliente: { label: "Novo cliente cadastrado", icon: UserPlus, color: "var(--brand-emerald)" },
+  compra_aprovada: { label: "Compra aprovada", icon: CreditCard, color: "var(--brand-blue)" },
+  compra_recusada: { label: "Compra recusada", icon: XCircle, color: "var(--brand-orange)" },
+  licenca_criada: { label: "Licença criada", icon: FileText, color: "var(--brand-violet)" },
+  credito_comprado: { label: "Crédito comprado", icon: Coins, color: "var(--brand-magenta)" },
+  login: { label: "Login realizado", icon: LogIn, color: "var(--brand-cyan)" },
+  cadastro: { label: "Novo cadastro", icon: KeyRound, color: "var(--brand-emerald)" },
+  alteracao: { label: "Alteração importante", icon: Settings, color: "var(--brand-blue)" },
+};
+
+function eventInfo(ev: string) {
+  return (
+    EVENT_META[ev] ?? {
+      label: ev.replaceAll("_", " "),
+      icon: MessageCircle,
+      color: "var(--brand-violet)",
+    }
+  );
+}
+
+function timeAgo(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "agora";
+  if (m < 60) return `há ${m} min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `há ${h}h`;
+  const d = Math.floor(h / 24);
+  return `há ${d}d`;
+}
+
 function DashboardPage() {
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [sales, setSales] = useState<PaymentRow[]>([]);
+  const [activity, setActivity] = useState<ActivityRow[]>([]);
+
+  const refreshMetrics = useCallback(async () => {
+    const m = await loadMetrics().catch(() => null);
+    if (m) setMetrics(m);
+  }, []);
+
+  const refreshSales = useCallback(async () => {
+    const { data } = await supabase
+      .from("payment_transactions")
+      .select("id,cliente_nome,valor,status,created_at,metodo,gateway_slug")
+      .order("created_at", { ascending: false })
+      .limit(6);
+    setSales((data as PaymentRow[]) ?? []);
+  }, []);
+
+  const refreshActivity = useCallback(async () => {
+    const { data } = await supabase
+      .from("access_logs")
+      .select("id,event,created_at,metadata")
+      .order("created_at", { ascending: false })
+      .limit(8);
+    setActivity((data as ActivityRow[]) ?? []);
+  }, []);
+
+  useEffect(() => {
+    refreshMetrics();
+    refreshSales();
+    refreshActivity();
+
+    const ch = supabase
+      .channel("dashboard-live")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "payment_transactions" },
+        () => {
+          refreshMetrics();
+          refreshSales();
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "clientes" },
+        () => refreshMetrics(),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "access_logs" },
+        () => refreshActivity(),
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [refreshMetrics, refreshSales, refreshActivity]);
+
+  const kpis: Kpi[] = [
+    {
+      label: "Receita Total",
+      value: metrics ? brl(metrics.receitaTotal) : "—",
+      icon: DollarSign,
+      color: "var(--brand-violet)",
+      sparkline: metrics?.receitaSpark ?? [0, 0, 0, 0, 0, 0, 0],
+    },
+    {
+      label: "Novos Clientes",
+      value: metrics ? metrics.novosClientes.toLocaleString("pt-BR") : "—",
+      icon: Users,
+      color: "var(--brand-blue)",
+      sparkline: metrics?.clientesSpark ?? [0, 0, 0, 0, 0, 0, 0],
+    },
+    {
+      label: "Conversão",
+      value: metrics ? `${metrics.conversao.toFixed(1)}%` : "—",
+      icon: Target,
+      color: "var(--brand-magenta)",
+      sparkline: metrics?.conversaoSpark ?? [0, 0, 0, 0, 0, 0, 0],
+    },
+    {
+      label: "Tickets Abertos",
+      value: metrics ? String(metrics.ticketsAbertos) : "—",
+      icon: MessageSquare,
+      color: "var(--brand-orange)",
+      sparkline: metrics?.ticketsSpark ?? [0, 0, 0, 0, 0, 0, 0],
+    },
+  ];
+
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6 pb-32">
-      {/* Hero */}
-      <section className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-        <div className="max-w-xl">
-          <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-            <span className="gradient-text-warm">Olá, Lucas!</span>{" "}
-            <span aria-hidden>👋</span>
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground md:text-base">
-            Aqui está o que está acontecendo no seu universo hoje.
-          </p>
-
-          <div className="mt-5 flex flex-wrap gap-2.5">
-            {quickActions.map((q) => {
-              const Icon = q.icon;
-              return (
-                <button
-                  key={q.label}
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/60 px-4 py-2 text-sm font-medium text-foreground/85 backdrop-blur-xl transition-all hover:border-primary/40 hover:text-foreground"
-                >
-                  <Icon className="size-4" strokeWidth={2} />
-                  {q.label}
-                </button>
-              );
-            })}
-          </div>
+      {/* Hero — Logo centralizada */}
+      <section className="relative flex flex-col items-center justify-center py-6 md:py-10">
+        <div
+          className="relative grid place-items-center rounded-[26%] overflow-hidden"
+          style={{
+            width: "min(220px, 55vw)",
+            height: "min(220px, 55vw)",
+            boxShadow:
+              "0 0 0 1px color-mix(in oklab, var(--brand-magenta) 55%, transparent), 0 0 80px -4px color-mix(in oklab, var(--brand-magenta) 60%, transparent), 0 0 90px -10px color-mix(in oklab, var(--brand-blue) 55%, transparent)",
+          }}
+        >
+          <img
+            src={BRAND_LOGO_URL}
+            alt={`${BRAND_NAME} logo`}
+            className="h-full w-full object-cover"
+            draggable={false}
+          />
         </div>
-
-        <OrbVisual />
       </section>
 
       {/* 4 KPI cards */}
@@ -163,9 +342,12 @@ function DashboardPage() {
 
       {/* Bottom 3-column row */}
       <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
-        <ActivityCard />
-        <ChartCard />
-        <ProjectsCard />
+        <ActivityCard items={activity} />
+        <ChartCard
+          days={metrics?.chartDays ?? []}
+          values={metrics?.chartValues ?? []}
+        />
+        <RecentSalesCard sales={sales} />
       </section>
 
       <InnerPillMenu />
@@ -175,10 +357,6 @@ function DashboardPage() {
 
 function KpiCard({ kpi }: { kpi: Kpi }) {
   const Icon = kpi.icon;
-  const trendColor =
-    kpi.trendDirection === "up" ? "text-emerald-400" : "text-red-400";
-  const arrow = kpi.trendDirection === "up" ? "↗" : "↘";
-
   return (
     <div className="glass relative overflow-hidden rounded-2xl p-5">
       <div className="flex items-start justify-between">
@@ -194,19 +372,14 @@ function KpiCard({ kpi }: { kpi: Kpi }) {
       <p className="mt-4 text-[28px] font-semibold tracking-tight md:text-[30px]">
         {kpi.value}
       </p>
-
-      <div className={cn("mt-1 flex items-center gap-1.5 text-xs font-medium", trendColor)}>
-        <span>{arrow}</span>
-        <span>{kpi.trend.toFixed(1)}%</span>
-        <span className="text-muted-foreground/80">vs mês passado</span>
-      </div>
+      <p className="mt-1 text-xs text-muted-foreground/80">Últimos 7 dias</p>
 
       <Sparkline data={kpi.sparkline} color={kpi.color} className="mt-4" />
     </div>
   );
 }
 
-function ActivityCard() {
+function ActivityCard({ items }: { items: ActivityRow[] }) {
   return (
     <div className="glass rounded-2xl p-5">
       <div className="mb-4 flex items-center justify-between">
@@ -217,105 +390,148 @@ function ActivityCard() {
             className="size-1.5 rounded-full"
             style={{
               background: "var(--brand-emerald)",
-              boxShadow: "0 0 8px color-mix(in oklab, var(--brand-emerald) 80%, transparent)",
+              boxShadow:
+                "0 0 8px color-mix(in oklab, var(--brand-emerald) 80%, transparent)",
             }}
           />
           Ao vivo
         </span>
       </div>
-      <ul className="space-y-3">
-        {activities.map((a) => {
-          const Icon = a.icon;
-          return (
-            <li key={a.label} className="flex items-center gap-3">
-              <span
-                className="icon-tile size-9 shrink-0"
-                style={{ ["--tile-color" as never]: a.color }}
-              >
-                <Icon className="size-4" strokeWidth={2} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{a.label}</p>
-                <p className="text-xs text-muted-foreground">{a.time}</p>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      {items.length === 0 ? (
+        <p className="text-xs text-muted-foreground">Nenhuma atividade registrada ainda.</p>
+      ) : (
+        <ul className="space-y-3">
+          {items.map((a) => {
+            const info = eventInfo(a.event);
+            const Icon = info.icon;
+            return (
+              <li key={a.id} className="flex items-center gap-3">
+                <span
+                  className="icon-tile size-9 shrink-0"
+                  style={{ ["--tile-color" as never]: info.color }}
+                >
+                  <Icon className="size-4" strokeWidth={2} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{info.label}</p>
+                  <p className="text-xs text-muted-foreground">{timeAgo(a.created_at)}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
 
-function ProjectsCard() {
+function statusStyle(status: string | null) {
+  const s = (status ?? "").toLowerCase();
+  if (s === "aprovado")
+    return { label: "Aprovado", color: "var(--brand-emerald)" };
+  if (s === "pendente" || s === "aguardando")
+    return { label: "Pendente", color: "var(--brand-orange)" };
+  if (s === "recusado" || s === "rejeitado")
+    return { label: "Recusado", color: "var(--brand-magenta)" };
+  if (s === "reembolsado") return { label: "Reembolsado", color: "var(--brand-blue)" };
+  return { label: status ?? "—", color: "var(--brand-violet)" };
+}
+
+function RecentSalesCard({ sales }: { sales: PaymentRow[] }) {
   return (
     <div className="glass rounded-2xl p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-semibold">Projetos Recentes</h3>
-        <button className="rounded-full border border-border/70 bg-white/5 px-3 py-1 text-[11px] font-medium text-foreground/80 hover:text-foreground">
-          Ver todos
-        </button>
+        <h3 className="text-sm font-semibold">Últimas Vendas</h3>
+        <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <span
+            aria-hidden
+            className="size-1.5 rounded-full"
+            style={{
+              background: "var(--brand-blue)",
+              boxShadow:
+                "0 0 8px color-mix(in oklab, var(--brand-blue) 80%, transparent)",
+            }}
+          />
+          Tempo real
+        </span>
       </div>
-      <ul className="space-y-3">
-        {projects.map((p) => {
-          const Icon = p.icon;
-          return (
-            <li key={p.label} className="flex items-center gap-3">
-              <span
-                className="icon-tile size-9 shrink-0"
-                style={{ ["--tile-color" as never]: p.color }}
-              >
-                <Icon className="size-4" strokeWidth={2} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{p.label}</p>
-                <p className="text-xs text-muted-foreground">{p.sub}</p>
-              </div>
-              <button
-                type="button"
-                aria-label="Mais"
-                className="grid size-7 place-items-center rounded-full text-muted-foreground/70 hover:bg-white/5 hover:text-foreground"
-              >
-                <MoreHorizontal className="size-4" />
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      {sales.length === 0 ? (
+        <p className="text-xs text-muted-foreground">Nenhuma venda registrada ainda.</p>
+      ) : (
+        <ul className="space-y-3">
+          {sales.map((s) => {
+            const st = statusStyle(s.status);
+            const produto = s.metodo || s.gateway_slug || "Venda";
+            return (
+              <li key={s.id} className="flex items-center gap-3">
+                <span
+                  className="icon-tile size-9 shrink-0"
+                  style={{ ["--tile-color" as never]: st.color }}
+                >
+                  <DollarSign className="size-4" strokeWidth={2} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
+                    {s.cliente_nome ?? "Cliente"}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {produto} · {timeAgo(s.created_at)}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold">{brl(Number(s.valor ?? 0))}</p>
+                  <p
+                    className="text-[10px] font-medium"
+                    style={{ color: st.color }}
+                  >
+                    {st.label}
+                  </p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
 
-function ChartCard() {
+function ChartCard({ days, values }: { days: string[]; values: number[] }) {
   return (
     <div className="glass rounded-2xl p-5">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-sm font-semibold">Visão Geral</h3>
-        <button className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white/5 px-3 py-1 text-[11px] font-medium text-foreground/80 hover:text-foreground">
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white/5 px-3 py-1 text-[11px] font-medium text-foreground/80 hover:text-foreground"
+        >
           Últimos 7 dias
           <ChevronDown className="size-3.5" />
         </button>
       </div>
-      <BigChart />
+      <BigChart days={days} values={values} />
     </div>
   );
 }
 
-function BigChart() {
-  const days = ["16 Mai", "17 Mai", "18 Mai", "19 Mai", "20 Mai", "21 Mai", "22 Mai"];
-  const values = [4200, 3400, 6800, 5200, 12430, 9600, 13800];
+function BigChart({ days, values }: { days: string[]; values: number[] }) {
+  const fallbackDays = days.length ? days : last7Days().map((d) =>
+    d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }),
+  );
+  const fallbackValues = values.length ? values : [0, 0, 0, 0, 0, 0, 0];
+
   const w = 700;
   const h = 240;
   const padX = 28;
   const padY = 18;
-  const max = 15000;
-  const min = 0;
-  const stepX = (w - padX * 2) / (values.length - 1);
-  const points = values.map((v, i) => {
+  const rawMax = Math.max(...fallbackValues, 1);
+  const max = rawMax * 1.15;
+  const stepX = (w - padX * 2) / (fallbackValues.length - 1 || 1);
+  const points = fallbackValues.map((v, i) => {
     const x = padX + i * stepX;
-    const y = h - padY - ((v - min) / (max - min)) * (h - padY * 2);
+    const y = h - padY - (v / max) * (h - padY * 2);
     return [x, y] as const;
   });
-  // smooth curve
   const path = points
     .map(([x, y], i, arr) => {
       if (i === 0) return `M ${x},${y}`;
@@ -326,8 +542,12 @@ function BigChart() {
     .join(" ");
   const area = `${path} L ${w - padX},${h - padY} L ${padX},${h - padY} Z`;
 
-  const highlightIdx = 4;
-  const [hx, hy] = points[highlightIdx];
+  const maxIdx = fallbackValues.reduce(
+    (best, v, i) => (v > fallbackValues[best] ? i : best),
+    0,
+  );
+  const [hx, hy] = points[maxIdx];
+  const yLabels = [0, 0.5, 1];
 
   return (
     <div className="relative">
@@ -348,7 +568,6 @@ function BigChart() {
           </linearGradient>
         </defs>
 
-        {/* gridlines */}
         {[0.25, 0.5, 0.75].map((r) => {
           const y = padY + r * (h - padY * 2);
           return (
@@ -364,32 +583,24 @@ function BigChart() {
           );
         })}
 
-        {/* y labels */}
-        {[
-          [0, "0"],
-          [0.66, "5k"],
-          [0.33, "10k"],
-          [0, "15k"],
-        ]
-          .slice(0, 4)
-          .map(([, ]) => null)}
-        {[
-          { y: h - padY, label: "0" },
-          { y: padY + 0.66 * (h - padY * 2), label: "5k" },
-          { y: padY + 0.33 * (h - padY * 2), label: "10k" },
-          { y: padY, label: "15k" },
-        ].map((t) => (
-          <text
-            key={t.label}
-            x={4}
-            y={t.y + 3}
-            fill="oklch(0.7 0.02 20 / 70%)"
-            fontSize="10"
-            fontFamily="Inter Variable, sans-serif"
-          >
-            {t.label}
-          </text>
-        ))}
+        {yLabels.map((r) => {
+          const y = padY + (1 - r) * (h - padY * 2);
+          const val = max * r;
+          const label =
+            val >= 1000 ? `${Math.round(val / 100) / 10}k` : `${Math.round(val)}`;
+          return (
+            <text
+              key={r}
+              x={4}
+              y={y + 3}
+              fill="oklch(0.7 0.02 20 / 70%)"
+              fontSize="10"
+              fontFamily="Inter Variable, sans-serif"
+            >
+              {label}
+            </text>
+          );
+        })}
 
         <path d={area} fill="url(#chart-area)" />
         <path
@@ -402,23 +613,30 @@ function BigChart() {
           className="stroke-glow-warm"
         />
 
-        {/* highlight point */}
-        <line
-          x1={hx}
-          x2={hx}
-          y1={hy}
-          y2={h - padY}
-          stroke="color-mix(in oklab, var(--brand-magenta) 60%, transparent)"
-          strokeDasharray="2 4"
-        />
-        <circle cx={hx} cy={hy} r={12} fill="color-mix(in oklab, var(--brand-magenta) 25%, transparent)" />
-        <circle cx={hx} cy={hy} r={5} fill="var(--brand-magenta)" />
-        <circle cx={hx} cy={hy} r={2.2} fill="white" />
+        {fallbackValues[maxIdx] > 0 && (
+          <>
+            <line
+              x1={hx}
+              x2={hx}
+              y1={hy}
+              y2={h - padY}
+              stroke="color-mix(in oklab, var(--brand-magenta) 60%, transparent)"
+              strokeDasharray="2 4"
+            />
+            <circle
+              cx={hx}
+              cy={hy}
+              r={12}
+              fill="color-mix(in oklab, var(--brand-magenta) 25%, transparent)"
+            />
+            <circle cx={hx} cy={hy} r={5} fill="var(--brand-magenta)" />
+            <circle cx={hx} cy={hy} r={2.2} fill="white" />
+          </>
+        )}
 
-        {/* x labels */}
-        {days.map((d, i) => (
+        {fallbackDays.map((d, i) => (
           <text
-            key={d}
+            key={d + i}
             x={points[i][0]}
             y={h - 2}
             textAnchor="middle"
@@ -431,48 +649,18 @@ function BigChart() {
         ))}
       </svg>
 
-      {/* Tooltip */}
-      <div
-        className="pointer-events-none absolute -translate-x-1/2 -translate-y-full rounded-xl border border-border/70 bg-surface-elevated/90 px-3 py-1.5 text-center text-xs shadow-lg backdrop-blur-xl"
-        style={{
-          left: `${(hx / w) * 100}%`,
-          top: `${(hy / h) * 100}%`,
-        }}
-      >
-        <div className="font-semibold">R$ 12.430</div>
-        <div className="text-[10px] text-muted-foreground">20 Maio</div>
-      </div>
-    </div>
-  );
-}
-
-function OrbVisual() {
-  return (
-    <div className="relative size-40 shrink-0 md:size-52">
-      <div
-        aria-hidden
-        className="absolute inset-0 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--brand-violet) 80%, white 10%) 0%, color-mix(in oklab, var(--brand-magenta) 70%, transparent) 45%, color-mix(in oklab, var(--brand-blue) 60%, transparent) 75%, transparent 100%)",
-          filter: "blur(0.5px)",
-          boxShadow:
-            "0 0 60px -4px color-mix(in oklab, var(--brand-violet) 70%, transparent), inset -20px -30px 60px color-mix(in oklab, var(--brand-blue) 60%, transparent), inset 20px 20px 40px color-mix(in oklab, var(--brand-pink) 55%, transparent)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="absolute left-1/2 top-1/2 h-[8%] w-[130%] -translate-x-1/2 -translate-y-1/2 rotate-[-18deg] rounded-full"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent 0%, color-mix(in oklab, var(--brand-cyan) 70%, transparent) 30%, color-mix(in oklab, white 60%, transparent) 50%, color-mix(in oklab, var(--brand-magenta) 70%, transparent) 70%, transparent 100%)",
-          filter: "blur(2px)",
-          boxShadow: "0 0 24px color-mix(in oklab, var(--brand-cyan) 60%, transparent)",
-        }}
-      />
-      <div aria-hidden className="absolute left-[10%] top-[8%] size-1 rounded-full bg-white" style={{ boxShadow: "0 0 8px white" }} />
-      <div aria-hidden className="absolute right-[14%] top-[24%] size-1.5 rounded-full bg-white" style={{ boxShadow: "0 0 10px white" }} />
-      <div aria-hidden className="absolute right-[6%] bottom-[18%] size-1 rounded-full bg-white" style={{ boxShadow: "0 0 8px white" }} />
+      {fallbackValues[maxIdx] > 0 && (
+        <div
+          className="pointer-events-none absolute -translate-x-1/2 -translate-y-full rounded-xl border border-border/70 bg-surface-elevated/90 px-3 py-1.5 text-center text-xs shadow-lg backdrop-blur-xl"
+          style={{
+            left: `${(hx / w) * 100}%`,
+            top: `${(hy / h) * 100}%`,
+          }}
+        >
+          <div className="font-semibold">{brl(fallbackValues[maxIdx])}</div>
+          <div className="text-[10px] text-muted-foreground">{fallbackDays[maxIdx]}</div>
+        </div>
+      )}
     </div>
   );
 }
@@ -488,10 +676,10 @@ function Sparkline({
 }) {
   const w = 300;
   const h = 60;
-  const max = Math.max(...data);
-  const min = Math.min(...data);
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data, 0);
   const range = Math.max(max - min, 1);
-  const stepX = w / (data.length - 1);
+  const stepX = w / Math.max(data.length - 1, 1);
   const points = data.map((v, i) => {
     const x = i * stepX;
     const y = h - ((v - min) / range) * (h - 8) - 4;
