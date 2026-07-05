@@ -77,17 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "NovaMind — Premium workspace" },
+      { title: "MR Lova" },
       {
         name: "description",
         content:
-          "Premium dark workspace with glassmorphism, purple-blue gradients, and a refined component system.",
+          "MR Lova — premium dark workspace com glassmorphism, gradientes neon e componentes refinados.",
       },
-      { property: "og:title", content: "NovaMind — Premium workspace" },
+      { property: "og:title", content: "MR Lova" },
       {
         property: "og:description",
         content:
-          "Premium dark workspace with glassmorphism, purple-blue gradients, and a refined component system.",
+          "MR Lova — premium dark workspace com glassmorphism, gradientes neon e componentes refinados.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
