@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -40,6 +41,11 @@ const RegistroRoute = RegistroRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -146,6 +152,7 @@ const ApiPublicWebhooksCaktoRoute = ApiPublicWebhooksCaktoRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/aulas': typeof AppAulasRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
 }
 export interface FileRoutesByTo {
+  '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/aulas': typeof AppAulasRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/_app/aulas': typeof AppAulasRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/checkout'
     | '/login'
     | '/registro'
     | '/aulas'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/mercadopago'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/checkout'
     | '/login'
     | '/registro'
     | '/aulas'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/admin'
+    | '/checkout'
     | '/login'
     | '/registro'
     | '/_app/aulas'
@@ -288,6 +300,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  CheckoutRoute: typeof CheckoutRoute
   LoginRoute: typeof LoginRoute
   RegistroRoute: typeof RegistroRoute
   ApiPublicWebhooksCaktoRoute: typeof ApiPublicWebhooksCaktoRoute
@@ -309,6 +322,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -503,6 +523,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  CheckoutRoute: CheckoutRoute,
   LoginRoute: LoginRoute,
   RegistroRoute: RegistroRoute,
   ApiPublicWebhooksCaktoRoute: ApiPublicWebhooksCaktoRoute,
