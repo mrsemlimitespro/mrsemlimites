@@ -105,8 +105,20 @@ function ResourceView({ resource }: { resource: Resource }) {
   const total = data?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const filtered = rows;
-  useMemo(() => null, []);
 
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await (supabase as any).from(resource.table).delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Excluído");
+      qc.invalidateQueries({ queryKey: ["admin-list", resource.table] });
+      qc.invalidateQueries({ queryKey: ["admin-count", resource.table] });
+      setConfirmDelete(null);
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
 
   return (
     <div className="mx-auto max-w-6xl space-y-5">
@@ -119,9 +131,11 @@ function ResourceView({ resource }: { resource: Resource }) {
             <span className="gradient-text-warm">{resource.label}</span>
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {rows.length} registro{rows.length === 1 ? "" : "s"}
+            {total} registro{total === 1 ? "" : "s"}
+            {totalPages > 1 ? ` · página ${page + 1} de ${totalPages}` : ""}
           </p>
         </div>
+
         <Button className="gradient-primary" onClick={() => setCreating(true)}>
           <Plus className="size-4" /> Novo{resource.singular.endsWith("a") ? "a" : ""}{" "}
           {resource.singular.toLowerCase()}
