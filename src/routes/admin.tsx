@@ -148,14 +148,12 @@ function AdminShell() {
       <div className="flex min-h-screen">
         <aside className="hidden w-64 shrink-0 border-r border-white/5 bg-black/30 p-4 md:flex md:flex-col">
           <div className="mb-6 flex items-center gap-2 px-2">
-            <span className="grid size-8 place-items-center rounded-lg gradient-primary">
-              <ShieldCheck className="size-4 text-white" strokeWidth={2.2} />
-            </span>
+            <BrandMark size={36} />
             <div>
               <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                 Admin
               </div>
-              <div className="text-sm font-semibold">MR Lova</div>
+              <div className="text-sm font-semibold">{BRAND_NAME}</div>
             </div>
           </div>
 
