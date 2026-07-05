@@ -9,50 +9,177 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
+import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
+import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
+import { Route as AppClientesRouteImport } from './routes/_app.clientes'
+import { Route as AppAulasRouteImport } from './routes/_app.aulas'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPerfilRoute = AppPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLicencasRoute = AppLicencasRouteImport.update({
+  id: '/licencas',
+  path: '/licencas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCreditosRoute = AppCreditosRouteImport.update({
+  id: '/creditos',
+  path: '/creditos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientesRoute = AppClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAulasRoute = AppAulasRouteImport.update({
+  id: '/aulas',
+  path: '/aulas',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppIndexRoute
+  '/aulas': typeof AppAulasRoute
+  '/clientes': typeof AppClientesRoute
+  '/creditos': typeof AppCreditosRoute
+  '/licencas': typeof AppLicencasRoute
+  '/perfil': typeof AppPerfilRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/aulas': typeof AppAulasRoute
+  '/clientes': typeof AppClientesRoute
+  '/creditos': typeof AppCreditosRoute
+  '/licencas': typeof AppLicencasRoute
+  '/perfil': typeof AppPerfilRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/aulas': typeof AppAulasRoute
+  '/_app/clientes': typeof AppClientesRoute
+  '/_app/creditos': typeof AppCreditosRoute
+  '/_app/licencas': typeof AppLicencasRoute
+  '/_app/perfil': typeof AppPerfilRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/aulas'
+    | '/clientes'
+    | '/creditos'
+    | '/licencas'
+    | '/perfil'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/aulas' | '/clientes' | '/creditos' | '/licencas' | '/perfil' | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/aulas'
+    | '/_app/clientes'
+    | '/_app/creditos'
+    | '/_app/licencas'
+    | '/_app/perfil'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/perfil': {
+      id: '/_app/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/licencas': {
+      id: '/_app/licencas'
+      path: '/licencas'
+      fullPath: '/licencas'
+      preLoaderRoute: typeof AppLicencasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/creditos': {
+      id: '/_app/creditos'
+      path: '/creditos'
+      fullPath: '/creditos'
+      preLoaderRoute: typeof AppCreditosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/clientes': {
+      id: '/_app/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof AppClientesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/aulas': {
+      id: '/_app/aulas'
+      path: '/aulas'
+      fullPath: '/aulas'
+      preLoaderRoute: typeof AppAulasRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppAulasRoute: typeof AppAulasRoute
+  AppClientesRoute: typeof AppClientesRoute
+  AppCreditosRoute: typeof AppCreditosRoute
+  AppLicencasRoute: typeof AppLicencasRoute
+  AppPerfilRoute: typeof AppPerfilRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAulasRoute: AppAulasRoute,
+  AppClientesRoute: AppClientesRoute,
+  AppCreditosRoute: AppCreditosRoute,
+  AppLicencasRoute: AppLicencasRoute,
+  AppPerfilRoute: AppPerfilRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
