@@ -1074,6 +1074,9 @@ export type Database = {
           id: string
           imagem_url: string | null
           inicio: string | null
+          link: string | null
+          pack_id: string | null
+          plano_id: string | null
           titulo: string
           updated_at: string
         }
@@ -1086,6 +1089,9 @@ export type Database = {
           id?: string
           imagem_url?: string | null
           inicio?: string | null
+          link?: string | null
+          pack_id?: string | null
+          plano_id?: string | null
           titulo: string
           updated_at?: string
         }
@@ -1098,10 +1104,28 @@ export type Database = {
           id?: string
           imagem_url?: string | null
           inicio?: string | null
+          link?: string | null
+          pack_id?: string | null
+          plano_id?: string | null
           titulo?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "promocoes_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "creditos_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promocoes_plano_id_fkey"
+            columns: ["plano_id"]
+            isOneToOne: false
+            referencedRelation: "planos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       propagandas: {
         Row: {

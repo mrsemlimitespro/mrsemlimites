@@ -24,6 +24,7 @@ import { useEffect, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND_LOGO_URL, BRAND_NAME } from "@/components/brand";
+import { PromoCarousel } from "@/components/promo-carousel";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -333,6 +334,10 @@ function DashboardPage() {
           />
         </div>
       </section>
+
+      {/* Carrossel promocional infinito */}
+      <PromoCarousel />
+
 
       {/* 4 KPI cards */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
