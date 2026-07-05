@@ -1,30 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip as ChartTooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  ChevronDown,
   DollarSign,
   MessageSquare,
-  MoreHorizontal,
   Target,
-  UserPlus,
   Users,
-  CreditCard,
-  MessageCircle,
-  FileText,
+  Store,
+  UserCircle2,
+  Package,
+  Coins,
+  Plus,
+  BarChart3,
+  Link2,
+  Zap,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
-import { BrandMark } from "@/components/brand";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -45,6 +36,7 @@ type Kpi = {
   trend: number;
   trendDirection: "up" | "down";
   color: string;
+  sparkline: number[];
 };
 
 const kpis: Kpi[] = [
@@ -55,6 +47,7 @@ const kpis: Kpi[] = [
     trend: 12.5,
     trendDirection: "up",
     color: "var(--brand-magenta)",
+    sparkline: [12, 18, 14, 22, 20, 28, 24, 32, 30, 38, 34, 44],
   },
   {
     label: "Novos Clientes",
@@ -62,7 +55,8 @@ const kpis: Kpi[] = [
     icon: Users,
     trend: 8.2,
     trendDirection: "up",
-    color: "var(--brand-violet)",
+    color: "var(--brand-blue)",
+    sparkline: [22, 18, 26, 20, 30, 24, 34, 28, 38, 32, 40, 36],
   },
   {
     label: "Conversão",
@@ -71,6 +65,7 @@ const kpis: Kpi[] = [
     trend: 15.3,
     trendDirection: "up",
     color: "var(--brand-violet)",
+    sparkline: [8, 14, 12, 18, 16, 22, 20, 26, 24, 30, 28, 34],
   },
   {
     label: "Tickets Abertos",
@@ -78,72 +73,94 @@ const kpis: Kpi[] = [
     icon: MessageSquare,
     trend: 4.1,
     trendDirection: "down",
-    color: "var(--brand-violet)",
+    color: "var(--brand-orange)",
+    sparkline: [10, 18, 14, 22, 18, 26, 22, 30, 24, 32, 28, 34],
   },
 ];
 
-const chartData = [
-  { day: "16 Mai", value: 3200 },
-  { day: "17 Mai", value: 8400 },
-  { day: "18 Mai", value: 5200 },
-  { day: "19 Mai", value: 9800 },
-  { day: "20 Mai", value: 12430 },
-  { day: "21 Mai", value: 10600 },
-  { day: "22 Mai", value: 14200 },
+type Quick = { label: string; icon: IconType };
+const quickActions: Quick[] = [
+  { label: "Criar projeto", icon: Plus },
+  { label: "Gerar relatório", icon: BarChart3 },
+  { label: "Conectar dados", icon: Link2 },
+  { label: "Nova automação", icon: Zap },
 ];
 
-type Activity = {
-  title: string;
-  time: string;
-  icon: IconType;
-  color: string;
-};
-
-const activities: Activity[] = [
-  { title: "Novo usuário registrado", time: "há 2 min", icon: UserPlus, color: "var(--brand-magenta)" },
-  { title: "Pagamento aprovado", time: "há 5 min", icon: CreditCard, color: "var(--brand-violet)" },
-  { title: "Novo ticket criado", time: "há 7 min", icon: MessageCircle, color: "var(--brand-orange)" },
-  { title: "Relatório gerado", time: "há 10 min", icon: FileText, color: "var(--brand-violet)" },
+type MenuItem = { label: string; icon: IconType };
+const innerMenu: MenuItem[] = [
+  { label: "Loja", icon: Store },
+  { label: "Meus Clientes", icon: UserCircle2 },
+  { label: "Meu Estoque", icon: Package },
+  { label: "Créditos", icon: Coins },
 ];
 
 function DashboardPage() {
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-6">
-      {/* Hero */}
-      <section className="flex justify-center pt-2">
-        <BrandMark size={160} />
+    <div className="mx-auto w-full max-w-[1280px] space-y-8 pb-32">
+      {/* Banner principal */}
+      <section className="relative overflow-hidden rounded-3xl">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(80% 60% at 15% 30%, color-mix(in oklab, var(--brand-magenta) 35%, transparent) 0%, transparent 60%), radial-gradient(60% 60% at 85% 50%, color-mix(in oklab, var(--brand-violet) 45%, transparent) 0%, transparent 65%)",
+          }}
+        />
+        <div className="relative flex flex-col-reverse items-start gap-8 px-6 py-8 md:flex-row md:items-center md:justify-between md:px-10 md:py-12">
+          <div className="max-w-xl">
+            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+              Olá, Lucas!{" "}
+              <span className="ml-1 align-middle text-3xl md:text-4xl">👋</span>
+            </h1>
+            <p className="mt-3 text-sm text-muted-foreground md:text-base">
+              Aqui está o que está acontecendo no seu universo hoje.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              {quickActions.map((q) => {
+                const Icon = q.icon;
+                return (
+                  <button
+                    key={q.label}
+                    type="button"
+                    className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/60 px-4 py-2 text-sm font-medium text-foreground/85 backdrop-blur-xl transition-all hover:border-primary/40 hover:text-foreground"
+                  >
+                    <Icon className="size-4" strokeWidth={2} />
+                    {q.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <OrbVisual />
+        </div>
       </section>
 
-      {/* KPI row */}
+      {/* 4 Cards */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((kpi) => (
           <KpiCard key={kpi.label} kpi={kpi} />
         ))}
       </section>
 
-      {/* Chart + Activity */}
-      <section className="grid gap-4 xl:grid-cols-3">
-        <PerformanceCard />
-        <ActivityCard />
-      </section>
+      {/* Menu interno flutuante */}
+      <InnerPillMenu />
     </div>
   );
 }
 
 function KpiCard({ kpi }: { kpi: Kpi }) {
   const Icon = kpi.icon;
-  const TrendIcon = kpi.trendDirection === "up" ? ArrowUpRight : ArrowDownRight;
   const trendColor =
     kpi.trendDirection === "up" ? "text-emerald-400" : "text-red-400";
+  const arrow = kpi.trendDirection === "up" ? "↗" : "↘";
 
   return (
     <div className="glass relative overflow-hidden rounded-2xl p-5">
       <div className="flex items-start justify-between">
-        <div className="min-w-0">
-          <p className="text-sm font-medium text-muted-foreground">
-            {kpi.label}
-          </p>
-        </div>
+        <p className="text-sm font-medium text-muted-foreground">{kpi.label}</p>
         <span
           className="icon-tile size-10 shrink-0"
           style={{ ["--tile-color" as never]: kpi.color }}
@@ -152,134 +169,157 @@ function KpiCard({ kpi }: { kpi: Kpi }) {
         </span>
       </div>
 
-      <div className="mt-6">
-        <p className="text-3xl font-semibold tracking-tight md:text-[32px]">
-          {kpi.value}
-        </p>
-        <div className={cn("mt-2 flex items-center gap-1.5 text-xs font-medium", trendColor)}>
-          <TrendIcon className="size-3.5" strokeWidth={2.5} />
-          <span>{kpi.trend.toFixed(1)}%</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PerformanceCard() {
-  return (
-    <div className="glass relative overflow-hidden rounded-2xl p-5 xl:col-span-2">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="text-base font-semibold tracking-tight">Desempenho Geral</h2>
-        </div>
-        <button
-          type="button"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:text-foreground"
-        >
-          Últimos 7 dias
-          <ChevronDown className="size-3.5" strokeWidth={2} />
-        </button>
-      </div>
-
-      <div className="mt-5 h-[280px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 24, right: 8, left: -12, bottom: 0 }}>
-            <defs>
-              <linearGradient id="perfStroke" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="var(--brand-magenta)" />
-                <stop offset="100%" stopColor="var(--brand-orange)" />
-              </linearGradient>
-              <linearGradient id="perfFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--brand-magenta)" stopOpacity={0.35} />
-                <stop offset="100%" stopColor="var(--brand-magenta)" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="day"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "oklch(0.72 0.03 20)", fontSize: 12 }}
-              dy={8}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "oklch(0.72 0.03 20)", fontSize: 12 }}
-              tickFormatter={(v) => (v === 0 ? "0" : `${(v / 1000).toFixed(0)}k`)}
-              domain={[0, 15000]}
-              ticks={[0, 5000, 10000, 15000]}
-              width={44}
-            />
-            <ChartTooltip content={<PerfTooltip />} cursor={{ stroke: "var(--brand-magenta)", strokeWidth: 1, strokeOpacity: 0.4, strokeDasharray: "4 4" }} />
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="url(#perfStroke)"
-              strokeWidth={2.5}
-              fill="url(#perfFill)"
-              activeDot={{ r: 5, fill: "var(--brand-magenta)", stroke: "white", strokeWidth: 2 }}
-              style={{ filter: "drop-shadow(0 0 10px color-mix(in oklab, var(--brand-magenta) 65%, transparent))" }}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
-
-function PerfTooltip({ active, payload, label }: {
-  active?: boolean;
-  payload?: Array<{ value: number }>;
-  label?: string;
-}) {
-  if (!active || !payload?.length) return null;
-  const value = payload[0].value;
-  return (
-    <div className="glass-strong rounded-xl px-3 py-2 text-center">
-      <p className="text-sm font-semibold tracking-tight">
-        R$ {value.toLocaleString("pt-BR")}
+      <p className="mt-4 text-[28px] font-semibold tracking-tight md:text-[30px]">
+        {kpi.value}
       </p>
-      <p className="text-[11px] text-muted-foreground">{label}</p>
+
+      <div className={cn("mt-1 flex items-center gap-1.5 text-xs font-medium", trendColor)}>
+        <span>{arrow}</span>
+        <span>{kpi.trend.toFixed(1)}%</span>
+        <span className="text-muted-foreground/80">vs mês passado</span>
+      </div>
+
+      <Sparkline data={kpi.sparkline} color={kpi.color} className="mt-4" />
     </div>
   );
 }
 
-function ActivityCard() {
-  return (
-    <div className="glass relative overflow-hidden rounded-2xl p-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold tracking-tight">Atividade Recente</h2>
-      </div>
+function Sparkline({
+  data,
+  color,
+  className,
+}: {
+  data: number[];
+  color: string;
+  className?: string;
+}) {
+  const w = 300;
+  const h = 60;
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = Math.max(max - min, 1);
+  const stepX = w / (data.length - 1);
+  const points = data.map((v, i) => {
+    const x = i * stepX;
+    const y = h - ((v - min) / range) * (h - 8) - 4;
+    return [x, y] as const;
+  });
+  const line = points
+    .map(([x, y], i) => (i === 0 ? `M ${x},${y}` : `L ${x},${y}`))
+    .join(" ");
+  const area = `${line} L ${w},${h} L 0,${h} Z`;
+  const gid = `spark-${Math.random().toString(36).slice(2, 8)}`;
 
-      <ul className="mt-4 space-y-1.5">
-        {activities.map((a) => {
-          const Icon = a.icon;
+  return (
+    <svg
+      viewBox={`0 0 ${w} ${h}`}
+      preserveAspectRatio="none"
+      className={cn("h-14 w-full", className)}
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.35" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${gid})`} />
+      <path
+        d={line}
+        fill="none"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{
+          filter: `drop-shadow(0 0 6px color-mix(in oklab, ${color} 65%, transparent))`,
+        }}
+      />
+    </svg>
+  );
+}
+
+function OrbVisual() {
+  return (
+    <div className="relative size-40 shrink-0 md:size-56">
+      <div
+        aria-hidden
+        className="absolute inset-0 rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--brand-violet) 80%, white 10%) 0%, color-mix(in oklab, var(--brand-magenta) 70%, transparent) 45%, color-mix(in oklab, var(--brand-blue) 60%, transparent) 75%, transparent 100%)",
+          filter: "blur(0.5px)",
+          boxShadow:
+            "0 0 60px -4px color-mix(in oklab, var(--brand-violet) 70%, transparent), inset -20px -30px 60px color-mix(in oklab, var(--brand-blue) 60%, transparent), inset 20px 20px 40px color-mix(in oklab, var(--brand-pink) 55%, transparent)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute left-1/2 top-1/2 h-[8%] w-[130%] -translate-x-1/2 -translate-y-1/2 rotate-[-18deg] rounded-full"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, color-mix(in oklab, var(--brand-cyan) 70%, transparent) 30%, color-mix(in oklab, white 60%, transparent) 50%, color-mix(in oklab, var(--brand-magenta) 70%, transparent) 70%, transparent 100%)",
+          filter: "blur(2px)",
+          boxShadow:
+            "0 0 24px color-mix(in oklab, var(--brand-cyan) 60%, transparent)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute left-[10%] top-[8%] size-1 rounded-full bg-white"
+        style={{ boxShadow: "0 0 8px white" }}
+      />
+      <div
+        aria-hidden
+        className="absolute right-[14%] top-[24%] size-1.5 rounded-full bg-white"
+        style={{ boxShadow: "0 0 10px white" }}
+      />
+      <div
+        aria-hidden
+        className="absolute right-[6%] bottom-[18%] size-1 rounded-full bg-white"
+        style={{ boxShadow: "0 0 8px white" }}
+      />
+    </div>
+  );
+}
+
+function InnerPillMenu() {
+  return (
+    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center px-4">
+      <nav
+        aria-label="Menu interno do dashboard"
+        className="pill-nav pointer-events-auto flex items-center gap-1 px-2 py-2"
+      >
+        {innerMenu.map((item, idx) => {
+          const Icon = item.icon;
+          const active = idx === 0;
           return (
-            <li
-              key={a.title}
-              className="group flex items-center gap-3 rounded-xl px-1.5 py-2 transition-colors hover:bg-white/5"
+            <button
+              key={item.label}
+              type="button"
+              className={cn(
+                "relative flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all",
+                active
+                  ? "text-primary-foreground"
+                  : "text-foreground/70 hover:text-foreground hover:bg-white/5",
+              )}
             >
-              <span
-                className="icon-tile size-10 shrink-0"
-                style={{ ["--tile-color" as never]: a.color }}
-              >
-                <Icon className="size-[18px]" strokeWidth={2} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-foreground">{a.title}</p>
-                <p className="text-xs text-muted-foreground">{a.time}</p>
-              </div>
-              <button
-                type="button"
-                aria-label="Mais opções"
-                className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100"
-              >
-                <MoreHorizontal className="size-4" strokeWidth={2} />
-              </button>
-            </li>
+              {active && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-full gradient-primary"
+                  style={{
+                    boxShadow:
+                      "0 0 24px -2px color-mix(in oklab, var(--primary) 80%, transparent)",
+                  }}
+                />
+              )}
+              <Icon className="relative z-10 size-4" strokeWidth={2} />
+              <span className="relative z-10">{item.label}</span>
+            </button>
           );
         })}
-      </ul>
+      </nav>
     </div>
   );
 }
