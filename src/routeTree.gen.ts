@@ -9,6 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegistroRouteImport } from './routes/registro'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -26,7 +29,25 @@ import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
 import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
 import { Route as AppClientesRouteImport } from './routes/_app.clientes'
 import { Route as AppAulasRouteImport } from './routes/_app.aulas'
+import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
+import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
+import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/webhooks/cakto'
 
+const RegistroRoute = RegistroRouteImport.update({
+  id: '/registro',
+  path: '/registro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -111,10 +132,29 @@ const AppAulasRoute = AppAulasRouteImport.update({
   path: '/aulas',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPublicWebhooksMercadopagoRoute =
+  ApiPublicWebhooksMercadopagoRouteImport.update({
+    id: '/api/public/webhooks/mercadopago',
+    path: '/api/public/webhooks/mercadopago',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksKiwifyRoute = ApiPublicWebhooksKiwifyRouteImport.update({
+  id: '/api/public/webhooks/kiwify',
+  path: '/api/public/webhooks/kiwify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksCaktoRoute = ApiPublicWebhooksCaktoRouteImport.update({
+  id: '/api/public/webhooks/cakto',
+  path: '/api/public/webhooks/cakto',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/checkout': typeof CheckoutRoute
+  '/login': typeof LoginRoute
+  '/registro': typeof RegistroRoute
   '/aulas': typeof AppAulasRoute
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
@@ -129,8 +169,14 @@ export interface FileRoutesByFullPath {
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
 }
 export interface FileRoutesByTo {
+  '/checkout': typeof CheckoutRoute
+  '/login': typeof LoginRoute
+  '/registro': typeof RegistroRoute
   '/aulas': typeof AppAulasRoute
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
@@ -146,11 +192,17 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/checkout': typeof CheckoutRoute
+  '/login': typeof LoginRoute
+  '/registro': typeof RegistroRoute
   '/_app/aulas': typeof AppAulasRoute
   '/_app/clientes': typeof AppClientesRoute
   '/_app/creditos': typeof AppCreditosRoute
@@ -166,12 +218,18 @@ export interface FileRoutesById {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
+    | '/checkout'
+    | '/login'
+    | '/registro'
     | '/aulas'
     | '/clientes'
     | '/creditos'
@@ -186,8 +244,14 @@ export interface FileRouteTypes {
     | '/admin/seguranca'
     | '/admin/usuarios'
     | '/admin/'
+    | '/api/public/webhooks/cakto'
+    | '/api/public/webhooks/kiwify'
+    | '/api/public/webhooks/mercadopago'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/checkout'
+    | '/login'
+    | '/registro'
     | '/aulas'
     | '/clientes'
     | '/creditos'
@@ -203,10 +267,16 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/'
     | '/admin'
+    | '/api/public/webhooks/cakto'
+    | '/api/public/webhooks/kiwify'
+    | '/api/public/webhooks/mercadopago'
   id:
     | '__root__'
     | '/_app'
     | '/admin'
+    | '/checkout'
+    | '/login'
+    | '/registro'
     | '/_app/aulas'
     | '/_app/clientes'
     | '/_app/creditos'
@@ -222,15 +292,45 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/_app/'
     | '/admin/'
+    | '/api/public/webhooks/cakto'
+    | '/api/public/webhooks/kiwify'
+    | '/api/public/webhooks/mercadopago'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  CheckoutRoute: typeof CheckoutRoute
+  LoginRoute: typeof LoginRoute
+  RegistroRoute: typeof RegistroRoute
+  ApiPublicWebhooksCaktoRoute: typeof ApiPublicWebhooksCaktoRoute
+  ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
+  ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/registro': {
+      id: '/registro'
+      path: '/registro'
+      fullPath: '/registro'
+      preLoaderRoute: typeof RegistroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -350,6 +450,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAulasRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/public/webhooks/mercadopago': {
+      id: '/api/public/webhooks/mercadopago'
+      path: '/api/public/webhooks/mercadopago'
+      fullPath: '/api/public/webhooks/mercadopago'
+      preLoaderRoute: typeof ApiPublicWebhooksMercadopagoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/kiwify': {
+      id: '/api/public/webhooks/kiwify'
+      path: '/api/public/webhooks/kiwify'
+      fullPath: '/api/public/webhooks/kiwify'
+      preLoaderRoute: typeof ApiPublicWebhooksKiwifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/cakto': {
+      id: '/api/public/webhooks/cakto'
+      path: '/api/public/webhooks/cakto'
+      fullPath: '/api/public/webhooks/cakto'
+      preLoaderRoute: typeof ApiPublicWebhooksCaktoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -402,6 +523,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  CheckoutRoute: CheckoutRoute,
+  LoginRoute: LoginRoute,
+  RegistroRoute: RegistroRoute,
+  ApiPublicWebhooksCaktoRoute: ApiPublicWebhooksCaktoRoute,
+  ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
+  ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
