@@ -62,8 +62,17 @@ export function PromoCarousel() {
         }}
       >
         {track.map((b, i) => {
+          const gradients = [
+            "from-fuchsia-500/40 via-pink-500/30 to-orange-500/40",
+            "from-violet-500/40 via-blue-500/30 to-cyan-500/40",
+            "from-emerald-500/40 via-teal-500/30 to-cyan-500/40",
+            "from-amber-500/40 via-orange-500/30 to-red-500/40",
+            "from-indigo-500/40 via-purple-500/30 to-pink-500/40",
+            "from-lime-500/40 via-emerald-500/30 to-teal-500/40",
+          ];
+          const grad = gradients[i % gradients.length];
           const inner = (
-            <div className="group relative flex h-24 w-56 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-[color:var(--brand-violet)]/12 via-transparent to-[color:var(--brand-magenta)]/12 transition-transform hover:scale-[1.03]">
+            <div className={`group relative flex h-24 w-56 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br ${grad} shadow-lg transition-transform hover:scale-[1.05]`}>
               {b.imagem_url ? (
                 <img
                   src={b.imagem_url}
@@ -72,7 +81,7 @@ export function PromoCarousel() {
                   draggable={false}
                 />
               ) : (
-                <span className="px-3 text-center text-xs font-semibold text-muted-foreground">
+                <span className="px-3 text-center text-sm font-bold text-white drop-shadow-lg">
                   {b.titulo}
                 </span>
               )}
@@ -81,7 +90,7 @@ export function PromoCarousel() {
                 className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
                 style={{
                   background:
-                    "linear-gradient(120deg, transparent 30%, color-mix(in oklab, var(--brand-cyan) 25%, transparent) 50%, transparent 70%)",
+                    "linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%)",
                 }}
               />
             </div>
