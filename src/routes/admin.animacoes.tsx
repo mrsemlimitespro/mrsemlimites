@@ -17,7 +17,7 @@ type Style = {
   id: string;
   nome: string;
   descricao: string;
-  render: () => JSX.Element;
+  render: () => React.ReactElement;
 };
 
 const STYLES: Style[] = [
