@@ -221,6 +221,7 @@ export const resources: Resource[] = [
       { key: "nome", label: "Nome", type: "text", required: true },
       { key: "quantidade", label: "Quantidade de créditos", type: "number", required: true },
       { key: "preco", label: "Preço (R$)", type: "number", step: 0.01, required: true },
+      { key: "imagem_url", label: "Imagem do pacote", type: "image" },
       { key: "descricao", label: "Descrição", type: "textarea" },
       { key: "ativo", label: "Ativo", type: "boolean" },
     ],
