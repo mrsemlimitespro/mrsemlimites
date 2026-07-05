@@ -14,16 +14,374 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      aulas: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          descricao: string | null
+          id: string
+          ordem: number
+          thumbnail_url: string | null
+          titulo: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          ordem?: number
+          thumbnail_url?: string | null
+          titulo: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          ordem?: number
+          thumbnail_url?: string | null
+          titulo?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      banners: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          imagem_url: string | null
+          link: string | null
+          ordem: number
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          imagem_url?: string | null
+          link?: string | null
+          ordem?: number
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          imagem_url?: string | null
+          link?: string | null
+          ordem?: number
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      clientes: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      creditos_packs: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          preco: number
+          quantidade: number
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          preco?: number
+          quantidade?: number
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          preco?: number
+          quantidade?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      imagens: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          id: string
+          titulo: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          id?: string
+          titulo: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          id?: string
+          titulo?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      licencas: {
+        Row: {
+          chave: string
+          cliente_id: string | null
+          created_at: string
+          expira_em: string | null
+          id: string
+          plano: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          chave: string
+          cliente_id?: string | null
+          created_at?: string
+          expira_em?: string | null
+          id?: string
+          plano?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          chave?: string
+          cliente_id?: string | null
+          created_at?: string
+          expira_em?: string | null
+          id?: string
+          plano?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licencas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      produtos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          descricao: string | null
+          id: string
+          imagem_url: string | null
+          nome: string
+          preco: number
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          imagem_url?: string | null
+          nome: string
+          preco?: number
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          imagem_url?: string | null
+          nome?: string
+          preco?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      promocoes: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          desconto_percentual: number | null
+          descricao: string | null
+          fim: string | null
+          id: string
+          inicio: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          desconto_percentual?: number | null
+          descricao?: string | null
+          fim?: string | null
+          id?: string
+          inicio?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          desconto_percentual?: number | null
+          descricao?: string | null
+          fim?: string | null
+          id?: string
+          inicio?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      propagandas: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          imagem_url: string | null
+          link: string | null
+          texto: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          imagem_url?: string | null
+          link?: string | null
+          texto?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          imagem_url?: string | null
+          link?: string | null
+          texto?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      videos: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          thumbnail_url: string | null
+          titulo: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          titulo: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          titulo?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +508,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
