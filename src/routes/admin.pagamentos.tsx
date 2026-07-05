@@ -1033,7 +1033,7 @@ function TransactionDrawer({
                           {l.event_type ?? "evento"}
                         </span>
                         <span className="text-[11px] text-muted-foreground">
-                          {new Date(l.created_at).toLocaleString("pt-BR")}
+                          {new Date(l.received_at).toLocaleString("pt-BR")}
                         </span>
                       </div>
                       {l.status ? (
