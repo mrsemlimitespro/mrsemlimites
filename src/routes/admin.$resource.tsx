@@ -478,7 +478,7 @@ function SelectFromTableInput({
     queryKey: ["admin-lookup", table],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from(table as never)
+        .from(table)
         .select(`${valueKey}, ${labelKey}`)
         .order(labelKey, { ascending: true });
       if (error) throw error;

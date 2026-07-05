@@ -47,7 +47,7 @@ function ResourceCard({
     queryKey: ["admin-count", table],
     queryFn: async () => {
       const { count, error } = await supabase
-        .from(table as never)
+        .from(table)
         .select("id", { count: "exact", head: true });
       if (error) throw error;
       return count ?? 0;
