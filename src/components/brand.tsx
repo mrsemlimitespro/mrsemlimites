@@ -17,25 +17,58 @@ export function BrandMark({
   return (
     <span
       className={cn(
-        "relative inline-grid shrink-0 place-items-center overflow-hidden rounded-[26%]",
+        "relative inline-grid shrink-0 place-items-center overflow-visible rounded-[26%]",
         className,
       )}
-      style={{
-        width: size,
-        height: size,
-        boxShadow: glow
-          ? "0 0 0 1px color-mix(in oklab, var(--brand-magenta) 55%, transparent), 0 0 22px -2px color-mix(in oklab, var(--brand-magenta) 70%, transparent), 0 0 22px -6px color-mix(in oklab, var(--brand-blue) 55%, transparent)"
-          : undefined,
-      }}
+      style={{ width: size, height: size }}
     >
-      <img
-        src={BRAND_LOGO_URL}
-        alt={`${BRAND_NAME} logo`}
-        width={size}
-        height={size}
-        className="h-full w-full object-cover"
-        draggable={false}
-      />
+      {glow && (
+        <>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -inset-4 rounded-full blur-2xl"
+            style={{
+              background:
+                "radial-gradient(closest-side, color-mix(in oklab, var(--brand-magenta) 80%, transparent), transparent 70%)",
+              animation: "brand-halo 2.6s ease-in-out infinite",
+            }}
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -inset-2 rounded-full blur-xl"
+            style={{
+              background:
+                "radial-gradient(closest-side, color-mix(in oklab, var(--brand-blue) 70%, transparent), transparent 70%)",
+              animation: "brand-halo 2.6s ease-in-out 0.6s infinite",
+            }}
+          />
+        </>
+      )}
+      <span
+        className="relative inline-grid h-full w-full place-items-center overflow-hidden rounded-[26%]"
+        style={{
+          boxShadow: glow
+            ? "0 0 0 1.5px color-mix(in oklab, var(--brand-magenta) 90%, transparent), 0 0 32px -2px color-mix(in oklab, var(--brand-magenta) 95%, transparent), 0 0 48px -4px color-mix(in oklab, var(--brand-blue) 80%, transparent), 0 0 80px -10px color-mix(in oklab, var(--brand-magenta) 70%, transparent)"
+            : undefined,
+        }}
+      >
+        <img
+          src={BRAND_LOGO_URL}
+          alt={`${BRAND_NAME} logo`}
+          width={size}
+          height={size}
+          className="h-full w-full object-cover"
+          draggable={false}
+        />
+      </span>
+      {glow && (
+        <style>{`
+          @keyframes brand-halo {
+            0%, 100% { opacity: .55; transform: scale(1); }
+            50%      { opacity: 1;   transform: scale(1.12); }
+          }
+        `}</style>
+      )}
     </span>
   );
 }
