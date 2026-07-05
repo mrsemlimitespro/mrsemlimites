@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { KeyRound, MessageCircle, Search, ShieldCheck, MoreHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
+import { KeyRound, MessageCircle, Search, ShieldCheck, MoreHorizontal, Loader2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_app/clientes")({
   head: () => ({
@@ -15,24 +16,13 @@ export const Route = createFileRoute("/_app/clientes")({
 });
 
 type Client = {
+  id: string;
   name: string;
   email: string;
   licencas: number;
   ativas: number;
   mensagens: number;
-  color: string;
 };
-
-const clients: Client[] = [
-  {
-    name: "estoque",
-    email: "estoque",
-    licencas: 1,
-    ativas: 1,
-    mensagens: 0,
-    color: "var(--brand-orange)",
-  },
-];
 
 const gradientPool = [
   ["var(--brand-magenta)", "var(--brand-orange)"],
@@ -44,6 +34,54 @@ const gradientPool = [
 
 function ClientesPage() {
   const [query, setQuery] = useState("");
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  async function reload() {
+    setLoading(true);
+    const { data, error } = await (supabase as any)
+      .from("clientes")
+      .select("id, nome, email, licencas:licencas(id, status)")
+      .order("created_at", { ascending: false });
+    if (error) {
+      setClients([]);
+    } else {
+      const now = Date.now();
+      setClients(
+        ((data ?? []) as Array<{
+          id: string;
+          nome: string | null;
+          email: string | null;
+          licencas: Array<{ id: string; status: string; expira_em?: string | null }>;
+        }>).map((c) => {
+          const licencas = c.licencas ?? [];
+          const ativas = licencas.filter((l) => l.status === "ativa").length;
+          return {
+            id: c.id,
+            name: c.nome ?? "—",
+            email: c.email ?? "—",
+            licencas: licencas.length,
+            ativas,
+            mensagens: 0,
+          };
+        }),
+      );
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    reload();
+    const ch = supabase
+      .channel("clientes-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "clientes" }, () => reload())
+      .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload())
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, []);
+
   const filtered = clients.filter((c) =>
     !query.trim() ||
     c.email.toLowerCase().includes(query.toLowerCase()) ||
@@ -78,14 +116,18 @@ function ClientesPage() {
       </label>
 
       {/* Grid */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="glass flex items-center justify-center rounded-2xl px-6 py-14 text-sm text-muted-foreground">
+          <Loader2 className="mr-2 size-4 animate-spin" /> Carregando...
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="glass rounded-2xl px-6 py-14 text-center text-sm text-muted-foreground">
           Nenhum cliente encontrado.
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((c, i) => (
-            <ClientCard key={c.email} client={c} gradient={gradientPool[i % gradientPool.length]} />
+            <ClientCard key={c.id} client={c} gradient={gradientPool[i % gradientPool.length]} />
           ))}
         </div>
       )}
@@ -94,7 +136,7 @@ function ClientesPage() {
 }
 
 function ClientCard({ client, gradient }: { client: Client; gradient: readonly string[] }) {
-  const initial = client.name.charAt(0).toUpperCase();
+  const initial = (client.name || client.email || "?").charAt(0).toUpperCase();
   return (
     <article
       className={cn(
