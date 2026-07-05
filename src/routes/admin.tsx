@@ -192,13 +192,20 @@ function AdminShell() {
             ))}
           </nav>
 
-          <div className="mt-6 rounded-xl border border-white/5 bg-white/[0.02] p-3">
+          <div className="mt-6 space-y-2 rounded-xl border border-white/5 bg-white/[0.02] p-3">
             <div className="truncate text-xs text-muted-foreground">Sessão</div>
-            <div className="truncate text-sm font-medium">Painel desbloqueado</div>
+            <div className="truncate text-sm font-medium">
+              {authState.kind === "signed" ? authState.email : "Painel desbloqueado"}
+            </div>
+            {authState.kind === "signed" && (
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {authState.isAdmin ? "Admin" : "Sem permissão"}
+              </div>
+            )}
             <Button
               variant="ghost"
               size="sm"
-              className="mt-2 w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+              className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
               onClick={() => {
                 clearAdminGate();
                 navigate({ to: "/" });
@@ -210,9 +217,118 @@ function AdminShell() {
         </aside>
 
         <main className="flex-1 p-6 md:p-10">
+          {authState.kind !== "loading" &&
+            (authState.kind === "anon" || !authState.isAdmin) && (
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 px-5 py-3 text-sm text-yellow-100/90">
+                <div>
+                  {authState.kind === "anon"
+                    ? "Você está visualizando o painel. Para salvar alterações, faça login como administrador."
+                    : "Sua conta não tem permissão de admin. Reivindique para editar."}
+                </div>
+                <div className="flex gap-2">
+                  {authState.kind === "anon" ? (
+                    <Button size="sm" className="gradient-primary" onClick={() => setSignOpen(true)}>
+                      Entrar
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      className="gradient-primary"
+                      onClick={async () => {
+                        try {
+                          await claim();
+                          toast.success("Você agora é administrador");
+                          refreshAuth();
+                        } catch (err) {
+                          toast.error(err instanceof Error ? err.message : "Falha");
+                        }
+                      }}
+                    >
+                      Reivindicar admin
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
           <Outlet />
         </main>
       </div>
+      {signOpen && <SignInDialog onClose={() => { setSignOpen(false); refreshAuth(); }} />}
+    </div>
+  );
+}
+
+function SignInDialog({ onClose }: { onClose: () => void }) {
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      if (mode === "signin") {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: window.location.origin + "/admin" },
+        });
+        if (error) throw error;
+      }
+      toast.success("OK");
+      onClose();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" onClick={onClose}>
+      <form
+        onSubmit={submit}
+        onClick={(e) => e.stopPropagation()}
+        className="glass w-full max-w-md space-y-4 rounded-2xl p-6"
+      >
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Conta</div>
+          <h2 className="text-xl font-semibold">
+            {mode === "signin" ? "Entrar" : "Criar conta"}
+          </h2>
+        </div>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="E-mail"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+        />
+        <input
+          type="password"
+          required
+          minLength={6}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Senha"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+        />
+        <Button type="submit" className="w-full gradient-primary" disabled={busy}>
+          {busy ? <Loader2 className="size-4 animate-spin" /> : mode === "signin" ? "Entrar" : "Criar conta"}
+        </Button>
+        <button
+          type="button"
+          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+          className="w-full text-center text-xs text-muted-foreground hover:text-foreground"
+        >
+          {mode === "signin" ? "Não tem conta? Cadastrar" : "Já tem conta? Entrar"}
+        </button>
+      </form>
     </div>
   );
 }
