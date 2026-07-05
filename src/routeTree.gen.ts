@@ -23,6 +23,7 @@ import { Route as AdminPagamentosRouteImport } from './routes/admin.pagamentos'
 import { Route as AdminLojaRouteImport } from './routes/admin.loja'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
+import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
@@ -102,6 +103,11 @@ const AdminBackupRoute = AdminBackupRouteImport.update({
   path: '/backup',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAjustarCreditosRoute = AdminAjustarCreditosRouteImport.update({
+  id: '/ajustar-creditos',
+  path: '/ajustar-creditos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminResourceRoute = AdminResourceRouteImport.update({
   id: '/$resource',
   path: '/$resource',
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/licencas': typeof AppLicencasRoute
   '/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/licencas': typeof AppLicencasRoute
   '/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/_app/licencas': typeof AppLicencasRoute
   '/_app/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/perfil'
     | '/admin/$resource'
+    | '/admin/ajustar-creditos'
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/perfil'
     | '/admin/$resource'
+    | '/admin/ajustar-creditos'
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/_app/licencas'
     | '/_app/perfil'
     | '/admin/$resource'
+    | '/admin/ajustar-creditos'
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
@@ -408,6 +420,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBackupRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/ajustar-creditos': {
+      id: '/admin/ajustar-creditos'
+      path: '/ajustar-creditos'
+      fullPath: '/admin/ajustar-creditos'
+      preLoaderRoute: typeof AdminAjustarCreditosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/$resource': {
       id: '/admin/$resource'
       path: '/$resource'
@@ -496,6 +515,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AdminRouteChildren {
   AdminResourceRoute: typeof AdminResourceRoute
+  AdminAjustarCreditosRoute: typeof AdminAjustarCreditosRoute
   AdminBackupRoute: typeof AdminBackupRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminLojaRoute: typeof AdminLojaRoute
@@ -508,6 +528,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminResourceRoute: AdminResourceRoute,
+  AdminAjustarCreditosRoute: AdminAjustarCreditosRoute,
   AdminBackupRoute: AdminBackupRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminLojaRoute: AdminLojaRoute,

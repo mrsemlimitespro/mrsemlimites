@@ -16,6 +16,7 @@ import {
   UserCircle,
   Store,
   CreditCard,
+  Coins,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -105,6 +106,7 @@ const specialLinks: SpecialLink[] = [
   { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle },
   { key: "loja", to: "/admin/loja", label: "Loja", icon: Store },
   { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard },
+  { key: "ajustar-creditos", to: "/admin/ajustar-creditos", label: "Ajustar Créditos", icon: Coins },
   { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
   { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup },
 ];
