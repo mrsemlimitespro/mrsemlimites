@@ -15,6 +15,7 @@ import {
   DatabaseBackup,
   UserCircle,
   Store,
+  CreditCard,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -103,6 +104,7 @@ const specialLinks: SpecialLink[] = [
   { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette },
   { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle },
   { key: "loja", to: "/admin/loja", label: "Loja", icon: Store },
+  { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard },
   { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
   { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup },
 ];

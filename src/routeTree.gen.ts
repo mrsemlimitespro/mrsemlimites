@@ -16,6 +16,7 @@ import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
 import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
+import { Route as AdminPagamentosRouteImport } from './routes/admin.pagamentos'
 import { Route as AdminLojaRouteImport } from './routes/admin.loja'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
@@ -58,6 +59,11 @@ const AdminSegurancaRoute = AdminSegurancaRouteImport.update({
 const AdminPersonalizacaoRoute = AdminPersonalizacaoRouteImport.update({
   id: '/personalizacao',
   path: '/personalizacao',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPagamentosRoute = AdminPagamentosRouteImport.update({
+  id: '/pagamentos',
+  path: '/pagamentos',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLojaRoute = AdminLojaRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
+  '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
+  '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
+  '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
+    | '/admin/pagamentos'
     | '/admin/personalizacao'
     | '/admin/seguranca'
     | '/admin/usuarios'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
+    | '/admin/pagamentos'
     | '/admin/personalizacao'
     | '/admin/seguranca'
     | '/admin/usuarios'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
+    | '/admin/pagamentos'
     | '/admin/personalizacao'
     | '/admin/seguranca'
     | '/admin/usuarios'
@@ -266,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/personalizacao'
       fullPath: '/admin/personalizacao'
       preLoaderRoute: typeof AdminPersonalizacaoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pagamentos': {
+      id: '/admin/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/admin/pagamentos'
+      preLoaderRoute: typeof AdminPagamentosRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/loja': {
@@ -359,6 +378,7 @@ interface AdminRouteChildren {
   AdminBackupRoute: typeof AdminBackupRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminLojaRoute: typeof AdminLojaRoute
+  AdminPagamentosRoute: typeof AdminPagamentosRoute
   AdminPersonalizacaoRoute: typeof AdminPersonalizacaoRoute
   AdminSegurancaRoute: typeof AdminSegurancaRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
@@ -370,6 +390,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBackupRoute: AdminBackupRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminLojaRoute: AdminLojaRoute,
+  AdminPagamentosRoute: AdminPagamentosRoute,
   AdminPersonalizacaoRoute: AdminPersonalizacaoRoute,
   AdminSegurancaRoute: AdminSegurancaRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,

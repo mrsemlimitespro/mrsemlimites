@@ -372,6 +372,183 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_gateways: {
+        Row: {
+          api_key: string | null
+          client_id: string | null
+          client_secret: string | null
+          created_at: string
+          enabled: boolean
+          environment: string
+          extra: Json
+          id: string
+          is_default: boolean
+          last_test_at: string | null
+          last_test_message: string | null
+          last_test_status: string | null
+          nome: string
+          priority: number
+          slug: string
+          updated_at: string
+          webhook_secret: string | null
+          webhook_url: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          client_id?: string | null
+          client_secret?: string | null
+          created_at?: string
+          enabled?: boolean
+          environment?: string
+          extra?: Json
+          id?: string
+          is_default?: boolean
+          last_test_at?: string | null
+          last_test_message?: string | null
+          last_test_status?: string | null
+          nome: string
+          priority?: number
+          slug: string
+          updated_at?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          client_id?: string | null
+          client_secret?: string | null
+          created_at?: string
+          enabled?: boolean
+          environment?: string
+          extra?: Json
+          id?: string
+          is_default?: boolean
+          last_test_at?: string | null
+          last_test_message?: string | null
+          last_test_status?: string | null
+          nome?: string
+          priority?: number
+          slug?: string
+          updated_at?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
+      payment_methods_config: {
+        Row: {
+          created_at: string
+          default_gateway: string | null
+          desconto_pix_percent: number
+          id: string
+          juros_percent: number
+          max_parcelas: number
+          mensagem_aprovado: string | null
+          mensagem_boleto: string | null
+          mensagem_cartao: string | null
+          mensagem_pendente: string | null
+          mensagem_pix: string | null
+          mensagem_recusado: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_gateway?: string | null
+          desconto_pix_percent?: number
+          id?: string
+          juros_percent?: number
+          max_parcelas?: number
+          mensagem_aprovado?: string | null
+          mensagem_boleto?: string | null
+          mensagem_cartao?: string | null
+          mensagem_pendente?: string | null
+          mensagem_pix?: string | null
+          mensagem_recusado?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_gateway?: string | null
+          desconto_pix_percent?: number
+          id?: string
+          juros_percent?: number
+          max_parcelas?: number
+          mensagem_aprovado?: string | null
+          mensagem_boleto?: string | null
+          mensagem_cartao?: string | null
+          mensagem_pendente?: string | null
+          mensagem_pix?: string | null
+          mensagem_recusado?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payment_transactions: {
+        Row: {
+          cliente_nome: string | null
+          created_at: string
+          external_id: string | null
+          gateway_slug: string
+          id: string
+          metodo: string | null
+          moeda: string
+          status: string
+          valor: number
+        }
+        Insert: {
+          cliente_nome?: string | null
+          created_at?: string
+          external_id?: string | null
+          gateway_slug: string
+          id?: string
+          metodo?: string | null
+          moeda?: string
+          status?: string
+          valor?: number
+        }
+        Update: {
+          cliente_nome?: string | null
+          created_at?: string
+          external_id?: string | null
+          gateway_slug?: string
+          id?: string
+          metodo?: string | null
+          moeda?: string
+          status?: string
+          valor?: number
+        }
+        Relationships: []
+      }
+      payment_webhook_logs: {
+        Row: {
+          error: string | null
+          event_type: string | null
+          gateway_slug: string
+          id: string
+          payload: Json | null
+          received_at: string
+          status: string
+        }
+        Insert: {
+          error?: string | null
+          event_type?: string | null
+          gateway_slug: string
+          id?: string
+          payload?: Json | null
+          received_at?: string
+          status?: string
+        }
+        Update: {
+          error?: string | null
+          event_type?: string | null
+          gateway_slug?: string
+          id?: string
+          payload?: Json | null
+          received_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       produtos: {
         Row: {
           ativo: boolean
