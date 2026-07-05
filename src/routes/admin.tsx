@@ -109,6 +109,28 @@ const specialLinks: SpecialLink[] = [
 
 function AdminShell() {
   const navigate = useNavigate();
+  const [authState, setAuthState] = useState<
+    | { kind: "loading" }
+    | { kind: "anon" }
+    | { kind: "signed"; email: string; isAdmin: boolean }
+  >({ kind: "loading" });
+  const [signOpen, setSignOpen] = useState(false);
+  const claim = useServerFn(claimInitialAdmin);
+
+  async function refreshAuth() {
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
+    if (!user) return setAuthState({ kind: "anon" });
+    const { data: role } = await (supabase as any)
+      .from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle();
+    setAuthState({ kind: "signed", email: user.email ?? "", isAdmin: !!role });
+  }
+
+  useEffect(() => {
+    refreshAuth();
+    const { data: sub } = supabase.auth.onAuthStateChange(() => refreshAuth());
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const grouped = resources.reduce<Record<string, typeof resources>>((acc, r) => {
     const g = r.group ?? "Outros";
