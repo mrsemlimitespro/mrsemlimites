@@ -221,6 +221,32 @@ function ResourceView({ resource }: { resource: Resource }) {
         </table>
       </div>
 
+      {totalPages > 1 && (
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={page === 0}
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+          >
+            <ChevronLeft className="size-4" /> Anterior
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            {page + 1} / {totalPages}
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={page + 1 >= totalPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Próxima <ChevronRight className="size-4" />
+          </Button>
+        </div>
+      )}
+
+
+
       {(creating || editing) && (
         <ResourceFormDialog
           resource={resource}
