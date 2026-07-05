@@ -13,6 +13,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
 import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
@@ -42,6 +43,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSegurancaRoute = AdminSegurancaRouteImport.update({
   id: '/seguranca',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/personalizacao'
     | '/admin/seguranca'
+    | '/admin/usuarios'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/personalizacao'
     | '/admin/seguranca'
+    | '/admin/usuarios'
     | '/'
     | '/admin'
   id:
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/personalizacao'
     | '/admin/seguranca'
+    | '/admin/usuarios'
     | '/_app/'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -222,6 +234,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/admin/usuarios': {
+      id: '/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminUsuariosRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/seguranca': {
       id: '/admin/seguranca'
@@ -322,6 +341,7 @@ interface AdminRouteChildren {
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminPersonalizacaoRoute: typeof AdminPersonalizacaoRoute
   AdminSegurancaRoute: typeof AdminSegurancaRoute
+  AdminUsuariosRoute: typeof AdminUsuariosRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -331,6 +351,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminPersonalizacaoRoute: AdminPersonalizacaoRoute,
   AdminSegurancaRoute: AdminSegurancaRoute,
+  AdminUsuariosRoute: AdminUsuariosRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
