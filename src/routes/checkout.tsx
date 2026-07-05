@@ -180,6 +180,26 @@ function CheckoutPage() {
         Você pode trocar de plano ou renovar a qualquer momento.
       </p>
 
+      {promo && descontoPct > 0 && (
+        <div
+          className="mb-4 flex items-center gap-3 rounded-xl border p-3 text-xs"
+          style={{
+            borderColor: "color-mix(in oklab, var(--brand-orange) 45%, transparent)",
+            background:
+              "linear-gradient(120deg, color-mix(in oklab, var(--brand-orange) 12%, transparent), color-mix(in oklab, var(--brand-magenta) 10%, transparent))",
+          }}
+        >
+          <span className="text-lg">🔥</span>
+          <div className="flex-1">
+            <p className="font-semibold text-foreground">{promo.titulo}</p>
+            <p className="text-muted-foreground">
+              Desconto de <strong>{descontoPct}%</strong> aplicado neste plano.
+            </p>
+          </div>
+        </div>
+      )}
+
+
       <div className="mb-4 inline-flex rounded-full border border-border/70 bg-surface/60 p-1 text-xs">
         {(["mensal", "anual"] as const).map((t) => (
           <button
