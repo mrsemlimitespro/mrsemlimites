@@ -1,5 +1,7 @@
 import { Bell, Search, Settings } from "lucide-react";
 
+import { BrandMark } from "@/components/brand";
+
 export function TopBar() {
   return (
     <header className="sticky top-4 z-30 mx-auto flex w-full max-w-[1400px] items-center gap-3 px-4 md:px-6">
