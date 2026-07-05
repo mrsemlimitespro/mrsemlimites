@@ -36,6 +36,12 @@ import {
 } from "@/components/ui/select";
 import { resourceByKey, type Field, type Resource } from "@/lib/admin/resources";
 
+// The generated Database types don't yet reflect the new tables; the resource
+// engine is generic across many tables, so we access supabase.from() dynamically.
+const db = supabase as unknown as {
+  from: (table: string) => ReturnType<typeof supabase.from>;
+};
+
 export const Route = createFileRoute("/admin/$resource")({
   component: ResourcePage,
 });
