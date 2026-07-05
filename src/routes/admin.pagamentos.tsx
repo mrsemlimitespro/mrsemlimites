@@ -784,6 +784,7 @@ function WebhooksTab() {
 
 function FinanceiroTab() {
   const [txs, setTxs] = useState<Transaction[] | null>(null);
+  const [selected, setSelected] = useState<Transaction | null>(null);
 
   async function load() {
     const { data, error } = await (supabase as any)
@@ -796,7 +797,19 @@ function FinanceiroTab() {
   }
   useEffect(() => {
     load();
+    const ch = supabase
+      .channel("pag-financeiro-live")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "payment_transactions" },
+        () => load(),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
   }, []);
+
 
   const stats = useMemo(() => {
     const list = txs ?? [];
