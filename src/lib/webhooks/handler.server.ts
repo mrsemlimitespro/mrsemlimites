@@ -109,17 +109,17 @@ async function processEvent(
   const nextStatus =
     event.status === "outro" ? txn.status : event.status === "cancelado" ? "recusado" : event.status;
 
-  const update: Record<string, unknown> = {
+  const update = {
     status: nextStatus,
     metadata: {
       last_event: event.eventType,
       last_seen_at: new Date().toISOString(),
-      external: event.raw,
-    },
+      external: event.raw as unknown,
+    } as never,
+    ...(event.externalId ? { external_id: event.externalId } : {}),
+    ...(event.method ? { metodo: event.method } : {}),
+    ...(event.clienteNome ? { cliente_nome: event.clienteNome } : {}),
   };
-  if (event.externalId) update.external_id = event.externalId;
-  if (event.method) update.metodo = event.method;
-  if (event.clienteNome) update.cliente_nome = event.clienteNome;
 
   const { error } = await supabaseAdmin
     .from("payment_transactions")
