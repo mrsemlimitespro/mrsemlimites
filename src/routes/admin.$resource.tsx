@@ -77,7 +77,7 @@ function ResourceView({ resource }: { resource: Resource }) {
   const { data: rows = [], isLoading } = useQuery({
     queryKey: ["admin-list", resource.table],
     queryFn: async () => {
-      let q = supabase.from(resource.table as never).select("*");
+      let q = (supabase as any).from(resource.table).select("*");
       if (resource.orderBy) {
         q = q.order(resource.orderBy.column, { ascending: resource.orderBy.ascending });
       }
@@ -98,7 +98,7 @@ function ResourceView({ resource }: { resource: Resource }) {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from(resource.table as never).delete().eq("id", id);
+      const { error } = await (supabase as any).from(resource.table).delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -310,7 +310,7 @@ function ResourceFormDialog({
         if (error) throw error;
         toast.success("Atualizado");
       } else {
-        const { error } = await supabase.from(resource.table as never).insert(payload);
+        const { error } = await (supabase as any).from(resource.table).insert(payload);
         if (error) throw error;
         toast.success("Criado");
       }
