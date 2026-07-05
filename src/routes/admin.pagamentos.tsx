@@ -918,7 +918,11 @@ function FinanceiroTab() {
               </thead>
               <tbody>
                 {txs.map((t) => (
-                  <tr key={t.id} className="border-t border-white/5">
+                  <tr
+                    key={t.id}
+                    onClick={() => setSelected(t)}
+                    className="cursor-pointer border-t border-white/5 transition-colors hover:bg-white/[0.04]"
+                  >
                     <td className="px-4 py-2">{t.cliente_nome ?? "—"}</td>
                     <td className="px-4 py-2 capitalize">{t.gateway_slug}</td>
                     <td className="px-4 py-2">{t.metodo ?? "—"}</td>
@@ -939,6 +943,128 @@ function FinanceiroTab() {
           </div>
         )}
       </div>
+
+      <TransactionDrawer
+        tx={selected}
+        onOpenChange={(v) => !v && setSelected(null)}
+      />
     </div>
   );
 }
+
+function TransactionDrawer({
+  tx,
+  onOpenChange,
+}: {
+  tx: Transaction | null;
+  onOpenChange: (v: boolean) => void;
+}) {
+  const [logs, setLogs] = useState<Array<{
+    id: string;
+    event_type: string | null;
+    status: string | null;
+    payload: unknown;
+    created_at: string;
+  }> | null>(null);
+
+  useEffect(() => {
+    if (!tx) {
+      setLogs(null);
+      return;
+    }
+    (supabase as any)
+      .from("payment_webhook_logs")
+      .select("id, event_type, status, payload, created_at")
+      .eq("transaction_id", tx.id)
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .then(({ data }: { data: typeof logs }) => setLogs(data ?? []));
+  }, [tx]);
+
+  return (
+    <Sheet open={!!tx} onOpenChange={onOpenChange}>
+      <SheetContent className="glass-strong w-full sm:max-w-lg">
+        <SheetHeader>
+          <SheetTitle>Detalhes da transação</SheetTitle>
+          <SheetDescription className="font-mono text-xs">
+            {tx?.id}
+          </SheetDescription>
+        </SheetHeader>
+        {tx ? (
+          <div className="mt-6 max-h-[calc(100vh-8rem)] space-y-5 overflow-auto pr-1">
+            <dl className="grid grid-cols-2 gap-3 text-sm">
+              <Field2 label="Cliente" value={tx.cliente_nome ?? "—"} />
+              <Field2 label="Gateway" value={tx.gateway_slug ?? "—"} />
+              <Field2 label="Método" value={tx.metodo ?? "—"} />
+              <Field2 label="Status" value={tx.status ?? "—"} />
+              <Field2
+                label="Valor"
+                value={Number(tx.valor).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              />
+              <Field2
+                label="Criado em"
+                value={new Date(tx.created_at).toLocaleString("pt-BR")}
+              />
+            </dl>
+
+            <div>
+              <h4 className="text-sm font-semibold">Eventos de webhook</h4>
+              {logs === null ? (
+                <div className="mt-3 flex items-center justify-center py-8 text-sm text-muted-foreground">
+                  <Loader2 className="mr-2 size-4 animate-spin" /> Carregando...
+                </div>
+              ) : logs.length === 0 ? (
+                <p className="mt-3 rounded-xl border border-dashed border-white/10 p-6 text-center text-xs text-muted-foreground">
+                  Nenhum webhook registrado para esta transação.
+                </p>
+              ) : (
+                <ul className="mt-3 space-y-2">
+                  {logs.map((l) => (
+                    <li
+                      key={l.id}
+                      className="rounded-xl border border-border/50 bg-white/[0.02] p-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
+                          {l.event_type ?? "evento"}
+                        </span>
+                        <span className="text-[11px] text-muted-foreground">
+                          {new Date(l.created_at).toLocaleString("pt-BR")}
+                        </span>
+                      </div>
+                      {l.status ? (
+                        <p className="mt-1 text-xs capitalize text-foreground/80">
+                          Status: {l.status}
+                        </p>
+                      ) : null}
+                      {l.payload ? (
+                        <pre className="mt-2 max-h-40 overflow-auto rounded-lg bg-black/40 p-2 text-[10px] leading-tight text-foreground/70">
+                          {JSON.stringify(l.payload, null, 2)}
+                        </pre>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        ) : null}
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function Field2({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="mt-1 truncate text-sm text-foreground/90">{value}</div>
+    </div>
+  );
+}
+
