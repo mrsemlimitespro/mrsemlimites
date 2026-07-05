@@ -34,6 +34,14 @@ const GATEWAYS: Gateway[] = [
 
 const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+type Promo = {
+  id: string;
+  titulo: string;
+  desconto_percentual: number | null;
+  plano_id: string | null;
+  pack_id: string | null;
+};
+
 function CheckoutPage() {
   const navigate = useNavigate();
   const [planos, setPlanos] = useState<Plano[]>([]);
@@ -44,9 +52,27 @@ function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [pending, setPending] = useState<{ id: string; valor: number } | null>(null);
+  const [promo, setPromo] = useState<Promo | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setAuthed(!!data.user));
+
+    // Lê ?promo=&plano=&pack= da URL
+    const url = new URL(window.location.href);
+    const promoParam = url.searchParams.get("promo");
+    const planoParam = url.searchParams.get("plano");
+
+    if (promoParam) {
+      supabase
+        .from("promocoes")
+        .select("id,titulo,desconto_percentual,plano_id,pack_id")
+        .eq("id", promoParam)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) setPromo(data as Promo);
+        });
+    }
+
     supabase
       .from("planos")
       .select("id,nome,tipo,preco,creditos_incluidos,duracao_dias,descricao")
@@ -55,8 +81,12 @@ function CheckoutPage() {
       .then(({ data }) => {
         const list = (data as Plano[]) ?? [];
         setPlanos(list);
-        const first = list.find((p) => (p.tipo ?? "").toLowerCase() === "mensal") ?? list[0];
-        if (first) setPlanoId(first.id);
+        const preselect =
+          planoParam ??
+          list.find((p) => (p.tipo ?? "").toLowerCase() === "mensal")?.id ??
+          list[0]?.id ??
+          null;
+        if (preselect) setPlanoId(preselect);
       });
   }, []);
 
@@ -65,6 +95,9 @@ function CheckoutPage() {
   );
   const displayed = filtered.length ? filtered : planos;
   const plano = displayed.find((p) => p.id === planoId) ?? displayed[0];
+  const descontoPct = promo && promo.plano_id === plano?.id ? Number(promo.desconto_percentual ?? 0) : 0;
+  const valorFinal = plano ? Number(plano.preco) * (1 - descontoPct / 100) : 0;
+
 
   async function onConfirm() {
     setMsg(null);
