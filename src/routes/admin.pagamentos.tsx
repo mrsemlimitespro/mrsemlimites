@@ -964,7 +964,7 @@ function TransactionDrawer({
     event_type: string | null;
     status: string | null;
     payload: unknown;
-    created_at: string;
+    received_at: string;
   }> | null>(null);
 
   useEffect(() => {
@@ -974,12 +974,13 @@ function TransactionDrawer({
     }
     (supabase as any)
       .from("payment_webhook_logs")
-      .select("id, event_type, status, payload, created_at")
-      .eq("transaction_id", tx.id)
-      .order("created_at", { ascending: false })
-      .limit(50)
+      .select("id, event_type, status, payload, received_at")
+      .eq("gateway_slug", tx.gateway_slug)
+      .order("received_at", { ascending: false })
+      .limit(20)
       .then(({ data }: { data: typeof logs }) => setLogs(data ?? []));
   }, [tx]);
+
 
   return (
     <Sheet open={!!tx} onOpenChange={onOpenChange}>
