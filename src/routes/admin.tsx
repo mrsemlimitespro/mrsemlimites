@@ -16,6 +16,7 @@ import {
   UserCircle,
   Store,
   CreditCard,
+  Coins,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
