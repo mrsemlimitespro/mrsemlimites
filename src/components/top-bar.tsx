@@ -36,12 +36,7 @@ export function TopBar() {
           aria-label="Perfil"
           className="grid size-11 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl"
         >
-          <span
-            className="grid size-full place-items-center text-xs font-semibold text-primary-foreground"
-            style={{ background: "var(--gradient-primary)" }}
-          >
-            L
-          </span>
+          <BrandMark size={40} glow={false} className="rounded-full" />
         </button>
       </div>
     </header>
