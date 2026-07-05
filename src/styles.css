@@ -105,17 +105,21 @@
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.7 0.2 285);
 
-  /* Brand palette */
+  /* Brand palette — cool (default) + warm accents */
   --brand-violet: oklch(0.65 0.24 295);
   --brand-blue: oklch(0.68 0.2 250);
   --brand-cyan: oklch(0.78 0.14 210);
-  --brand-magenta: oklch(0.68 0.26 335);
+  --brand-magenta: oklch(0.68 0.28 340);
+  --brand-pink: oklch(0.7 0.27 5);
+  --brand-orange: oklch(0.75 0.19 55);
+  --brand-emerald: oklch(0.72 0.16 165);
+  --brand-amber: oklch(0.78 0.16 80);
 
   /* Charts */
   --chart-1: oklch(0.68 0.22 285);
   --chart-2: oklch(0.72 0.18 240);
   --chart-3: oklch(0.75 0.18 200);
-  --chart-4: oklch(0.7 0.24 330);
+  --chart-4: oklch(0.7 0.26 335);
   --chart-5: oklch(0.78 0.18 55);
 
   /* Sidebar */
@@ -128,16 +132,25 @@
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.7 0.2 285);
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, oklch(0.65 0.24 295) 0%, oklch(0.68 0.2 250) 100%);
+  /* Gradients — cool (default primary) + warm (accent) + per-channel */
+  --gradient-primary: linear-gradient(135deg, var(--brand-violet) 0%, var(--brand-blue) 100%);
   --gradient-primary-soft: linear-gradient(
     135deg,
-    color-mix(in oklab, oklch(0.65 0.24 295) 22%, transparent) 0%,
-    color-mix(in oklab, oklch(0.68 0.2 250) 22%, transparent) 100%
+    color-mix(in oklab, var(--brand-violet) 22%, transparent) 0%,
+    color-mix(in oklab, var(--brand-blue) 22%, transparent) 100%
   );
+  --gradient-warm: linear-gradient(135deg, var(--brand-magenta) 0%, var(--brand-orange) 100%);
+  --gradient-warm-soft: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--brand-magenta) 22%, transparent) 0%,
+    color-mix(in oklab, var(--brand-orange) 22%, transparent) 100%
+  );
+  --gradient-cyan: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-cyan) 100%);
+  --gradient-emerald: linear-gradient(135deg, var(--brand-emerald) 0%, var(--brand-cyan) 100%);
+  --gradient-amber: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-amber) 100%);
   --gradient-glow: radial-gradient(
     60% 60% at 50% 0%,
-    color-mix(in oklab, oklch(0.66 0.22 285) 45%, transparent) 0%,
+    color-mix(in oklab, var(--primary) 45%, transparent) 0%,
     transparent 70%
   );
   --gradient-surface: linear-gradient(
@@ -150,7 +163,12 @@
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 30%), 0 8px 24px -12px oklch(0 0 0 / 40%);
   --shadow-elevated: 0 2px 4px oklch(0 0 0 / 35%), 0 20px 50px -18px oklch(0 0 0 / 55%);
   --shadow-glow: 0 0 0 1px oklch(1 0 0 / 6%),
-    0 10px 40px -12px color-mix(in oklab, oklch(0.66 0.22 285) 55%, transparent);
+    0 10px 40px -12px color-mix(in oklab, var(--primary) 55%, transparent);
+  --shadow-glow-warm: 0 0 0 1px oklch(1 0 0 / 6%),
+    0 10px 40px -12px color-mix(in oklab, var(--brand-magenta) 55%, transparent);
+  --shadow-float: 0 20px 60px -20px oklch(0 0 0 / 70%),
+    0 0 0 1px oklch(1 0 0 / 6%),
+    0 0 40px -8px color-mix(in oklab, var(--primary) 35%, transparent);
 
   /* Motion */
   --transition-smooth: 220ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -200,8 +218,16 @@
   box-shadow: var(--shadow-glow);
 }
 
+@utility glow-warm {
+  box-shadow: var(--shadow-glow-warm);
+}
+
 @utility gradient-primary {
   background-image: var(--gradient-primary);
+}
+
+@utility gradient-warm {
+  background-image: var(--gradient-warm);
 }
 
 @utility gradient-text {
@@ -211,8 +237,58 @@
   color: transparent;
 }
 
+@utility gradient-text-warm {
+  background-image: var(--gradient-warm);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
 @utility ring-brand {
   --tw-ring-color: var(--ring);
+}
+
+/*
+ * Icon tile: circular glass chip with a colored inner glow.
+ * Set the accent color via `--tile-color` (defaults to primary).
+ * Used for the small round icon badge at the corner of each KPI card.
+ */
+@utility icon-tile {
+  --tile-color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: radial-gradient(
+      circle at 30% 30%,
+      color-mix(in oklab, var(--tile-color) 55%, transparent) 0%,
+      color-mix(in oklab, var(--tile-color) 15%, transparent) 60%,
+      transparent 100%
+    ),
+    color-mix(in oklab, var(--surface-elevated) 85%, transparent);
+  border: 1px solid color-mix(in oklab, var(--tile-color) 35%, var(--border));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 10%),
+    0 0 20px -6px color-mix(in oklab, var(--tile-color) 60%, transparent);
+  color: color-mix(in oklab, var(--tile-color) 85%, white 15%);
+}
+
+/* Floating pill nav — the glowing bottom bar in both references. */
+@utility pill-nav {
+  background: color-mix(in oklab, var(--surface-elevated) 75%, transparent);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  box-shadow: var(--shadow-float);
+}
+
+/* Sparkline / chart stroke helpers for SVG paths. */
+@utility stroke-glow {
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--primary) 60%, transparent));
+}
+
+@utility stroke-glow-warm {
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--brand-magenta) 60%, transparent));
 }
 
 @layer base {
