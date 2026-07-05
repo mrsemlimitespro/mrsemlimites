@@ -85,7 +85,15 @@ function AdminLayout() {
   return <AdminShell />;
 }
 
-const specialLinks = [
+type SpecialLink = {
+  key: string;
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+};
+
+const specialLinks: SpecialLink[] = [
   { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true },
   { key: "configuracoes", to: "/admin/configuracoes", label: "Configurações Gerais", icon: Settings2 },
   { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette },
@@ -93,7 +101,7 @@ const specialLinks = [
   { key: "loja", to: "/admin/loja", label: "Loja", icon: Store },
   { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
   { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup },
-] as const;
+];
 
 function AdminShell() {
   const navigate = useNavigate();
