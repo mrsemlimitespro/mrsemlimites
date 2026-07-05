@@ -388,36 +388,51 @@ export type Database = {
       }
       licencas: {
         Row: {
+          ativada_em: string | null
           chave: string
           cliente_id: string | null
           created_at: string
+          device_id: string | null
+          duracao_dias: number
+          email: string | null
           expira_em: string | null
           id: string
           plano: string | null
           revendedor_id: string | null
           status: string
+          ultimo_acesso: string | null
           updated_at: string
         }
         Insert: {
+          ativada_em?: string | null
           chave: string
           cliente_id?: string | null
           created_at?: string
+          device_id?: string | null
+          duracao_dias?: number
+          email?: string | null
           expira_em?: string | null
           id?: string
           plano?: string | null
           revendedor_id?: string | null
           status?: string
+          ultimo_acesso?: string | null
           updated_at?: string
         }
         Update: {
+          ativada_em?: string | null
           chave?: string
           cliente_id?: string | null
           created_at?: string
+          device_id?: string | null
+          duracao_dias?: number
+          email?: string | null
           expira_em?: string | null
           id?: string
           plano?: string | null
           revendedor_id?: string | null
           status?: string
+          ultimo_acesso?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -991,11 +1006,66 @@ export type Database = {
       }
       admin_password_configured: { Args: never; Returns: boolean }
       approve_pagamento: { Args: { _pagamento_id: string }; Returns: undefined }
+      atribuir_licenca_cliente: {
+        Args: { _chave: string; _cliente_id: string; _email: string }
+        Returns: {
+          ativada_em: string | null
+          chave: string
+          cliente_id: string | null
+          created_at: string
+          device_id: string | null
+          duracao_dias: number
+          email: string | null
+          expira_em: string | null
+          id: string
+          plano: string | null
+          revendedor_id: string | null
+          status: string
+          ultimo_acesso: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "licencas"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       create_revendedor_profile: {
         Args: { _nome?: string; _telefone?: string }
         Returns: string
       }
       current_revendedor_id: { Args: never; Returns: string }
+      gerar_chave_licenca: { Args: never; Returns: string }
+      gerar_licencas: {
+        Args: {
+          _duracao_dias?: number
+          _quantidade: number
+          _revendedor_id?: string
+        }
+        Returns: {
+          ativada_em: string | null
+          chave: string
+          cliente_id: string | null
+          created_at: string
+          device_id: string | null
+          duracao_dias: number
+          email: string | null
+          expira_em: string | null
+          id: string
+          plano: string | null
+          revendedor_id: string | null
+          status: string
+          ultimo_acesso: string | null
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "licencas"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1004,9 +1074,38 @@ export type Database = {
         Returns: boolean
       }
       is_revendedor: { Args: { _uid: string }; Returns: boolean }
+      resetar_device_licenca: {
+        Args: { _licenca_id: string }
+        Returns: {
+          ativada_em: string | null
+          chave: string
+          cliente_id: string | null
+          created_at: string
+          device_id: string | null
+          duracao_dias: number
+          email: string | null
+          expira_em: string | null
+          id: string
+          plano: string | null
+          revendedor_id: string | null
+          status: string
+          ultimo_acesso: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "licencas"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       set_admin_password: {
         Args: { _current_password?: string; _new_password: string }
         Returns: boolean
+      }
+      validar_licenca: {
+        Args: { _chave: string; _device_id?: string; _email: string }
+        Returns: Json
       }
       verify_admin_password: { Args: { _password: string }; Returns: boolean }
     }
