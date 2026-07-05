@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { Bell, Search, Settings } from "lucide-react";
 
 import { BrandMark } from "@/components/brand";
+import { AdminPasswordDialog } from "@/components/admin-password-gate";
 
 export function TopBar() {
+  const [adminOpen, setAdminOpen] = useState(false);
+
   return (
     <header className="sticky top-4 z-30 mx-auto flex w-full max-w-[1400px] items-center gap-3 px-4 md:px-6">
       {/* Spacer for the floating rail on md+ */}
@@ -27,10 +31,14 @@ export function TopBar() {
       </div>
 
       <div className="flex items-center gap-2">
-        <IconBadge dot>
+        <IconBadge dot aria-label="Notificações">
           <Bell className="size-[18px]" strokeWidth={2} />
         </IconBadge>
-        <IconBadge dot>
+        <IconBadge
+          dot
+          aria-label="Painel administrativo"
+          onClick={() => setAdminOpen(true)}
+        >
           <Settings className="size-[18px]" strokeWidth={2} />
         </IconBadge>
         <button
@@ -41,14 +49,28 @@ export function TopBar() {
           <BrandMark size={40} glow={false} className="rounded-full" />
         </button>
       </div>
+
+      <AdminPasswordDialog open={adminOpen} onOpenChange={setAdminOpen} />
     </header>
   );
 }
 
-function IconBadge({ children, dot = false }: { children: React.ReactNode; dot?: boolean }) {
+function IconBadge({
+  children,
+  dot = false,
+  onClick,
+  "aria-label": ariaLabel,
+}: {
+  children: React.ReactNode;
+  dot?: boolean;
+  onClick?: () => void;
+  "aria-label"?: string;
+}) {
   return (
     <button
       type="button"
+      onClick={onClick}
+      aria-label={ariaLabel}
       className="relative grid size-11 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground"
     >
       {children}
