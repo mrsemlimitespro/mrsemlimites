@@ -1,21 +1,30 @@
-import { createFileRoute, Link, Outlet, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { claimInitialAdmin } from "@/lib/admin/admin.functions";
 import {
   LayoutDashboard,
   LogOut,
   ShieldCheck,
   Loader2,
+  Settings2,
+  Palette,
+  ShieldAlert,
+  DatabaseBackup,
+  UserCircle,
+  Store,
 } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { resources } from "@/lib/admin/resources";
-import { claimInitialAdmin } from "@/lib/admin/admin.functions";
+import {
+  AdminPasswordDialog,
+  adminGatePassed,
+  clearAdminGate,
+} from "@/components/admin-password-gate";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -28,43 +37,19 @@ export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
 
-type AdminState =
-  | { status: "loading" }
-  | { status: "signed_out" }
-  | { status: "not_admin"; email: string }
-  | { status: "admin"; email: string };
-
 function AdminLayout() {
-  const [state, setState] = useState<AdminState>({ status: "loading" });
-
-  async function refresh() {
-    const { data } = await supabase.auth.getUser();
-    const user = data.user;
-    if (!user) return setState({ status: "signed_out" });
-    const { data: role } = await (supabase as any)
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle();
-    setState(
-      role
-        ? { status: "admin", email: user.email ?? "" }
-        : { status: "not_admin", email: user.email ?? "" },
-    );
-  }
+  const [checking, setChecking] = useState(true);
+  const [unlocked, setUnlocked] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    refresh();
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
-        refresh();
-      }
-    });
-    return () => sub.subscription.unsubscribe();
+    const pass = adminGatePassed();
+    setUnlocked(pass);
+    setDialogOpen(!pass);
+    setChecking(false);
   }, []);
 
-  if (state.status === "loading") {
+  if (checking) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <Loader2 className="size-6 animate-spin text-muted-foreground" />
@@ -72,13 +57,87 @@ function AdminLayout() {
     );
   }
 
-  if (state.status === "signed_out") return <AdminLogin />;
-  if (state.status === "not_admin") return <NotAdmin email={state.email} onRefresh={refresh} />;
+  if (!unlocked) {
+    return (
+      <>
+        <div className="grid min-h-screen place-items-center bg-background px-4">
+          <div className="glass w-full max-w-md rounded-2xl p-8 text-center">
+            <ShieldCheck className="mx-auto mb-3 size-8 text-muted-foreground" />
+            <h1 className="text-xl font-semibold">Acesso restrito</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Informe a senha de administrador para desbloquear o painel.
+            </p>
+            <Button
+              className="mt-5 w-full gradient-primary"
+              onClick={() => setDialogOpen(true)}
+            >
+              Informar senha
+            </Button>
+          </div>
+        </div>
+        <AdminPasswordDialog
+          open={dialogOpen}
+          onOpenChange={(o) => {
+            setDialogOpen(o);
+            if (!o) setUnlocked(adminGatePassed());
+          }}
+        />
+      </>
+    );
+  }
 
-  return <AdminShell email={state.email} />;
+  return <AdminShell />;
 }
 
-function AdminShell({ email }: { email: string }) {
+type SpecialLink = {
+  key: string;
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+};
+
+const specialLinks: SpecialLink[] = [
+  { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true },
+  { key: "configuracoes", to: "/admin/configuracoes", label: "Configurações Gerais", icon: Settings2 },
+  { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette },
+  { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle },
+  { key: "loja", to: "/admin/loja", label: "Loja", icon: Store },
+  { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
+  { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup },
+];
+
+function AdminShell() {
+  const navigate = useNavigate();
+  const [authState, setAuthState] = useState<
+    | { kind: "loading" }
+    | { kind: "anon" }
+    | { kind: "signed"; email: string; isAdmin: boolean }
+  >({ kind: "loading" });
+  const [signOpen, setSignOpen] = useState(false);
+  const claim = useServerFn(claimInitialAdmin);
+
+  async function refreshAuth() {
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
+    if (!user) return setAuthState({ kind: "anon" });
+    const { data: role } = await (supabase as any)
+      .from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle();
+    setAuthState({ kind: "signed", email: user.email ?? "", isAdmin: !!role });
+  }
+
+  useEffect(() => {
+    refreshAuth();
+    const { data: sub } = supabase.auth.onAuthStateChange(() => refreshAuth());
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const grouped = resources.reduce<Record<string, typeof resources>>((acc, r) => {
+    const g = r.group ?? "Outros";
+    (acc[g] ||= []).push(r);
+    return acc;
+  }, {});
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen">
@@ -95,45 +154,181 @@ function AdminShell({ email }: { email: string }) {
             </div>
           </div>
 
-          <nav className="flex-1 space-y-1">
-            <SideLink to="/admin" icon={<LayoutDashboard className="size-4" />} exact>
-              Painel
-            </SideLink>
-            {resources.map((r) => {
-              const Icon = r.icon;
-              return (
+          <nav className="flex-1 space-y-4 overflow-y-auto pr-1">
+            <div className="space-y-1">
+              {specialLinks.map((l) => (
                 <SideLink
-                  key={r.key}
-                  to="/admin/$resource"
-                  params={{ resource: r.key }}
-                  icon={<Icon className="size-4" />}
+                  key={l.key}
+                  to={l.to}
+                  icon={<l.icon className="size-4" />}
+                  exact={l.exact}
                 >
-                  {r.label}
+                  {l.label}
                 </SideLink>
-              );
-            })}
+              ))}
+            </div>
+
+            {Object.entries(grouped).map(([group, items]) => (
+              <div key={group}>
+                <div className="mb-1 px-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+                  {group}
+                </div>
+                <div className="space-y-1">
+                  {items.map((r) => {
+                    const Icon = r.icon;
+                    return (
+                      <SideLink
+                        key={r.key}
+                        to="/admin/$resource"
+                        params={{ resource: r.key }}
+                        icon={<Icon className="size-4" />}
+                      >
+                        {r.label}
+                      </SideLink>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </nav>
 
-          <div className="mt-6 rounded-xl border border-white/5 bg-white/[0.02] p-3">
-            <div className="truncate text-xs text-muted-foreground">Logado como</div>
-            <div className="truncate text-sm font-medium">{email}</div>
+          <div className="mt-6 space-y-2 rounded-xl border border-white/5 bg-white/[0.02] p-3">
+            <div className="truncate text-xs text-muted-foreground">Sessão</div>
+            <div className="truncate text-sm font-medium">
+              {authState.kind === "signed" ? authState.email : "Painel desbloqueado"}
+            </div>
+            {authState.kind === "signed" && (
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {authState.isAdmin ? "Admin" : "Sem permissão"}
+              </div>
+            )}
             <Button
               variant="ghost"
               size="sm"
-              className="mt-2 w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
-              onClick={async () => {
-                await supabase.auth.signOut();
+              className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+              onClick={() => {
+                clearAdminGate();
+                navigate({ to: "/" });
               }}
             >
-              <LogOut className="size-4" /> Sair
+              <LogOut className="size-4" /> Bloquear
             </Button>
           </div>
         </aside>
 
         <main className="flex-1 p-6 md:p-10">
+          {authState.kind !== "loading" &&
+            (authState.kind === "anon" || !authState.isAdmin) && (
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 px-5 py-3 text-sm text-yellow-100/90">
+                <div>
+                  {authState.kind === "anon"
+                    ? "Você está visualizando o painel. Para salvar alterações, faça login como administrador."
+                    : "Sua conta não tem permissão de admin. Reivindique para editar."}
+                </div>
+                <div className="flex gap-2">
+                  {authState.kind === "anon" ? (
+                    <Button size="sm" className="gradient-primary" onClick={() => setSignOpen(true)}>
+                      Entrar
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      className="gradient-primary"
+                      onClick={async () => {
+                        try {
+                          await claim();
+                          toast.success("Você agora é administrador");
+                          refreshAuth();
+                        } catch (err) {
+                          toast.error(err instanceof Error ? err.message : "Falha");
+                        }
+                      }}
+                    >
+                      Reivindicar admin
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
           <Outlet />
         </main>
       </div>
+      {signOpen && <SignInDialog onClose={() => { setSignOpen(false); refreshAuth(); }} />}
+    </div>
+  );
+}
+
+function SignInDialog({ onClose }: { onClose: () => void }) {
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      if (mode === "signin") {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: window.location.origin + "/admin" },
+        });
+        if (error) throw error;
+      }
+      toast.success("OK");
+      onClose();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" onClick={onClose}>
+      <form
+        onSubmit={submit}
+        onClick={(e) => e.stopPropagation()}
+        className="glass w-full max-w-md space-y-4 rounded-2xl p-6"
+      >
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Conta</div>
+          <h2 className="text-xl font-semibold">
+            {mode === "signin" ? "Entrar" : "Criar conta"}
+          </h2>
+        </div>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="E-mail"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+        />
+        <input
+          type="password"
+          required
+          minLength={6}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Senha"
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
+        />
+        <Button type="submit" className="w-full gradient-primary" disabled={busy}>
+          {busy ? <Loader2 className="size-4 animate-spin" /> : mode === "signin" ? "Entrar" : "Criar conta"}
+        </Button>
+        <button
+          type="button"
+          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+          className="w-full text-center text-xs text-muted-foreground hover:text-foreground"
+        >
+          {mode === "signin" ? "Não tem conta? Cadastrar" : "Já tem conta? Entrar"}
+        </button>
+      </form>
     </div>
   );
 }
@@ -164,146 +359,5 @@ function SideLink({
       {icon}
       <span>{children}</span>
     </Link>
-  );
-}
-
-function AdminLogin() {
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    try {
-      if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success("Bem-vindo!");
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin + "/admin" },
-        });
-        if (error) throw error;
-        toast.success("Conta criada. Verifique seu e-mail se solicitado.");
-      }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Falha ao autenticar.";
-      toast.error(msg);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <div className="grid min-h-screen place-items-center bg-background px-4">
-      <div className="glass w-full max-w-md rounded-2xl p-8">
-        <div className="mb-6 flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-xl gradient-primary">
-            <ShieldCheck className="size-5 text-white" strokeWidth={2.2} />
-          </span>
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-              MR Lova
-            </div>
-            <h1 className="text-xl font-semibold tracking-tight">
-              Painel <span className="gradient-text-warm">Administrativo</span>
-            </h1>
-          </div>
-        </div>
-
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="email">E-mail</Label>
-            <Input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-            />
-          </div>
-          <div>
-            <Label htmlFor="password">Senha</Label>
-            <Input
-              id="password"
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            />
-          </div>
-          <Button type="submit" className="w-full gradient-primary" disabled={busy}>
-            {busy ? <Loader2 className="size-4 animate-spin" /> : mode === "signin" ? "Entrar" : "Criar conta"}
-          </Button>
-        </form>
-
-        <div className="mt-4 text-center text-sm text-muted-foreground">
-          {mode === "signin" ? (
-            <button className="hover:text-foreground" onClick={() => setMode("signup")}>
-              Não tem conta? <span className="underline">Cadastre-se</span>
-            </button>
-          ) : (
-            <button className="hover:text-foreground" onClick={() => setMode("signin")}>
-              Já tem conta? <span className="underline">Entrar</span>
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function NotAdmin({ email, onRefresh }: { email: string; onRefresh: () => void }) {
-  const router = useRouter();
-  const claim = useServerFn(claimInitialAdmin);
-  const [busy, setBusy] = useState(false);
-
-  async function handleClaim() {
-    setBusy(true);
-    try {
-      await claim();
-      toast.success("Você agora é administrador!");
-      await onRefresh();
-      router.invalidate();
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Não foi possível reivindicar admin.";
-      toast.error(msg);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <div className="grid min-h-screen place-items-center bg-background px-4">
-      <div className="glass w-full max-w-md rounded-2xl p-8 text-center">
-        <ShieldCheck className="mx-auto mb-3 size-8 text-muted-foreground" />
-        <h1 className="text-xl font-semibold">Acesso restrito</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Sua conta <span className="text-foreground">{email}</span> não tem permissão de administrador.
-        </p>
-        <p className="mt-4 text-xs text-muted-foreground">
-          Se você é o dono do sistema e ainda não há admin cadastrado, clique abaixo para se tornar o primeiro:
-        </p>
-        <Button onClick={handleClaim} disabled={busy} className="mt-4 w-full gradient-primary">
-          {busy ? <Loader2 className="size-4 animate-spin" /> : "Reivindicar admin (setup inicial)"}
-        </Button>
-        <Button
-          variant="ghost"
-          className="mt-2 w-full text-muted-foreground"
-          onClick={async () => {
-            await supabase.auth.signOut();
-          }}
-        >
-          Sair
-        </Button>
-      </div>
-    </div>
   );
 }

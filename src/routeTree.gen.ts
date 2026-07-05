@@ -13,6 +13,12 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
+import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
+import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
+import { Route as AdminLojaRouteImport } from './routes/admin.loja'
+import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
+import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
@@ -38,6 +44,36 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSegurancaRoute = AdminSegurancaRouteImport.update({
+  id: '/seguranca',
+  path: '/seguranca',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPersonalizacaoRoute = AdminPersonalizacaoRouteImport.update({
+  id: '/personalizacao',
+  path: '/personalizacao',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLojaRoute = AdminLojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBackupRoute = AdminBackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminResourceRoute = AdminResourceRouteImport.update({
   id: '/$resource',
@@ -79,6 +115,12 @@ export interface FileRoutesByFullPath {
   '/licencas': typeof AppLicencasRoute
   '/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/backup': typeof AdminBackupRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/loja': typeof AdminLojaRoute
+  '/admin/personalizacao': typeof AdminPersonalizacaoRoute
+  '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -88,6 +130,12 @@ export interface FileRoutesByTo {
   '/licencas': typeof AppLicencasRoute
   '/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/backup': typeof AdminBackupRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/loja': typeof AdminLojaRoute
+  '/admin/personalizacao': typeof AdminPersonalizacaoRoute
+  '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -101,6 +149,12 @@ export interface FileRoutesById {
   '/_app/licencas': typeof AppLicencasRoute
   '/_app/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/backup': typeof AdminBackupRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/loja': typeof AdminLojaRoute
+  '/admin/personalizacao': typeof AdminPersonalizacaoRoute
+  '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -115,6 +169,12 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/perfil'
     | '/admin/$resource'
+    | '/admin/backup'
+    | '/admin/configuracoes'
+    | '/admin/loja'
+    | '/admin/personalizacao'
+    | '/admin/seguranca'
+    | '/admin/usuarios'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -124,6 +184,12 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/perfil'
     | '/admin/$resource'
+    | '/admin/backup'
+    | '/admin/configuracoes'
+    | '/admin/loja'
+    | '/admin/personalizacao'
+    | '/admin/seguranca'
+    | '/admin/usuarios'
     | '/'
     | '/admin'
   id:
@@ -136,6 +202,12 @@ export interface FileRouteTypes {
     | '/_app/licencas'
     | '/_app/perfil'
     | '/admin/$resource'
+    | '/admin/backup'
+    | '/admin/configuracoes'
+    | '/admin/loja'
+    | '/admin/personalizacao'
+    | '/admin/seguranca'
+    | '/admin/usuarios'
     | '/_app/'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -174,6 +246,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/admin/usuarios': {
+      id: '/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminUsuariosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seguranca': {
+      id: '/admin/seguranca'
+      path: '/seguranca'
+      fullPath: '/admin/seguranca'
+      preLoaderRoute: typeof AdminSegurancaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/personalizacao': {
+      id: '/admin/personalizacao'
+      path: '/personalizacao'
+      fullPath: '/admin/personalizacao'
+      preLoaderRoute: typeof AdminPersonalizacaoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/loja': {
+      id: '/admin/loja'
+      path: '/loja'
+      fullPath: '/admin/loja'
+      preLoaderRoute: typeof AdminLojaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes': {
+      id: '/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes'
+      preLoaderRoute: typeof AdminConfiguracoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/backup': {
+      id: '/admin/backup'
+      path: '/backup'
+      fullPath: '/admin/backup'
+      preLoaderRoute: typeof AdminBackupRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/$resource': {
       id: '/admin/$resource'
@@ -242,11 +356,23 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AdminRouteChildren {
   AdminResourceRoute: typeof AdminResourceRoute
+  AdminBackupRoute: typeof AdminBackupRoute
+  AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
+  AdminLojaRoute: typeof AdminLojaRoute
+  AdminPersonalizacaoRoute: typeof AdminPersonalizacaoRoute
+  AdminSegurancaRoute: typeof AdminSegurancaRoute
+  AdminUsuariosRoute: typeof AdminUsuariosRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminResourceRoute: AdminResourceRoute,
+  AdminBackupRoute: AdminBackupRoute,
+  AdminConfiguracoesRoute: AdminConfiguracoesRoute,
+  AdminLojaRoute: AdminLojaRoute,
+  AdminPersonalizacaoRoute: AdminPersonalizacaoRoute,
+  AdminSegurancaRoute: AdminSegurancaRoute,
+  AdminUsuariosRoute: AdminUsuariosRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

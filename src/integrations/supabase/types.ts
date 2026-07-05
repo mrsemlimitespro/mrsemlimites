@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          accent_color: string
+          created_at: string
+          favicon_url: string | null
+          footer_text: string | null
+          id: string
+          logo_url: string | null
+          notification_active: boolean
+          notification_message: string | null
+          password_hash: string | null
+          primary_color: string
+          singleton: boolean
+          site_name: string
+          updated_at: string
+          welcome_text: string | null
+        }
+        Insert: {
+          accent_color?: string
+          created_at?: string
+          favicon_url?: string | null
+          footer_text?: string | null
+          id?: string
+          logo_url?: string | null
+          notification_active?: boolean
+          notification_message?: string | null
+          password_hash?: string | null
+          primary_color?: string
+          singleton?: boolean
+          site_name?: string
+          updated_at?: string
+          welcome_text?: string | null
+        }
+        Update: {
+          accent_color?: string
+          created_at?: string
+          favicon_url?: string | null
+          footer_text?: string | null
+          id?: string
+          logo_url?: string | null
+          notification_active?: boolean
+          notification_message?: string | null
+          password_hash?: string | null
+          primary_color?: string
+          singleton?: boolean
+          site_name?: string
+          updated_at?: string
+          welcome_text?: string | null
+        }
+        Relationships: []
+      }
       aulas: {
         Row: {
           ativo: boolean
@@ -146,6 +197,50 @@ export type Database = {
         }
         Relationships: []
       }
+      estoque: {
+        Row: {
+          created_at: string
+          id: string
+          item: string
+          minimo: number
+          observacoes: string | null
+          produto_id: string | null
+          quantidade: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item: string
+          minimo?: number
+          observacoes?: string | null
+          produto_id?: string | null
+          quantidade?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item?: string
+          minimo?: number
+          observacoes?: string | null
+          produto_id?: string | null
+          quantidade?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       imagens: {
         Row: {
           categoria: string | null
@@ -213,6 +308,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      logos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          escopo: string
+          id: string
+          titulo: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          escopo?: string
+          id?: string
+          titulo: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          escopo?: string
+          id?: string
+          titulo?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      notificacoes: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          destino: string
+          id: string
+          mensagem: string
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          destino?: string
+          id?: string
+          mensagem: string
+          tipo?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          destino?: string
+          id?: string
+          mensagem?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       produtos: {
         Row: {
@@ -316,6 +474,42 @@ export type Database = {
         }
         Relationships: []
       }
+      revendedores: {
+        Row: {
+          comissao: number | null
+          created_at: string
+          email: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          status: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          comissao?: number | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          comissao?: number | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -379,6 +573,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      set_admin_password: {
+        Args: { _current_password?: string; _new_password: string }
+        Returns: boolean
+      }
+      verify_admin_password: { Args: { _password: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
