@@ -136,10 +136,55 @@ function ResourceView({ resource }: { resource: Resource }) {
           </p>
         </div>
 
-        <Button className="gradient-primary" onClick={() => setCreating(true)}>
-          <Plus className="size-4" /> Novo{resource.singular.endsWith("a") ? "a" : ""}{" "}
-          {resource.singular.toLowerCase()}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            onClick={async () => {
+              try {
+                let q = (supabase as any).from(resource.table).select("*");
+                if (resource.orderBy) {
+                  q = q.order(resource.orderBy.column, { ascending: resource.orderBy.ascending });
+                }
+                const { data, error } = await q;
+                if (error) throw error;
+                const rows = (data ?? []) as Row[];
+                if (rows.length === 0) {
+                  toast.info("Nada para exportar");
+                  return;
+                }
+                const cols = Array.from(
+                  new Set(rows.flatMap((r) => Object.keys(r))),
+                );
+                const escape = (v: unknown) => {
+                  if (v === null || v === undefined) return "";
+                  const s = typeof v === "object" ? JSON.stringify(v) : String(v);
+                  return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+                };
+                const csv =
+                  cols.join(";") +
+                  "\n" +
+                  rows.map((r) => cols.map((c) => escape(r[c])).join(";")).join("\n");
+                const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${resource.key}-${new Date().toISOString().slice(0, 10)}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                toast.success(`Exportado ${rows.length} registro(s)`);
+              } catch (err) {
+                toast.error(err instanceof Error ? err.message : "Falha ao exportar");
+              }
+            }}
+          >
+            <Upload className="size-4 rotate-180" /> Exportar CSV
+          </Button>
+          <Button className="gradient-primary" onClick={() => setCreating(true)}>
+            <Plus className="size-4" /> Novo{resource.singular.endsWith("a") ? "a" : ""}{" "}
+            {resource.singular.toLowerCase()}
+          </Button>
+        </div>
+
       </header>
 
       {resource.searchColumns && resource.searchColumns.length > 0 && (
