@@ -103,6 +103,41 @@ function LojaPage() {
   );
 }
 
+function CreditosLovableMaintenance() {
+  return (
+    <div className="glass relative overflow-hidden rounded-2xl p-14">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 40%, color-mix(in oklab, var(--brand-orange) 22%, transparent), transparent 60%)",
+        }}
+      />
+      <div className="relative flex flex-col items-center justify-center gap-5 py-10 text-center">
+        <span
+          className="grid size-16 place-items-center rounded-2xl"
+          style={{
+            background:
+              "linear-gradient(135deg, color-mix(in oklab, var(--brand-orange) 35%, transparent), color-mix(in oklab, var(--brand-magenta) 25%, transparent))",
+            boxShadow:
+              "0 0 40px -6px color-mix(in oklab, var(--brand-orange) 70%, transparent)",
+          }}
+        >
+          <Coins className="size-7 text-white" strokeWidth={2} />
+        </span>
+        <div className="space-y-1.5">
+          <h3 className="text-xl font-semibold tracking-tight">Em manutenção</h3>
+          <p className="max-w-md text-sm text-muted-foreground">
+            A venda de Créditos Lovable está temporariamente indisponível. Volte em
+            breve para adquirir seus créditos.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LojaContent() {
   return (
     <div className="space-y-6">
