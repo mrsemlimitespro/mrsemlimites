@@ -477,7 +477,7 @@ function SelectFromTableInput({
   const { data = [] } = useQuery({
     queryKey: ["admin-lookup", table],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from(table)
         .select(`${valueKey}, ${labelKey}`)
         .order(labelKey, { ascending: true });
