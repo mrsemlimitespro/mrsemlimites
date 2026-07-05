@@ -62,17 +62,24 @@ export function PromoCarousel() {
         }}
       >
         {track.map((b, i) => {
-          const gradients = [
-            "from-fuchsia-500/40 via-pink-500/30 to-orange-500/40",
-            "from-violet-500/40 via-blue-500/30 to-cyan-500/40",
-            "from-emerald-500/40 via-teal-500/30 to-cyan-500/40",
-            "from-amber-500/40 via-orange-500/30 to-red-500/40",
-            "from-indigo-500/40 via-purple-500/30 to-pink-500/40",
-            "from-lime-500/40 via-emerald-500/30 to-teal-500/40",
+          const neons = [
+            { grad: "from-fuchsia-500 via-pink-500 to-orange-400", glow: "255,60,180" },
+            { grad: "from-violet-500 via-blue-500 to-cyan-400", glow: "80,120,255" },
+            { grad: "from-emerald-400 via-teal-400 to-cyan-400", glow: "40,240,200" },
+            { grad: "from-amber-400 via-orange-500 to-red-500", glow: "255,140,40" },
+            { grad: "from-indigo-500 via-purple-500 to-pink-500", glow: "200,80,255" },
+            { grad: "from-lime-400 via-emerald-400 to-teal-400", glow: "120,255,120" },
           ];
-          const grad = gradients[i % gradients.length];
+          const n = neons[i % neons.length];
           const inner = (
-            <div className={`group relative flex h-24 w-56 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br ${grad} shadow-lg transition-transform hover:scale-[1.05]`}>
+            <div
+              className={`neon-card group relative flex h-24 w-56 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br ${n.grad} transition-transform hover:scale-[1.08]`}
+              style={{
+                ["--neon" as never]: n.glow,
+                boxShadow: `0 0 0 2px rgba(${n.glow},0.9), 0 0 18px rgba(${n.glow},0.7), 0 0 40px rgba(${n.glow},0.5), inset 0 0 20px rgba(255,255,255,0.15)`,
+                animation: `neon-pulse 2.4s ease-in-out ${i * 0.15}s infinite`,
+              }}
+            >
               {b.imagem_url ? (
                 <img
                   src={b.imagem_url}
@@ -81,7 +88,7 @@ export function PromoCarousel() {
                   draggable={false}
                 />
               ) : (
-                <span className="px-3 text-center text-sm font-bold text-white drop-shadow-lg">
+                <span className="px-3 text-center text-sm font-extrabold uppercase tracking-wide text-white [text-shadow:0_0_8px_rgba(255,255,255,0.6),0_2px_4px_rgba(0,0,0,0.5)]">
                   {b.titulo}
                 </span>
               )}
@@ -90,7 +97,7 @@ export function PromoCarousel() {
                 className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
                 style={{
                   background:
-                    "linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%)",
+                    "linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%)",
                 }}
               />
             </div>
