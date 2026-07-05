@@ -31,12 +31,20 @@ export function PromoCarousel() {
     };
   }, []);
 
-  if (items.length === 0) return null;
+  // Fallback demo colorido quando não há banners cadastrados
+  const demo: Banner[] = [
+    { id: "d1", titulo: "🔥 Promoção Relâmpago", imagem_url: null, link: null },
+    { id: "d2", titulo: "⚡ Créditos com 20% OFF", imagem_url: null, link: null },
+    { id: "d3", titulo: "🎬 Novos Apps IPTV", imagem_url: null, link: null },
+    { id: "d4", titulo: "💎 Plano Premium", imagem_url: null, link: null },
+    { id: "d5", titulo: "🚀 Ativação Instantânea", imagem_url: null, link: null },
+    { id: "d6", titulo: "🎁 Bônus na 1ª compra", imagem_url: null, link: null },
+  ];
+  const source = items.length > 0 ? items : demo;
 
-  // duplicamos para criar loop infinito visual
-  const track = [...items, ...items];
-  // duração proporcional à quantidade (~4s por item)
-  const duration = Math.max(20, items.length * 4);
+  // duplicamos 2x para garantir loop infinito visual sem gap
+  const track = [...source, ...source];
+  const duration = Math.max(20, source.length * 5);
 
   return (
     <section
