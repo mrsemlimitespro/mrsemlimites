@@ -41,7 +41,7 @@ function ResourceCard({
   resourceKey: string;
   table: string;
   label: string;
-  Icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }) {
   const { data } = useQuery({
     queryKey: ["admin-count", table],
