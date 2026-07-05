@@ -262,10 +262,11 @@ function AdminShell() {
 }
 
 function SignInDialog({ onClose }: { onClose: () => void }) {
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "initial">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const createAdmin = useServerFn(createInitialAdmin);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -274,13 +275,19 @@ function SignInDialog({ onClose }: { onClose: () => void }) {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-      } else {
+      } else if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: { emailRedirectTo: window.location.origin + "/admin" },
         });
         if (error) throw error;
+      } else {
+        // initial admin
+        await createAdmin({ data: { email, password } });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        toast.success("Administrador criado");
       }
       toast.success("OK");
       onClose();
@@ -291,6 +298,11 @@ function SignInDialog({ onClose }: { onClose: () => void }) {
     }
   }
 
+  const title =
+    mode === "signin" ? "Entrar" : mode === "signup" ? "Criar conta" : "Criar administrador inicial";
+  const cta =
+    mode === "signin" ? "Entrar" : mode === "signup" ? "Criar conta" : "Criar admin";
+
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" onClick={onClose}>
       <form
@@ -300,9 +312,12 @@ function SignInDialog({ onClose }: { onClose: () => void }) {
       >
         <div>
           <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Conta</div>
-          <h2 className="text-xl font-semibold">
-            {mode === "signin" ? "Entrar" : "Criar conta"}
-          </h2>
+          <h2 className="text-xl font-semibold">{title}</h2>
+          {mode === "initial" && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Só funciona quando ainda não existe nenhum admin. Informe e-mail e senha.
+            </p>
+          )}
         </div>
         <input
           type="email"
@@ -322,15 +337,24 @@ function SignInDialog({ onClose }: { onClose: () => void }) {
           className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none"
         />
         <Button type="submit" className="w-full gradient-primary" disabled={busy}>
-          {busy ? <Loader2 className="size-4 animate-spin" /> : mode === "signin" ? "Entrar" : "Criar conta"}
+          {busy ? <Loader2 className="size-4 animate-spin" /> : cta}
         </Button>
-        <button
-          type="button"
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-          className="w-full text-center text-xs text-muted-foreground hover:text-foreground"
-        >
-          {mode === "signin" ? "Não tem conta? Cadastrar" : "Já tem conta? Entrar"}
-        </button>
+        <div className="flex flex-col gap-1 text-center text-xs text-muted-foreground">
+          <button
+            type="button"
+            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+            className="hover:text-foreground"
+          >
+            {mode === "signin" ? "Não tem conta? Cadastrar" : "Já tem conta? Entrar"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode(mode === "initial" ? "signin" : "initial")}
+            className="hover:text-foreground"
+          >
+            {mode === "initial" ? "Voltar" : "Criar administrador inicial"}
+          </button>
+        </div>
       </form>
     </div>
   );
