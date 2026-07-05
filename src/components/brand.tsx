@@ -83,6 +83,9 @@ export function BrandMark({
             0%, 100% { opacity: .55; transform: scale(1); }
             50%      { opacity: 1;   transform: scale(1.12); }
           }
+          @keyframes brand-scan {
+            to { transform: rotate(360deg); }
+          }
         `}</style>
       )}
     </span>
