@@ -33,7 +33,7 @@ export const Route = createFileRoute("/admin")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Painel Administrativo — MR Lova" },
+      { title: "Painel Administrativo — " + "MR sem limites" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
