@@ -27,6 +27,7 @@ import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
 import { Route as AppClientesRouteImport } from './routes/_app.clientes'
 import { Route as AppAulasRouteImport } from './routes/_app.aulas'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
+import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -118,6 +119,11 @@ const ApiPublicWebhooksMercadopagoRoute =
     path: '/api/public/webhooks/mercadopago',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicWebhooksKiwifyRoute = ApiPublicWebhooksKiwifyRouteImport.update({
+  id: '/api/public/webhooks/kiwify',
+  path: '/api/public/webhooks/kiwify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
 }
 export interface FileRoutesByTo {
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
 }
 export interface FileRoutesById {
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
 }
 export interface FileRouteTypes {
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/admin/seguranca'
     | '/admin/usuarios'
     | '/admin/'
+    | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/'
     | '/admin'
+    | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
   id:
     | '__root__'
@@ -234,12 +245,14 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/_app/'
     | '/admin/'
+    | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
 }
 
@@ -371,6 +384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksMercadopagoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/kiwify': {
+      id: '/api/public/webhooks/kiwify'
+      path: '/api/public/webhooks/kiwify'
+      fullPath: '/api/public/webhooks/kiwify'
+      preLoaderRoute: typeof ApiPublicWebhooksKiwifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -423,6 +443,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
 }
 export const routeTree = rootRouteImport
