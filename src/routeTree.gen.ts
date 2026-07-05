@@ -16,6 +16,7 @@ import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
 import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
+import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
@@ -55,6 +56,11 @@ const AdminPersonalizacaoRoute = AdminPersonalizacaoRouteImport.update({
 const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBackupRoute = AdminBackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminResourceRoute = AdminResourceRouteImport.update({
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/licencas': typeof AppLicencasRoute
   '/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/licencas': typeof AppLicencasRoute
   '/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/_app/licencas': typeof AppLicencasRoute
   '/_app/perfil': typeof AppPerfilRoute
   '/admin/$resource': typeof AdminResourceRoute
+  '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/perfil'
     | '/admin/$resource'
+    | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/personalizacao'
     | '/admin/seguranca'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/licencas'
     | '/perfil'
     | '/admin/$resource'
+    | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/personalizacao'
     | '/admin/seguranca'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/_app/licencas'
     | '/_app/perfil'
     | '/admin/$resource'
+    | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/personalizacao'
     | '/admin/seguranca'
@@ -230,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracoes'
       fullPath: '/admin/configuracoes'
       preLoaderRoute: typeof AdminConfiguracoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/backup': {
+      id: '/admin/backup'
+      path: '/backup'
+      fullPath: '/admin/backup'
+      preLoaderRoute: typeof AdminBackupRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/$resource': {
@@ -299,6 +318,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AdminRouteChildren {
   AdminResourceRoute: typeof AdminResourceRoute
+  AdminBackupRoute: typeof AdminBackupRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminPersonalizacaoRoute: typeof AdminPersonalizacaoRoute
   AdminSegurancaRoute: typeof AdminSegurancaRoute
@@ -307,6 +327,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminResourceRoute: AdminResourceRoute,
+  AdminBackupRoute: AdminBackupRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminPersonalizacaoRoute: AdminPersonalizacaoRoute,
   AdminSegurancaRoute: AdminSegurancaRoute,
