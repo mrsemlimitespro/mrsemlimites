@@ -11,6 +11,10 @@ import {
   Hourglass,
   Loader2,
   RotateCcw,
+  History,
+  CalendarPlus,
+  Ban,
+  PlayCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -35,6 +39,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+
 
 export const Route = createFileRoute("/_app/licencas")({
   head: () => ({
@@ -117,6 +136,8 @@ function LicencasPage() {
   const [openTeste, setOpenTeste] = useState(false);
   const [rows, setRows] = useState<LicencaRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [historyOf, setHistoryOf] = useState<LicencaRow | null>(null);
+  const [renovarOf, setRenovarOf] = useState<LicencaRow | null>(null);
 
   async function reload() {
     setLoading(true);
@@ -135,7 +156,15 @@ function LicencasPage() {
 
   useEffect(() => {
     reload();
+    const ch = supabase
+      .channel("licencas-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload())
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
   }, []);
+
 
   const licenses = rows.map(computeView);
 
@@ -165,6 +194,27 @@ function LicencasPage() {
     toast.success("Dispositivo liberado");
     reload();
   }
+
+  async function cancelar(id: string) {
+    if (!confirm("Cancelar esta licença?")) return;
+    const { error } = await (supabase as any).rpc("cancelar_licenca", {
+      _licenca_id: id,
+      _motivo: "cancelada pelo usuário",
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Licença cancelada");
+    reload();
+  }
+
+  async function reativar(id: string) {
+    const { error } = await (supabase as any).rpc("reativar_licenca", {
+      _licenca_id: id,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Licença reativada");
+    reload();
+  }
+
 
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
@@ -303,13 +353,43 @@ function LicencasPage() {
                   <Hourglass className="size-3.5 text-primary" strokeWidth={2} />
                   <span className="text-sm">{l.expires}</span>
                 </div>
-                <button
-                  type="button"
-                  aria-label="Mais opções"
-                  className="justify-self-end rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
-                >
-                  <MoreHorizontal className="size-4" strokeWidth={2} />
-                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Mais opções"
+                      className="justify-self-end rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                    >
+                      <MoreHorizontal className="size-4" strokeWidth={2} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="glass-strong">
+                    <DropdownMenuItem onClick={() => setHistoryOf(rows.find((r) => r.id === l.id) ?? null)}>
+                      <History className="size-4" /> Histórico
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setRenovarOf(rows.find((r) => r.id === l.id) ?? null)}>
+                      <CalendarPlus className="size-4" /> Renovar
+                    </DropdownMenuItem>
+                    {l.device ? (
+                      <DropdownMenuItem onClick={() => resetDevice(l.id)}>
+                        <RotateCcw className="size-4" /> Resetar dispositivo
+                      </DropdownMenuItem>
+                    ) : null}
+                    <DropdownMenuSeparator />
+                    {l.status === "revogada" ? (
+                      <DropdownMenuItem onClick={() => reativar(l.id)}>
+                        <PlayCircle className="size-4" /> Reativar
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => cancelar(l.id)}
+                      >
+                        <Ban className="size-4" /> Cancelar
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </li>
             ))}
           </ul>
@@ -326,7 +406,17 @@ function LicencasPage() {
         onOpenChange={setOpenTeste}
         onSaved={reload}
       />
+      <HistoricoLicencaSheet
+        licenca={historyOf}
+        onOpenChange={(v) => !v && setHistoryOf(null)}
+      />
+      <RenovarLicencaModal
+        licenca={renovarOf}
+        onOpenChange={(v) => !v && setRenovarOf(null)}
+        onSaved={reload}
+      />
     </div>
+
   );
 }
 
@@ -589,5 +679,158 @@ function Field({
       <Label className={cn("text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground")}>{label}</Label>
       {children}
     </div>
+  );
+}
+
+type EventoRow = {
+  id: string;
+  tipo: string;
+  mensagem: string | null;
+  device_id: string | null;
+  created_at: string;
+  metadata: Record<string, unknown> | null;
+};
+
+function HistoricoLicencaSheet({
+  licenca,
+  onOpenChange,
+}: {
+  licenca: LicencaRow | null;
+  onOpenChange: (v: boolean) => void;
+}) {
+  const [events, setEvents] = useState<EventoRow[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!licenca) return;
+    setLoading(true);
+    (supabase as any)
+      .from("licencas_eventos")
+      .select("id, tipo, mensagem, device_id, created_at, metadata")
+      .eq("licenca_id", licenca.id)
+      .order("created_at", { ascending: false })
+      .limit(100)
+      .then(({ data }: { data: EventoRow[] | null }) => {
+        setEvents(data ?? []);
+        setLoading(false);
+      });
+  }, [licenca]);
+
+  return (
+    <Sheet open={!!licenca} onOpenChange={onOpenChange}>
+      <SheetContent className="glass-strong w-full sm:max-w-md">
+        <SheetHeader>
+          <SheetTitle>Histórico da licença</SheetTitle>
+          <SheetDescription className="font-mono text-xs">
+            {licenca?.chave}
+          </SheetDescription>
+        </SheetHeader>
+        <div className="mt-6 max-h-[calc(100vh-8rem)] overflow-auto pr-1">
+          {loading ? (
+            <div className="flex items-center justify-center py-10 text-sm text-muted-foreground">
+              <Loader2 className="mr-2 size-4 animate-spin" /> Carregando...
+            </div>
+          ) : events.length === 0 ? (
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              Nenhum evento registrado.
+            </p>
+          ) : (
+            <ul className="space-y-3">
+              {events.map((e) => (
+                <li
+                  key={e.id}
+                  className="rounded-xl border border-border/50 bg-white/[0.02] p-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
+                      {e.tipo}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground">
+                      {new Date(e.created_at).toLocaleString("pt-BR")}
+                    </span>
+                  </div>
+                  {e.mensagem ? (
+                    <p className="mt-1 text-sm text-foreground/85">{e.mensagem}</p>
+                  ) : null}
+                  {e.device_id ? (
+                    <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+                      device: {e.device_id}
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function RenovarLicencaModal({
+  licenca,
+  onOpenChange,
+  onSaved,
+}: {
+  licenca: LicencaRow | null;
+  onOpenChange: (v: boolean) => void;
+  onSaved: () => void;
+}) {
+  const [dias, setDias] = useState(30);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (licenca) setDias(licenca.duracao_dias ?? 30);
+  }, [licenca]);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!licenca) return;
+    setBusy(true);
+    const { error } = await (supabase as any).rpc("renovar_licenca", {
+      _licenca_id: licenca.id,
+      _dias: dias,
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`Licença renovada por ${dias} dias`);
+    onSaved();
+    onOpenChange(false);
+  }
+
+  return (
+    <Dialog open={!!licenca} onOpenChange={onOpenChange}>
+      <DialogContent className="glass-strong sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Renovar licença</DialogTitle>
+          <DialogDescription className="font-mono text-xs">
+            {licenca?.chave}
+          </DialogDescription>
+        </DialogHeader>
+        <form className="space-y-4" onSubmit={submit}>
+          <Field label="Dias a adicionar">
+            <Input
+              type="number"
+              min={1}
+              value={dias}
+              onChange={(e) => setDias(parseInt(e.target.value) || 1)}
+              autoFocus
+            />
+          </Field>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={busy}
+              className="gradient-primary text-primary-foreground"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : "Renovar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
