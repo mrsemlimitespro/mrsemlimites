@@ -195,6 +195,27 @@ function LicencasPage() {
     reload();
   }
 
+  async function cancelar(id: string) {
+    if (!confirm("Cancelar esta licença?")) return;
+    const { error } = await (supabase as any).rpc("cancelar_licenca", {
+      _licenca_id: id,
+      _motivo: "cancelada pelo usuário",
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Licença cancelada");
+    reload();
+  }
+
+  async function reativar(id: string) {
+    const { error } = await (supabase as any).rpc("reativar_licenca", {
+      _licenca_id: id,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Licença reativada");
+    reload();
+  }
+
+
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
       {/* Header */}
