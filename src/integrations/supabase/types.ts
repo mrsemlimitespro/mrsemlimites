@@ -285,6 +285,7 @@ export type Database = {
           created_at: string
           descricao: string | null
           id: string
+          imagem_url: string | null
           nome: string
           preco: number
           quantidade: number
@@ -295,6 +296,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           id?: string
+          imagem_url?: string | null
           nome: string
           preco?: number
           quantidade?: number
@@ -305,6 +307,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           id?: string
+          imagem_url?: string | null
           nome?: string
           preco?: number
           quantidade?: number
@@ -797,6 +800,7 @@ export type Database = {
           descricao: string | null
           fim: string | null
           id: string
+          imagem_url: string | null
           inicio: string | null
           titulo: string
           updated_at: string
@@ -808,6 +812,7 @@ export type Database = {
           descricao?: string | null
           fim?: string | null
           id?: string
+          imagem_url?: string | null
           inicio?: string | null
           titulo: string
           updated_at?: string
@@ -819,6 +824,7 @@ export type Database = {
           descricao?: string | null
           fim?: string | null
           id?: string
+          imagem_url?: string | null
           inicio?: string | null
           titulo?: string
           updated_at?: string
