@@ -243,6 +243,7 @@ export const resources: Resource[] = [
     fields: [
       { key: "titulo", label: "Título", type: "text", required: true },
       { key: "descricao", label: "Descrição", type: "textarea" },
+      { key: "imagem_url", label: "Imagem da promoção", type: "image" },
       { key: "desconto_percentual", label: "Desconto (%)", type: "number", step: 0.5 },
       { key: "inicio", label: "Início", type: "datetime" },
       { key: "fim", label: "Fim", type: "datetime" },
