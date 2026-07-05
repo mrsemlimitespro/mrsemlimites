@@ -16,6 +16,7 @@ import {
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
+import { BrandMark } from "@/components/brand";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -107,34 +108,27 @@ function DashboardPage() {
               "radial-gradient(80% 60% at 15% 30%, color-mix(in oklab, var(--brand-magenta) 35%, transparent) 0%, transparent 60%), radial-gradient(60% 60% at 85% 50%, color-mix(in oklab, var(--brand-violet) 45%, transparent) 0%, transparent 65%)",
           }}
         />
-        <div className="relative flex flex-col-reverse items-start gap-8 px-6 py-8 md:flex-row md:items-center md:justify-between md:px-10 md:py-12">
-          <div className="max-w-xl">
-            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-              Olá, Lucas!{" "}
-              <span className="ml-1 align-middle text-3xl md:text-4xl">👋</span>
-            </h1>
-            <p className="mt-3 text-sm text-muted-foreground md:text-base">
-              Aqui está o que está acontecendo no seu universo hoje.
-            </p>
+        <div className="relative flex flex-col items-center gap-6 px-6 py-10 md:py-14">
+          <BrandMark size={200} className="drop-shadow-[0_0_40px_color-mix(in_oklab,var(--brand-magenta)_60%,transparent)]" />
+          <p className="text-center text-sm text-muted-foreground md:text-base">
+            Aqui está o que está acontecendo no seu universo hoje.
+          </p>
 
-            <div className="mt-6 flex flex-wrap gap-2.5">
-              {quickActions.map((q) => {
-                const Icon = q.icon;
-                return (
-                  <button
-                    key={q.label}
-                    type="button"
-                    className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/60 px-4 py-2 text-sm font-medium text-foreground/85 backdrop-blur-xl transition-all hover:border-primary/40 hover:text-foreground"
-                  >
-                    <Icon className="size-4" strokeWidth={2} />
-                    {q.label}
-                  </button>
-                );
-              })}
-            </div>
+          <div className="flex flex-wrap justify-center gap-2.5">
+            {quickActions.map((q) => {
+              const Icon = q.icon;
+              return (
+                <button
+                  key={q.label}
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/60 px-4 py-2 text-sm font-medium text-foreground/85 backdrop-blur-xl transition-all hover:border-primary/40 hover:text-foreground"
+                >
+                  <Icon className="size-4" strokeWidth={2} />
+                  {q.label}
+                </button>
+              );
+            })}
           </div>
-
-          <OrbVisual />
         </div>
       </section>
 
