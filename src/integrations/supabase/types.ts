@@ -1455,6 +1455,7 @@ export type Database = {
         Returns: boolean
       }
       is_revendedor: { Args: { _uid: string }; Returns: boolean }
+      notificar_licencas_expirando: { Args: never; Returns: number }
       reativar_licenca: {
         Args: { _licenca_id: string }
         Returns: {
