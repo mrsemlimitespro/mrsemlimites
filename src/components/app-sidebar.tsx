@@ -13,6 +13,7 @@ import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { BRAND_NAME, BrandMark } from "@/components/brand";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -55,6 +56,16 @@ export function AppSidebar() {
             "0 0 0 1px oklch(1 0 0 / 4%), 0 20px 60px -20px oklch(0 0 0 / 70%), 0 0 40px -6px color-mix(in oklab, var(--brand-magenta) 45%, transparent)",
         }}
       >
+        <Link
+          to="/"
+          aria-label={`${BRAND_NAME} — ir para o dashboard`}
+          className="mb-2 transition-transform duration-200 hover:scale-105"
+        >
+          <BrandMark size={38} />
+        </Link>
+
+        <div className="mb-1 h-px w-6 bg-border/70" aria-hidden />
+
         <nav className="flex flex-col gap-1.5">
           {primaryItems.map((item) => (
             <RailButton key={item.title} item={item} active={isActive(item.url)} />
