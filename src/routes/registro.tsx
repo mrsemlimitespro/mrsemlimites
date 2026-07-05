@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell, Field, inputCls, primaryBtn } from "./login";
 
@@ -12,6 +13,24 @@ export const Route = createFileRoute("/registro")({
   }),
   component: RegistroPage,
 });
+
+const registroSchema = z
+  .object({
+    nome: z.string().trim().min(2, "Informe seu nome completo").max(120),
+    email: z.string().trim().email("E-mail inválido").max(255),
+    telefone: z
+      .string()
+      .trim()
+      .max(30)
+      .optional()
+      .refine((v) => !v || /^[+()\d\s-]{8,}$/.test(v), "Telefone inválido"),
+    password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres").max(72),
+    confirm: z.string(),
+  })
+  .refine((d) => d.password === d.confirm, {
+    message: "As senhas não coincidem.",
+    path: ["confirm"],
+  });
 
 function RegistroPage() {
   const navigate = useNavigate();
@@ -26,11 +45,13 @@ function RegistroPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (password !== confirm) {
-      setError("As senhas não coincidem.");
+    const parsed = registroSchema.safeParse({ nome, email, telefone, password, confirm });
+    if (!parsed.success) {
+      setError(parsed.error.errors[0]?.message ?? "Dados inválidos");
       return;
     }
     setLoading(true);
+
 
     const emailRedirectTo = window.location.origin;
     const { data, error: signUpError } = await supabase.auth.signUp({
