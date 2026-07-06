@@ -144,6 +144,192 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_agents: {
+        Row: {
+          ativo: boolean
+          autor: string | null
+          capabilities: string[] | null
+          categoria: string | null
+          compatibilidade: string[] | null
+          cover_url: string | null
+          created_at: string
+          descricao: string | null
+          descricao_completa: string | null
+          destaque: boolean
+          id: string
+          instrucoes: string | null
+          max_tokens: number | null
+          modelo: string | null
+          nivel: string | null
+          numero: number | null
+          oculto: boolean
+          provedor: string | null
+          subcategoria: string | null
+          system_prompt: string
+          tags: string[] | null
+          temperatura: number | null
+          titulo: string
+          tools: string[] | null
+          updated_at: string
+          uso_count: number
+          versao: string | null
+          visible_mobile: boolean
+        }
+        Insert: {
+          ativo?: boolean
+          autor?: string | null
+          capabilities?: string[] | null
+          categoria?: string | null
+          compatibilidade?: string[] | null
+          cover_url?: string | null
+          created_at?: string
+          descricao?: string | null
+          descricao_completa?: string | null
+          destaque?: boolean
+          id?: string
+          instrucoes?: string | null
+          max_tokens?: number | null
+          modelo?: string | null
+          nivel?: string | null
+          numero?: number | null
+          oculto?: boolean
+          provedor?: string | null
+          subcategoria?: string | null
+          system_prompt: string
+          tags?: string[] | null
+          temperatura?: number | null
+          titulo: string
+          tools?: string[] | null
+          updated_at?: string
+          uso_count?: number
+          versao?: string | null
+          visible_mobile?: boolean
+        }
+        Update: {
+          ativo?: boolean
+          autor?: string | null
+          capabilities?: string[] | null
+          categoria?: string | null
+          compatibilidade?: string[] | null
+          cover_url?: string | null
+          created_at?: string
+          descricao?: string | null
+          descricao_completa?: string | null
+          destaque?: boolean
+          id?: string
+          instrucoes?: string | null
+          max_tokens?: number | null
+          modelo?: string | null
+          nivel?: string | null
+          numero?: number | null
+          oculto?: boolean
+          provedor?: string | null
+          subcategoria?: string | null
+          system_prompt?: string
+          tags?: string[] | null
+          temperatura?: number | null
+          titulo?: string
+          tools?: string[] | null
+          updated_at?: string
+          uso_count?: number
+          versao?: string | null
+          visible_mobile?: boolean
+        }
+        Relationships: []
+      }
+      ai_prompts: {
+        Row: {
+          ativo: boolean
+          autor: string | null
+          categoria: string | null
+          compatibilidade: string[] | null
+          cover_url: string | null
+          created_at: string
+          descricao: string | null
+          destaque: boolean
+          downloads: number
+          id: string
+          mobile_featured: boolean
+          mobile_order: number | null
+          mostrar_premium: boolean
+          mostrar_seguidores: boolean
+          mostrar_tv: boolean
+          nivel: string | null
+          numero: number | null
+          oculto: boolean
+          popularidade: number
+          prompt: string
+          status: string | null
+          subcategoria: string | null
+          tags: string[] | null
+          titulo: string
+          updated_at: string
+          uso_count: number
+          versao: string | null
+          visible_mobile: boolean
+        }
+        Insert: {
+          ativo?: boolean
+          autor?: string | null
+          categoria?: string | null
+          compatibilidade?: string[] | null
+          cover_url?: string | null
+          created_at?: string
+          descricao?: string | null
+          destaque?: boolean
+          downloads?: number
+          id?: string
+          mobile_featured?: boolean
+          mobile_order?: number | null
+          mostrar_premium?: boolean
+          mostrar_seguidores?: boolean
+          mostrar_tv?: boolean
+          nivel?: string | null
+          numero?: number | null
+          oculto?: boolean
+          popularidade?: number
+          prompt: string
+          status?: string | null
+          subcategoria?: string | null
+          tags?: string[] | null
+          titulo: string
+          updated_at?: string
+          uso_count?: number
+          versao?: string | null
+          visible_mobile?: boolean
+        }
+        Update: {
+          ativo?: boolean
+          autor?: string | null
+          categoria?: string | null
+          compatibilidade?: string[] | null
+          cover_url?: string | null
+          created_at?: string
+          descricao?: string | null
+          destaque?: boolean
+          downloads?: number
+          id?: string
+          mobile_featured?: boolean
+          mobile_order?: number | null
+          mostrar_premium?: boolean
+          mostrar_seguidores?: boolean
+          mostrar_tv?: boolean
+          nivel?: string | null
+          numero?: number | null
+          oculto?: boolean
+          popularidade?: number
+          prompt?: string
+          status?: string | null
+          subcategoria?: string | null
+          tags?: string[] | null
+          titulo?: string
+          updated_at?: string
+          uso_count?: number
+          versao?: string | null
+          visible_mobile?: boolean
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           acao: string
@@ -1144,6 +1330,105 @@ export type Database = {
             columns: ["plano_id"]
             isOneToOne: false
             referencedRelation: "planos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_classification_learning: {
+        Row: {
+          categoria_sugerida: string | null
+          confianca: number | null
+          created_at: string
+          features: Json | null
+          id: string
+          prompt_id: string | null
+          subcategoria_sugerida: string | null
+          updated_at: string
+        }
+        Insert: {
+          categoria_sugerida?: string | null
+          confianca?: number | null
+          created_at?: string
+          features?: Json | null
+          id?: string
+          prompt_id?: string | null
+          subcategoria_sugerida?: string | null
+          updated_at?: string
+        }
+        Update: {
+          categoria_sugerida?: string | null
+          confianca?: number | null
+          created_at?: string
+          features?: Json | null
+          id?: string
+          prompt_id?: string | null
+          subcategoria_sugerida?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_classification_learning_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "ai_prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_favorites: {
+        Row: {
+          created_at: string
+          prompt_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          prompt_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          prompt_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_favorites_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "ai_prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_history: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          prompt_id: string
+          user_id: string
+        }
+        Insert: {
+          action?: string
+          created_at?: string
+          id?: string
+          prompt_id: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          prompt_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_history_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "ai_prompts"
             referencedColumns: ["id"]
           },
         ]
