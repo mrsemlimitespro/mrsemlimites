@@ -261,13 +261,15 @@ export function TopBar() {
           </PopoverContent>
         </Popover>
 
-        <IconBadge
-          dot
-          aria-label="Painel administrativo"
-          onClick={() => setAdminOpen(true)}
-        >
-          <Settings className="size-4 md:size-[18px]" strokeWidth={2} />
-        </IconBadge>
+        {isAdminUser && (
+          <IconBadge
+            dot
+            aria-label="Painel administrativo"
+            onClick={() => setAdminOpen(true)}
+          >
+            <Settings className="size-4 md:size-[18px]" strokeWidth={2} />
+          </IconBadge>
+        )}
         <button
           type="button"
           aria-label="Perfil"
