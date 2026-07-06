@@ -145,7 +145,29 @@ function AjustarCreditosPage() {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="glass inline-flex items-center gap-1 rounded-2xl p-1.5">
+        {(["revendedores", "pedidos"] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => setTab(t)}
+            className={cn(
+              "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition",
+              tab === t ? "gradient-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {t === "revendedores" ? <User className="size-4" /> : <Clock className="size-4" />}
+            {t === "revendedores" ? "Revendedores" : "Pedidos aguardando"}
+          </button>
+        ))}
+      </div>
+
+      {tab === "pedidos" ? (
+        <PedidosAguardando />
+      ) : (
       <div className="glass overflow-hidden rounded-2xl">
+
         <div className="grid grid-cols-[minmax(0,1fr)_140px_140px_140px] items-center gap-3 border-b border-white/5 px-5 py-3 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
           <div>Revendedor</div>
           <div className="text-right">Saldo</div>
