@@ -76,7 +76,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#0b0716" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "MR Lova" },
       { title: "MR sem limites" },
       {
         name: "description",
@@ -92,22 +97,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MR sem limites" },
-      { name: "description", content: "MR sem limites — painel premium dark com glassmorphism, gradientes neon e componentes refinados." },
-      { property: "og:description", content: "MR sem limites — painel premium dark com glassmorphism, gradientes neon e componentes refinados." },
       { name: "twitter:description", content: "MR sem limites — painel premium dark com glassmorphism, gradientes neon e componentes refinados." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/dG4KLRailvgZ5C10HZJJbpmtVz13/social-images/social-1783298637986-ChatGPT_Image_5_de_jul._de_2026,_15_34_45.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/dG4KLRailvgZ5C10HZJJbpmtVz13/social-images/social-1783298637986-ChatGPT_Image_5_de_jul._de_2026,_15_34_45.webp" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      {
-        rel: "icon",
-        href: "/__l5e/assets-v1/1bc3d617-832b-4776-8034-4f21ad64a531/mr-sem-limites-logo.png",
-        type: "image/png",
-      },
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "icon", type: "image/png", sizes: "512x512", href: "/icon-512.png" },
+      { rel: "apple-touch-icon", sizes: "512x512", href: "/icon-512.png" },
     ],
   }),
   shellComponent: RootShell,
