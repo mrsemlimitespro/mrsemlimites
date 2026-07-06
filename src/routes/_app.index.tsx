@@ -4,10 +4,6 @@ import {
   MessageSquare,
   Target,
   Users,
-  Store,
-  UserCircle2,
-  Package,
-  Coins,
   UserPlus,
   CreditCard,
   MessageCircle,
@@ -17,6 +13,7 @@ import {
   XCircle,
   Settings,
   ChevronDown,
+  Coins,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useEffect, useState, useCallback } from "react";
