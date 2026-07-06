@@ -210,6 +210,7 @@ function CheckoutPage() {
       });
     }
 
+    playSfx("swipe");
     setPending({
       id: (tx as { id: string }).id,
       valor: Number(tx.valor),
