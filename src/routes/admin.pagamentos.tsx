@@ -796,7 +796,9 @@ function FinanceiroTab() {
   async function load() {
     const { data, error } = await (supabase as any)
       .from("payment_transactions")
-      .select("*")
+      .select(
+        "*, revendedores(nome, email), creditos_packs(nome, quantidade), planos(nome, creditos_incluidos)",
+      )
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) return toast.error(error.message);
