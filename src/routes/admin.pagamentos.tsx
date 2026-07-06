@@ -87,6 +87,13 @@ type Transaction = {
   metodo: string | null;
   cliente_nome: string | null;
   created_at: string;
+  revendedor_id: string | null;
+  pack_id: string | null;
+  plano_id: string | null;
+  creditos_liberados: number;
+  revendedores?: { nome: string | null; email: string | null } | null;
+  creditos_packs?: { nome: string | null; quantidade: number } | null;
+  planos?: { nome: string | null; creditos_incluidos: number | null } | null;
 };
 
 const TABS = [
