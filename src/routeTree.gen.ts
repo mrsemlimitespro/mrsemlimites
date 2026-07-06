@@ -17,6 +17,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
+import { Route as AdminSonsRouteImport } from './routes/admin.sons'
 import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
 import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
 import { Route as AdminPagamentosRouteImport } from './routes/admin.pagamentos'
@@ -73,6 +74,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
   id: '/usuarios',
   path: '/usuarios',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSonsRoute = AdminSonsRouteImport.update({
+  id: '/sons',
+  path: '/sons',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSegurancaRoute = AdminSegurancaRouteImport.update({
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByTo {
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
@@ -241,6 +249,7 @@ export interface FileRoutesById {
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
+  '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/admin/pagamentos'
     | '/admin/personalizacao'
     | '/admin/seguranca'
+    | '/admin/sons'
     | '/admin/usuarios'
     | '/admin/'
     | '/api/public/validar-licenca'
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/admin/pagamentos'
     | '/admin/personalizacao'
     | '/admin/seguranca'
+    | '/admin/sons'
     | '/admin/usuarios'
     | '/'
     | '/admin'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/admin/pagamentos'
     | '/admin/personalizacao'
     | '/admin/seguranca'
+    | '/admin/sons'
     | '/admin/usuarios'
     | '/_app/'
     | '/admin/'
@@ -401,6 +413,13 @@ declare module '@tanstack/react-router' {
       path: '/usuarios'
       fullPath: '/admin/usuarios'
       preLoaderRoute: typeof AdminUsuariosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sons': {
+      id: '/admin/sons'
+      path: '/sons'
+      fullPath: '/admin/sons'
+      preLoaderRoute: typeof AdminSonsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/seguranca': {
@@ -562,6 +581,7 @@ interface AdminRouteChildren {
   AdminPagamentosRoute: typeof AdminPagamentosRoute
   AdminPersonalizacaoRoute: typeof AdminPersonalizacaoRoute
   AdminSegurancaRoute: typeof AdminSegurancaRoute
+  AdminSonsRoute: typeof AdminSonsRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -576,6 +596,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPagamentosRoute: AdminPagamentosRoute,
   AdminPersonalizacaoRoute: AdminPersonalizacaoRoute,
   AdminSegurancaRoute: AdminSegurancaRoute,
+  AdminSonsRoute: AdminSonsRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
