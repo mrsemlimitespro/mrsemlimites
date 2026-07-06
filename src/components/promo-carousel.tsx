@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { playSfx } from "@/lib/sfx";
 
 type Banner = {
   id: string;
@@ -48,6 +49,7 @@ export function PromoCarousel() {
 
   return (
     <section
+      onMouseEnter={() => playSfx("level-up", 1500)}
       className="relative overflow-hidden rounded-2xl border border-border/60 bg-surface/40 py-4"
       style={{
         maskImage:

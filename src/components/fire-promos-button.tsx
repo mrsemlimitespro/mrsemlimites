@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Flame, Sparkles, ChevronRight } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { playSfx } from "@/lib/sfx";
 import {
   Sheet,
   SheetContent,
@@ -71,6 +72,16 @@ export function FirePromosButton() {
   }, []);
 
   const badge = useMemo(() => promos.length, [promos]);
+
+  // Toca "notification" quando surge nova promoção ativa (badge 0 → >0
+  // ou aumenta enquanto o cliente está no painel).
+  const prevBadgeRef = useRef(0);
+  useEffect(() => {
+    if (badge > prevBadgeRef.current) {
+      playSfx("notification", 2000);
+    }
+    prevBadgeRef.current = badge;
+  }, [badge]);
 
   // Sem promoções ativas → botão some completamente
   if (badge === 0) return null;

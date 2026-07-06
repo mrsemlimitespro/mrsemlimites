@@ -12,6 +12,7 @@ import {
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
+import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BRAND_NAME, BrandMark } from "@/components/brand";
 
@@ -102,6 +103,7 @@ function RailButton({ item, active }: { item: NavItem; active: boolean }) {
         <Link
           to={item.url}
           aria-label={item.title}
+          onClick={() => playSfx("click")}
           className={cn(
             "group relative grid size-11 place-items-center rounded-full transition-all duration-200",
             "text-foreground/60 hover:text-foreground",
