@@ -3,6 +3,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell, Field, inputCls, primaryBtn } from "./login";
+import { PasswordInput, SocialSignIn } from "@/components/auth-extras";
 
 export const Route = createFileRoute("/registro")({
   head: () => ({
