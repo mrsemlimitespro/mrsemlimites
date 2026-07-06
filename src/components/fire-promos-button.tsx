@@ -17,6 +17,7 @@ type Promocao = {
   descricao: string | null;
   imagem_url: string | null;
   desconto_percentual: number | null;
+  inicio: string | null;
   fim: string | null;
   plano_id: string | null;
   pack_id: string | null;
