@@ -90,12 +90,15 @@ export function AppSidebar() {
                 title={item.title}
                 icon={item.icon}
                 variant={item.action === "logout" ? "danger" : "muted"}
+                onClick={item.action === "logout" ? () => setLogoutOpen(true) : undefined}
               />
             );
           })}
         </div>
       </aside>
     </TooltipProvider>
+    <LogoutIncentiveDialog open={logoutOpen} onOpenChange={setLogoutOpen} />
+    </>
   );
 }
 
