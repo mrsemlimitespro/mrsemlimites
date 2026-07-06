@@ -103,6 +103,7 @@ function RailButton({ item, active }: { item: NavItem; active: boolean }) {
         <Link
           to={item.url}
           aria-label={item.title}
+          onClick={() => playSfx("click")}
           className={cn(
             "group relative grid size-11 place-items-center rounded-full transition-all duration-200",
             "text-foreground/60 hover:text-foreground",
