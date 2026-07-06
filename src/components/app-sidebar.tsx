@@ -147,10 +147,12 @@ function RailAction({
   title,
   icon: Icon,
   variant = "muted",
+  onClick,
 }: {
   title: string;
   icon: IconType;
   variant?: "muted" | "danger";
+  onClick?: () => void;
 }) {
   return (
     <Tooltip>
@@ -158,6 +160,7 @@ function RailAction({
         <button
           type="button"
           aria-label={title}
+          onClick={onClick}
           className={cn(
             "grid size-11 place-items-center rounded-full transition-all duration-200",
             "text-foreground/55 hover:text-foreground hover:bg-white/5",
