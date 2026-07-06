@@ -47,7 +47,7 @@ export function MobileBottomNav() {
           <Link
             key={item.url}
             to={item.url}
-            onClick={() => playSfx("click")}
+            onClick={() => playSfx("swipe")}
             aria-label={item.title}
             className={cn(
               "relative grid flex-1 place-items-center gap-0.5 rounded-full px-2 py-1.5 transition-all",

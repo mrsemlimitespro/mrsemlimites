@@ -5,6 +5,7 @@ import { AlertTriangle, Bell, CheckCircle2, Loader2, ShoppingCart } from "lucide
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell, primaryBtn } from "./login";
 import { cn } from "@/lib/utils";
+import { playSfx } from "@/lib/sfx";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -209,6 +210,7 @@ function CheckoutPage() {
       });
     }
 
+    playSfx("swipe");
     setPending({
       id: (tx as { id: string }).id,
       valor: Number(tx.valor),

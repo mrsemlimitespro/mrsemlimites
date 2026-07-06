@@ -49,7 +49,7 @@ export function PromoCarousel() {
 
   return (
     <section
-      onMouseEnter={() => playSfx("level-up", 1500)}
+      onMouseEnter={() => playSfx("coin", 1500)}
       className="relative overflow-hidden rounded-2xl border border-border/60 bg-surface/40 py-4"
       style={{
         maskImage:
