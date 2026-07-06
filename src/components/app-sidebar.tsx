@@ -11,7 +11,9 @@ import {
   LogOut,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
+import { toast } from "sonner";
 
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
