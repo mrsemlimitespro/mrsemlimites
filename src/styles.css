@@ -372,3 +372,54 @@ div[style*="Edit with Lovable"],
   z-index: -9999 !important;
 }
 
+
+/* =====================================================================
+ * AI Modules — tokens `ai-*` para AI Prompts e AI Agents (migração
+ * do Link MR Store Pro). Tema default usa magenta/rose (harmoniza com o
+ * brand warm do MR Sem Limites); `data-ai-theme="agents"` alterna para
+ * cyan/blue/violet.
+ * ===================================================================== */
+
+@theme inline {
+  --color-ai-50: var(--ai-50);
+  --color-ai-100: var(--ai-100);
+  --color-ai-200: var(--ai-200);
+  --color-ai-300: var(--ai-300);
+  --color-ai-400: var(--ai-400);
+  --color-ai-500: var(--ai-500);
+  --color-ai-600: var(--ai-600);
+  --color-ai-700: var(--ai-700);
+}
+
+:root {
+  --ai-50: oklch(0.97 0.03 350);
+  --ai-100: oklch(0.92 0.08 350);
+  --ai-200: oklch(0.84 0.14 350);
+  --ai-300: oklch(0.75 0.22 350);
+  --ai-400: oklch(0.68 0.26 345);
+  --ai-500: oklch(0.62 0.28 340);
+  --ai-600: oklch(0.52 0.24 340);
+  --ai-700: oklch(0.42 0.20 340);
+}
+
+[data-ai-theme="prompts"] {
+  --ai-50: oklch(0.97 0.03 350);
+  --ai-100: oklch(0.92 0.08 350);
+  --ai-200: oklch(0.84 0.14 350);
+  --ai-300: oklch(0.75 0.22 350);
+  --ai-400: oklch(0.68 0.26 345);
+  --ai-500: oklch(0.62 0.28 340);
+  --ai-600: oklch(0.52 0.24 340);
+  --ai-700: oklch(0.42 0.20 340);
+}
+
+[data-ai-theme="agents"] {
+  --ai-50: oklch(0.97 0.02 240);
+  --ai-100: oklch(0.90 0.06 240);
+  --ai-200: oklch(0.82 0.12 240);
+  --ai-300: oklch(0.72 0.18 245);
+  --ai-400: oklch(0.66 0.22 250);
+  --ai-500: oklch(0.58 0.24 260);
+  --ai-600: oklch(0.48 0.22 265);
+  --ai-700: oklch(0.38 0.18 270);
+}
