@@ -7,6 +7,7 @@ import { FirePromosButton } from "@/components/fire-promos-button";
 import { SoftParticles } from "@/components/soft-particles";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { WatermarkFooter } from "@/components/watermark-footer";
+import { InnerPillMenu } from "@/components/inner-pill-menu";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -27,9 +28,11 @@ function AppLayout() {
         </main>
       </div>
       <FirePromosButton />
+      <InnerPillMenu />
       <MobileBottomNav />
       <PwaInstallPrompt />
       <WatermarkFooter />
     </div>
   );
 }
+

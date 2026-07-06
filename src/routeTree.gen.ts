@@ -29,11 +29,14 @@ import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
 import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
+import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
+import { Route as AppPacksRouteImport } from './routes/_app.packs'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
 import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
 import { Route as AppClientesRouteImport } from './routes/_app.clientes'
 import { Route as AppAulasRouteImport } from './routes/_app.aulas'
+import { Route as AppAgentsRouteImport } from './routes/_app.agents'
 import { Route as ApiPublicValidarLicencaRouteImport } from './routes/api/public/validar-licenca'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
@@ -138,9 +141,19 @@ const AdminResourceRoute = AdminResourceRouteImport.update({
   path: '/$resource',
   getParentRoute: () => AdminRoute,
 } as any)
+const AppPromptsRoute = AppPromptsRouteImport.update({
+  id: '/prompts',
+  path: '/prompts',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPerfilRoute = AppPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPacksRoute = AppPacksRouteImport.update({
+  id: '/packs',
+  path: '/packs',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLicencasRoute = AppLicencasRouteImport.update({
@@ -161,6 +174,11 @@ const AppClientesRoute = AppClientesRouteImport.update({
 const AppAulasRoute = AppAulasRouteImport.update({
   id: '/aulas',
   path: '/aulas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgentsRoute = AppAgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
   getParentRoute: () => AppRoute,
 } as any)
 const ApiPublicValidarLicencaRoute = ApiPublicValidarLicencaRouteImport.update({
@@ -193,11 +211,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/agents': typeof AppAgentsRoute
   '/aulas': typeof AppAulasRoute
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
   '/licencas': typeof AppLicencasRoute
+  '/packs': typeof AppPacksRoute
   '/perfil': typeof AppPerfilRoute
+  '/prompts': typeof AppPromptsRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -221,11 +242,14 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/agents': typeof AppAgentsRoute
   '/aulas': typeof AppAulasRoute
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
   '/licencas': typeof AppLicencasRoute
+  '/packs': typeof AppPacksRoute
   '/perfil': typeof AppPerfilRoute
+  '/prompts': typeof AppPromptsRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -253,11 +277,14 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_app/agents': typeof AppAgentsRoute
   '/_app/aulas': typeof AppAulasRoute
   '/_app/clientes': typeof AppClientesRoute
   '/_app/creditos': typeof AppCreditosRoute
   '/_app/licencas': typeof AppLicencasRoute
+  '/_app/packs': typeof AppPacksRoute
   '/_app/perfil': typeof AppPerfilRoute
+  '/_app/prompts': typeof AppPromptsRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -286,11 +313,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/registro'
     | '/reset-password'
+    | '/agents'
     | '/aulas'
     | '/clientes'
     | '/creditos'
     | '/licencas'
+    | '/packs'
     | '/perfil'
+    | '/prompts'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -314,11 +344,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/registro'
     | '/reset-password'
+    | '/agents'
     | '/aulas'
     | '/clientes'
     | '/creditos'
     | '/licencas'
+    | '/packs'
     | '/perfil'
+    | '/prompts'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -345,11 +378,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/registro'
     | '/reset-password'
+    | '/_app/agents'
     | '/_app/aulas'
     | '/_app/clientes'
     | '/_app/creditos'
     | '/_app/licencas'
+    | '/_app/packs'
     | '/_app/perfil'
+    | '/_app/prompts'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -525,11 +561,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResourceRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_app/prompts': {
+      id: '/_app/prompts'
+      path: '/prompts'
+      fullPath: '/prompts'
+      preLoaderRoute: typeof AppPromptsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/perfil': {
       id: '/_app/perfil'
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/packs': {
+      id: '/_app/packs'
+      path: '/packs'
+      fullPath: '/packs'
+      preLoaderRoute: typeof AppPacksRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/licencas': {
@@ -558,6 +608,13 @@ declare module '@tanstack/react-router' {
       path: '/aulas'
       fullPath: '/aulas'
       preLoaderRoute: typeof AppAulasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/agents': {
+      id: '/_app/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AppAgentsRouteImport
       parentRoute: typeof AppRoute
     }
     '/api/public/validar-licenca': {
@@ -592,20 +649,26 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAgentsRoute: typeof AppAgentsRoute
   AppAulasRoute: typeof AppAulasRoute
   AppClientesRoute: typeof AppClientesRoute
   AppCreditosRoute: typeof AppCreditosRoute
   AppLicencasRoute: typeof AppLicencasRoute
+  AppPacksRoute: typeof AppPacksRoute
   AppPerfilRoute: typeof AppPerfilRoute
+  AppPromptsRoute: typeof AppPromptsRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAgentsRoute: AppAgentsRoute,
   AppAulasRoute: AppAulasRoute,
   AppClientesRoute: AppClientesRoute,
   AppCreditosRoute: AppCreditosRoute,
   AppLicencasRoute: AppLicencasRoute,
+  AppPacksRoute: AppPacksRoute,
   AppPerfilRoute: AppPerfilRoute,
+  AppPromptsRoute: AppPromptsRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
