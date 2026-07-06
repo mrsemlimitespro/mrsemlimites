@@ -1,0 +1,16 @@
+{
+  "name": "MR sem limites",
+  "short_name": "MR Lova",
+  "description": "MR sem limites — painel premium dark com glassmorphism, gradientes neon e componentes refinados.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0716",
+  "theme_color": "#0b0716",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
