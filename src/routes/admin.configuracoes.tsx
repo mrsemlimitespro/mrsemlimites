@@ -141,6 +141,14 @@ function ConfiguracoesPage() {
         </div>
       </section>
 
+      <ExtensionUploadSection
+        url={values.extension_url ?? ""}
+        filename={values.extension_filename ?? ""}
+        onChange={(u, f) =>
+          setValues((v) => ({ ...v, extension_url: u, extension_filename: f }))
+        }
+      />
+
       <section className="glass space-y-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
           <div>
