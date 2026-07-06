@@ -245,8 +245,3 @@ function RailAction({
     </Tooltip>
   );
 }
-        {title}
-      </TooltipContent>
-    </Tooltip>
-  );
-}
