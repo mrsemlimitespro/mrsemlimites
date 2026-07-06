@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   KeyRound,
@@ -47,6 +47,21 @@ export function AppSidebar() {
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (mounted) setUserEmail(data.user?.email ?? null);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      if (mounted) setUserEmail(s?.user?.email ?? null);
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <>
@@ -86,14 +101,27 @@ export function AppSidebar() {
             if ("url" in item) {
               return <RailButton key={item.title} item={item} active={isActive(item.url)} />;
             }
+            const isLogout = item.action === "logout";
             return (
               <RailAction
                 key={item.title}
                 title={item.title}
+                tooltip={
+                  isLogout && userEmail ? (
+                    <div className="flex flex-col gap-0.5">
+                      <span>{item.title}</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {userEmail}
+                      </span>
+                    </div>
+                  ) : (
+                    item.title
+                  )
+                }
                 icon={item.icon}
-                variant={item.action === "logout" ? "danger" : "muted"}
+                variant={isLogout ? "danger" : "muted"}
                 onClick={
-                  item.action === "logout"
+                  isLogout
                     ? () => setLogoutOpen(true)
                     : item.action === "extension"
                     ? () => void downloadExtension()
@@ -184,11 +212,13 @@ function RailButton({ item, active }: { item: NavItem; active: boolean }) {
 
 function RailAction({
   title,
+  tooltip,
   icon: Icon,
   variant = "muted",
   onClick,
 }: {
   title: string;
+  tooltip?: React.ReactNode;
   icon: IconType;
   variant?: "muted" | "danger";
   onClick?: () => void;
@@ -210,7 +240,7 @@ function RailAction({
         </button>
       </TooltipTrigger>
       <TooltipContent side="right" sideOffset={12}>
-        {title}
+        {tooltip ?? title}
       </TooltipContent>
     </Tooltip>
   );

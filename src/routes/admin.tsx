@@ -210,6 +210,16 @@ function AdminShell() {
               </div>
             )}
             <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start gap-2 text-foreground/90 hover:text-foreground"
+            >
+              <Link to="/">
+                <LayoutDashboard className="size-4" /> Painel do Cliente
+              </Link>
+            </Button>
+            <Button
               variant="ghost"
               size="sm"
               className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
