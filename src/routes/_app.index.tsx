@@ -51,7 +51,7 @@ const innerMenu: MenuItem[] = [
   { label: "Loja", icon: Store },
   { label: "Prompts", icon: UserCircle2 },
   { label: "\n", icon: Package },
-  { label: "Créditos", icon: Coins },
+  { label: "Packs", icon: Coins },
 ];
 
 type Metrics = {
