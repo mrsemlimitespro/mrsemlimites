@@ -2,13 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Coins, Loader2, Minus, Plus, Search, User } from "lucide-react";
+import { CheckCircle2, Clock, Coins, Loader2, Minus, Plus, Search, User } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +21,7 @@ import {
 export const Route = createFileRoute("/admin/ajustar-creditos")({
   component: AjustarCreditosPage,
 });
+
 
 type Revendedor = {
   id: string;
