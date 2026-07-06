@@ -366,6 +366,8 @@ export type Database = {
       creditos_packs: {
         Row: {
           ativo: boolean
+          badge: string | null
+          cor_gradiente: string | null
           created_at: string
           descricao: string | null
           id: string
@@ -377,6 +379,8 @@ export type Database = {
         }
         Insert: {
           ativo?: boolean
+          badge?: string | null
+          cor_gradiente?: string | null
           created_at?: string
           descricao?: string | null
           id?: string
@@ -388,6 +392,8 @@ export type Database = {
         }
         Update: {
           ativo?: boolean
+          badge?: string | null
+          cor_gradiente?: string | null
           created_at?: string
           descricao?: string | null
           id?: string
@@ -995,11 +1001,14 @@ export type Database = {
       planos: {
         Row: {
           ativo: boolean
+          badge: string | null
+          cor_gradiente: string | null
           created_at: string
           creditos_incluidos: number
           descricao: string | null
           duracao_dias: number
           id: string
+          imagem_url: string | null
           nome: string
           preco: number
           tipo: string
@@ -1007,11 +1016,14 @@ export type Database = {
         }
         Insert: {
           ativo?: boolean
+          badge?: string | null
+          cor_gradiente?: string | null
           created_at?: string
           creditos_incluidos?: number
           descricao?: string | null
           duracao_dias?: number
           id?: string
+          imagem_url?: string | null
           nome: string
           preco?: number
           tipo: string
@@ -1019,11 +1031,14 @@ export type Database = {
         }
         Update: {
           ativo?: boolean
+          badge?: string | null
+          cor_gradiente?: string | null
           created_at?: string
           creditos_incluidos?: number
           descricao?: string | null
           duracao_dias?: number
           id?: string
+          imagem_url?: string | null
           nome?: string
           preco?: number
           tipo?: string
