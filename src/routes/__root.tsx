@@ -91,6 +91,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MR sem limites" },
+      { name: "description", content: "MR sem limites — painel premium dark com glassmorphism, gradientes neon e componentes refinados." },
+      { property: "og:description", content: "MR sem limites — painel premium dark com glassmorphism, gradientes neon e componentes refinados." },
+      { name: "twitter:description", content: "MR sem limites — painel premium dark com glassmorphism, gradientes neon e componentes refinados." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/dG4KLRailvgZ5C10HZJJbpmtVz13/social-images/social-1783298637986-ChatGPT_Image_5_de_jul._de_2026,_15_34_45.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/dG4KLRailvgZ5C10HZJJbpmtVz13/social-images/social-1783298637986-ChatGPT_Image_5_de_jul._de_2026,_15_34_45.webp" },
     ],
     links: [
       {
