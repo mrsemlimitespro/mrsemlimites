@@ -87,6 +87,13 @@ type Transaction = {
   metodo: string | null;
   cliente_nome: string | null;
   created_at: string;
+  revendedor_id: string | null;
+  pack_id: string | null;
+  plano_id: string | null;
+  creditos_liberados: number;
+  revendedores?: { nome: string | null; email: string | null } | null;
+  creditos_packs?: { nome: string | null; quantidade: number } | null;
+  planos?: { nome: string | null; creditos_incluidos: number | null } | null;
 };
 
 const TABS = [
@@ -789,7 +796,9 @@ function FinanceiroTab() {
   async function load() {
     const { data, error } = await (supabase as any)
       .from("payment_transactions")
-      .select("*")
+      .select(
+        "*, revendedores(nome, email), creditos_packs(nome, quantidade), planos(nome, creditos_incluidos)",
+      )
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) return toast.error(error.message);
@@ -904,40 +913,58 @@ function FinanceiroTab() {
             Nenhuma transação registrada.
           </div>
         ) : (
-          <div className="mt-4 overflow-hidden rounded-xl border border-white/5">
+          <div className="mt-4 overflow-x-auto rounded-xl border border-white/5">
             <table className="w-full text-sm">
               <thead className="bg-white/[0.03] text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                 <tr>
-                  <th className="px-4 py-2">Cliente</th>
+                  <th className="px-4 py-2">Login do cliente</th>
+                  <th className="px-4 py-2">Pacote / Créditos</th>
                   <th className="px-4 py-2">Gateway</th>
-                  <th className="px-4 py-2">Método</th>
                   <th className="px-4 py-2">Status</th>
                   <th className="px-4 py-2 text-right">Valor</th>
                   <th className="px-4 py-2">Data</th>
                 </tr>
               </thead>
               <tbody>
-                {txs.map((t) => (
-                  <tr
-                    key={t.id}
-                    onClick={() => setSelected(t)}
-                    className="cursor-pointer border-t border-white/5 transition-colors hover:bg-white/[0.04]"
-                  >
-                    <td className="px-4 py-2">{t.cliente_nome ?? "—"}</td>
-                    <td className="px-4 py-2 capitalize">{t.gateway_slug}</td>
-                    <td className="px-4 py-2">{t.metodo ?? "—"}</td>
-                    <td className="px-4 py-2 capitalize">{t.status}</td>
-                    <td className="px-4 py-2 text-right">
-                      {Number(t.valor).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </td>
-                    <td className="px-4 py-2 text-xs text-muted-foreground">
-                      {new Date(t.created_at).toLocaleString("pt-BR")}
-                    </td>
-                  </tr>
-                ))}
+                {txs.map((t) => {
+                  const email = t.revendedores?.email || t.cliente_nome || "—";
+                  const nome = t.revendedores?.nome || "";
+                  const pack = t.creditos_packs;
+                  const plano = t.planos;
+                  const pacoteLabel = pack
+                    ? `${pack.nome ?? "Pack"} · ${pack.quantidade} créd.`
+                    : plano
+                    ? `${plano.nome ?? "Plano"} · ${plano.creditos_incluidos ?? 0} créd.`
+                    : t.creditos_liberados
+                    ? `${t.creditos_liberados} créditos`
+                    : "—";
+                  return (
+                    <tr
+                      key={t.id}
+                      onClick={() => setSelected(t)}
+                      className="cursor-pointer border-t border-white/5 transition-colors hover:bg-white/[0.04]"
+                    >
+                      <td className="px-4 py-2">
+                        <div className="font-medium">{email}</div>
+                        {nome ? (
+                          <div className="text-[11px] text-muted-foreground">{nome}</div>
+                        ) : null}
+                      </td>
+                      <td className="px-4 py-2 text-xs">{pacoteLabel}</td>
+                      <td className="px-4 py-2 capitalize">{t.gateway_slug}</td>
+                      <td className="px-4 py-2 capitalize">{t.status}</td>
+                      <td className="px-4 py-2 text-right">
+                        {Number(t.valor).toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </td>
+                      <td className="px-4 py-2 text-xs text-muted-foreground">
+                        {new Date(t.created_at).toLocaleString("pt-BR")}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -994,7 +1021,28 @@ function TransactionDrawer({
         {tx ? (
           <div className="mt-6 max-h-[calc(100vh-8rem)] space-y-5 overflow-auto pr-1">
             <dl className="grid grid-cols-2 gap-3 text-sm">
-              <Field2 label="Cliente" value={tx.cliente_nome ?? "—"} />
+              <Field2
+                label="Login (cliente)"
+                value={tx.revendedores?.email ?? tx.cliente_nome ?? "—"}
+              />
+              <Field2 label="Nome" value={tx.revendedores?.nome ?? "—"} />
+              <Field2
+                label="Pacote"
+                value={
+                  tx.creditos_packs?.nome ??
+                  tx.planos?.nome ??
+                  (tx.creditos_liberados ? `${tx.creditos_liberados} créditos` : "—")
+                }
+              />
+              <Field2
+                label="Créditos"
+                value={String(
+                  tx.creditos_packs?.quantidade ??
+                    tx.planos?.creditos_incluidos ??
+                    tx.creditos_liberados ??
+                    0,
+                )}
+              />
               <Field2 label="Gateway" value={tx.gateway_slug ?? "—"} />
               <Field2 label="Método" value={tx.metodo ?? "—"} />
               <Field2 label="Status" value={tx.status ?? "—"} />
@@ -1005,11 +1053,10 @@ function TransactionDrawer({
                   currency: "BRL",
                 })}
               />
-              <Field2
-                label="Criado em"
-                value={new Date(tx.created_at).toLocaleString("pt-BR")}
-              />
             </dl>
+
+            <EnviarLicencaSection tx={tx} />
+
 
             <div>
               <h4 className="text-sm font-semibold">Eventos de webhook</h4>
@@ -1069,3 +1116,105 @@ function Field2({ label, value }: { label: string; value: string }) {
   );
 }
 
+
+function EnviarLicencaSection({ tx }: { tx: Transaction }) {
+  const [chave, setChave] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [licencasDisp, setLicencasDisp] = useState<
+    Array<{ id: string; chave: string; status: string }>
+  >([]);
+
+  useEffect(() => {
+    (supabase as any)
+      .from("licencas")
+      .select("id, chave, status")
+      .is("email", null)
+      .eq("status", "ativa")
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .then(({ data }: { data: typeof licencasDisp }) => setLicencasDisp(data ?? []));
+  }, [tx.id]);
+
+  async function enviar() {
+    const key = chave.trim().toUpperCase();
+    if (!key) {
+      toast.error("Informe a chave da licença.");
+      return;
+    }
+    const email = tx.revendedores?.email ?? tx.cliente_nome ?? null;
+    if (!email) {
+      toast.error("Transação sem e-mail do cliente.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const { data: lic, error: findErr } = await (supabase as any)
+        .from("licencas")
+        .select("id, duracao_dias")
+        .eq("chave", key)
+        .maybeSingle();
+      if (findErr) throw findErr;
+      if (!lic) throw new Error("Chave não encontrada no estoque.");
+      const dias = lic.duracao_dias ?? 30;
+      const expira = new Date(Date.now() + dias * 86400000).toISOString();
+      const { error: updErr } = await (supabase as any)
+        .from("licencas")
+        .update({
+          email: email.toLowerCase(),
+          revendedor_id: tx.revendedor_id,
+          status: "ativa",
+          ativada_em: new Date().toISOString(),
+          expira_em: expira,
+        })
+        .eq("id", lic.id);
+      if (updErr) throw updErr;
+      await (supabase as any).from("notificacoes").insert({
+        titulo: "Licença liberada",
+        mensagem: `Sua chave ${key} foi liberada. Válida por ${dias} dias.`,
+        tipo: "sucesso",
+        destino: "revendedor",
+        categoria: "licenca",
+        revendedor_id: tx.revendedor_id,
+        link: "/licencas",
+      });
+      toast.success("Licença enviada ao cliente.");
+      setChave("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao enviar licença.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-primary/30 bg-primary/[0.04] p-4">
+      <h4 className="text-sm font-semibold">Liberar código para o cliente</h4>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Escolha uma chave do estoque e envie para o e-mail do comprador.
+      </p>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <Input
+          value={chave}
+          onChange={(e) => setChave(e.target.value)}
+          placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+          list="licencas-estoque"
+          className="uppercase"
+        />
+        <datalist id="licencas-estoque">
+          {licencasDisp.map((l) => (
+            <option key={l.id} value={l.chave} />
+          ))}
+        </datalist>
+        <Button onClick={enviar} disabled={saving}>
+          {saving ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
+          Enviar licença
+        </Button>
+      </div>
+      {licencasDisp.length > 0 && (
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          {licencasDisp.length} chave(s) disponíveis no estoque.
+        </p>
+      )}
+    </div>
+  );
+}
