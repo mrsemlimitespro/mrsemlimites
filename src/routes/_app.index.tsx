@@ -49,8 +49,8 @@ type Kpi = {
 type MenuItem = { label: string; icon: IconType };
 const innerMenu: MenuItem[] = [
   { label: "Loja", icon: Store },
-  { label: "Meus Clientes", icon: UserCircle2 },
-  { label: "Meu Estoque", icon: Package },
+  { label: "Prompts", icon: UserCircle2 },
+  { label: "\n", icon: Package },
   { label: "Créditos", icon: Coins },
 ];
 
