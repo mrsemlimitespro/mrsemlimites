@@ -18,6 +18,7 @@ import {
   CreditCard,
   Coins,
   Sparkles,
+  Volume2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -106,6 +107,7 @@ const specialLinks: SpecialLink[] = [
   { key: "configuracoes", to: "/admin/configuracoes", label: "Configurações Gerais", icon: Settings2 },
   { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette },
   { key: "animacoes", to: "/admin/animacoes", label: "Animações", icon: Sparkles },
+  { key: "sons", to: "/admin/sons", label: "Sons", icon: Volume2 },
   { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle },
   { key: "loja", to: "/admin/loja", label: "Loja", icon: Store },
   { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard },
