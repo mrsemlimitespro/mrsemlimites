@@ -913,40 +913,58 @@ function FinanceiroTab() {
             Nenhuma transação registrada.
           </div>
         ) : (
-          <div className="mt-4 overflow-hidden rounded-xl border border-white/5">
+          <div className="mt-4 overflow-x-auto rounded-xl border border-white/5">
             <table className="w-full text-sm">
               <thead className="bg-white/[0.03] text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                 <tr>
-                  <th className="px-4 py-2">Cliente</th>
+                  <th className="px-4 py-2">Login do cliente</th>
+                  <th className="px-4 py-2">Pacote / Créditos</th>
                   <th className="px-4 py-2">Gateway</th>
-                  <th className="px-4 py-2">Método</th>
                   <th className="px-4 py-2">Status</th>
                   <th className="px-4 py-2 text-right">Valor</th>
                   <th className="px-4 py-2">Data</th>
                 </tr>
               </thead>
               <tbody>
-                {txs.map((t) => (
-                  <tr
-                    key={t.id}
-                    onClick={() => setSelected(t)}
-                    className="cursor-pointer border-t border-white/5 transition-colors hover:bg-white/[0.04]"
-                  >
-                    <td className="px-4 py-2">{t.cliente_nome ?? "—"}</td>
-                    <td className="px-4 py-2 capitalize">{t.gateway_slug}</td>
-                    <td className="px-4 py-2">{t.metodo ?? "—"}</td>
-                    <td className="px-4 py-2 capitalize">{t.status}</td>
-                    <td className="px-4 py-2 text-right">
-                      {Number(t.valor).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </td>
-                    <td className="px-4 py-2 text-xs text-muted-foreground">
-                      {new Date(t.created_at).toLocaleString("pt-BR")}
-                    </td>
-                  </tr>
-                ))}
+                {txs.map((t) => {
+                  const email = t.revendedores?.email || t.cliente_nome || "—";
+                  const nome = t.revendedores?.nome || "";
+                  const pack = t.creditos_packs;
+                  const plano = t.planos;
+                  const pacoteLabel = pack
+                    ? `${pack.nome ?? "Pack"} · ${pack.quantidade} créd.`
+                    : plano
+                    ? `${plano.nome ?? "Plano"} · ${plano.creditos_incluidos ?? 0} créd.`
+                    : t.creditos_liberados
+                    ? `${t.creditos_liberados} créditos`
+                    : "—";
+                  return (
+                    <tr
+                      key={t.id}
+                      onClick={() => setSelected(t)}
+                      className="cursor-pointer border-t border-white/5 transition-colors hover:bg-white/[0.04]"
+                    >
+                      <td className="px-4 py-2">
+                        <div className="font-medium">{email}</div>
+                        {nome ? (
+                          <div className="text-[11px] text-muted-foreground">{nome}</div>
+                        ) : null}
+                      </td>
+                      <td className="px-4 py-2 text-xs">{pacoteLabel}</td>
+                      <td className="px-4 py-2 capitalize">{t.gateway_slug}</td>
+                      <td className="px-4 py-2 capitalize">{t.status}</td>
+                      <td className="px-4 py-2 text-right">
+                        {Number(t.valor).toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </td>
+                      <td className="px-4 py-2 text-xs text-muted-foreground">
+                        {new Date(t.created_at).toLocaleString("pt-BR")}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
