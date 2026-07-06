@@ -39,14 +39,19 @@ export function FirePromosButton() {
   useEffect(() => {
     let alive = true;
     async function load() {
+      const nowIso = new Date().toISOString();
       const { data } = await supabase
         .from("promocoes")
-        .select("id,titulo,descricao,imagem_url,desconto_percentual,fim,plano_id,pack_id,link")
+        .select("id,titulo,descricao,imagem_url,desconto_percentual,inicio,fim,plano_id,pack_id,link")
         .eq("ativo", true)
+        .or(`inicio.is.null,inicio.lte.${nowIso}`)
+        .or(`fim.is.null,fim.gte.${nowIso}`)
         .order("created_at", { ascending: false });
       if (alive) setPromos((data as Promocao[]) ?? []);
     }
     load();
+    // re-check a cada minuto (para expirar sozinho quando `fim` passar)
+    const t = window.setInterval(load, 60_000);
 
     const ch = supabase
       .channel("promocoes-live")
@@ -59,11 +64,15 @@ export function FirePromosButton() {
 
     return () => {
       alive = false;
+      window.clearInterval(t);
       supabase.removeChannel(ch);
     };
   }, []);
 
   const badge = useMemo(() => promos.length, [promos]);
+
+  // Sem promoções ativas → botão some completamente
+  if (badge === 0) return null;
 
   function handleClick(p: Promocao) {
     setOpen(false);
