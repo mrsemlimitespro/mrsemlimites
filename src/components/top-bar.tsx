@@ -33,20 +33,40 @@ function timeAgo(iso: string) {
   return `há ${d}d`;
 }
 
+const ADMIN_EMAIL_PREFIX = "rogeriocftv.mr";
+
 export function TopBar() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [notifs, setNotifs] = useState<Notif[]>([]);
   const [loading, setLoading] = useState(false);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  const [isAdminUser, setIsAdminUser] = useState(false);
 
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (mounted) setSignedIn(!!data.session);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      setSignedIn(!!s);
-    });
+    async function check(session: any) {
+      if (!mounted) return;
+      setSignedIn(!!session);
+      if (!session?.user) {
+        setIsAdminUser(false);
+        return;
+      }
+      const email: string = (session.user.email || "").toLowerCase();
+      const emailMatch =
+        email.startsWith(ADMIN_EMAIL_PREFIX + "@") ||
+        email.split("@")[0] === ADMIN_EMAIL_PREFIX;
+      let hasAdmin = false;
+      try {
+        const { data } = await supabase.rpc("has_role", {
+          _user_id: session.user.id,
+          _role: "admin" as any,
+        });
+        hasAdmin = !!data;
+      } catch {}
+      if (mounted) setIsAdminUser(emailMatch || hasAdmin);
+    }
+    supabase.auth.getSession().then(({ data }) => check(data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => check(s));
     return () => {
       mounted = false;
       sub.subscription.unsubscribe();
@@ -241,13 +261,15 @@ export function TopBar() {
           </PopoverContent>
         </Popover>
 
-        <IconBadge
-          dot
-          aria-label="Painel administrativo"
-          onClick={() => setAdminOpen(true)}
-        >
-          <Settings className="size-4 md:size-[18px]" strokeWidth={2} />
-        </IconBadge>
+        {isAdminUser && (
+          <IconBadge
+            dot
+            aria-label="Painel administrativo"
+            onClick={() => setAdminOpen(true)}
+          >
+            <Settings className="size-4 md:size-[18px]" strokeWidth={2} />
+          </IconBadge>
+        )}
         <button
           type="button"
           aria-label="Perfil"
