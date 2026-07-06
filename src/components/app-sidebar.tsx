@@ -52,8 +52,8 @@ export function AppSidebar() {
       <aside
         aria-label="Navegação principal"
         className={cn(
-          "fixed left-3 top-1/2 z-40 -translate-y-1/2",
-          "flex flex-col items-center gap-1 rounded-full px-2 py-3",
+          "fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 md:flex",
+          "flex-col items-center gap-1 rounded-full px-2 py-3",
           "border border-border/70 bg-surface/50 backdrop-blur-xl",
         )}
         style={{
