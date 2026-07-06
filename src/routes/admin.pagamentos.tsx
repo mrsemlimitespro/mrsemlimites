@@ -1116,3 +1116,105 @@ function Field2({ label, value }: { label: string; value: string }) {
   );
 }
 
+
+function EnviarLicencaSection({ tx }: { tx: Transaction }) {
+  const [chave, setChave] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [licencasDisp, setLicencasDisp] = useState<
+    Array<{ id: string; chave: string; status: string }>
+  >([]);
+
+  useEffect(() => {
+    (supabase as any)
+      .from("licencas")
+      .select("id, chave, status")
+      .is("email", null)
+      .eq("status", "ativa")
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .then(({ data }: { data: typeof licencasDisp }) => setLicencasDisp(data ?? []));
+  }, [tx.id]);
+
+  async function enviar() {
+    const key = chave.trim().toUpperCase();
+    if (!key) {
+      toast.error("Informe a chave da licença.");
+      return;
+    }
+    const email = tx.revendedores?.email ?? tx.cliente_nome ?? null;
+    if (!email) {
+      toast.error("Transação sem e-mail do cliente.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const { data: lic, error: findErr } = await (supabase as any)
+        .from("licencas")
+        .select("id, duracao_dias")
+        .eq("chave", key)
+        .maybeSingle();
+      if (findErr) throw findErr;
+      if (!lic) throw new Error("Chave não encontrada no estoque.");
+      const dias = lic.duracao_dias ?? 30;
+      const expira = new Date(Date.now() + dias * 86400000).toISOString();
+      const { error: updErr } = await (supabase as any)
+        .from("licencas")
+        .update({
+          email: email.toLowerCase(),
+          revendedor_id: tx.revendedor_id,
+          status: "ativa",
+          ativada_em: new Date().toISOString(),
+          expira_em: expira,
+        })
+        .eq("id", lic.id);
+      if (updErr) throw updErr;
+      await (supabase as any).from("notificacoes").insert({
+        titulo: "Licença liberada",
+        mensagem: `Sua chave ${key} foi liberada. Válida por ${dias} dias.`,
+        tipo: "sucesso",
+        destino: "revendedor",
+        categoria: "licenca",
+        revendedor_id: tx.revendedor_id,
+        link: "/licencas",
+      });
+      toast.success("Licença enviada ao cliente.");
+      setChave("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao enviar licença.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-primary/30 bg-primary/[0.04] p-4">
+      <h4 className="text-sm font-semibold">Liberar código para o cliente</h4>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Escolha uma chave do estoque e envie para o e-mail do comprador.
+      </p>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <Input
+          value={chave}
+          onChange={(e) => setChave(e.target.value)}
+          placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+          list="licencas-estoque"
+          className="uppercase"
+        />
+        <datalist id="licencas-estoque">
+          {licencasDisp.map((l) => (
+            <option key={l.id} value={l.chave} />
+          ))}
+        </datalist>
+        <Button onClick={enviar} disabled={saving}>
+          {saving ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
+          Enviar licença
+        </Button>
+      </div>
+      {licencasDisp.length > 0 && (
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          {licencasDisp.length} chave(s) disponíveis no estoque.
+        </p>
+      )}
+    </div>
+  );
+}
