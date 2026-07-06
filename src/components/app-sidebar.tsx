@@ -212,11 +212,13 @@ function RailButton({ item, active }: { item: NavItem; active: boolean }) {
 
 function RailAction({
   title,
+  tooltip,
   icon: Icon,
   variant = "muted",
   onClick,
 }: {
   title: string;
+  tooltip?: React.ReactNode;
   icon: IconType;
   variant?: "muted" | "danger";
   onClick?: () => void;
@@ -238,6 +240,11 @@ function RailAction({
         </button>
       </TooltipTrigger>
       <TooltipContent side="right" sideOffset={12}>
+        {tooltip ?? title}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
         {title}
       </TooltipContent>
     </Tooltip>
