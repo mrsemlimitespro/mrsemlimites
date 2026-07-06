@@ -91,6 +91,8 @@ export type Database = {
         Row: {
           accent_color: string
           created_at: string
+          extension_filename: string | null
+          extension_url: string | null
           favicon_url: string | null
           footer_text: string | null
           id: string
@@ -107,6 +109,8 @@ export type Database = {
         Insert: {
           accent_color?: string
           created_at?: string
+          extension_filename?: string | null
+          extension_url?: string | null
           favicon_url?: string | null
           footer_text?: string | null
           id?: string
@@ -123,6 +127,8 @@ export type Database = {
         Update: {
           accent_color?: string
           created_at?: string
+          extension_filename?: string | null
+          extension_url?: string | null
           favicon_url?: string | null
           footer_text?: string | null
           id?: string
