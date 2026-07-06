@@ -49,6 +49,13 @@ const players: Record<string, (c: AudioContext) => void> = {
     tone(c, 880, 0.1, "sine", 0.25);
     tone(c, 1320, 0.15, "sine", 0.25, 0.12);
   },
+  // Coin: dois tons rápidos ascendentes, brilhantes tipo moeda de arcade.
+  coin: (c) => {
+    tone(c, 988, 0.07, "square", 0.22);
+    tone(c, 1319, 0.14, "square", 0.22, 0.06);
+  },
+  // Swipe: varredura curta de frequência (whoosh curto).
+  swipe: (c) => tone(c, 1200, 0.18, "sine", 0.2, 0, 300),
 };
 
 /** Toca um efeito por id. `throttleMs` evita disparos repetidos rápidos. */
