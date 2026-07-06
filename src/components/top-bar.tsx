@@ -104,20 +104,20 @@ export function TopBar() {
   }
 
   return (
-    <header className="sticky top-4 z-30 mx-auto flex w-full max-w-[1400px] items-center gap-3 px-4 md:px-6">
+    <header className="sticky top-2 z-30 mx-auto flex w-full max-w-[1400px] items-center gap-2 px-3 md:top-4 md:gap-3 md:px-6">
       {/* Spacer for the floating rail on md+ */}
       <div className="hidden md:block md:w-16 shrink-0" aria-hidden />
 
-      <div className="flex-1 flex justify-center">
-        <label className="relative flex h-12 w-full max-w-[560px] items-center rounded-full border border-border/70 bg-surface/60 pl-11 pr-14 backdrop-blur-xl transition-colors focus-within:border-primary/50">
+      <div className="flex min-w-0 flex-1 justify-center">
+        <label className="relative flex h-10 w-full max-w-[560px] items-center rounded-full border border-border/70 bg-surface/60 pl-9 pr-3 backdrop-blur-xl transition-colors focus-within:border-primary/50 md:h-12 md:pl-11 md:pr-14">
           <Search
-            className="absolute left-4 size-4 text-muted-foreground"
+            className="absolute left-3 size-4 text-muted-foreground md:left-4"
             strokeWidth={2}
             aria-hidden
           />
           <input
             type="search"
-            placeholder="Buscar ou digitar comando..."
+            placeholder="Buscar..."
             className="h-full w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/70"
           />
           <kbd className="absolute right-3 hidden items-center gap-1 rounded-md border border-border/60 bg-white/5 px-2 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline-flex">
@@ -126,15 +126,15 @@ export function TopBar() {
         </label>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
         <Popover>
           <PopoverTrigger asChild>
             <button
               type="button"
               aria-label="Notificações"
-              className="relative grid size-11 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground"
+              className="relative grid size-9 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground md:size-11"
             >
-              <Bell className="size-[18px]" strokeWidth={2} />
+              <Bell className="size-4 md:size-[18px]" strokeWidth={2} />
               {unread > 0 && (
                 <span
                   aria-hidden
@@ -246,14 +246,14 @@ export function TopBar() {
           aria-label="Painel administrativo"
           onClick={() => setAdminOpen(true)}
         >
-          <Settings className="size-[18px]" strokeWidth={2} />
+          <Settings className="size-4 md:size-[18px]" strokeWidth={2} />
         </IconBadge>
         <button
           type="button"
           aria-label="Perfil"
-          className="grid size-11 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl"
+          className="grid size-9 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl md:size-11"
         >
-          <BrandMark size={40} glow={false} className="rounded-full" />
+          <BrandMark size={32} glow={false} className="rounded-full md:!size-10" />
         </button>
       </div>
 
@@ -278,13 +278,13 @@ function IconBadge({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="relative grid size-11 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground"
+      className="relative grid size-9 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground md:size-11"
     >
       {children}
       {dot && (
         <span
           aria-hidden
-          className="absolute right-2.5 top-2.5 size-2 rounded-full"
+          className="absolute right-1.5 top-1.5 size-1.5 rounded-full md:right-2.5 md:top-2.5 md:size-2"
           style={{
             background: "var(--brand-magenta)",
             boxShadow: "0 0 8px color-mix(in oklab, var(--brand-magenta) 80%, transparent)",
