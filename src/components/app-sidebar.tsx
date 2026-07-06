@@ -44,8 +44,10 @@ export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   return (
+    <>
     <TooltipProvider delayDuration={150}>
       <aside
         aria-label="Navegação principal"
