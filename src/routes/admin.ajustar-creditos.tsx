@@ -44,11 +44,13 @@ type Movimento = {
 
 function AjustarCreditosPage() {
   const qc = useQueryClient();
+  const [tab, setTab] = useState<"revendedores" | "pedidos">("revendedores");
   const [search, setSearch] = useState("");
   const [target, setTarget] = useState<Revendedor | null>(null);
   const [mode, setMode] = useState<"add" | "remove">("add");
   const [qtd, setQtd] = useState<string>("10");
   const [motivo, setMotivo] = useState("");
+
 
   const { data: revendedores = [], isLoading } = useQuery({
     queryKey: ["admin-ajustar-creditos-revendedores"],
