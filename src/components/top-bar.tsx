@@ -55,15 +55,7 @@ export function TopBar() {
       const emailMatch =
         email.startsWith(ADMIN_EMAIL_PREFIX + "@") ||
         email.split("@")[0] === ADMIN_EMAIL_PREFIX;
-      let hasAdmin = false;
-      try {
-        const { data } = await supabase.rpc("has_role", {
-          _user_id: session.user.id,
-          _role: "admin" as any,
-        });
-        hasAdmin = !!data;
-      } catch {}
-      if (mounted) setIsAdminUser(emailMatch || hasAdmin);
+      if (mounted) setIsAdminUser(emailMatch);
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => check(s));
