@@ -101,14 +101,27 @@ export function AppSidebar() {
             if ("url" in item) {
               return <RailButton key={item.title} item={item} active={isActive(item.url)} />;
             }
+            const isLogout = item.action === "logout";
             return (
               <RailAction
                 key={item.title}
                 title={item.title}
+                tooltip={
+                  isLogout && userEmail ? (
+                    <div className="flex flex-col gap-0.5">
+                      <span>{item.title}</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {userEmail}
+                      </span>
+                    </div>
+                  ) : (
+                    item.title
+                  )
+                }
                 icon={item.icon}
-                variant={item.action === "logout" ? "danger" : "muted"}
+                variant={isLogout ? "danger" : "muted"}
                 onClick={
-                  item.action === "logout"
+                  isLogout
                     ? () => setLogoutOpen(true)
                     : item.action === "extension"
                     ? () => void downloadExtension()
