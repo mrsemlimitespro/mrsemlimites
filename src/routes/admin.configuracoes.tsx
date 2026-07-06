@@ -66,6 +66,8 @@ function ConfiguracoesPage() {
           footer_text: values.footer_text || null,
           notification_message: values.notification_message || null,
           notification_active: !!values.notification_active,
+          extension_url: values.extension_url || null,
+          extension_filename: values.extension_filename || null,
         })
         .eq("id", data.id);
       if (error) throw error;
