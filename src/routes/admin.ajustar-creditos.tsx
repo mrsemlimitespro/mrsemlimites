@@ -247,6 +247,8 @@ function AjustarCreditosPage() {
           })
         )}
       </div>
+      )}
+
 
       <Dialog open={!!target} onOpenChange={(o) => !o && setTarget(null)}>
         <DialogContent className="max-w-md">
