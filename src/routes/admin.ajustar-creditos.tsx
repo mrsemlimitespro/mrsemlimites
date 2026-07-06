@@ -363,3 +363,115 @@ function AjustarCreditosPage() {
     </div>
   );
 }
+
+/* -------- Pedidos aguardando pagamento -------- */
+
+type PedidoAguardando = {
+  id: string;
+  revendedor_id: string | null;
+  plano_id: string | null;
+  pack_id: string | null;
+  valor: number;
+  status: string;
+  created_at: string;
+  metadata: Record<string, unknown> | null;
+};
+
+function PedidosAguardando() {
+  const qc = useQueryClient();
+
+  const { data: pedidos = [], isLoading } = useQuery({
+    queryKey: ["admin-pedidos-aguardando"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("payment_transactions")
+        .select("id,revendedor_id,plano_id,pack_id,valor,status,created_at,metadata")
+        .eq("status", "aguardando_configuracao")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as PedidoAguardando[];
+    },
+    refetchInterval: 15_000,
+  });
+
+  const liberar = useMutation({
+    mutationFn: async (transacao_id: string) => {
+      const { error } = await supabase.rpc("approve_pagamento", {
+        _pagamento_id: transacao_id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Créditos liberados");
+      qc.invalidateQueries({ queryKey: ["admin-pedidos-aguardando"] });
+      qc.invalidateQueries({ queryKey: ["admin-ajustar-creditos-revendedores"] });
+    },
+    onError: (e: unknown) => {
+      toast.error(e instanceof Error ? e.message : "Falha ao liberar créditos");
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="glass grid place-items-center rounded-2xl py-16">
+        <Loader2 className="size-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (pedidos.length === 0) {
+    return (
+      <div className="glass rounded-2xl p-10 text-center text-sm text-muted-foreground">
+        Nenhum pedido aguardando. Quando um cliente comprar antes do gateway ser configurado,
+        o pedido aparece aqui para você liberar manualmente.
+      </div>
+    );
+  }
+
+  return (
+    <div className="glass overflow-hidden rounded-2xl">
+      <div className="grid grid-cols-[minmax(0,1.4fr)_140px_160px_160px] items-center gap-3 border-b border-white/5 px-5 py-3 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        <div>Pedido</div>
+        <div className="text-right">Valor</div>
+        <div className="text-right">Criado</div>
+        <div className="text-right">Ação</div>
+      </div>
+      {pedidos.map((p) => (
+        <div
+          key={p.id}
+          className="grid grid-cols-[minmax(0,1.4fr)_140px_160px_160px] items-center gap-3 border-b border-white/5 px-5 py-4 last:border-b-0"
+        >
+          <div className="min-w-0">
+            <div className="truncate font-mono text-xs">{p.id}</div>
+            <div className="mt-0.5 text-xs text-muted-foreground">
+              {p.plano_id ? "Plano" : p.pack_id ? "Pacote de créditos" : "—"}
+              {" · Rev "}
+              <span className="font-mono">{p.revendedor_id?.slice(0, 8) ?? "—"}</span>
+            </div>
+          </div>
+          <div className="text-right text-sm font-semibold">
+            {Number(p.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+          </div>
+          <div className="text-right text-xs text-muted-foreground">
+            {new Date(p.created_at).toLocaleString("pt-BR")}
+          </div>
+          <div className="flex justify-end">
+            <Button
+              size="sm"
+              className="gap-1 gradient-primary"
+              disabled={liberar.isPending}
+              onClick={() => liberar.mutate(p.id)}
+            >
+              {liberar.isPending ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <CheckCircle2 className="size-3.5" />
+              )}
+              Liberar créditos
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
