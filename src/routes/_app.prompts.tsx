@@ -9,6 +9,7 @@ import { getAINovaStats } from "@/lib/ai-modules/dashboard.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_app/prompts")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "AI Prompts — MR Sem Limites" },
