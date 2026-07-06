@@ -26,6 +26,8 @@ type Settings = {
   notification_active: boolean;
   primary_color: string;
   accent_color: string;
+  extension_url: string | null;
+  extension_filename: string | null;
 };
 
 function ConfiguracoesPage() {
