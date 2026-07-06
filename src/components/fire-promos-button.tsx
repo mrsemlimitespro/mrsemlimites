@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Flame, Sparkles, ChevronRight } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { playSfx } from "@/lib/sfx";
 import {
   Sheet,
   SheetContent,
