@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandLockup } from "@/components/brand";
+import { PasswordInput, SocialSignIn } from "@/components/auth-extras";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -17,6 +18,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,6 +26,13 @@ function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    try {
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("mr_remember_me", remember ? "1" : "0");
+      }
+    } catch {}
+
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -34,7 +43,6 @@ function LoginPage() {
       return;
     }
 
-    // Determinar destino
     const { data: isAdmin } = await supabase.rpc("has_role", {
       _user_id: data.user.id,
       _role: "admin",
@@ -75,20 +83,31 @@ function LoginPage() {
           />
         </Field>
         <Field label="Senha">
-          <input
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={inputCls}
-            autoComplete="current-password"
-          />
+          <PasswordInput value={password} onChange={setPassword} autoComplete="current-password" />
         </Field>
+
+        <div className="flex items-center justify-between text-xs">
+          <label className="flex cursor-pointer items-center gap-2 select-none text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+              className="size-4 rounded border-border/70 bg-surface/60 accent-primary"
+            />
+            Manter conectado
+          </label>
+          <Link to="/esqueci-senha" className="text-foreground/80 underline hover:text-foreground">
+            Esqueci minha senha
+          </Link>
+        </div>
+
         {error && <p className="text-xs text-red-400">{error}</p>}
         <button type="submit" disabled={loading} className={primaryBtn}>
           {loading ? "Entrando..." : "Entrar"}
         </button>
+
+        <SocialSignIn mode="signin" />
+
         <p className="text-center text-xs text-muted-foreground">
           Ainda não tem conta?{" "}
           <Link to="/registro" className="text-foreground underline">

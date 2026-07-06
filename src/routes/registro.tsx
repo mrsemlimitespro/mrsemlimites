@@ -3,6 +3,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell, Field, inputCls, primaryBtn } from "./login";
+import { PasswordInput, SocialSignIn } from "@/components/auth-extras";
 
 export const Route = createFileRoute("/registro")({
   head: () => ({
@@ -130,31 +131,16 @@ function RegistroPage() {
           />
         </Field>
         <Field label="Senha">
-          <input
-            required
-            type="password"
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={inputCls}
-            autoComplete="new-password"
-          />
+          <PasswordInput value={password} onChange={setPassword} autoComplete="new-password" />
         </Field>
         <Field label="Confirmar senha">
-          <input
-            required
-            type="password"
-            minLength={6}
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            className={inputCls}
-            autoComplete="new-password"
-          />
+          <PasswordInput value={confirm} onChange={setConfirm} autoComplete="new-password" />
         </Field>
         {error && <p className="text-xs text-red-400">{error}</p>}
         <button type="submit" disabled={loading} className={primaryBtn}>
           {loading ? "Criando..." : "Criar conta"}
         </button>
+        <SocialSignIn mode="signup" />
         <p className="text-center text-xs text-muted-foreground">
           Já tem conta?{" "}
           <Link to="/login" className="text-foreground underline">
