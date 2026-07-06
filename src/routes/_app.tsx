@@ -6,6 +6,7 @@ import { TopBar } from "@/components/top-bar";
 import { FirePromosButton } from "@/components/fire-promos-button";
 import { SoftParticles } from "@/components/soft-particles";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
+import { WatermarkFooter } from "@/components/watermark-footer";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
