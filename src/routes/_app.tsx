@@ -29,6 +29,7 @@ function AppLayout() {
       <FirePromosButton />
       <MobileBottomNav />
       <PwaInstallPrompt />
+      <WatermarkFooter />
     </div>
   );
 }
