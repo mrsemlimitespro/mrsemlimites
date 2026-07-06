@@ -12,6 +12,7 @@ import {
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
+import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BRAND_NAME, BrandMark } from "@/components/brand";
 
