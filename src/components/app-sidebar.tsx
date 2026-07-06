@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BRAND_NAME, BrandMark } from "@/components/brand";
+import { LogoutIncentiveDialog } from "@/components/logout-incentive-dialog";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
