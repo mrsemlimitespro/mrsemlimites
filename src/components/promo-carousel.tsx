@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { playSfx } from "@/lib/sfx";
 
 type Banner = {
   id: string;
