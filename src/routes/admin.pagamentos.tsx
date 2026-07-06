@@ -1021,7 +1021,28 @@ function TransactionDrawer({
         {tx ? (
           <div className="mt-6 max-h-[calc(100vh-8rem)] space-y-5 overflow-auto pr-1">
             <dl className="grid grid-cols-2 gap-3 text-sm">
-              <Field2 label="Cliente" value={tx.cliente_nome ?? "—"} />
+              <Field2
+                label="Login (cliente)"
+                value={tx.revendedores?.email ?? tx.cliente_nome ?? "—"}
+              />
+              <Field2 label="Nome" value={tx.revendedores?.nome ?? "—"} />
+              <Field2
+                label="Pacote"
+                value={
+                  tx.creditos_packs?.nome ??
+                  tx.planos?.nome ??
+                  (tx.creditos_liberados ? `${tx.creditos_liberados} créditos` : "—")
+                }
+              />
+              <Field2
+                label="Créditos"
+                value={String(
+                  tx.creditos_packs?.quantidade ??
+                    tx.planos?.creditos_incluidos ??
+                    tx.creditos_liberados ??
+                    0,
+                )}
+              />
               <Field2 label="Gateway" value={tx.gateway_slug ?? "—"} />
               <Field2 label="Método" value={tx.metodo ?? "—"} />
               <Field2 label="Status" value={tx.status ?? "—"} />
@@ -1032,11 +1053,10 @@ function TransactionDrawer({
                   currency: "BRL",
                 })}
               />
-              <Field2
-                label="Criado em"
-                value={new Date(tx.created_at).toLocaleString("pt-BR")}
-              />
             </dl>
+
+            <EnviarLicencaSection tx={tx} />
+
 
             <div>
               <h4 className="text-sm font-semibold">Eventos de webhook</h4>
