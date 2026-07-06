@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   LayoutDashboard,
   KeyRound,
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BRAND_NAME, BrandMark } from "@/components/brand";
+import { LogoutIncentiveDialog } from "@/components/logout-incentive-dialog";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -42,8 +44,10 @@ export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   return (
+    <>
     <TooltipProvider delayDuration={150}>
       <aside
         aria-label="Navegação principal"
@@ -86,12 +90,15 @@ export function AppSidebar() {
                 title={item.title}
                 icon={item.icon}
                 variant={item.action === "logout" ? "danger" : "muted"}
+                onClick={item.action === "logout" ? () => setLogoutOpen(true) : undefined}
               />
             );
           })}
         </div>
       </aside>
     </TooltipProvider>
+    <LogoutIncentiveDialog open={logoutOpen} onOpenChange={setLogoutOpen} />
+    </>
   );
 }
 
@@ -140,10 +147,12 @@ function RailAction({
   title,
   icon: Icon,
   variant = "muted",
+  onClick,
 }: {
   title: string;
   icon: IconType;
   variant?: "muted" | "danger";
+  onClick?: () => void;
 }) {
   return (
     <Tooltip>
@@ -151,6 +160,7 @@ function RailAction({
         <button
           type="button"
           aria-label={title}
+          onClick={onClick}
           className={cn(
             "grid size-11 place-items-center rounded-full transition-all duration-200",
             "text-foreground/55 hover:text-foreground hover:bg-white/5",
