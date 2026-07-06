@@ -27,6 +27,7 @@ function AppLayout() {
       </div>
       <FirePromosButton />
       <MobileBottomNav />
+      <PwaInstallPrompt />
     </div>
   );
 }
