@@ -1,71 +1,76 @@
-# Loja real, clicável e editável
 
-Hoje `_app.creditos.tsx` mostra cards fixos no código (packs de 1/5/10 chaves, planos LOVABLE / É CAMPEÃO / CONTA LOVABLE / MANUS AI / Chave Vitalícia). Vou trocar tudo por dados reais das tabelas `creditos_packs`, `planos` e `promocoes`, com cards totalmente editáveis pelo admin e um checkout que já funciona mesmo antes de nenhum gateway de pagamento estar configurado.
+# Migração cirúrgica: Link MR Store Pro → MR Sem Limites
 
-## 1. Banco — migração
-Adicionar colunas para permitir personalização visual:
+Fiz o reconhecimento do projeto origem. Antes de copiar qualquer coisa preciso te avisar de restrições reais que o próprio código origem impõe — senão a migração vai quebrar as regras que você definiu.
 
-- `planos.imagem_url` (text) — upload no admin
-- `planos.badge` (text) — etiqueta ("PRO", "POWER", "ESSE SIM"...)
-- `planos.cor_gradiente` (text) — presets ("violet", "orange", "cyan", "pink"...) ou hex custom
-- `creditos_packs.badge` (text)
-- `creditos_packs.cor_gradiente` (text)
+## O que existe no projeto origem
 
-`imagem_url` já existe em `creditos_packs` e `promocoes`. Sem mudança em RLS/GRANT (colunas novas em tabela já existente).
+**Rotas alvo (todas dentro de `/premium/*`):**
+- AI Prompts → `premium.ai-prompts.tsx`, `premium.ai-studio.*` (12 sub-rotas), `premium.biblioteca-prompts.tsx`, `prompts-admin.tsx`, `10-prompts-secretos.tsx`
+- AI Agents → `premium.ai-agents.tsx`, `premium.ai-studio.agentes.tsx`, `AIAgentsManager.tsx`
+- Packs Premium → `premium.packs.tsx`, `premium.pack.$slug.tsx`, `pack.$slug.tsx`, `obrigado.pack.$slug.tsx`
 
-## 2. Admin — edição dos cards
-Ampliar os formulários de `/admin/packs` e `/admin/planos` (via `admin.$resource.tsx`) para incluir todos os campos personalizáveis:
+**Diretórios de código correspondentes:**
+- `src/components/prompts-library/`, `src/components/ai-studio/`, `src/components/ai-modules/`
+- `src/components/premium-packs/`, `src/components/pack-viewer/`
+- `src/lib/prompts-library/`, `src/lib/ai-studio/`, `src/lib/ai-modules/`, `src/lib/premium-packs/`, `src/lib/pack-viewer/`, `src/lib/pack-download/`
+- Server fns: `prompts.functions.ts`, `prompts-library.functions.ts`, `ai-agents.functions.ts`, `premium-*.functions.ts`
 
-- **Nome**, **preço**, **descrição**, **quantidade de créditos**, **duração** (planos)
-- **Badge** (etiqueta colorida no topo do card)
-- **Upload de imagem** (bucket `admin-media` — mesma mecânica dos banners)
-- Seletor de **cor/gradiente** com paleta pronta + hex opcional
-- Toggle **ativo/inativo**
+## Conflitos que preciso resolver ANTES de começar
 
-Chave Vitalícia continua vindo da tabela `promocoes` (já tem `imagem_url`, `link`, `plano_id`, `pack_id`) — só polir o formulário dela.
+O código origem está **profundamente acoplado** ao ecossistema `/premium/*` do Link MR Store, que não existe no MR Sem Limites:
 
-Componente `<CardEditor />` reutilizável entre packs / planos / promoções para manter tudo consistente.
+1. **Todas as rotas alvo vivem sob a shell `premium.tsx`** — usa `PremiumSidebar`, `PremiumGate`, `ModuleGate`, `useAuthorization`, `useVitrineMode`, `subscriber-permissions`, `module-access`, `vitrine`. Isso é justamente o "Sistema de Assinaturas / VIP / Vitrine / Marketplace Público" que você mandou NÃO migrar.
+2. **`AdminSidebar` / `AdminDashboard`** origem tem entradas dedicadas para Prompts/Agents/Packs. O MR Sem Limites tem `AdminSidebar` próprio — mesclar corre risco de mexer no Painel Admin existente (proibido).
+3. **Tabelas origem** para prompts/agents/packs provavelmente têm FKs para tabelas de assinantes/VIP/vitrine que não existem aqui.
+4. **`clientes`, `revendedores`, `licencas`, `payment_transactions`** do MR Sem Limites são estruturas totalmente diferentes das do origem — não dá pra reaproveitar o modelo de acesso.
 
-## 3. Loja — cards reais e clicáveis
-Refatorar `src/routes/_app.creditos.tsx`:
+## Como pretendo migrar (respeitando suas regras)
 
-- `useQuery` puxando `creditos_packs`, `planos` (ativos) e a promoção vitalícia ativa
-- Cada card renderiza usando `nome`, `preco`, `imagem_url`, `badge`, `cor_gradiente` vindos do banco
-- Layout mantém a estrutura visual do print (3 packs de chaves + linha de planos coloridos + banner promocional)
-- Cada botão **"Comprar"** vira `<Link to="/checkout/$tipo/$id">` — `tipo` = `pack` | `plano` | `promo`
-- Estado vazio: "Nenhum produto cadastrado. Acesse `/admin/packs` para criar."
+Como não posso trazer PremiumGate/Vitrine/Subscribers, vou **desacoplar** cada módulo:
 
-## 4. Checkout — funciona antes do gateway existir
-Nova rota `src/routes/_app.checkout.$tipo.$id.tsx`:
+- Trocar `premium.*` prefix por rotas próprias no MR Sem Limites: `/ai-prompts`, `/ai-agents`, `/packs`
+- Trocar gates de assinatura por gate de **licença ativa** do MR Sem Limites (usa `licencas` + `has_role('admin')` já existentes)
+- Copiar UI/hooks/services 1:1; apenas os pontos de acesso trocam
+- Admin: rota nova `/admin/ai-prompts`, `/admin/ai-agents`, `/admin/packs` — NÃO edito seu `AdminSidebar` atual, só adiciono links via componente novo no menu (se você autorizar) ou mantenho páginas acessíveis por URL direta
+- Tabelas novas em `public.*` com prefixo neutro; FKs a `auth.users`, `has_role`, `revendedores` quando fizer sentido — nada em cima de tabelas existentes
 
-Fluxo:
-1. Ao abrir, chama server function `criarTransacaoAguardando({ tipo, id })` que cria (ou reaproveita) uma linha em `payment_transactions` com `status='aguardando_configuracao'`, vinculando `revendedor_id`, `pack_id`/`plano_id`, `valor`.
-2. Consulta `payment_gateways WHERE enabled=true`:
-   - **Nenhum ativo** → tela laranja **"Aguardando configuração de pagamento"**. Mostra resumo do pedido (produto, valor), número da transação, botão **"Avisar admin"** que dispara `criar_notificacao(...)` para os admins. Nada de crédito liberado.
-   - **Algum gateway ativo** → tela azul "Escolha a forma de pagamento" listando os gateways ativos (Pix / cartão / boleto). Botão "Pagar" abre o checkout do gateway (stub inicial — cada gateway é plugado depois, sem quebrar o resto).
-3. Quando o gateway confirmar o pagamento, o trigger `tg_pagamento_status` (já existe) chama `approve_pagamento` → `add_credits` → créditos liberados automaticamente. Nada novo pra fazer nessa parte.
+## Etapa 1 — AI Prompts (o que farei nesta etapa apenas)
 
-## 5. Liberação manual pelo admin
-`/admin/ajustar-creditos` já existe. Reforçar dois pontos:
+**Arquivos a copiar** (via `cross_project--copy_project_asset` para assets e leitura+recriação para código):
+```
+src/routes/premium.ai-prompts.tsx           → src/routes/ai-prompts.tsx
+src/routes/premium.ai-studio.prompts.tsx    → src/routes/ai-studio.prompts.tsx
+src/routes/premium.ai-studio.favoritos.tsx  → src/routes/ai-studio.favoritos.tsx
+src/routes/premium.ai-studio.historico.tsx  → src/routes/ai-studio.historico.tsx
+src/routes/premium.ai-studio.recentes.tsx   → src/routes/ai-studio.recentes.tsx
+src/routes/premium.ai-studio.mais-utilizados.tsx → …
+src/routes/premium.ai-studio.colecoes.tsx   → …
+src/routes/premium.ai-studio.templates.tsx  → …
+src/routes/premium.ai-studio.index.tsx      → src/routes/ai-studio.index.tsx
+src/routes/premium.biblioteca-prompts.tsx   → src/routes/biblioteca-prompts.tsx
+src/routes/prompts-admin.tsx                → src/routes/admin.ai-prompts.tsx
+src/components/prompts-library/**
+src/components/ai-studio/**
+src/lib/prompts-library/**
+src/lib/ai-studio/**
+src/lib/prompts.functions.ts
+src/lib/prompts-library.functions.ts
+src/lib/prompts-classifier.ts
+```
 
-- Nova aba **"Pedidos aguardando"** que lista `payment_transactions WHERE status='aguardando_configuracao'`. Cada linha tem botão **"Liberar créditos manualmente"** que chama `approve_pagamento(id)` (RPC já existente) — libera crédito, marca como aprovado e a notificação sai sozinha (trigger `tg_pagamento_notify` já cuida).
-- Na página do cliente (`/admin/revendedores/:id`), o botão **"+ Adicionar créditos"** já usa `add_credits`. Deixar visível também na listagem principal para acesso rápido.
+**Banco (migration única para Etapa 1):**
+- Comparar schema de `ai_prompts`, `prompt_favorites`, `prompt_history`, `prompt_classification_learning` (já existem no MR Sem Limites!) com o origem
+- Se colunas divergirem: **paro e te aviso** — não altero as tabelas existentes sem confirmação
+- Se estiver compatível: só adiciono policies/GRANTs faltantes e tabelas auxiliares novas (ex.: `prompt_collections`, `prompt_templates` se houver)
 
-## 6. Detalhes técnicos
+**Relatório ao final da Etapa 1** com a auditoria completa que você pediu, e paro para confirmação.
 
-Server functions novas (todas com `requireSupabaseAuth`):
-- `criarTransacaoAguardando({ tipo, id })` → retorna `transacao_id`
-- `notificarAdminPagamento({ transacao_id })`
-- `listarGatewaysAtivos()` → só slug + nome (sem chave secreta)
-- `liberarCreditosManual({ transacao_id })` → só admin, chama `approve_pagamento`
+## O que preciso que você confirme antes de eu tocar em qualquer arquivo
 
-Sem novas tabelas. Sem edge functions.
+1. **Rotas fora de `/premium`** — OK trocar `premium.ai-prompts` → `/ai-prompts`? (Alternativa: criar `/premium` shell novo do zero — muito mais trabalho e conflita com "não migrar sistema VIP")
+2. **Gate de acesso** — usar `has_role('admin')` + licença ativa do MR Sem Limites, OU deixar as páginas 100% abertas para usuários logados?
+3. **Admin dos módulos** — criar rotas em `/admin/ai-prompts` etc. **sem** editar o `AdminSidebar` existente (acesso por URL direta), ou você libera eu adicionar itens no menu admin?
+4. **Tabelas já existentes** (`ai_prompts`, `ai_agents`, `prompt_favorites`, `prompt_history`, `prompt_classification_learning`) — se o schema do origem tiver colunas a mais, posso adicionar colunas novas via `ALTER TABLE ADD COLUMN` (não destrutivo)?
 
-## Ordem de execução
-1. Migração das colunas
-2. `<CardEditor />` + rotas `/admin/packs` e `/admin/planos` usando ele (upload de imagem + gradiente)
-3. Refactor da Loja (`_app.creditos.tsx`) puxando dados reais
-4. Rota `/checkout/$tipo/$id` com os dois estados (aguardando / gateway ativo)
-5. Aba "Pedidos aguardando" em `/admin/ajustar-creditos`
-
-Cada etapa é testável isoladamente. Confirmando o plano, começo pela migração.
+Sem essas respostas, qualquer migração vai violar uma das suas restrições. Depois que você responder, executo a Etapa 1 completa e paro.
