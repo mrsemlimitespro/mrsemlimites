@@ -11,7 +11,9 @@ import {
   LogOut,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
+import { toast } from "sonner";
 
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -90,7 +92,13 @@ export function AppSidebar() {
                 title={item.title}
                 icon={item.icon}
                 variant={item.action === "logout" ? "danger" : "muted"}
-                onClick={item.action === "logout" ? () => setLogoutOpen(true) : undefined}
+                onClick={
+                  item.action === "logout"
+                    ? () => setLogoutOpen(true)
+                    : item.action === "extension"
+                    ? () => void downloadExtension()
+                    : undefined
+                }
               />
             );
           })}
@@ -100,6 +108,37 @@ export function AppSidebar() {
     <LogoutIncentiveDialog open={logoutOpen} onOpenChange={setLogoutOpen} />
     </>
   );
+}
+
+async function downloadExtension() {
+  try {
+    const { data, error } = await (supabase as any)
+      .from("admin_settings")
+      .select("extension_url, extension_filename")
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    const url: string | null = data?.extension_url ?? null;
+    if (!url) {
+      toast.error("Nenhuma extensão disponível. Peça ao admin para enviar em Configurações.");
+      return;
+    }
+    playSfx("swipe");
+    const filename: string = data?.extension_filename || "extensao.zip";
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Falha ao baixar (${res.status})`);
+    const blob = await res.blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+    toast.success("Download iniciado");
+  } catch (err) {
+    toast.error(err instanceof Error ? err.message : "Falha ao baixar extensão");
+  }
 }
 
 function RailButton({ item, active }: { item: NavItem; active: boolean }) {

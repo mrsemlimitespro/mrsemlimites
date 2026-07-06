@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2, Save, Upload, X } from "lucide-react";
+import { Download, FileArchive, Loader2, Save, Upload, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,8 @@ type Settings = {
   notification_active: boolean;
   primary_color: string;
   accent_color: string;
+  extension_url: string | null;
+  extension_filename: string | null;
 };
 
 function ConfiguracoesPage() {
@@ -64,6 +66,8 @@ function ConfiguracoesPage() {
           footer_text: values.footer_text || null,
           notification_message: values.notification_message || null,
           notification_active: !!values.notification_active,
+          extension_url: values.extension_url || null,
+          extension_filename: values.extension_filename || null,
         })
         .eq("id", data.id);
       if (error) throw error;
@@ -136,6 +140,14 @@ function ConfiguracoesPage() {
           />
         </div>
       </section>
+
+      <ExtensionUploadSection
+        url={values.extension_url ?? ""}
+        filename={values.extension_filename ?? ""}
+        onChange={(u, f) =>
+          setValues((v) => ({ ...v, extension_url: u, extension_filename: f }))
+        }
+      />
 
       <section className="glass space-y-4 rounded-2xl p-6">
         <div className="flex items-center justify-between">
@@ -235,5 +247,110 @@ function UploadField({
         </div>
       </div>
     </div>
+  );
+}
+
+function ExtensionUploadSection({
+  url,
+  filename,
+  onChange,
+}: {
+  url: string;
+  filename: string;
+  onChange: (url: string, filename: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+
+  async function handleFile(file: File) {
+    const okExt = /\.(zip|rar|7z)$/i.test(file.name);
+    if (!okExt) {
+      toast.error("Envie um arquivo .zip, .rar ou .7z");
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() ?? "zip";
+      const path = `extension/${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage
+        .from("admin-media")
+        .upload(path, file, { upsert: false, contentType: file.type || "application/octet-stream" });
+      if (error) throw error;
+      const { data: signed, error: sErr } = await supabase.storage
+        .from("admin-media")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+      if (sErr) throw sErr;
+      onChange(signed?.signedUrl ?? "", file.name);
+      toast.success("Extensão enviada");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha no upload");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <section className="glass space-y-4 rounded-2xl p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <div className="text-sm font-semibold">Extensão do navegador</div>
+          <div className="text-xs text-muted-foreground">
+            Envie o arquivo compactado (.zip / .rar / .7z). Ele fica disponível no botão
+            <span className="mx-1 rounded bg-white/5 px-1.5 py-0.5 text-[10px] uppercase tracking-wider">
+              Baixar Extensão
+            </span>
+            da barra lateral.
+          </div>
+        </div>
+        {url ? (
+          <a
+            href={url}
+            download={filename || "extensao.zip"}
+            className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10"
+          >
+            <Download className="size-3.5" /> Testar download
+          </a>
+        ) : null}
+      </div>
+
+      {url ? (
+        <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+          <FileArchive className="size-5 text-primary" />
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm">{filename || "extensao.zip"}</div>
+            <div className="truncate text-[11px] text-muted-foreground">{url}</div>
+          </div>
+          <button
+            type="button"
+            onClick={() => onChange("", "")}
+            className="grid size-7 place-items-center rounded-full bg-black/40 text-white hover:bg-black/60"
+            aria-label="Remover extensão"
+          >
+            <X className="size-3.5" />
+          </button>
+        </div>
+      ) : null}
+
+      <div className="flex items-center gap-2">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10">
+          {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+          <span>{url ? "Substituir arquivo" : "Enviar .zip / .rar"}</span>
+          <input
+            type="file"
+            accept=".zip,.rar,.7z,application/zip,application/x-rar-compressed,application/x-7z-compressed"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleFile(f);
+            }}
+          />
+        </label>
+        <Input
+          value={url}
+          onChange={(e) => onChange(e.target.value, filename)}
+          placeholder="ou cole uma URL direta do arquivo"
+          className="flex-1"
+        />
+      </div>
+    </section>
   );
 }
