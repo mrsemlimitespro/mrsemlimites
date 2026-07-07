@@ -42,6 +42,7 @@ import { Route as AppPacksSlugRouteImport } from './routes/_app.packs.$slug'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
 import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/webhooks/cakto'
+import { Route as ApiPublicPremiumCoverSplatRouteImport } from './routes/api/public/premium-cover.$'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -208,6 +209,12 @@ const ApiPublicWebhooksCaktoRoute = ApiPublicWebhooksCaktoRouteImport.update({
   path: '/api/public/webhooks/cakto',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPremiumCoverSplatRoute =
+  ApiPublicPremiumCoverSplatRouteImport.update({
+    id: '/api/public/premium-cover/$',
+    path: '/api/public/premium-cover/$',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -239,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -272,6 +280,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -308,6 +317,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/_app/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/packs/$slug'
     | '/api/public/validar-licenca'
+    | '/api/public/premium-cover/$'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
@@ -377,6 +388,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/packs/$slug'
     | '/api/public/validar-licenca'
+    | '/api/public/premium-cover/$'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
@@ -412,6 +424,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/_app/packs/$slug'
     | '/api/public/validar-licenca'
+    | '/api/public/premium-cover/$'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
@@ -426,6 +439,7 @@ export interface RootRouteChildren {
   RegistroRoute: typeof RegistroRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
+  ApiPublicPremiumCoverSplatRoute: typeof ApiPublicPremiumCoverSplatRoute
   ApiPublicWebhooksCaktoRoute: typeof ApiPublicWebhooksCaktoRoute
   ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
@@ -664,6 +678,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksCaktoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/premium-cover/$': {
+      id: '/api/public/premium-cover/$'
+      path: '/api/public/premium-cover/$'
+      fullPath: '/api/public/premium-cover/$'
+      preLoaderRoute: typeof ApiPublicPremiumCoverSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -746,6 +767,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegistroRoute: RegistroRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
+  ApiPublicPremiumCoverSplatRoute: ApiPublicPremiumCoverSplatRoute,
   ApiPublicWebhooksCaktoRoute: ApiPublicWebhooksCaktoRoute,
   ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
