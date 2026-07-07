@@ -417,31 +417,139 @@ export type Database = {
       banners: {
         Row: {
           ativo: boolean
+          badge: string | null
+          botao_texto: string | null
+          cor_botao: string | null
+          cor_fundo: string | null
           created_at: string
+          descricao: string | null
+          fim: string | null
+          icone: string | null
           id: string
+          imagem_mobile_url: string | null
           imagem_url: string | null
+          inicio: string | null
           link: string | null
           ordem: number
+          preco: number | null
+          preco_promocional: number | null
+          subtitulo: string | null
           titulo: string
           updated_at: string
         }
         Insert: {
           ativo?: boolean
+          badge?: string | null
+          botao_texto?: string | null
+          cor_botao?: string | null
+          cor_fundo?: string | null
           created_at?: string
+          descricao?: string | null
+          fim?: string | null
+          icone?: string | null
           id?: string
+          imagem_mobile_url?: string | null
           imagem_url?: string | null
+          inicio?: string | null
           link?: string | null
           ordem?: number
+          preco?: number | null
+          preco_promocional?: number | null
+          subtitulo?: string | null
           titulo: string
           updated_at?: string
         }
         Update: {
           ativo?: boolean
+          badge?: string | null
+          botao_texto?: string | null
+          cor_botao?: string | null
+          cor_fundo?: string | null
           created_at?: string
+          descricao?: string | null
+          fim?: string | null
+          icone?: string | null
           id?: string
+          imagem_mobile_url?: string | null
           imagem_url?: string | null
+          inicio?: string | null
           link?: string | null
           ordem?: number
+          preco?: number | null
+          preco_promocional?: number | null
+          subtitulo?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      carrossel_slides: {
+        Row: {
+          agendamento: string | null
+          ativo: boolean
+          badge: string | null
+          botao_texto: string | null
+          cor_botao: string | null
+          cor_fundo: string | null
+          created_at: string
+          descricao: string | null
+          fim: string | null
+          icone: string | null
+          id: string
+          imagem_desktop_url: string | null
+          imagem_mobile_url: string | null
+          inicio: string | null
+          link: string | null
+          ordem: number
+          preco: number | null
+          preco_promocional: number | null
+          subtitulo: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          agendamento?: string | null
+          ativo?: boolean
+          badge?: string | null
+          botao_texto?: string | null
+          cor_botao?: string | null
+          cor_fundo?: string | null
+          created_at?: string
+          descricao?: string | null
+          fim?: string | null
+          icone?: string | null
+          id?: string
+          imagem_desktop_url?: string | null
+          imagem_mobile_url?: string | null
+          inicio?: string | null
+          link?: string | null
+          ordem?: number
+          preco?: number | null
+          preco_promocional?: number | null
+          subtitulo?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          agendamento?: string | null
+          ativo?: boolean
+          badge?: string | null
+          botao_texto?: string | null
+          cor_botao?: string | null
+          cor_fundo?: string | null
+          created_at?: string
+          descricao?: string | null
+          fim?: string | null
+          icone?: string | null
+          id?: string
+          imagem_desktop_url?: string | null
+          imagem_mobile_url?: string | null
+          inicio?: string | null
+          link?: string | null
+          ordem?: number
+          preco?: number | null
+          preco_promocional?: number | null
+          subtitulo?: string | null
           titulo?: string
           updated_at?: string
         }
@@ -718,25 +826,31 @@ export type Database = {
       }
       imagens: {
         Row: {
+          ativo: boolean
           categoria: string | null
           created_at: string
           id: string
+          ordem: number
           titulo: string
           updated_at: string
           url: string
         }
         Insert: {
+          ativo?: boolean
           categoria?: string | null
           created_at?: string
           id?: string
+          ordem?: number
           titulo: string
           updated_at?: string
           url: string
         }
         Update: {
+          ativo?: boolean
           categoria?: string | null
           created_at?: string
           id?: string
+          ordem?: number
           titulo?: string
           updated_at?: string
           url?: string
@@ -1325,14 +1439,21 @@ export type Database = {
         Row: {
           ativo: boolean
           badge: string | null
+          beneficios: Json
+          botao_texto: string | null
+          cor: string | null
           cor_gradiente: string | null
           created_at: string
           creditos_incluidos: number
           descricao: string | null
+          destaque: boolean
           duracao_dias: number
+          icone: string | null
           id: string
           imagem_url: string | null
+          link: string | null
           nome: string
+          ordem: number
           preco: number
           tipo: string
           updated_at: string
@@ -1340,14 +1461,21 @@ export type Database = {
         Insert: {
           ativo?: boolean
           badge?: string | null
+          beneficios?: Json
+          botao_texto?: string | null
+          cor?: string | null
           cor_gradiente?: string | null
           created_at?: string
           creditos_incluidos?: number
           descricao?: string | null
+          destaque?: boolean
           duracao_dias?: number
+          icone?: string | null
           id?: string
           imagem_url?: string | null
+          link?: string | null
           nome: string
+          ordem?: number
           preco?: number
           tipo: string
           updated_at?: string
@@ -1355,14 +1483,21 @@ export type Database = {
         Update: {
           ativo?: boolean
           badge?: string | null
+          beneficios?: Json
+          botao_texto?: string | null
+          cor?: string | null
           cor_gradiente?: string | null
           created_at?: string
           creditos_incluidos?: number
           descricao?: string | null
+          destaque?: boolean
           duracao_dias?: number
+          icone?: string | null
           id?: string
           imagem_url?: string | null
+          link?: string | null
           nome?: string
+          ordem?: number
           preco?: number
           tipo?: string
           updated_at?: string
@@ -1510,32 +1645,53 @@ export type Database = {
       produtos: {
         Row: {
           ativo: boolean
+          botao_texto: string | null
+          categoria: string | null
           created_at: string
           descricao: string | null
+          estoque: number
           id: string
           imagem_url: string | null
+          link: string | null
           nome: string
+          ordem: number
           preco: number
+          status: string
+          titulo: string | null
           updated_at: string
         }
         Insert: {
           ativo?: boolean
+          botao_texto?: string | null
+          categoria?: string | null
           created_at?: string
           descricao?: string | null
+          estoque?: number
           id?: string
           imagem_url?: string | null
+          link?: string | null
           nome: string
+          ordem?: number
           preco?: number
+          status?: string
+          titulo?: string | null
           updated_at?: string
         }
         Update: {
           ativo?: boolean
+          botao_texto?: string | null
+          categoria?: string | null
           created_at?: string
           descricao?: string | null
+          estoque?: number
           id?: string
           imagem_url?: string | null
+          link?: string | null
           nome?: string
+          ordem?: number
           preco?: number
+          status?: string
+          titulo?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1543,46 +1699,76 @@ export type Database = {
       promocoes: {
         Row: {
           ativo: boolean
+          banner_desktop_url: string | null
+          banner_mobile_url: string | null
+          botao_texto: string | null
+          cor: string | null
           created_at: string
           desconto_percentual: number | null
           descricao: string | null
+          destaque: boolean
           fim: string | null
+          icone: string | null
           id: string
           imagem_url: string | null
           inicio: string | null
           link: string | null
+          ordem: number
           pack_id: string | null
           plano_id: string | null
+          preco_antigo: number | null
+          preco_atual: number | null
+          subtitulo: string | null
           titulo: string
           updated_at: string
         }
         Insert: {
           ativo?: boolean
+          banner_desktop_url?: string | null
+          banner_mobile_url?: string | null
+          botao_texto?: string | null
+          cor?: string | null
           created_at?: string
           desconto_percentual?: number | null
           descricao?: string | null
+          destaque?: boolean
           fim?: string | null
+          icone?: string | null
           id?: string
           imagem_url?: string | null
           inicio?: string | null
           link?: string | null
+          ordem?: number
           pack_id?: string | null
           plano_id?: string | null
+          preco_antigo?: number | null
+          preco_atual?: number | null
+          subtitulo?: string | null
           titulo: string
           updated_at?: string
         }
         Update: {
           ativo?: boolean
+          banner_desktop_url?: string | null
+          banner_mobile_url?: string | null
+          botao_texto?: string | null
+          cor?: string | null
           created_at?: string
           desconto_percentual?: number | null
           descricao?: string | null
+          destaque?: boolean
           fim?: string | null
+          icone?: string | null
           id?: string
           imagem_url?: string | null
           inicio?: string | null
           link?: string | null
+          ordem?: number
           pack_id?: string | null
           plano_id?: string | null
+          preco_antigo?: number | null
+          preco_atual?: number | null
+          subtitulo?: string | null
           titulo?: string
           updated_at?: string
         }
@@ -1705,30 +1891,60 @@ export type Database = {
       propagandas: {
         Row: {
           ativo: boolean
+          botao_texto: string | null
           created_at: string
+          fim: string | null
           id: string
+          imagem_desktop_url: string | null
+          imagem_mobile_url: string | null
           imagem_url: string | null
+          inicio: string | null
           link: string | null
+          mostrar_premium: boolean
+          ordem: number
+          posicao: string
+          subtitulo: string | null
+          tempo_segundos: number | null
           texto: string | null
           titulo: string
           updated_at: string
         }
         Insert: {
           ativo?: boolean
+          botao_texto?: string | null
           created_at?: string
+          fim?: string | null
           id?: string
+          imagem_desktop_url?: string | null
+          imagem_mobile_url?: string | null
           imagem_url?: string | null
+          inicio?: string | null
           link?: string | null
+          mostrar_premium?: boolean
+          ordem?: number
+          posicao?: string
+          subtitulo?: string | null
+          tempo_segundos?: number | null
           texto?: string | null
           titulo: string
           updated_at?: string
         }
         Update: {
           ativo?: boolean
+          botao_texto?: string | null
           created_at?: string
+          fim?: string | null
           id?: string
+          imagem_desktop_url?: string | null
+          imagem_mobile_url?: string | null
           imagem_url?: string | null
+          inicio?: string | null
           link?: string | null
+          mostrar_premium?: boolean
+          ordem?: number
+          posicao?: string
+          subtitulo?: string | null
+          tempo_segundos?: number | null
           texto?: string | null
           titulo?: string
           updated_at?: string
