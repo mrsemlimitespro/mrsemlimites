@@ -182,7 +182,19 @@ export function AINovaDashboard({
       </header>
 
       <section className="relative z-10 px-5 sm:px-8 pt-8 pb-6">
-        <div className="grid md:grid-cols-[1fr_auto] gap-6 items-center">
+        <div className="ai-spotlight" aria-hidden />
+        {theme === "packs" && (
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+            <span className="ai-gold-particle" style={{ width: 6, height: 6, top: "22%", left: "18%", animationDelay: "0s" }} />
+            <span className="ai-gold-particle" style={{ width: 4, height: 4, top: "58%", left: "36%", animationDelay: "0.6s" }} />
+            <span className="ai-gold-particle" style={{ width: 5, height: 5, top: "12%", left: "62%", animationDelay: "1.1s" }} />
+            <span className="ai-gold-particle" style={{ width: 3, height: 3, top: "72%", left: "70%", animationDelay: "1.6s" }} />
+            <span className="ai-gold-particle" style={{ width: 6, height: 6, top: "38%", left: "88%", animationDelay: "2.1s" }} />
+            <span className="ai-gold-particle" style={{ width: 4, height: 4, top: "80%", left: "22%", animationDelay: "2.6s" }} />
+            <span className="ai-gold-particle" style={{ width: 3, height: 3, top: "30%", left: "48%", animationDelay: "0.3s" }} />
+          </div>
+        )}
+        <div className="relative grid md:grid-cols-[1fr_auto] gap-6 items-center">
           <div className="min-w-0">
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
               Olá, {userName}! <span className="inline-block">👋</span>
@@ -199,6 +211,7 @@ export function AINovaDashboard({
           <Orb />
         </div>
       </section>
+
 
       <section className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 px-5 sm:px-8">
         <KpiCard
