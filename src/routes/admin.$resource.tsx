@@ -81,7 +81,7 @@ function ResourceView({ resource }: { resource: Resource }) {
     return () => clearTimeout(t);
   }, [search]);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["admin-list", resource.table, debouncedSearch, page, pageSize],
     queryFn: async () => {
       let q = (supabase as any)
@@ -99,6 +99,8 @@ function ResourceView({ resource }: { resource: Resource }) {
       if (error) throw error;
       return { rows: (data ?? []) as Row[], total: count ?? 0 };
     },
+    retry: 1,
+    staleTime: 15_000,
   });
 
   const rows = data?.rows ?? [];
@@ -217,6 +219,16 @@ function ResourceView({ resource }: { resource: Resource }) {
               <tr>
                 <td colSpan={resource.listColumns.length + 1} className="p-8 text-center">
                   <Loader2 className="mx-auto size-5 animate-spin text-muted-foreground" />
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td
+                  colSpan={resource.listColumns.length + 1}
+                  className="p-8 text-center text-sm text-red-300"
+                >
+                  <div className="mb-2">Falha ao carregar: {(error as Error).message}</div>
+                  <Button size="sm" variant="ghost" onClick={() => refetch()}>Tentar novamente</Button>
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
