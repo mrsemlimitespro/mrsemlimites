@@ -362,7 +362,16 @@ function ResourceFormDialog({
 }) {
   const qc = useQueryClient();
   const [values, setValues] = useState<Record<string, unknown>>(() => {
-    if (initial) return { ...initial };
+    if (initial) {
+      const cloned: Record<string, unknown> = { ...initial };
+      // Arrays → string separada por vírgula para editar
+      for (const f of resource.fields) {
+        if (f.type === "array" && Array.isArray(cloned[f.key])) {
+          cloned[f.key] = (cloned[f.key] as string[]).join(", ");
+        }
+      }
+      return cloned;
+    }
     const empty: Record<string, unknown> = {};
     for (const f of resource.fields) {
       if (f.type === "boolean") empty[f.key] = true;
@@ -383,6 +392,15 @@ function ResourceFormDialog({
         let v = values[f.key];
         if (v === "" || v === undefined) v = null;
         if (f.type === "number" && v !== null) v = Number(v);
+        if (f.type === "array") {
+          if (Array.isArray(v)) {
+            // já é array
+          } else if (typeof v === "string" && v.trim()) {
+            v = v.split(",").map((s) => s.trim()).filter(Boolean);
+          } else {
+            v = null;
+          }
+        }
         payload[f.key] = v;
       }
       // Validação zod dinâmica a partir do metadata do recurso
@@ -394,12 +412,14 @@ function ResourceFormDialog({
           s = z.number({ invalid_type_error: `${f.label} deve ser numérico` }).finite();
         } else if (f.type === "datetime") {
           s = z.string().datetime({ offset: true }).or(z.string().min(1));
+        } else if (f.type === "array") {
+          s = z.array(z.string()).max(60);
         } else if (f.key === "email" || /email/i.test(f.label)) {
           s = z.string().trim().email(`${f.label} inválido`).max(255);
         } else if (f.type === "textarea") {
-          s = z.string().max(2000);
+          s = z.string().max(20000);
         } else {
-          s = z.string().trim().max(500);
+          s = z.string().trim().max(1000);
         }
         if (!f.required) s = s.nullable().optional();
         shape[f.key] = s;
@@ -433,16 +453,47 @@ function ResourceFormDialog({
     }
   }
 
+  // Agrupa campos por aba (se algum campo declarar `tab`)
+  const tabs = Array.from(
+    new Set(resource.fields.map((f) => f.tab).filter((v): v is string => !!v)),
+  );
+  const hasTabs = tabs.length > 0;
+  const [activeTab, setActiveTab] = useState<string>(tabs[0] ?? "");
+  const visibleFields = hasTabs
+    ? resource.fields.filter((f) => (f.tab ?? tabs[0]) === activeTab)
+    : resource.fields;
+
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Editar" : "Nova"} {resource.singular.toLowerCase()}
           </DialogTitle>
         </DialogHeader>
+
+        {hasTabs && (
+          <div className="mb-3 flex flex-wrap gap-1 border-b border-white/5 pb-2">
+            {tabs.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setActiveTab(t)}
+                className={
+                  "rounded-t-lg px-3 py-1.5 text-xs font-semibold transition " +
+                  (activeTab === t
+                    ? "bg-white/10 text-foreground"
+                    : "text-muted-foreground hover:text-foreground")
+                }
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        )}
+
         <form onSubmit={onSave} className="space-y-4">
-          {resource.fields.map((f) => (
+          {visibleFields.map((f) => (
             <FieldInput
               key={f.key}
               field={f}
@@ -553,6 +604,25 @@ function FieldInput({
   if (field.type === "image") {
     return <ImageInput field={field} value={value} onChange={onChange} />;
   }
+  if (field.type === "array") {
+    const str = Array.isArray(value) ? (value as string[]).join(", ") : ((value as string) ?? "");
+    return (
+      <div>
+        <Label htmlFor={id}>{field.label}</Label>
+        <Input
+          id={id}
+          type="text"
+          value={str}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder ?? "item1, item2, item3"}
+        />
+        {field.helperText && (
+          <p className="mt-1 text-[10px] text-muted-foreground">{field.helperText}</p>
+        )}
+      </div>
+    );
+  }
+
 
   return (
     <div>
