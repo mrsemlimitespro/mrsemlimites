@@ -423,3 +423,15 @@ div[style*="Edit with Lovable"],
   --ai-600: oklch(0.48 0.22 265);
   --ai-700: oklch(0.38 0.18 270);
 }
+
+/* Packs Premium — verde neon futurista (emerald / lime glow) */
+[data-ai-theme="packs"] {
+  --ai-50: oklch(0.97 0.04 150);
+  --ai-100: oklch(0.92 0.12 150);
+  --ai-200: oklch(0.86 0.20 148);
+  --ai-300: oklch(0.80 0.26 148);
+  --ai-400: oklch(0.75 0.29 148);
+  --ai-500: oklch(0.70 0.30 150);
+  --ai-600: oklch(0.55 0.26 152);
+  --ai-700: oklch(0.42 0.20 155);
+}
