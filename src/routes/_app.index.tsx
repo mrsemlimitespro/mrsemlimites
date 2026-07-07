@@ -28,6 +28,7 @@ import {
   ProdutosSection,
   PropagandasSection,
 } from "@/components/home/home-sections";
+import { CountersPanel } from "@/components/home/counters-panel";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -355,6 +356,10 @@ function DashboardPage() {
           <KpiCard key={kpi.label} kpi={kpi} />
         ))}
       </section>
+
+      {/* Contadores em tempo real (banco) */}
+      <CountersPanel />
+
 
       {/* Bottom 3-column row */}
       <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
