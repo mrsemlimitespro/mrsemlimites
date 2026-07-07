@@ -604,6 +604,25 @@ function FieldInput({
   if (field.type === "image") {
     return <ImageInput field={field} value={value} onChange={onChange} />;
   }
+  if (field.type === "array") {
+    const str = Array.isArray(value) ? (value as string[]).join(", ") : ((value as string) ?? "");
+    return (
+      <div>
+        <Label htmlFor={id}>{field.label}</Label>
+        <Input
+          id={id}
+          type="text"
+          value={str}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder ?? "item1, item2, item3"}
+        />
+        {field.helperText && (
+          <p className="mt-1 text-[10px] text-muted-foreground">{field.helperText}</p>
+        )}
+      </div>
+    );
+  }
+
 
   return (
     <div>
