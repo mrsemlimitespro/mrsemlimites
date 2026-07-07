@@ -1,123 +1,62 @@
-# Etapa 3 — Migração Packs Premium (Link MR Store Pro → MR Sem Limites)
 
-## Escopo real do módulo no origem
+# Plano — Admin → Painel do Cliente (CMS Completo)
 
-Inventário do projeto Link MR Store Pro:
+Objetivo: **fazer o sistema funcionar de ponta a ponta**, sem tocar em layout, cores, sidebar, rotas ou autenticação. Só banco + consultas + integração.
 
-**Tabelas do banco** (10+ migrations):
-- `premium_packs` — tabela principal, ~30 colunas (slug, categoria, source_type, source_url_encrypted, public_token, sales_platform, visibility_status, tags, destaque, downloads, popularidade, etc.)
-- `pack_access` — grants de acesso VIP por assinante
-- `pack_share_tokens` — tokens temporários de compartilhamento
-- `pack_downloads` — auditoria de downloads
-- `pack_public_tokens` — links públicos assinados
-- Tabelas auxiliares (VIP codes, download security, commercial KPIs)
-- Funções `premium_packs_validate`, triggers de auditoria
-- Extensões: `pgsodium`/`pgcrypto` para AES-256-GCM
+## Diagnóstico rápido do estado atual
 
-**Código** (`src/lib/premium-packs/`):
-- `packs.functions.ts` — CRUD público
-- `admin.functions.ts` — CRUD admin
-- `access.functions.ts` — grants de acesso VIP
-- `share-tokens.functions.ts` — mint/validate share tokens
-- `library-sync.functions.ts` + `.server.ts` — sync com Google Drive/Dropbox
-- `access-status.functions.ts` — checa se user pode ver pack
-- `types.ts`, `format.ts`
+- **CRUD genérico já existe** (`src/routes/admin.$resource.tsx` + `src/lib/admin/resources.ts`) — suporta texto, textarea, número, boolean, data, select, select_from_table, imagem e vídeo, com busca, ordenação e paginação. Nenhum módulo precisa ser refeito, só ganhar campos.
+- **Dashboard `_app.index.tsx`** já lê dados reais (view `v_dashboard_metricas`, `payment_transactions`, `clientes`, `notificacoes`, `access_logs`). Faltam cards extras (produtos, banners, revendedores, uploads, etc.).
+- **Home** hoje mostra apenas: logo + `PromoCarousel` (que puxa `banners`, não `promocoes`) + KPIs + gráfico + últimas vendas. Não há seção pública de Promoções, Planos, Produtos, Propagandas nem Avisos.
+- **Colunas faltando** em várias tabelas conforme spec do usuário (subtítulo, banners desktop/mobile separados, badges, cores, ícones, ordem, agendamento, mostrar_premium, etc.).
 
-**UI** (`src/components/premium-packs/`, 16 arquivos):
-- `PremiumPacksHub.tsx` — hub público (grid + filtros)
-- `PackDetailPage.tsx` — página de detalhe com abas
-- `PackCard`, `PackCover`, `PackOpenDialog`, `PackQuickActions`
-- `PackShareDialog`, `PackMediaTab`, `PackMarketplaceStats`
-- `PremiumPacksAdmin.tsx` — painel admin completo
-- `AccessGrantPanel.tsx` — grants VIP
-- `PublicLinkPanel.tsx`, `PublicPackLanding.tsx` — landing pública
-- `CoverCropDialog`, `CroppedImageUploader`
+## Etapas (uma por vez, teste antes de avançar)
 
-**Rotas**:
-- `/api/public/pack-download/$slug/$nodeId` — download signing endpoint
-- `admin.comercial.tsx` — painel comercial (KPIs, VIP codes, publish builder)
-- Landing pública de pack por token
+### Etapa 1 — Fundação de schema (migração única, aditiva)
+Adicionar TODAS as colunas que faltam sem remover nada:
+- `promocoes`: `subtitulo, banner_desktop_url, banner_mobile_url, botao_texto, preco_antigo, preco_atual, cor, icone, ordem, destaque, cta_link`
+- `banners`: `subtitulo, descricao, imagem_mobile_url, preco, preco_promocional, botao_texto, cor_botao, cor_fundo, badge, icone, inicio, fim`
+- `propagandas`: `posicao, ordem, tempo_segundos, imagem_desktop_url, imagem_mobile_url, mostrar_premium, botao_texto, ativa`
+- `planos`: `beneficios (jsonb), cor, icone, botao_texto, link, imagem_url, ordem, ativo` (o que faltar)
+- `produtos`: `titulo, categoria, estoque, botao_texto, link, status, ordem, imagem_url` (o que faltar)
+- `imagens`: `ordem, ativo` (o que faltar)
+- Garantir GRANTs e políticas RLS de leitura pública para tabelas de conteúdo visível ao cliente.
 
-**Integrações externas**:
-- Google Drive API (import + streaming)
-- Dropbox
-- OneDrive
-- Cloudflare R2
-- Supabase Storage
+### Etapa 2 — Registry Admin completo (`resources.ts`)
+Expor todos os novos campos nos formulários do CRUD genérico. Adicionar filtros e ordenação onde faltarem. Nada de UI nova — só configuração.
 
-## Conflitos com o MR Sem Limites
+### Etapa 3 — Promoções → Home
+- Componente `PromocoesSection` na Home que lê `promocoes` ativas (por `inicio/fim/ativo/ordem`).
+- Renderiza título, subtítulo, preço antigo/atual, desconto, cor, ícone, botão com link.
+- Realtime subscribe → atualiza imediatamente ao salvar no Admin.
 
-| Conflito | Impacto |
-|---|---|
-| Rota `/packs` já existe e serve `creditos_packs` (domínio: crédito) | Não posso reusar o path. Usarei `/pacotes` ou `/premium-packs`. |
-| Sistema de "assinantes VIP" do origem não existe aqui — só `licencas`/`revendedores` | `pack_access` precisará de FK própria, não integra com licenças. |
-| Extensão `pgsodium` para encryption pode não estar habilitada | Se falhar, uso `pgcrypto` (AES-256) ou armazeno URL em texto e restrinjo por RLS admin-only. |
-| Instrução original: "não alterar autenticação/licenciamento/dashboard" | Vou criar **sistema paralelo** de acesso a packs (grants + share tokens) que **não toca** em `licencas`. |
-| Integrações Google Drive/Dropbox exigem secrets novos | Vou parar antes desta parte e pedir os secrets. |
+### Etapa 4 — Carrossel dedicado
+- Nova tabela **`carrossel_slides`** (separada de `banners`) com todos os campos da spec.
+- Migrar `PromoCarousel` para ler dessa tabela; `banners` fica só como banners visuais.
+- Removem-se os slides demo hardcoded.
 
-## Fases da migração (paro entre cada uma)
+### Etapa 5 — Propagandas, Banners, Planos, Produtos → Home
+Cada um em componente próprio (`PropagandasSection`, `BannersSection`, `PlanosSection`, `ProdutosSection`), todos com realtime, filtros de `ativo/ordem/data`, e respeito a `mostrar_premium` quando aplicável.
 
-Cada fase termina com relatório e aguarda aprovação antes da próxima.
+### Etapa 6 — Dashboard com contadores reais
+Adicionar cards com `count(*)` real de: clientes, licenças, produtos, planos, promoções, banners, imagens, vídeos, créditos vendidos, revendedores, uploads. Tudo via `supabase.from(...).select('*', {count:'exact', head:true})`.
 
-### Fase 3.1 — Schema completo
-Uma única migration com todas as tabelas e triggers:
-- `premium_packs` (com public_token, source_type, source_url_encrypted como jsonb, visibility_status)
-- `pack_access` (user_id → auth.users, expires_at)
-- `pack_share_tokens` (pack_id, token, expires_at, uses_left)
-- `pack_downloads` (pack_id, user_id, node_id, downloaded_at)
-- `pack_public_tokens` (para landing pública)
-- Trigger `premium_packs_validate`, updated_at
-- Policies: leitura pública `TO anon` para packs `status='ativo' AND visibility_status='publico'`; grants via `pack_access`; admin via `has_role('admin')`
-- **Sem** vínculo a `licencas`, `revendedores`, `clientes` — sistema paralelo.
+### Etapa 7 — Sincronização (Realtime)
+Habilitar `ALTER PUBLICATION supabase_realtime ADD TABLE ...` para cada tabela consumida na Home. Cada seção da Home escuta `postgres_changes` e refaz o fetch.
 
-### Fase 3.2 — Server functions e types
-- Copiar `src/lib/premium-packs/*` do origem
-- Adaptar `admin.functions.ts` para usar `requireSupabaseAuth` + `has_role('admin')` (padrão do MR Sem Limites), **não** `requireAdmin` do origem
-- `library-sync.functions.ts` — copiar mas comentar chamadas Google Drive/Dropbox até você fornecer secrets
-- Tipos e helpers 1:1
+### Etapa 8 — Verificação final
+Rodar cada CRUD no Admin (criar/editar/excluir/ativar/reordenar) e conferir na Home em outra aba. Relatório final com módulos, tabelas, consultas e uploads.
 
-### Fase 3.3 — UI pública
-- Copiar `PremiumPacksHub`, `PackDetailPage`, `PackCard`, `PackOpenDialog`, `PackQuickActions`, `PackShareDialog`, filtros
-- Nova rota `/pacotes` (não `/packs` que já é crédito)
-- Integrar com `AINovaDashboard`? **Não** — packs tem hub próprio no origem, mantenho.
-- Ajustar `usePremiumFavorites` → `useLocalFavorites` (Etapa 2)
+## Regras obrigatórias
+- ❌ **Zero mudança** em: layout, cores, sidebar, rotas, autenticação, componentes que funcionam.
+- ✅ Todas as migrations são **aditivas** — nenhuma coluna removida, nenhum dado apagado.
+- ✅ RLS: leitura pública apenas para tabelas de conteúdo visível ao cliente (banners, promoções, propagandas, planos, produtos, aulas, carrossel, imagens públicas).
+- ✅ Realtime obrigatório para o requisito "atualização automática".
 
-### Fase 3.4 — Rota pública de download
-- `src/routes/api/public/pack-download.$slug.$nodeId.ts` copiado 1:1
-- Verificar `visibility_status` e token antes de retornar URL assinada
-- **Sem** integração Drive/Dropbox nesta fase — retorna 501 até secrets serem fornecidos
+## O que preciso confirmar de você antes de começar
 
-### Fase 3.5 — Admin de packs
-- `PremiumPacksAdmin` como nova rota admin `/admin/premium-packs` (**não** editar `AdminSidebar` existente — usuário decide se adiciona link depois)
-- CRUD + upload de capa + grants VIP + share tokens
-- Ainda sem sync externo
+1. **Posso avançar com a Etapa 1** (migração aditiva de schema) já?
+2. Alguma tabela dessa lista **você não usa** e prefere pular? (ex: `aulas`, `videos`, `logos`).
+3. **`banners` hoje é usado como carrossel** — devo criar `carrossel_slides` separada (recomendo) ou expandir `banners` e usar o mesmo registro para banner e para carrossel?
 
-### Fase 3.6 — Import de dados (após você exportar do origem)
-- Você abre Link MR Store Pro → Admin → Premium Packs → "Exportar JSON"
-- Me envia o arquivo
-- Faço INSERT em `premium_packs` (e depois AI Prompts + AI Agents)
-
-### Fase 3.7 (opcional, futura) — Integrações externas
-- Google Drive, Dropbox, R2 — só após você:
-  - Autorizar os secrets (`GOOGLE_DRIVE_SERVICE_ACCOUNT`, `DROPBOX_TOKEN`, etc.)
-  - Confirmar que quer os connectors ativos
-
-## O que **não** será tocado
-
-- `licencas`, `revendedores`, `clientes`, `payment_transactions`, `creditos_movimentos` → intactos
-- `AdminSidebar` existente → intacto (link novo para `/admin/premium-packs` fica pra você adicionar se quiser)
-- Rota `/packs` (créditos) → intacta
-- `_authenticated` layout, login, ROLE, dashboard `/` → intactos
-- Tabelas `ai_prompts`, `ai_agents`, `prompt_favorites` → intactas (já usadas pelas Etapas 1-2)
-
-## Riscos claros
-
-1. **AES encryption** — se `pgsodium` não estiver disponível, source URLs ficarão em texto plano restritas a admin via RLS (não é o padrão do origem, mas é mais seguro do que quebrar).
-2. **Download signing** — sem integrações externas, o endpoint responde 501 até você fornecer secrets. Cards de pack ainda funcionam para preview.
-3. **Landing pública** — mantida, mas `visibility_status='publico'` + `public_token` são obrigatórios; sem isso não aparece.
-
-## Decisão que preciso agora
-
-Aprovar a **Fase 3.1 (schema)** primeiro. Vou submeter uma única migration com todas as tabelas do módulo Packs Premium, sem tocar em nada existente. Você aprova a SQL antes dela rodar. Só depois sigo para 3.2.
-
-**Confirma que posso submeter a migration da Fase 3.1?**
+Assim que confirmar, começo pela Etapa 1 e sigo módulo por módulo, testando antes de avançar.
