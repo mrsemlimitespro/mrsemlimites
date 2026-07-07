@@ -362,7 +362,16 @@ function ResourceFormDialog({
 }) {
   const qc = useQueryClient();
   const [values, setValues] = useState<Record<string, unknown>>(() => {
-    if (initial) return { ...initial };
+    if (initial) {
+      const cloned: Record<string, unknown> = { ...initial };
+      // Arrays → string separada por vírgula para editar
+      for (const f of resource.fields) {
+        if (f.type === "array" && Array.isArray(cloned[f.key])) {
+          cloned[f.key] = (cloned[f.key] as string[]).join(", ");
+        }
+      }
+      return cloned;
+    }
     const empty: Record<string, unknown> = {};
     for (const f of resource.fields) {
       if (f.type === "boolean") empty[f.key] = true;
