@@ -8,11 +8,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const schema = z.object({
-  kind: z.enum(["prompts", "agents"]),
+  kind: z.enum(["prompts", "agents", "packs"]),
 });
 
 export type AINovaStats = {
-  kind: "prompts" | "agents";
+  kind: "prompts" | "agents" | "packs";
   total: number;
   destaques: number;
   totalUsos: number;

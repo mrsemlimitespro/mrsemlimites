@@ -279,7 +279,7 @@ export function AINovaDashboard({
         </Panel>
 
         <Panel
-          title={isPrompts ? "Prompts Recentes" : "Agents Recentes"}
+          title={recentsLabel}
           right={
             <button
               onClick={onOpenLibrary}
