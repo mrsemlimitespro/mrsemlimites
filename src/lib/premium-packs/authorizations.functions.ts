@@ -173,8 +173,6 @@ export const requestPackDownload = createServerFn({ method: "POST" })
     const { data: res, error } = await context.supabase.rpc("authorize_pack_download", {
       _pack_id: data.pack_id,
       _email: email,
-      _ip: null,
-      _user_agent: null,
     });
     if (error) return { ok: false as const, error: error.message };
     return res as { ok: boolean; error?: string; slug?: string };
