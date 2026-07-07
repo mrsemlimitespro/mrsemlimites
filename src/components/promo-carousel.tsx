@@ -2,44 +2,71 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { playSfx } from "@/lib/sfx";
 
-type Banner = {
+type Slide = {
   id: string;
   titulo: string;
-  imagem_url: string | null;
-  link: string | null;
+  imagem_desktop_url?: string | null;
+  imagem_mobile_url?: string | null;
+  imagem_url?: string | null;
+  link?: string | null;
+  cor_fundo?: string | null;
 };
 
 /**
- * Marquee infinita colorida — tipo esteira de logos.
- * Puxa da tabela `banners` (apenas ativos, ordenados por `ordem`).
- * Cada item pode ter link (abre em nova aba).
+ * Carrossel infinito.
+ * Fonte primária: tabela `carrossel_slides` (ativa, dentro do período).
+ * Fallback: tabela `banners` (para retrocompatibilidade).
+ * Se ambas estiverem vazias, mostra demo colorido.
  */
 export function PromoCarousel() {
-  const [items, setItems] = useState<Banner[]>([]);
+  const [items, setItems] = useState<Slide[]>([]);
 
   useEffect(() => {
     let alive = true;
-    (async () => {
-      const { data } = await supabase
-        .from("banners")
-        .select("id,titulo,imagem_url,link")
+
+    const load = async () => {
+      // 1) tenta carrossel_slides
+      const { data: slides } = await supabase
+        .from("carrossel_slides")
+        .select("id,titulo,imagem_desktop_url,imagem_mobile_url,link,cor_fundo")
         .eq("ativo", true)
         .order("ordem", { ascending: true });
-      if (alive) setItems((data as Banner[]) ?? []);
-    })();
+
+      if (slides && slides.length > 0) {
+        if (alive) setItems(slides as Slide[]);
+        return;
+      }
+      // 2) fallback banners
+      const { data: banners } = await supabase
+        .from("banners")
+        .select("id,titulo,imagem_url,link,cor_fundo")
+        .eq("ativo", true)
+        .order("ordem", { ascending: true });
+      if (alive) setItems((banners as Slide[]) ?? []);
+    };
+
+    load();
+
+    const ch = supabase
+      .channel("carrossel-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "carrossel_slides" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "banners" }, load)
+      .subscribe();
+
     return () => {
       alive = false;
+      supabase.removeChannel(ch);
     };
   }, []);
 
-  // Fallback demo colorido quando não há banners cadastrados
-  const demo: Banner[] = [
-    { id: "d1", titulo: "🔥 Promoção Relâmpago", imagem_url: null, link: null },
-    { id: "d2", titulo: "⚡ Créditos com 20% OFF", imagem_url: null, link: null },
-    { id: "d3", titulo: "🎬 Novos Apps IPTV", imagem_url: null, link: null },
-    { id: "d4", titulo: "💎 Plano Premium", imagem_url: null, link: null },
-    { id: "d5", titulo: "🚀 Ativação Instantânea", imagem_url: null, link: null },
-    { id: "d6", titulo: "🎁 Bônus na 1ª compra", imagem_url: null, link: null },
+  // Fallback demo colorido quando não há nada cadastrado
+  const demo: Slide[] = [
+    { id: "d1", titulo: "🔥 Promoção Relâmpago" },
+    { id: "d2", titulo: "⚡ Créditos com 20% OFF" },
+    { id: "d3", titulo: "🎬 Novos Apps IPTV" },
+    { id: "d4", titulo: "💎 Plano Premium" },
+    { id: "d5", titulo: "🚀 Ativação Instantânea" },
+    { id: "d6", titulo: "🎁 Bônus na 1ª compra" },
   ];
   const source = items.length > 0 ? items : demo;
 
@@ -73,6 +100,7 @@ export function PromoCarousel() {
             { grad: "from-lime-400 via-emerald-400 to-teal-400", glow: "120,255,120" },
           ];
           const n = neons[i % neons.length];
+          const imageUrl = b.imagem_desktop_url || b.imagem_url || null;
           const inner = (
             <div
               className={`neon-card group relative flex h-24 w-56 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br ${n.grad} transition-transform hover:scale-[1.08]`}
@@ -80,11 +108,12 @@ export function PromoCarousel() {
                 ["--neon" as never]: n.glow,
                 boxShadow: `0 0 0 1px rgba(${n.glow},0.5), 0 0 8px rgba(${n.glow},0.35), 0 0 18px rgba(${n.glow},0.2), inset 0 0 12px rgba(255,255,255,0.08)`,
                 animation: `neon-pulse 2.4s ease-in-out ${i * 0.15}s infinite`,
+                ...(b.cor_fundo ? { background: b.cor_fundo } : {}),
               }}
             >
-              {b.imagem_url ? (
+              {imageUrl ? (
                 <img
-                  src={b.imagem_url}
+                  src={imageUrl}
                   alt={b.titulo}
                   className="h-full w-full object-cover"
                   draggable={false}

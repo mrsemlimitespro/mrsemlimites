@@ -22,6 +22,13 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND_LOGO_URL, BRAND_NAME } from "@/components/brand";
 import { PromoCarousel } from "@/components/promo-carousel";
+import {
+  PromocoesSection,
+  PlanosSection,
+  ProdutosSection,
+  PropagandasSection,
+} from "@/components/home/home-sections";
+import { CountersPanel } from "@/components/home/counters-panel";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -328,6 +335,20 @@ function DashboardPage() {
       {/* Carrossel promocional infinito */}
       <PromoCarousel />
 
+      {/* Propagandas (topo) */}
+      <PropagandasSection posicao="home" />
+
+      {/* Promoções ativas */}
+      <PromocoesSection />
+
+      {/* Planos */}
+      <PlanosSection />
+
+      {/* Produtos */}
+      <ProdutosSection />
+
+
+
 
       {/* 4 KPI cards */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -335,6 +356,10 @@ function DashboardPage() {
           <KpiCard key={kpi.label} kpi={kpi} />
         ))}
       </section>
+
+      {/* Contadores em tempo real (banco) */}
+      <CountersPanel />
+
 
       {/* Bottom 3-column row */}
       <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
