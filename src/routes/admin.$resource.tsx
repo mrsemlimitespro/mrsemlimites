@@ -383,6 +383,15 @@ function ResourceFormDialog({
         let v = values[f.key];
         if (v === "" || v === undefined) v = null;
         if (f.type === "number" && v !== null) v = Number(v);
+        if (f.type === "array") {
+          if (Array.isArray(v)) {
+            // já é array
+          } else if (typeof v === "string" && v.trim()) {
+            v = v.split(",").map((s) => s.trim()).filter(Boolean);
+          } else {
+            v = null;
+          }
+        }
         payload[f.key] = v;
       }
       // Validação zod dinâmica a partir do metadata do recurso
@@ -394,12 +403,14 @@ function ResourceFormDialog({
           s = z.number({ invalid_type_error: `${f.label} deve ser numérico` }).finite();
         } else if (f.type === "datetime") {
           s = z.string().datetime({ offset: true }).or(z.string().min(1));
+        } else if (f.type === "array") {
+          s = z.array(z.string()).max(60);
         } else if (f.key === "email" || /email/i.test(f.label)) {
           s = z.string().trim().email(`${f.label} inválido`).max(255);
         } else if (f.type === "textarea") {
-          s = z.string().max(2000);
+          s = z.string().max(20000);
         } else {
-          s = z.string().trim().max(500);
+          s = z.string().trim().max(1000);
         }
         if (!f.required) s = s.nullable().optional();
         shape[f.key] = s;
