@@ -38,6 +38,7 @@ import { Route as AppClientesRouteImport } from './routes/_app.clientes'
 import { Route as AppAulasRouteImport } from './routes/_app.aulas'
 import { Route as AppAgentsRouteImport } from './routes/_app.agents'
 import { Route as ApiPublicValidarLicencaRouteImport } from './routes/api/public/validar-licenca'
+import { Route as AppPacksSlugRouteImport } from './routes/_app.packs.$slug'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
 import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/webhooks/cakto'
@@ -186,6 +187,11 @@ const ApiPublicValidarLicencaRoute = ApiPublicValidarLicencaRouteImport.update({
   path: '/api/public/validar-licenca',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppPacksSlugRoute = AppPacksSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AppPacksRoute,
+} as any)
 const ApiPublicWebhooksMercadopagoRoute =
   ApiPublicWebhooksMercadopagoRouteImport.update({
     id: '/api/public/webhooks/mercadopago',
@@ -216,7 +222,7 @@ export interface FileRoutesByFullPath {
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
   '/licencas': typeof AppLicencasRoute
-  '/packs': typeof AppPacksRoute
+  '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
   '/admin/$resource': typeof AdminResourceRoute
@@ -231,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/admin/': typeof AdminIndexRoute
+  '/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
@@ -247,7 +254,7 @@ export interface FileRoutesByTo {
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
   '/licencas': typeof AppLicencasRoute
-  '/packs': typeof AppPacksRoute
+  '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
   '/admin/$resource': typeof AdminResourceRoute
@@ -263,6 +270,7 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
@@ -282,7 +290,7 @@ export interface FileRoutesById {
   '/_app/clientes': typeof AppClientesRoute
   '/_app/creditos': typeof AppCreditosRoute
   '/_app/licencas': typeof AppLicencasRoute
-  '/_app/packs': typeof AppPacksRoute
+  '/_app/packs': typeof AppPacksRouteWithChildren
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/prompts': typeof AppPromptsRoute
   '/admin/$resource': typeof AdminResourceRoute
@@ -298,6 +306,7 @@ export interface FileRoutesById {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/_app/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
@@ -333,6 +342,7 @@ export interface FileRouteTypes {
     | '/admin/sons'
     | '/admin/usuarios'
     | '/admin/'
+    | '/packs/$slug'
     | '/api/public/validar-licenca'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
@@ -365,6 +375,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/'
     | '/admin'
+    | '/packs/$slug'
     | '/api/public/validar-licenca'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
@@ -399,6 +410,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/_app/'
     | '/admin/'
+    | '/_app/packs/$slug'
     | '/api/public/validar-licenca'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
@@ -624,6 +636,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicValidarLicencaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/packs/$slug': {
+      id: '/_app/packs/$slug'
+      path: '/$slug'
+      fullPath: '/packs/$slug'
+      preLoaderRoute: typeof AppPacksSlugRouteImport
+      parentRoute: typeof AppPacksRoute
+    }
     '/api/public/webhooks/mercadopago': {
       id: '/api/public/webhooks/mercadopago'
       path: '/api/public/webhooks/mercadopago'
@@ -648,13 +667,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppPacksRouteChildren {
+  AppPacksSlugRoute: typeof AppPacksSlugRoute
+}
+
+const AppPacksRouteChildren: AppPacksRouteChildren = {
+  AppPacksSlugRoute: AppPacksSlugRoute,
+}
+
+const AppPacksRouteWithChildren = AppPacksRoute._addFileChildren(
+  AppPacksRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAgentsRoute: typeof AppAgentsRoute
   AppAulasRoute: typeof AppAulasRoute
   AppClientesRoute: typeof AppClientesRoute
   AppCreditosRoute: typeof AppCreditosRoute
   AppLicencasRoute: typeof AppLicencasRoute
-  AppPacksRoute: typeof AppPacksRoute
+  AppPacksRoute: typeof AppPacksRouteWithChildren
   AppPerfilRoute: typeof AppPerfilRoute
   AppPromptsRoute: typeof AppPromptsRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -666,7 +697,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppClientesRoute: AppClientesRoute,
   AppCreditosRoute: AppCreditosRoute,
   AppLicencasRoute: AppLicencasRoute,
-  AppPacksRoute: AppPacksRoute,
+  AppPacksRoute: AppPacksRouteWithChildren,
   AppPerfilRoute: AppPerfilRoute,
   AppPromptsRoute: AppPromptsRoute,
   AppIndexRoute: AppIndexRoute,
