@@ -8,11 +8,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const schema = z.object({
-  kind: z.enum(["prompts", "agents"]),
+  kind: z.enum(["prompts", "agents", "packs"]),
 });
 
 export type AINovaStats = {
-  kind: "prompts" | "agents";
+  kind: "prompts" | "agents" | "packs";
   total: number;
   destaques: number;
   totalUsos: number;
@@ -34,12 +34,22 @@ export const getAINovaStats = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => schema.parse(d ?? { kind: "prompts" }))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const table = data.kind === "prompts" ? "ai_prompts" : "ai_agents";
+
+    const isPacks = data.kind === "packs";
+    const table = data.kind === "prompts" ? "ai_prompts" : data.kind === "agents" ? "ai_agents" : "premium_packs";
+
+    // Column name that stores the display title differs per module.
+    const titleCol = isPacks ? "nome" : "titulo";
+    // Column used as usage counter (downloads for packs, uso_count for prompts/agents).
+    const usoCol = isPacks ? "downloads" : "uso_count";
 
     const now = new Date();
     const sevenDaysAgo = startOfDayUTC(new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000));
 
     const applyBase = (q: any) => {
+      if (isPacks) {
+        return q.eq("status", "ativo").eq("visibility_status", "publico");
+      }
       q = q.eq("ativo", true).eq("oculto", false);
       if (data.kind === "prompts") q = q.eq("mostrar_premium", true);
       return q;
@@ -56,7 +66,7 @@ export const getAINovaStats = createServerFn({ method: "GET" })
         applyBase(
           supabaseAdmin
             .from(table)
-            .select("id,titulo,categoria,created_at")
+            .select(`id,${titleCol},categoria,created_at`)
             .order("created_at", { ascending: false })
             .limit(4),
         ),
@@ -68,7 +78,7 @@ export const getAINovaStats = createServerFn({ method: "GET" })
             .limit(2000),
         ),
         applyBase(supabaseAdmin.from(table).select("categoria").limit(5000)),
-        applyBase(supabaseAdmin.from(table).select("uso_count").limit(5000)),
+        applyBase(supabaseAdmin.from(table).select(usoCol).limit(5000)),
         data.kind === "prompts"
           ? supabaseAdmin.from("prompt_favorites").select("prompt_id", { count: "exact", head: true })
           : Promise.resolve({ count: 0 } as any),
@@ -79,8 +89,8 @@ export const getAINovaStats = createServerFn({ method: "GET" })
     const novosSemana = novosRes.count ?? 0;
     const favoritos = (favRes as any).count ?? 0;
 
-    const totalUsos = ((usosRes.data ?? []) as Array<{ uso_count: number | null }>).reduce(
-      (acc, r) => acc + (r.uso_count ?? 0),
+    const totalUsos = ((usosRes.data ?? []) as Array<Record<string, number | null>>).reduce(
+      (acc, r) => acc + (Number(r[usoCol]) || 0),
       0,
     );
 
@@ -135,13 +145,13 @@ export const getAINovaStats = createServerFn({ method: "GET" })
       const { data: upd } = await applyBase(
         supabaseAdmin
           .from(table)
-          .select("id,titulo,updated_at,created_at")
+          .select(`id,${titleCol},updated_at,created_at`)
           .order("updated_at", { ascending: false })
           .limit(4),
       );
       activity = ((upd ?? []) as Array<any>).map((r) => ({
         id: r.id,
-        titulo: r.titulo,
+        titulo: r[titleCol],
         action: "updated",
         created_at: r.updated_at ?? r.created_at,
       }));
@@ -149,7 +159,7 @@ export const getAINovaStats = createServerFn({ method: "GET" })
 
     const recents = ((recentsRes.data ?? []) as Array<any>).map((r) => ({
       id: r.id,
-      titulo: r.titulo,
+      titulo: r[titleCol],
       categoria: r.categoria ?? null,
       created_at: r.created_at,
     }));

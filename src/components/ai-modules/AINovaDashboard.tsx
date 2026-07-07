@@ -23,6 +23,8 @@ import {
   Copy,
   Download,
   RefreshCw,
+  Package,
+  Boxes,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AIModuleTheme } from "./AIModuleShell";
@@ -103,6 +105,7 @@ export function AINovaDashboard({
   className,
 }: AINovaDashboardProps) {
   const isPrompts = theme === "prompts";
+  const isPacks = theme === "packs";
   const weeklyCounts = (stats?.weekly ?? []).map((w) => w.count);
   const sparkAll = buildSparkPath(weeklyCounts);
   const topCats = stats?.topCategorias ?? [];
@@ -114,10 +117,20 @@ export function AINovaDashboard({
   const novos = stats?.novosSemana ?? 0;
   const novosDelta = fmtDelta(novos, Math.max(1, (stats?.total ?? 0) - novos));
 
-  const greeting = greetingSub
-    ?? (isPrompts
+  const HeroIcon = isPrompts ? Wand2 : isPacks ? Package : Bot;
+  const createLabel = isPrompts ? "Novo prompt" : isPacks ? "Novo pack" : "Novo agente";
+  const totalLabel = isPrompts ? "Total de Prompts" : isPacks ? "Total de Packs" : "Total de Agents";
+  const totalUsosLabel = isPacks ? "Total de Downloads" : "Total de Usos";
+  const recentsLabel = isPrompts ? "Prompts Recentes" : isPacks ? "Packs Recentes" : "Agents Recentes";
+  const fourthKpiLabel = isPrompts ? "Favoritos" : "Categorias";
+
+  const greeting =
+    greetingSub ??
+    (isPrompts
       ? "Bem-vindo ao AI Prompts. Sua central criativa com prompts profissionais prontos para gerar textos, imagens, vídeos, campanhas e roteiros — copie, personalize e acelere qualquer ideia em segundos."
-      : "Bem-vindo ao AI Agents. Agentes inteligentes que automatizam tarefas, respondem clientes, geram conteúdo e operam fluxos completos — sua equipe digital trabalhando 24/7 no piloto automático.");
+      : isPacks
+        ? "Bem-vindo aos Packs Premium. Coleções exclusivas de conteúdo, ferramentas e recursos prontos para acelerar seus projetos — baixe, importe e monetize em segundos com acesso vitalício."
+        : "Bem-vindo ao AI Agents. Agentes inteligentes que automatizam tarefas, respondem clientes, geram conteúdo e operam fluxos completos — sua equipe digital trabalhando 24/7 no piloto automático.");
 
 
   return (
@@ -177,7 +190,7 @@ export function AINovaDashboard({
             <p className="mt-2 text-sm text-white/60 max-w-2xl leading-relaxed">{greeting}</p>
             <div className="mt-5 flex flex-wrap gap-2">
               <HeroButton icon={FolderOpen} onClick={onOpenLibrary}>Abrir biblioteca</HeroButton>
-              <HeroButton icon={Plus} onClick={onCreate}>{isPrompts ? "Novo prompt" : "Novo agente"}</HeroButton>
+              <HeroButton icon={Plus} onClick={onCreate}>{createLabel}</HeroButton>
               <HeroButton icon={FileBarChart}>Relatório</HeroButton>
               <HeroButton icon={Link2}>Integrações</HeroButton>
             </div>
@@ -189,23 +202,23 @@ export function AINovaDashboard({
 
       <section className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 px-5 sm:px-8">
         <KpiCard
-          label={isPrompts ? "Total de Prompts" : "Total de Agents"}
+          label={totalLabel}
           value={loading ? "…" : fmtInt(k1)}
           delta={novosDelta.value}
           deltaTone={novosDelta.tone}
           deltaSuffix={`${novos} novos / 7d`}
-          icon={isPrompts ? Wand2 : Bot}
+          icon={HeroIcon}
           iconTone="violet"
           spark={sparkAll}
           sparkColor="var(--ai-400)"
         />
         <KpiCard
-          label="Total de Usos"
+          label={totalUsosLabel}
           value={loading ? "…" : fmtInt(k2)}
           delta={k2 > 0 ? "ativo" : "—"}
           deltaTone="up"
           deltaSuffix="acumulado"
-          icon={Users}
+          icon={isPacks ? Download : Users}
           iconTone="blue"
           spark={sparkAll}
           sparkColor="#3B82F6"
@@ -222,7 +235,7 @@ export function AINovaDashboard({
           sparkColor="#D946EF"
         />
         <KpiCard
-          label={isPrompts ? "Favoritos" : "Categorias"}
+          label={fourthKpiLabel}
           value={loading ? "…" : fmtInt(isPrompts ? k4 : topCats.length)}
           delta={isPrompts ? (k4 > 0 ? "salvos" : "—") : `${topCats.length} ativas`}
           deltaTone="up"
@@ -266,7 +279,7 @@ export function AINovaDashboard({
         </Panel>
 
         <Panel
-          title={isPrompts ? "Prompts Recentes" : "Agents Recentes"}
+          title={recentsLabel}
           right={
             <button
               onClick={onOpenLibrary}
