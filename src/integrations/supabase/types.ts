@@ -1139,6 +1139,80 @@ export type Database = {
           },
         ]
       }
+      pack_authorizations: {
+        Row: {
+          authorized_by: string | null
+          cliente_email: string | null
+          cliente_id: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          level: string
+          notes: string | null
+          pack_id: string
+          revendedor_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          authorized_by?: string | null
+          cliente_email?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          level: string
+          notes?: string | null
+          pack_id: string
+          revendedor_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          authorized_by?: string | null
+          cliente_email?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          level?: string
+          notes?: string | null
+          pack_id?: string
+          revendedor_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pack_authorizations_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_authorizations_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "premium_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_authorizations_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_authorizations_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_revendedor_visao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pack_download_logs: {
         Row: {
           browser: string | null
@@ -2257,6 +2331,15 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      authorize_pack_download: {
+        Args: {
+          _email: string
+          _ip?: string
+          _pack_id: string
+          _user_agent?: string
+        }
+        Returns: Json
+      }
       cancelar_licenca: {
         Args: { _licenca_id: string; _motivo?: string }
         Returns: {
@@ -2339,6 +2422,10 @@ export type Database = {
       }
       is_revendedor: { Args: { _uid: string }; Returns: boolean }
       notificar_licencas_expirando: { Args: never; Returns: number }
+      pack_client_has_access: {
+        Args: { _email: string; _pack_id: string }
+        Returns: boolean
+      }
       reativar_licenca: {
         Args: { _licenca_id: string }
         Returns: {
