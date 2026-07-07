@@ -645,6 +645,196 @@ export const resources: Resource[] = [
       { key: "ativo", label: "Ativa", format: "boolean" },
     ],
   },
+  // =========================================================================
+  // AGENTES DE IA — catálogo do painel de Agents
+  // =========================================================================
+  {
+    key: "ai-agents",
+    label: "Agents",
+    singular: "Agente",
+    table: "ai_agents",
+    icon: Sparkles,
+    group: "IA",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["titulo", "categoria"],
+    fields: [
+      { key: "titulo", label: "Título", type: "text", required: true, tab: "Informações" },
+      { key: "descricao", label: "Descrição curta", type: "textarea", tab: "Informações" },
+      { key: "descricao_completa", label: "Descrição completa", type: "textarea", tab: "Informações" },
+      { key: "categoria", label: "Categoria", type: "text", tab: "Informações" },
+      { key: "subcategoria", label: "Subcategoria", type: "text", tab: "Informações" },
+      { key: "autor", label: "Autor", type: "text", tab: "Informações" },
+      { key: "nivel", label: "Nível", type: "select", options: [
+        { value: "iniciante", label: "Iniciante" },
+        { value: "intermediario", label: "Intermediário" },
+        { value: "avancado", label: "Avançado" },
+      ], tab: "Informações" },
+      { key: "versao", label: "Versão", type: "text", placeholder: "1.0.0", tab: "Informações" },
+
+      { key: "system_prompt", label: "System Prompt", type: "textarea", tab: "Prompt" },
+      { key: "instrucoes", label: "Instruções ao usuário", type: "textarea", tab: "Prompt" },
+
+      { key: "provedor", label: "Provedor", type: "select", options: [
+        { value: "google", label: "Google (Gemini)" },
+        { value: "openai", label: "OpenAI" },
+        { value: "anthropic", label: "Anthropic" },
+        { value: "meta", label: "Meta" },
+        { value: "outros", label: "Outros" },
+      ], tab: "IA" },
+      { key: "modelo", label: "Modelo", type: "text", placeholder: "gemini-2.5-flash", tab: "IA" },
+      { key: "temperatura", label: "Temperatura", type: "number", step: 0.1, tab: "IA" },
+      { key: "max_tokens", label: "Máx. tokens", type: "number", tab: "IA" },
+      { key: "capabilities", label: "Capacidades (vírgulas)", type: "array", tab: "IA" },
+      { key: "tools", label: "Ferramentas (vírgulas)", type: "array", tab: "IA" },
+      { key: "compatibilidade", label: "Compatibilidade (vírgulas)", type: "array", tab: "IA" },
+
+      { key: "cover_url", label: "Capa", type: "image", tab: "Arquivos" },
+      { key: "tags", label: "Tags (vírgulas)", type: "array", tab: "Arquivos" },
+
+      { key: "ativo", label: "Publicado (visível para clientes)", type: "boolean", tab: "Publicação" },
+      { key: "destaque", label: "Em destaque", type: "boolean", tab: "Publicação" },
+      { key: "oculto", label: "Oculto", type: "boolean", tab: "Publicação" },
+      { key: "visible_mobile", label: "Visível no mobile", type: "boolean", tab: "Publicação" },
+    ],
+    listColumns: [
+      { key: "titulo", label: "Título" },
+      { key: "categoria", label: "Categoria" },
+      { key: "modelo", label: "Modelo" },
+      { key: "ativo", label: "Publicado", format: "boolean" },
+      { key: "destaque", label: "Destaque", format: "boolean" },
+      { key: "created_at", label: "Criado", format: "date" },
+    ],
+  },
+
+  // =========================================================================
+  // PROMPTS — catálogo do painel de Prompts
+  // =========================================================================
+  {
+    key: "ai-prompts",
+    label: "Prompts",
+    singular: "Prompt",
+    table: "ai_prompts",
+    icon: Sparkles,
+    group: "IA",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["titulo", "categoria"],
+    fields: [
+      { key: "titulo", label: "Título", type: "text", required: true, tab: "Informações" },
+      { key: "descricao", label: "Descrição", type: "textarea", tab: "Informações" },
+      { key: "categoria", label: "Categoria", type: "text", tab: "Informações" },
+      { key: "subcategoria", label: "Subcategoria", type: "text", tab: "Informações" },
+      { key: "autor", label: "Autor", type: "text", tab: "Informações" },
+      { key: "nivel", label: "Nível", type: "select", options: [
+        { value: "iniciante", label: "Iniciante" },
+        { value: "intermediario", label: "Intermediário" },
+        { value: "avancado", label: "Avançado" },
+      ], tab: "Informações" },
+      { key: "versao", label: "Versão", type: "text", tab: "Informações" },
+
+      { key: "prompt", label: "Prompt completo", type: "textarea", required: true, tab: "Prompt" },
+
+      { key: "compatibilidade", label: "Compatibilidade (ChatGPT, Gemini, Claude...)", type: "array", tab: "IA" },
+      { key: "tags", label: "Tags (vírgulas)", type: "array", tab: "IA" },
+
+      { key: "cover_url", label: "Capa", type: "image", tab: "Arquivos" },
+
+      { key: "status", label: "Status", type: "select", options: [
+        { value: "rascunho", label: "Rascunho" },
+        { value: "publicado", label: "Publicado" },
+        { value: "arquivado", label: "Arquivado" },
+      ], tab: "Publicação" },
+      { key: "ativo", label: "Publicado (visível para clientes)", type: "boolean", tab: "Publicação" },
+      { key: "destaque", label: "Em destaque", type: "boolean", tab: "Publicação" },
+      { key: "oculto", label: "Oculto", type: "boolean", tab: "Publicação" },
+      { key: "mostrar_premium", label: "Mostrar em Premium", type: "boolean", tab: "Publicação" },
+      { key: "mostrar_tv", label: "Mostrar em TV", type: "boolean", tab: "Publicação" },
+      { key: "mostrar_seguidores", label: "Mostrar em Seguidores", type: "boolean", tab: "Publicação" },
+      { key: "visible_mobile", label: "Visível no mobile", type: "boolean", tab: "Publicação" },
+    ],
+    listColumns: [
+      { key: "titulo", label: "Título" },
+      { key: "categoria", label: "Categoria" },
+      { key: "status", label: "Status" },
+      { key: "ativo", label: "Publicado", format: "boolean" },
+      { key: "destaque", label: "Destaque", format: "boolean" },
+      { key: "created_at", label: "Criado", format: "date" },
+    ],
+  },
+
+  // =========================================================================
+  // PACKS PREMIUM
+  // =========================================================================
+  {
+    key: "premium-packs",
+    label: "Packs",
+    singular: "Pack",
+    table: "premium_packs",
+    icon: Package,
+    group: "IA",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["nome", "slug"],
+    fields: [
+      { key: "nome", label: "Nome", type: "text", required: true, tab: "Informações" },
+      { key: "slug", label: "Slug (URL)", type: "text", required: true, tab: "Informações" },
+      { key: "categoria", label: "Categoria", type: "text", tab: "Informações" },
+      { key: "descricao_curta", label: "Descrição curta", type: "textarea", tab: "Informações" },
+      { key: "descricao_completa", label: "Descrição completa", type: "textarea", tab: "Informações" },
+      { key: "autor", label: "Autor", type: "text", tab: "Informações" },
+      { key: "versao", label: "Versão", type: "text", tab: "Informações" },
+      { key: "observacoes", label: "Observações", type: "textarea", tab: "Informações" },
+
+      { key: "compatibilidade", label: "Compatibilidade (vírgulas)", type: "array", tab: "IA" },
+      { key: "tags", label: "Tags (vírgulas)", type: "array", tab: "IA" },
+
+      { key: "banner_url", label: "Banner", type: "image", tab: "Arquivos" },
+      { key: "capa_url", label: "Capa", type: "image", tab: "Arquivos" },
+      { key: "icone_url", label: "Ícone", type: "image", tab: "Arquivos" },
+      { key: "video_url", label: "Vídeo (URL)", type: "text", tab: "Arquivos" },
+      { key: "source_type", label: "Tipo da fonte", type: "select", options: [
+        { value: "google_drive", label: "Google Drive" },
+        { value: "mega", label: "Mega" },
+        { value: "dropbox", label: "Dropbox" },
+        { value: "storage", label: "Lovable Cloud Storage" },
+        { value: "external", label: "Link externo" },
+      ], tab: "Arquivos" },
+      { key: "qtd_arquivos", label: "Qtd. de arquivos", type: "number", tab: "Arquivos" },
+      { key: "espaco_bytes", label: "Espaço (bytes)", type: "number", tab: "Arquivos" },
+
+      { key: "status", label: "Status", type: "select", options: [
+        { value: "rascunho", label: "Rascunho" },
+        { value: "publicado", label: "Publicado" },
+        { value: "arquivado", label: "Arquivado" },
+      ], tab: "Publicação" },
+      { key: "visibility_status", label: "Visibilidade", type: "select", options: [
+        { value: "public", label: "Público" },
+        { value: "unlisted", label: "Não listado" },
+        { value: "private", label: "Privado" },
+      ], tab: "Publicação" },
+      { key: "allow_view", label: "Permite visualizar", type: "boolean", tab: "Publicação" },
+      { key: "allow_download", label: "Permite download", type: "boolean", tab: "Publicação" },
+      { key: "is_shareable", label: "Compartilhável (link público)", type: "boolean", tab: "Publicação" },
+      { key: "destaque", label: "Em destaque", type: "boolean", tab: "Publicação" },
+      { key: "sales_platform", label: "Plataforma de venda", type: "select", options: [
+        { value: "", label: "Nenhuma" },
+        { value: "kiwify", label: "Kiwify" },
+        { value: "hotmart", label: "Hotmart" },
+        { value: "eduzz", label: "Eduzz" },
+        { value: "cakto", label: "Cakto" },
+        { value: "mercadopago", label: "Mercado Pago" },
+        { value: "outros", label: "Outros" },
+      ], tab: "Publicação" },
+      { key: "sales_product_id", label: "Link de venda (URL)", type: "text", tab: "Publicação" },
+      { key: "ordem", label: "Ordem de exibição", type: "number", tab: "Publicação" },
+    ],
+    listColumns: [
+      { key: "nome", label: "Nome" },
+      { key: "categoria", label: "Categoria" },
+      { key: "status", label: "Status" },
+      { key: "allow_download", label: "Download", format: "boolean" },
+      { key: "destaque", label: "Destaque", format: "boolean" },
+      { key: "created_at", label: "Criado", format: "date" },
+    ],
+  },
 ];
 
 export { Store };
