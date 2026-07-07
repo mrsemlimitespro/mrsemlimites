@@ -453,16 +453,47 @@ function ResourceFormDialog({
     }
   }
 
+  // Agrupa campos por aba (se algum campo declarar `tab`)
+  const tabs = Array.from(
+    new Set(resource.fields.map((f) => f.tab).filter((v): v is string => !!v)),
+  );
+  const hasTabs = tabs.length > 0;
+  const [activeTab, setActiveTab] = useState<string>(tabs[0] ?? "");
+  const visibleFields = hasTabs
+    ? resource.fields.filter((f) => (f.tab ?? tabs[0]) === activeTab)
+    : resource.fields;
+
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Editar" : "Nova"} {resource.singular.toLowerCase()}
           </DialogTitle>
         </DialogHeader>
+
+        {hasTabs && (
+          <div className="mb-3 flex flex-wrap gap-1 border-b border-white/5 pb-2">
+            {tabs.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setActiveTab(t)}
+                className={
+                  "rounded-t-lg px-3 py-1.5 text-xs font-semibold transition " +
+                  (activeTab === t
+                    ? "bg-white/10 text-foreground"
+                    : "text-muted-foreground hover:text-foreground")
+                }
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        )}
+
         <form onSubmit={onSave} className="space-y-4">
-          {resource.fields.map((f) => (
+          {visibleFields.map((f) => (
             <FieldInput
               key={f.key}
               field={f}
