@@ -963,6 +963,137 @@ export type Database = {
           },
         ]
       }
+      pack_access: {
+        Row: {
+          amount_cents: number | null
+          created_at: string
+          currency: string | null
+          email: string
+          gateway: string
+          id: string
+          notes: string | null
+          origin: string
+          pack_id: string
+          purchased_at: string
+          revoked_at: string | null
+          status: string
+          transaction_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_cents?: number | null
+          created_at?: string
+          currency?: string | null
+          email: string
+          gateway?: string
+          id?: string
+          notes?: string | null
+          origin?: string
+          pack_id: string
+          purchased_at?: string
+          revoked_at?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_cents?: number | null
+          created_at?: string
+          currency?: string | null
+          email?: string
+          gateway?: string
+          id?: string
+          notes?: string | null
+          origin?: string
+          pack_id?: string
+          purchased_at?: string
+          revoked_at?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pack_access_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "premium_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pack_download_logs: {
+        Row: {
+          browser: string | null
+          bytes_sent: number | null
+          created_at: string
+          device: string | null
+          duration_ms: number | null
+          error_message: string | null
+          file_kind: string | null
+          file_name: string | null
+          file_size: number | null
+          id: string
+          ip: string | null
+          node_id: string
+          origin_provider: string | null
+          pack_id: string | null
+          pack_slug: string
+          referer: string | null
+          status: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          bytes_sent?: number | null
+          created_at?: string
+          device?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          file_kind?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          id?: string
+          ip?: string | null
+          node_id: string
+          origin_provider?: string | null
+          pack_id?: string | null
+          pack_slug: string
+          referer?: string | null
+          status?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          bytes_sent?: number | null
+          created_at?: string
+          device?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          file_kind?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          id?: string
+          ip?: string | null
+          node_id?: string
+          origin_provider?: string | null
+          pack_id?: string | null
+          pack_slug?: string
+          referer?: string | null
+          status?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       payment_gateways: {
         Row: {
           api_key: string | null
@@ -1235,6 +1366,144 @@ export type Database = {
           preco?: number
           tipo?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      premium_packs: {
+        Row: {
+          allow_download: boolean
+          allow_view: boolean
+          autor: string | null
+          banner_url: string | null
+          capa_url: string | null
+          categoria: string
+          compatibilidade: string[]
+          created_at: string
+          descricao_completa: string | null
+          descricao_curta: string | null
+          destaque: boolean
+          downloads: number
+          espaco_bytes: number
+          galeria: string[]
+          icone_url: string | null
+          id: string
+          is_shareable: boolean
+          nome: string
+          observacoes: string | null
+          og_image_url: string | null
+          ordem: number
+          popularidade: number
+          public_link: string | null
+          public_token: string
+          qr_code_url: string | null
+          qtd_arquivos: number
+          sales_platform: string | null
+          sales_product_id: string | null
+          seo_meta_description: string | null
+          seo_meta_title: string | null
+          slug: string
+          source_metadata: Json
+          source_type: string
+          source_url_encrypted: Json | null
+          status: string
+          tags: string[]
+          twitter_image_url: string | null
+          ultima_atualizacao: string
+          updated_at: string
+          versao: string | null
+          video_url: string | null
+          views: number
+          visibility_status: string
+        }
+        Insert: {
+          allow_download?: boolean
+          allow_view?: boolean
+          autor?: string | null
+          banner_url?: string | null
+          capa_url?: string | null
+          categoria?: string
+          compatibilidade?: string[]
+          created_at?: string
+          descricao_completa?: string | null
+          descricao_curta?: string | null
+          destaque?: boolean
+          downloads?: number
+          espaco_bytes?: number
+          galeria?: string[]
+          icone_url?: string | null
+          id?: string
+          is_shareable?: boolean
+          nome: string
+          observacoes?: string | null
+          og_image_url?: string | null
+          ordem?: number
+          popularidade?: number
+          public_link?: string | null
+          public_token?: string
+          qr_code_url?: string | null
+          qtd_arquivos?: number
+          sales_platform?: string | null
+          sales_product_id?: string | null
+          seo_meta_description?: string | null
+          seo_meta_title?: string | null
+          slug: string
+          source_metadata?: Json
+          source_type?: string
+          source_url_encrypted?: Json | null
+          status?: string
+          tags?: string[]
+          twitter_image_url?: string | null
+          ultima_atualizacao?: string
+          updated_at?: string
+          versao?: string | null
+          video_url?: string | null
+          views?: number
+          visibility_status?: string
+        }
+        Update: {
+          allow_download?: boolean
+          allow_view?: boolean
+          autor?: string | null
+          banner_url?: string | null
+          capa_url?: string | null
+          categoria?: string
+          compatibilidade?: string[]
+          created_at?: string
+          descricao_completa?: string | null
+          descricao_curta?: string | null
+          destaque?: boolean
+          downloads?: number
+          espaco_bytes?: number
+          galeria?: string[]
+          icone_url?: string | null
+          id?: string
+          is_shareable?: boolean
+          nome?: string
+          observacoes?: string | null
+          og_image_url?: string | null
+          ordem?: number
+          popularidade?: number
+          public_link?: string | null
+          public_token?: string
+          qr_code_url?: string | null
+          qtd_arquivos?: number
+          sales_platform?: string | null
+          sales_product_id?: string | null
+          seo_meta_description?: string | null
+          seo_meta_title?: string | null
+          slug?: string
+          source_metadata?: Json
+          source_type?: string
+          source_url_encrypted?: Json | null
+          status?: string
+          tags?: string[]
+          twitter_image_url?: string | null
+          ultima_atualizacao?: string
+          updated_at?: string
+          versao?: string | null
+          video_url?: string | null
+          views?: number
+          visibility_status?: string
         }
         Relationships: []
       }
@@ -1521,6 +1790,74 @@ export type Database = {
             columns: ["plano_id"]
             isOneToOne: false
             referencedRelation: "planos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_events: {
+        Row: {
+          amount_cents: number | null
+          created_at: string
+          currency: string | null
+          customer_email: string | null
+          customer_name: string | null
+          event_id: string
+          event_type: string
+          gateway: string
+          id: string
+          pack_id: string | null
+          processed: boolean
+          processing_error: string | null
+          product_external_id: string | null
+          raw_payload: Json
+          signature_valid: boolean
+          status: string
+          transaction_id: string | null
+        }
+        Insert: {
+          amount_cents?: number | null
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          event_id: string
+          event_type: string
+          gateway: string
+          id?: string
+          pack_id?: string | null
+          processed?: boolean
+          processing_error?: string | null
+          product_external_id?: string | null
+          raw_payload?: Json
+          signature_valid?: boolean
+          status: string
+          transaction_id?: string | null
+        }
+        Update: {
+          amount_cents?: number | null
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          event_id?: string
+          event_type?: string
+          gateway?: string
+          id?: string
+          pack_id?: string | null
+          processed?: boolean
+          processing_error?: string | null
+          product_external_id?: string | null
+          raw_payload?: Json
+          signature_valid?: boolean
+          status?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_events_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "premium_packs"
             referencedColumns: ["id"]
           },
         ]
