@@ -28,7 +28,7 @@ import {
   ProdutosSection,
   PropagandasSection,
 } from "@/components/home/home-sections";
-import { CountersPanel } from "@/components/home/counters-panel";
+
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -357,8 +357,7 @@ function DashboardPage() {
         ))}
       </section>
 
-      {/* Contadores em tempo real (banco) */}
-      <CountersPanel />
+
 
 
       {/* Bottom 3-column row */}
