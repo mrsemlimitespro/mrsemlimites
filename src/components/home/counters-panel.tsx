@@ -51,7 +51,9 @@ export function CountersPanel() {
     const load = async () => {
       const results = await Promise.all(
         COUNTERS.map(async (c) => {
-          const { count } = await supabase
+          const { count } = await (supabase as unknown as {
+            from: (t: string) => { select: (c: string, o: { count: "exact"; head: true }) => Promise<{ count: number | null }> };
+          })
             .from(c.table)
             .select("id", { count: "exact", head: true });
           return [c.table, count ?? 0] as const;
