@@ -28,7 +28,8 @@ export type FieldType =
   | "select"
   | "select_from_table"
   | "image"
-  | "media";
+  | "media"
+  | "array";
 
 export type Field = {
   key: string;
@@ -40,6 +41,7 @@ export type Field = {
   placeholder?: string;
   step?: number;
   helperText?: string;
+  tab?: string;
 };
 
 export type Resource = {
