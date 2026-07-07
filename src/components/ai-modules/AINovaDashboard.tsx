@@ -23,6 +23,8 @@ import {
   Copy,
   Download,
   RefreshCw,
+  Package,
+  Boxes,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AIModuleTheme } from "./AIModuleShell";
@@ -103,6 +105,7 @@ export function AINovaDashboard({
   className,
 }: AINovaDashboardProps) {
   const isPrompts = theme === "prompts";
+  const isPacks = theme === "packs";
   const weeklyCounts = (stats?.weekly ?? []).map((w) => w.count);
   const sparkAll = buildSparkPath(weeklyCounts);
   const topCats = stats?.topCategorias ?? [];
@@ -114,10 +117,20 @@ export function AINovaDashboard({
   const novos = stats?.novosSemana ?? 0;
   const novosDelta = fmtDelta(novos, Math.max(1, (stats?.total ?? 0) - novos));
 
-  const greeting = greetingSub
-    ?? (isPrompts
+  const HeroIcon = isPrompts ? Wand2 : isPacks ? Package : Bot;
+  const createLabel = isPrompts ? "Novo prompt" : isPacks ? "Novo pack" : "Novo agente";
+  const totalLabel = isPrompts ? "Total de Prompts" : isPacks ? "Total de Packs" : "Total de Agents";
+  const totalUsosLabel = isPacks ? "Total de Downloads" : "Total de Usos";
+  const recentsLabel = isPrompts ? "Prompts Recentes" : isPacks ? "Packs Recentes" : "Agents Recentes";
+  const fourthKpiLabel = isPrompts ? "Favoritos" : "Categorias";
+
+  const greeting =
+    greetingSub ??
+    (isPrompts
       ? "Bem-vindo ao AI Prompts. Sua central criativa com prompts profissionais prontos para gerar textos, imagens, vídeos, campanhas e roteiros — copie, personalize e acelere qualquer ideia em segundos."
-      : "Bem-vindo ao AI Agents. Agentes inteligentes que automatizam tarefas, respondem clientes, geram conteúdo e operam fluxos completos — sua equipe digital trabalhando 24/7 no piloto automático.");
+      : isPacks
+        ? "Bem-vindo aos Packs Premium. Coleções exclusivas de conteúdo, ferramentas e recursos prontos para acelerar seus projetos — baixe, importe e monetize em segundos com acesso vitalício."
+        : "Bem-vindo ao AI Agents. Agentes inteligentes que automatizam tarefas, respondem clientes, geram conteúdo e operam fluxos completos — sua equipe digital trabalhando 24/7 no piloto automático.");
 
 
   return (

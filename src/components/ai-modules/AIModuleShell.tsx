@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  *   AI Prompts  → data-ai-theme="prompts"  (rose / magenta / gold)
  *   AI Agents   → data-ai-theme="agents"   (cyan / blue / violet)
  */
-export type AIModuleTheme = "prompts" | "agents";
+export type AIModuleTheme = "prompts" | "agents" | "packs";
 
 export interface AIModuleShellProps {
   theme: AIModuleTheme;
