@@ -115,6 +115,7 @@ const specialLinks: SpecialLink[] = [
   { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard },
   { key: "ajustar-creditos", to: "/admin/ajustar-creditos", label: "Ajustar Créditos", icon: Coins },
   { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
+  { key: "pack-autorizacoes", to: "/admin/pack-autorizacoes", label: "Autorizações de Packs", icon: KeySquare },
   { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup },
 ];
 
