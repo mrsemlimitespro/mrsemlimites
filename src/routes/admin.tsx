@@ -19,6 +19,8 @@ import {
   Coins,
   Sparkles,
   Volume2,
+  KeySquare,
+
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
