@@ -22,6 +22,12 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND_LOGO_URL, BRAND_NAME } from "@/components/brand";
 import { PromoCarousel } from "@/components/promo-carousel";
+import {
+  PromocoesSection,
+  PlanosSection,
+  ProdutosSection,
+  PropagandasSection,
+} from "@/components/home/home-sections";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -327,6 +333,20 @@ function DashboardPage() {
 
       {/* Carrossel promocional infinito */}
       <PromoCarousel />
+
+      {/* Propagandas (topo) */}
+      <PropagandasSection posicao="home" />
+
+      {/* Promoções ativas */}
+      <PromocoesSection />
+
+      {/* Planos */}
+      <PlanosSection />
+
+      {/* Produtos */}
+      <ProdutosSection />
+
+
 
 
       {/* 4 KPI cards */}
