@@ -28,6 +28,62 @@ function LoginPage() {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bioReady, setBioReady] = useState(false);
+  const [bioLabel, setBioLabel] = useState("biometria");
+  const [bioHint, setBioHint] = useState<string | null>(null);
+  const [bioLoading, setBioLoading] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      if (!NativeService.platform.isNative()) return;
+      const enabled = await isBiometricEnabled();
+      if (!enabled) return;
+      const avail = await NativeService.biometric.isAvailable();
+      if (!avail.ok || !avail.data.available || !avail.data.enrolled) return;
+      // Só oferece biometria se ainda existir sessão Supabase válida neste dispositivo.
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) return;
+      if (!alive) return;
+      setBioReady(true);
+      setBioHint(await getBiometricHint());
+      if (avail.data.type === "face") setBioLabel("Face ID");
+      else if (avail.data.type === "fingerprint") setBioLabel("impressão digital");
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  async function handleBiometricUnlock() {
+    setBioLoading(true);
+    setError(null);
+    const r = await unlockWithBiometric("Entre no MR sem limites com sua biometria.");
+    setBioLoading(false);
+    if (!r.ok) {
+      if (r.code !== "cancelled") setError(r.message);
+      return;
+    }
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      setError("Sessão expirada. Entre com seu e-mail e senha.");
+      return;
+    }
+    navigate({ to: "/" });
+  }
+
+  async function offerBiometricEnrollment(userHint: string) {
+    if (!NativeService.platform.isNative()) return;
+    if (await isBiometricEnabled()) return;
+    const avail = await NativeService.biometric.isAvailable();
+    if (!avail.ok || !avail.data.available || !avail.data.enrolled) return;
+    // Confirma vontade do usuário com o próprio prompt do sistema.
+    const r = await NativeService.biometric.authenticate({
+      reason: "Ative a biometria para entrar mais rápido nas próximas vezes.",
+      title: "Ativar biometria",
+    });
+    if (r.ok) await enableBiometric(userHint);
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
