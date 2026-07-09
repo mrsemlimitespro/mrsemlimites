@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthShell, primaryBtn } from "./login";
 import { cn } from "@/lib/utils";
 import { playSfx } from "@/lib/sfx";
+import { PageBackButton } from "@/components/page-back-button";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
