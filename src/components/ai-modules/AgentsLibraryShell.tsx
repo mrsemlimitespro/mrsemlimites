@@ -337,6 +337,26 @@ function AgentModal({ agent, onClose }: { agent: AiAgent; onClose: () => void })
             <Button
               size="sm"
               variant="outline"
+              onClick={() => {
+                downloadItemAsHtml({
+                  titulo: agent.titulo,
+                  categoria: agent.categoria,
+                  subcategoria: agent.subcategoria,
+                  descricao: agent.descricao,
+                  descricao_completa: agent.descricao_completa,
+                  prompt: agent.system_prompt || agent.descricao_completa || agent.descricao,
+                  cover_url: agent.cover_url,
+                  autor: agent.autor,
+                  versao: agent.versao,
+                });
+                toast.success("Download iniciado");
+              }}
+              className="h-8 gap-1.5 border-ai-300/30 text-ai-100 hover:bg-ai-500/10"
+            >
+              <Download className="w-3.5 h-3.5" /> Baixar
+            <Button
+              size="sm"
+              variant="outline"
               onClick={onFavorite}
               className={cn(
                 "h-8 gap-1.5 border-ai-300/30",
