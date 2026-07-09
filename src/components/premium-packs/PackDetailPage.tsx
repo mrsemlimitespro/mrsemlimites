@@ -45,6 +45,19 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   const { isFav, toggle } = useLocalFavorites("premium_pack");
   const favored = isFav(pack.id);
 
+  const listFn = useServerFn(listPremiumPacks);
+  const { data: relatedData } = useQuery({
+    queryKey: ["premium-packs", "related", pack.categoria ?? "_"],
+    queryFn: () =>
+      listFn({ data: { categoria: pack.categoria ?? undefined, limit: 8, offset: 0, sort: "popular" } }),
+    staleTime: 60_000,
+  });
+  const related = useMemo(
+    () => (relatedData?.rows ?? []).filter((p) => p.id !== pack.id).slice(0, 3),
+    [relatedData, pack.id],
+  );
+
+
   const shareUrl = useMemo(() => {
     const token = (pack as PremiumPack & { public_token?: string | null }).public_token;
     const path = token ? `/p/${pack.slug}-${token}` : `/packs/${pack.slug}`;
