@@ -8,7 +8,7 @@
  */
 import { useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Copy, Check, Heart, Share2, Files } from "lucide-react";
+import { Copy, Check, Heart, Share2, Files, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Bot, Search, Sparkles, Star, X } from "lucide-react";
