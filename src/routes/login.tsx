@@ -129,6 +129,9 @@ function LoginPage() {
       return;
     }
 
+    // Oferece habilitar biometria após login bem-sucedido (só native, só 1x).
+    await offerBiometricEnrollment(email);
+
     navigate({ to: "/" });
   }
 
