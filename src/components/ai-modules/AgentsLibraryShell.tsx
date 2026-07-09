@@ -354,6 +354,7 @@ function AgentModal({ agent, onClose }: { agent: AiAgent; onClose: () => void })
               className="h-8 gap-1.5 border-ai-300/30 text-ai-100 hover:bg-ai-500/10"
             >
               <Download className="w-3.5 h-3.5" /> Baixar
+            </Button>
             <Button
               size="sm"
               variant="outline"
