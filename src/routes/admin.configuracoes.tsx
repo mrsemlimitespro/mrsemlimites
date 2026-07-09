@@ -214,7 +214,7 @@ function UploadField({
       <div className="space-y-2">
         {value && (
           <div className="relative w-fit">
-            <img src={value} alt="" className="max-h-24 rounded-lg border border-white/10 object-cover" />
+            <img src={value} alt="" className="max-h-24 rounded-lg border border-white/10 object-cover"  loading="lazy" decoding="async" />
             <button
               type="button"
               onClick={() => onChange("")}
