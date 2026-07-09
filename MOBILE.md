@@ -1,170 +1,84 @@
-# 📱 MR Sem Limites — App Nativo (Android + iOS)
+# MR Sem Limites — Guia Mobile (Android + iOS + PWA)
 
-App nativo construído com **Capacitor 8**, reaproveitando 100% do código web.
+## Arquitetura
 
----
+- Web (SSR) publicada em `https://mrsemlimites.lovable.app`.
+- App nativo (Capacitor 8) carrega o mesmo bundle via `server.url`.
+- Único deploy backend → paridade total entre web e app.
 
-## 🏗️ Arquitetura
+## Estrutura nativa (helpers)
 
-```
-┌──────────────────────────────────────────┐
-│  Código-fonte único (src/)               │
-│  Rotas, componentes, Supabase, hooks     │
-└──────────┬──────────────────┬────────────┘
-           │                  │
-    ┌──────▼──────┐    ┌──────▼──────────┐
-    │  WEB / PWA  │    │  APP NATIVO     │
-    │  SSR ativo  │    │  Capacitor      │
-    │  Cloudflare │    │  Android + iOS  │
-    └─────────────┘    └────────┬────────┘
-                                │
-                    HTTPS → mrsemlimites.lovable.app
-                    (mesma Supabase, mesmo Realtime)
-```
+- `src/lib/platform.ts` — `isNative`, `isAndroid`, `isIOS`, `isWeb`, `isPWA`, `getPlatform`.
+- `src/lib/native-init.ts` — splash, status bar, back-button Android, interceptor de links externos.
+- `src/lib/native-links.ts` — `openExternal(url)` + interceptor global para `<a target="_blank">` / links de domínio externo → abre no `@capacitor/browser` (in-app browser tab).
 
-O app nativo carrega o site publicado dentro de um WebView e **acrescenta**
-recursos nativos (push, biometria, câmera, etc). Isso é aceito pelas lojas
-porque o app entrega funcionalidades além do navegador — não é um webview puro.
+## Comportamento nativo já implementado
 
----
+- Splash escondida após hidratação.
+- Status bar dark, cor `#0a0a0f`.
+- Back button Android: fecha modal aberto → volta histórico → confirma "toque de novo para sair" (2s) antes de encerrar.
+- Links externos abrem em Chrome Custom Tab / SFSafariViewController (não vazam o WebView).
+- `-webkit-tap-highlight-color: transparent`, sem callout iOS, sem overscroll bounce.
+- Safe-area (`env(safe-area-inset-*)`) mapeada para `--sat/sar/sab/sal`.
+- `font-size: max(16px, 1rem)` em inputs → sem zoom iOS ao focar.
 
-## ⚙️ Pré-requisitos (fazer no seu computador local)
+## Preparação para publicação
 
-O sandbox do Lovable não roda Android Studio nem Xcode. Você precisa clonar
-o projeto localmente para os passos abaixo.
+### Android (Play Store)
 
-- **Node.js** 20+ e **bun** (`npm i -g bun`)
-- **Android**: [Android Studio](https://developer.android.com/studio) + JDK 17
-- **iOS** (só em macOS): [Xcode](https://developer.apple.com/xcode/) + CocoaPods (`sudo gem install cocoapods`)
+- [ ] `npx cap add android` (gera `android/`).
+- [ ] Ícone adaptativo: `android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml` (foreground + background).
+- [ ] Splash Android 12+: `values/styles.xml` com `windowSplashScreenBackground` e `windowSplashScreenAnimatedIcon`.
+- [ ] `AndroidManifest.xml`:
+      - `versionCode` / `versionName`.
+      - Intent filter deep link:
+        ```xml
+        <intent-filter android:autoVerify="true">
+          <action android:name="android.intent.action.VIEW"/>
+          <category android:name="android.intent.category.DEFAULT"/>
+          <category android:name="android.intent.category.BROWSABLE"/>
+          <data android:scheme="https" android:host="mrsemlimites.lovable.app"/>
+        </intent-filter>
+        ```
+- [ ] `assetlinks.json` publicado em `https://mrsemlimites.lovable.app/.well-known/assetlinks.json`.
+- [ ] Keystore de upload (`keytool -genkey ...`) + Play App Signing.
+- [ ] `targetSdkVersion 34` (obrigatório 2026).
+- [ ] Screenshots (2+ 1080×1920), feature graphic 1024×500.
+- [ ] Data Safety form + Privacy Policy URL pública.
 
----
+### iOS (App Store)
 
-## 🚀 Primeiro setup (rodar UMA vez)
+- [ ] `npx cap add ios` (gera `ios/`).
+- [ ] AppIcon.appiconset completo (1024×1024 + variantes automáticas).
+- [ ] Launch Screen: `LaunchScreen.storyboard` com background `#0a0a0f`.
+- [ ] `Info.plist`:
+      - `CFBundleShortVersionString` / `CFBundleVersion`.
+      - `NSAppTransportSecurity` deixar padrão (HTTPS enforced).
+- [ ] Associated Domains entitlement: `applinks:mrsemlimites.lovable.app`.
+- [ ] `apple-app-site-association` publicado em `https://mrsemlimites.lovable.app/.well-known/apple-app-site-association` (JSON, sem extensão, `Content-Type: application/json`).
+- [ ] `PrivacyInfo.xcprivacy` (Privacy Manifest — obrigatório desde 2024).
+- [ ] Screenshots iPhone 6.7"/6.1", iPad 12.9" (se suportar).
+- [ ] App Privacy report no App Store Connect.
 
-```bash
-# 1. Instalar dependências
-bun install
+### PWA
 
-# 2. Adicionar plataforma Android
-npx cap add android
+- [x] Manifest, ícones 192/512 + maskable.
+- [x] `apple-touch-icon`, `theme-color`, `apple-mobile-web-app-capable`.
+- [ ] Otimizar peso dos ícones PNG (471 KB → alvo <100 KB).
 
-# 3. Adicionar plataforma iOS (só em macOS)
-npx cap add ios
-```
+## Deep links (fluxo)
 
-Isso cria as pastas `android/` e `ios/` com os projetos nativos.
+1. Usuário clica `https://mrsemlimites.lovable.app/reset-password?token=...` no email.
+2. Android verifica `assetlinks.json` → abre o app direto.
+3. iOS verifica `apple-app-site-association` → abre o app direto.
+4. WebView carrega a rota TanStack normalmente → fluxo idêntico à web.
+5. OAuth callback usa `${window.location.origin}` — mesmo funcionamento em app e web.
 
----
+## O que NÃO está implementado (fases futuras)
 
-## 🔨 Fluxo de desenvolvimento
-
-Como o `capacitor.config.ts` está configurado com `server.url` apontando
-para `https://mrsemlimites.lovable.app`, o app já busca a versão publicada
-— **basta abrir o Android Studio / Xcode**.
-
-```bash
-# Abrir projeto Android no Android Studio
-bun run cap:android
-
-# Abrir projeto iOS no Xcode (macOS)
-bun run cap:ios
-
-# Ou rodar direto num emulador/dispositivo
-bun run cap:run:android
-bun run cap:run:ios
-```
-
-Após qualquer mudança em `capacitor.config.ts` ou nos plugins Capacitor,
-sincronize:
-
-```bash
-bun run cap:sync
-```
-
----
-
-## 🌐 Como funciona o backend no mobile
-
-- **Supabase**: usa a mesma URL/chave publicáveis do `.env` → RLS, Realtime, Auth funcionam idêntico.
-- **Server Functions**: são chamadas via HTTPS no domínio publicado
-  (`https://mrsemlimites.lovable.app/_serverFn/*`) porque o app carrega o
-  site direto de lá.
-- **Webhooks (Cakto / Kiwify / MercadoPago)**: continuam no servidor web —
-  o app não precisa deles.
-
----
-
-## 🔐 Publicação nas lojas
-
-### Google Play Store
-
-1. Em `android/app/build.gradle` ajuste `applicationId`, `versionCode`, `versionName`.
-2. Gerar keystore de assinatura:
-   ```bash
-   keytool -genkey -v -keystore mrsemlimites.keystore -alias mrsemlimites -keyalg RSA -keysize 2048 -validity 10000
-   ```
-3. No Android Studio: **Build → Generate Signed Bundle / APK → Android App Bundle (.aab)**
-4. Upload no [Google Play Console](https://play.google.com/console).
-
-### Apple App Store
-
-1. Em Xcode, configure **Bundle Identifier** (`app.lovable.mrsemlimites`) e **Team**.
-2. Product → Archive → Distribute App → App Store Connect.
-3. Complete a listagem no [App Store Connect](https://appstoreconnect.apple.com).
-
----
-
-## 📦 Plugins nativos instalados (Fase 1)
-
-| Plugin | Uso |
-|---|---|
-| `@capacitor/app` | Botão voltar Android, lifecycle |
-| `@capacitor/status-bar` | Estilo da barra de status |
-| `@capacitor/splash-screen` | Tela de abertura |
-| `@capacitor/preferences` | Storage chave-valor seguro |
-| `@capacitor/network` | Detecção online/offline |
-
-### Próximas fases (a implementar)
-
-- **Fase 2**: Push notifications (FCM/APNs), biometria, câmera, share, geolocation
-- **Fase 3**: Offline parcial + fila de sync via IndexedDB
-- **Fase 4**: Ícones, splash screens, deep links, assets das lojas
-
----
-
-## 🎯 Detecção de plataforma no código
-
-```tsx
-import { isNative, isAndroid, isIOS, isWeb } from "@/lib/platform";
-
-// Renderiza câmera nativa no app, <input type="file"> no web
-{isNative() ? <NativeCameraButton /> : <WebFileInput />}
-```
-
----
-
-## ❓ Alternar entre modo "online" e "offline empacotado"
-
-Por padrão o app carrega o site publicado. Para gerar um build 100% offline
-(bundle embutido no APK/IPA), edite `capacitor.config.ts`:
-
-```ts
-server: {
-  // url: "https://mrsemlimites.lovable.app",  ← comente esta linha
-  androidScheme: "https",
-  iosScheme: "https",
-}
-```
-
-E aponte `webDir` para uma pasta com o bundle SPA. Isso será implementado na
-Fase 3 (offline parcial).
-
----
-
-## 🆘 Suporte
-
-Cada nova feature nativa é implementada em fases. Peça o que precisar:
-- "Ativar notificações push"
-- "Adicionar login por biometria"
-- "Habilitar câmera para upload"
-- "Gerar ícones e splash para publicação"
+- Push notifications (`@capacitor/push-notifications` + FCM/APNs).
+- Biometria (`@capacitor-community/biometric-auth`).
+- Câmera, microfone, GPS.
+- Secure storage nativo para tokens Supabase (hoje ainda em localStorage).
+- Rate limit em server functions críticas.
+- CSP meta tag (requer allow-list de Supabase + Lovable AI + fontes).
