@@ -616,6 +616,9 @@ function FieldInput({
   if (field.type === "image") {
     return <ImageInput field={field} value={value} onChange={onChange} />;
   }
+  if (field.type === "file") {
+    return <FileInput field={field} value={value} onChange={onChange} />;
+  }
   if (field.type === "array") {
     const str = Array.isArray(value) ? (value as string[]).join(", ") : ((value as string) ?? "");
     return (
