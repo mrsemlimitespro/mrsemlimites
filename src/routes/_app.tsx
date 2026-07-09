@@ -50,7 +50,8 @@ function AppLayout() {
           </div>
           <Outlet />
         </main>
-      </div>
+      <NetworkStatusWatcher />
+    </div>
       <FirePromosButton />
       <MobileBottomNav />
       <PwaInstallPrompt />
