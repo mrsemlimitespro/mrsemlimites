@@ -62,36 +62,65 @@ const STYLES: Style[] = [
   { id: "candy-stripes", nome: "Candy Stripes", descricao: "Listras coloridas em movimento diagonal.", render: () => <CandyStripes /> },
 ];
 
+function buildSnippet(s: Style): string {
+  const componentCode = s.render.toString();
+  // Tenta extrair a referência do componente demo (ex: <NeonMarquee />)
+  const match = componentCode.match(/<(\w+)\s*\/>/);
+  const compName = match?.[1];
+  // Procura a definição completa da função demo no bundle
+  let demoSource = "";
+  if (compName) {
+    const fn = (globalThis as unknown as Record<string, unknown>)[compName];
+    if (typeof fn === "function") demoSource = fn.toString();
+  }
+  return [
+    `// Estilo: ${s.nome} (${s.id})`,
+    `// ${s.descricao}`,
+    "",
+    demoSource || componentCode,
+    "",
+    "/* Cole também os @keyframes/utilitários necessários do DEMO_CSS em src/routes/admin.animacoes.tsx */",
+  ].join("\n");
+}
+
 function AnimacoesPage() {
   const [copied, setCopied] = useState<string | null>(null);
-  const copy = async (id: string, nome: string) => {
-    const text = `Aplica o estilo "${nome}" (${id})`;
+  const copy = async (s: Style) => {
+    const text = buildSnippet(s);
     let ok = false;
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
         ok = true;
-      } else {
-        // Fallback para iframes/contextos sem permissão de clipboard.
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        ok = document.execCommand("copy");
-        document.body.removeChild(ta);
       }
     } catch {
       ok = false;
     }
+    if (!ok) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.top = "0";
+        ta.style.left = "0";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch {
+        ok = false;
+      }
+    }
     if (ok) {
-      setCopied(id);
-      toast.success(`Copiado: "${nome}"`);
+      setCopied(s.id);
+      toast.success(`Código copiado: "${s.nome}"`);
       setTimeout(() => setCopied(null), 1500);
     } else {
-      toast.error("Não foi possível copiar. Copie manualmente: " + text);
+      toast.error("Não foi possível copiar. Selecione e copie manualmente.");
+      window.prompt("Copie o código:", text);
     }
   };
 
