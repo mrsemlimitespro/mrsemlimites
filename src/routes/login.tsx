@@ -172,6 +172,21 @@ function LoginPage() {
           {loading ? "Entrando..." : "Entrar"}
         </button>
 
+        {bioReady && (
+          <button
+            type="button"
+            onClick={handleBiometricUnlock}
+            disabled={bioLoading}
+            className="w-full rounded-full border border-border/70 bg-surface/60 px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-surface/80 disabled:opacity-60"
+          >
+            {bioLoading
+              ? "Verificando..."
+              : bioHint
+                ? `Entrar com ${bioLabel} (${bioHint})`
+                : `Entrar com ${bioLabel}`}
+          </button>
+        )}
+
         <SocialSignIn mode="signin" />
 
         <p className="text-center text-xs text-muted-foreground">
