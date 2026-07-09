@@ -81,6 +81,8 @@ function CheckoutPage() {
   const [creating, setCreating] = useState(false);
   const [plano, setPlano] = useState<Plano | null>(null);
   const [pack, setPack] = useState<Pack | null>(null);
+  const [produto, setProduto] = useState<Produto | null>(null);
+
   const [promo, setPromo] = useState<Promo | null>(null);
   const [gateways, setGateways] = useState<Gateway[]>([]);
   const [gatewaySlug, setGatewaySlug] = useState<string | null>(null);
