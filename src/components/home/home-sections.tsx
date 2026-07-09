@@ -270,14 +270,30 @@ export function ProdutosSection() {
     return (data ?? []) as Produto[];
   });
 
+  const [open, setOpen] = useState<Produto | null>(null);
+
   if (items.length === 0) return null;
+
+  const handleAdquirir = (p: Produto) => {
+    if (p.status === "esgotado") return;
+    if (p.link) {
+      window.open(p.link, "_blank", "noopener,noreferrer");
+    } else {
+      window.location.href = `/checkout?produto=${encodeURIComponent(p.id)}`;
+    }
+  };
 
   return (
     <section className="space-y-3">
       <h2 className="text-sm font-semibold tracking-wide text-muted-foreground">Produtos</h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {items.map((p) => (
-          <div key={p.id} className="glass overflow-hidden rounded-2xl">
+          <button
+            key={p.id}
+            type="button"
+            onClick={() => setOpen(p)}
+            className="glass overflow-hidden rounded-2xl text-left transition hover:ring-1 hover:ring-primary/40"
+          >
             {p.imagem_url && (
               <img
                 src={p.imagem_url}
@@ -302,19 +318,74 @@ export function ProdutosSection() {
                   <span className="rounded-md bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-400">
                     ESGOTADO
                   </span>
-                ) : p.link ? (
-                  <a
-                    href={p.link}
-                    className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
+                ) : (
+                  <span className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
+                    Ver detalhes
+                  </span>
+                )}
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setOpen(null)}
+        >
+          <div
+            className="glass-strong relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setOpen(null)}
+              className="absolute right-3 top-3 z-10 rounded-full bg-black/40 px-2 py-1 text-xs text-white hover:bg-black/60"
+              aria-label="Fechar"
+            >
+              ✕
+            </button>
+            {open.imagem_url && (
+              <img
+                src={open.imagem_url}
+                alt={open.titulo || open.nome}
+                className="h-64 w-full object-cover"
+                draggable={false}
+              />
+            )}
+            <div className="space-y-4 p-6">
+              {open.categoria && (
+                <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                  {open.categoria}
+                </span>
+              )}
+              <h3 className="text-2xl font-bold">{open.titulo || open.nome}</h3>
+              {open.descricao && (
+                <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                  {open.descricao}
+                </p>
+              )}
+              <div className="flex items-center justify-between border-t border-white/10 pt-4">
+                <span className="text-2xl font-bold">{brl(open.preco)}</span>
+                {open.status === "esgotado" ? (
+                  <span className="rounded-md bg-red-500/20 px-3 py-2 text-xs font-bold text-red-400">
+                    ESGOTADO
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleAdquirir(open)}
+                    className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
                   >
-                    {p.botao_texto || "Ver"}
-                  </a>
-                ) : null}
+                    {open.botao_texto || "Adquirir"}
+                  </button>
+                )}
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
