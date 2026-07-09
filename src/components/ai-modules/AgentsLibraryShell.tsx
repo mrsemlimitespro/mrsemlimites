@@ -167,7 +167,7 @@ function AgentCard({ agent, onOpen }: { agent: AiAgent; onOpen: () => void }) {
   );
 }
 
-function AgentModal({ agent, onClose }: { agent: AiAgent; onClose: () => void }) {
+function AgentModal({ agent, onClose, related = [], onOpenOther }: { agent: AiAgent; onClose: () => void; related?: AiAgent[]; onOpenOther?: (a: AiAgent) => void }) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const { isFav, toggle } = useLocalFavorites("ai-agent");
   const fav = isFav(agent.id);
