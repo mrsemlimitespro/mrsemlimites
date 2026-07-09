@@ -8,7 +8,7 @@
  */
 import { useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Copy, Check, Heart, Share2, Files } from "lucide-react";
+import { Copy, Check, Heart, Share2, Files, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Bot, Search, Sparkles, Star, X } from "lucide-react";
@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { getAgents, type AiAgent } from "@/lib/ai-agents.functions";
 import { AICard, AIEmptyState, AIPill } from "@/components/ai-modules/AIModuleShell";
 import { useLocalFavorites } from "@/hooks/useLocalFavorites";
+import { downloadItemAsHtml } from "@/lib/download-item";
 
 export function AgentsLibraryShell() {
   const fetchAgents = useServerFn(getAgents);
@@ -332,6 +333,27 @@ function AgentModal({ agent, onClose }: { agent: AiAgent; onClose: () => void })
               className="h-8 gap-1.5 bg-gradient-to-r from-ai-500 to-ai-400 text-black font-bold"
             >
               <Copy className="w-3.5 h-3.5" /> Copiar Prompt
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                downloadItemAsHtml({
+                  titulo: agent.titulo,
+                  categoria: agent.categoria,
+                  subcategoria: agent.subcategoria,
+                  descricao: agent.descricao,
+                  descricao_completa: agent.descricao_completa,
+                  prompt: agent.system_prompt || agent.descricao_completa || agent.descricao,
+                  cover_url: agent.cover_url,
+                  autor: agent.autor,
+                  versao: agent.versao,
+                });
+                toast.success("Download iniciado");
+              }}
+              className="h-8 gap-1.5 border-ai-300/30 text-ai-100 hover:bg-ai-500/10"
+            >
+              <Download className="w-3.5 h-3.5" /> Baixar
             </Button>
             <Button
               size="sm"
