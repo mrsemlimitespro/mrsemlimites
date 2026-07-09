@@ -48,9 +48,7 @@ export type ProcessError =
   | { code: "decode_failed"; message: string }
   | { code: "encode_failed"; message: string };
 
-export type ProcessResult =
-  | { ok: true; data: ProcessedImage }
-  | { ok: false; error: ProcessError };
+export type ProcessResult = { ok: true; data: ProcessedImage } | { ok: false; error: ProcessError };
 
 function extForMime(mime: ImageMime): string {
   return mime === "image/png" ? "png" : mime === "image/webp" ? "webp" : "jpg";
@@ -91,10 +89,7 @@ function computeSize(
   return { width: Math.round(w * r), height: Math.round(h * r) };
 }
 
-export async function processImage(
-  input: Blob,
-  opts: ProcessOptions = {},
-): Promise<ProcessResult> {
+export async function processImage(input: Blob, opts: ProcessOptions = {}): Promise<ProcessResult> {
   const allowed = opts.allowedMimes ?? DEFAULT_ALLOWED;
   const maxIn = opts.maxInputBytes ?? 25 * 1024 * 1024;
   const maxOut = opts.maxOutputBytes ?? 5 * 1024 * 1024;
@@ -124,10 +119,18 @@ export async function processImage(
   try {
     img = await decode(input);
   } catch {
-    return { ok: false, error: { code: "decode_failed", message: "Não foi possível ler a imagem." } };
+    return {
+      ok: false,
+      error: { code: "decode_failed", message: "Não foi possível ler a imagem." },
+    };
   }
 
-  const { width, height } = computeSize(img.naturalWidth, img.naturalHeight, opts.maxWidth, opts.maxHeight);
+  const { width, height } = computeSize(
+    img.naturalWidth,
+    img.naturalHeight,
+    opts.maxWidth,
+    opts.maxHeight,
+  );
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -139,7 +142,8 @@ export async function processImage(
   const blob: Blob | null = await new Promise((resolve) =>
     canvas.toBlob(resolve, targetMime, quality),
   );
-  if (!blob) return { ok: false, error: { code: "encode_failed", message: "Falha ao codificar imagem." } };
+  if (!blob)
+    return { ok: false, error: { code: "encode_failed", message: "Falha ao codificar imagem." } };
   if (blob.size > maxOut) {
     return {
       ok: false,

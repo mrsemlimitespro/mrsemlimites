@@ -79,9 +79,9 @@ export function LogoutIncentiveDialog({
 
           <DialogDescription className="max-w-md text-[15px] leading-relaxed text-foreground/75">
             Que tal aproveitar as ofertas de hoje? Recarregue seus{" "}
-            <span className="font-semibold text-foreground">créditos com desconto</span>,
-            garanta seu <span className="font-semibold text-foreground">plano Premium</span> e
-            continue ativando licenças <span className="whitespace-nowrap">sem limites</span>.
+            <span className="font-semibold text-foreground">créditos com desconto</span>, garanta
+            seu <span className="font-semibold text-foreground">plano Premium</span> e continue
+            ativando licenças <span className="whitespace-nowrap">sem limites</span>.
           </DialogDescription>
 
           {/* mini destaques */}

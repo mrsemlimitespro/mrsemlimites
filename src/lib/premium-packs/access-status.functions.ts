@@ -18,9 +18,7 @@ export type PackAccessStatus = {
 };
 
 export const getPackAccessStatus = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) =>
-    z.object({ slug: z.string().trim().min(1).max(160) }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ slug: z.string().trim().min(1).max(160) }).parse(d))
   .handler(async ({ data }): Promise<PackAccessStatus> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

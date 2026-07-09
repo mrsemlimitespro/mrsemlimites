@@ -73,9 +73,7 @@ export type UploadError =
   | { code: "processing_failed"; message: string }
   | { code: "upload_failed"; message: string };
 
-export type UploadReturn =
-  | { ok: true; data: UploadResult }
-  | { ok: false; error: UploadError };
+export type UploadReturn = { ok: true; data: UploadResult } | { ok: false; error: UploadError };
 
 function extForMime(mime: string): string {
   if (mime === "image/png") return "png";
@@ -128,13 +126,11 @@ export async function uploadImage(
   const ext = extForMime(outMime);
   const path = `${user.id}/${folder}/${randomKey(opts.fileNameHint)}.${ext}`;
 
-  const { error: upErr } = await supabase.storage
-    .from(UPLOAD_BUCKET)
-    .upload(path, outBlob, {
-      contentType: outMime,
-      cacheControl: "3600",
-      upsert: category === "avatar", // avatar sobrescreve; demais criam novos
-    });
+  const { error: upErr } = await supabase.storage.from(UPLOAD_BUCKET).upload(path, outBlob, {
+    contentType: outMime,
+    cacheControl: "3600",
+    upsert: category === "avatar", // avatar sobrescreve; demais criam novos
+  });
   if (upErr) {
     return { ok: false, error: { code: "upload_failed", message: upErr.message } };
   }
@@ -149,15 +145,21 @@ export async function uploadImage(
 
   return {
     ok: true,
-    data: { bucket: UPLOAD_BUCKET, path, size: outBlob.size, mime: outMime, width, height, signedUrl },
+    data: {
+      bucket: UPLOAD_BUCKET,
+      path,
+      size: outBlob.size,
+      mime: outMime,
+      width,
+      height,
+      signedUrl,
+    },
   };
 }
 
 /** Assina uma URL de leitura para um path já enviado. */
 export async function createSignedUrl(path: string, seconds = 3600): Promise<string | null> {
-  const { data, error } = await supabase.storage
-    .from(UPLOAD_BUCKET)
-    .createSignedUrl(path, seconds);
+  const { data, error } = await supabase.storage.from(UPLOAD_BUCKET).createSignedUrl(path, seconds);
   if (error) return null;
   return data?.signedUrl ?? null;
 }

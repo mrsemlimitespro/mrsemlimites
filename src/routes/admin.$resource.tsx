@@ -2,7 +2,17 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, Loader2, Pencil, Plus, Search, Trash2, Upload, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+  Upload,
+  X,
+} from "lucide-react";
 import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -36,7 +46,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { resourceByKey, type Field, type Resource } from "@/lib/admin/resources";
-
 
 export const Route = createFileRoute("/admin/$resource")({
   component: ResourcePage,
@@ -84,9 +93,7 @@ function ResourceView({ resource }: { resource: Resource }) {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["admin-list", resource.table, debouncedSearch, page, pageSize],
     queryFn: async () => {
-      let q = (supabase as any)
-        .from(resource.table)
-        .select("*", { count: "exact" });
+      let q = (supabase as any).from(resource.table).select("*", { count: "exact" });
       if (debouncedSearch && resource.searchColumns?.length) {
         const term = debouncedSearch.replace(/[%,]/g, "");
         q = q.or(resource.searchColumns.map((c) => `${c}.ilike.%${term}%`).join(","));
@@ -154,9 +161,7 @@ function ResourceView({ resource }: { resource: Resource }) {
                   toast.info("Nada para exportar");
                   return;
                 }
-                const cols = Array.from(
-                  new Set(rows.flatMap((r) => Object.keys(r))),
-                );
+                const cols = Array.from(new Set(rows.flatMap((r) => Object.keys(r))));
                 const escape = (v: unknown) => {
                   if (v === null || v === undefined) return "";
                   const s = typeof v === "object" ? JSON.stringify(v) : String(v);
@@ -186,7 +191,6 @@ function ResourceView({ resource }: { resource: Resource }) {
             {resource.singular.toLowerCase()}
           </Button>
         </div>
-
       </header>
 
       {resource.searchColumns && resource.searchColumns.length > 0 && (
@@ -228,7 +232,9 @@ function ResourceView({ resource }: { resource: Resource }) {
                   className="p-8 text-center text-sm text-red-300"
                 >
                   <div className="mb-2">Falha ao carregar: {(error as Error).message}</div>
-                  <Button size="sm" variant="ghost" onClick={() => refetch()}>Tentar novamente</Button>
+                  <Button size="sm" variant="ghost" onClick={() => refetch()}>
+                    Tentar novamente
+                  </Button>
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
@@ -302,8 +308,6 @@ function ResourceView({ resource }: { resource: Resource }) {
         </div>
       )}
 
-
-
       {(creating || editing) && (
         <ResourceFormDialog
           resource={resource}
@@ -319,9 +323,7 @@ function ResourceView({ resource }: { resource: Resource }) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir registro?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta ação não pode ser desfeita.
-            </AlertDialogDescription>
+            <AlertDialogDescription>Esta ação não pode ser desfeita.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
@@ -339,7 +341,8 @@ function ResourceView({ resource }: { resource: Resource }) {
 }
 
 function formatCell(v: unknown, format?: "text" | "boolean" | "date" | "currency" | "number") {
-  if (v === null || v === undefined || v === "") return <span className="text-muted-foreground">—</span>;
+  if (v === null || v === undefined || v === "")
+    return <span className="text-muted-foreground">—</span>;
   if (format === "boolean")
     return (
       <span
@@ -408,7 +411,10 @@ function ResourceFormDialog({
           if (Array.isArray(v)) {
             // já é array
           } else if (typeof v === "string" && v.trim()) {
-            v = v.split(",").map((s) => s.trim()).filter(Boolean);
+            v = v
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean);
           } else {
             v = null;
           }
@@ -584,9 +590,7 @@ function FieldInput({
           id={id}
           type="datetime-local"
           value={str}
-          onChange={(e) =>
-            onChange(e.target.value ? new Date(e.target.value).toISOString() : null)
-          }
+          onChange={(e) => onChange(e.target.value ? new Date(e.target.value).toISOString() : null)}
         />
       </div>
     );
@@ -637,7 +641,6 @@ function FieldInput({
       </div>
     );
   }
-
 
   return (
     <div>

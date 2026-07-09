@@ -33,7 +33,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
-
 export const Route = createFileRoute("/admin/pagamentos")({
   component: PagamentosPage,
 });
@@ -215,7 +214,10 @@ function GatewaysTab() {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="icon-tile" style={{ ["--tile-color" as never]: gatewayColor(g.slug) }}>
+                <span
+                  className="icon-tile"
+                  style={{ ["--tile-color" as never]: gatewayColor(g.slug) }}
+                >
                   <CreditCard className="size-4" />
                 </span>
                 <div>
@@ -226,7 +228,8 @@ function GatewaysTab() {
                     )}
                   </div>
                   <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                    {g.environment === "producao" ? "Produção" : "Sandbox"} · prioridade {g.priority}
+                    {g.environment === "producao" ? "Produção" : "Sandbox"} · prioridade{" "}
+                    {g.priority}
                   </div>
                 </div>
               </div>
@@ -449,10 +452,7 @@ function GatewayEditor({ gateway, onSaved }: { gateway: Gateway; onSaved: () => 
 
         <div>
           <Label>Client ID</Label>
-          <Input
-            value={form.client_id ?? ""}
-            onChange={(e) => set("client_id", e.target.value)}
-          />
+          <Input value={form.client_id ?? ""} onChange={(e) => set("client_id", e.target.value)} />
         </div>
 
         <div>
@@ -573,7 +573,10 @@ function MetodosTab() {
               )}
             >
               <div className="flex items-center gap-3">
-                <span className="icon-tile" style={{ ["--tile-color" as never]: gatewayColor(g.slug) }}>
+                <span
+                  className="icon-tile"
+                  style={{ ["--tile-color" as never]: gatewayColor(g.slug) }}
+                >
                   <CreditCard className="size-4" />
                 </span>
                 <div className="flex-1">
@@ -716,7 +719,7 @@ function WebhooksTab() {
               <div key={g.id} className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
                 <div className="flex items-center justify-between">
                   <div className="text-sm font-semibold">{g.nome}</div>
-                  <StatusBadge status={g.enabled ? g.last_test_status ?? "ok" : null} />
+                  <StatusBadge status={g.enabled ? (g.last_test_status ?? "ok") : null} />
                 </div>
                 <div className="mt-2 truncate text-xs text-muted-foreground">
                   {g.webhook_url || "URL não configurada"}
@@ -808,17 +811,14 @@ function FinanceiroTab() {
     load();
     const ch = supabase
       .channel("pag-financeiro-live")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "payment_transactions" },
-        () => load(),
+      .on("postgres_changes", { event: "*", schema: "public", table: "payment_transactions" }, () =>
+        load(),
       )
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
     };
   }, []);
-
 
   const stats = useMemo(() => {
     const list = txs ?? [];
@@ -934,10 +934,10 @@ function FinanceiroTab() {
                   const pacoteLabel = pack
                     ? `${pack.nome ?? "Pack"} · ${pack.quantidade} créd.`
                     : plano
-                    ? `${plano.nome ?? "Plano"} · ${plano.creditos_incluidos ?? 0} créd.`
-                    : t.creditos_liberados
-                    ? `${t.creditos_liberados} créditos`
-                    : "—";
+                      ? `${plano.nome ?? "Plano"} · ${plano.creditos_incluidos ?? 0} créd.`
+                      : t.creditos_liberados
+                        ? `${t.creditos_liberados} créditos`
+                        : "—";
                   return (
                     <tr
                       key={t.id}
@@ -971,10 +971,7 @@ function FinanceiroTab() {
         )}
       </div>
 
-      <TransactionDrawer
-        tx={selected}
-        onOpenChange={(v) => !v && setSelected(null)}
-      />
+      <TransactionDrawer tx={selected} onOpenChange={(v) => !v && setSelected(null)} />
     </div>
   );
 }
@@ -1008,15 +1005,12 @@ function TransactionDrawer({
       .then(({ data }: { data: typeof logs }) => setLogs(data ?? []));
   }, [tx]);
 
-
   return (
     <Sheet open={!!tx} onOpenChange={onOpenChange}>
       <SheetContent className="glass-strong w-full sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>Detalhes da transação</SheetTitle>
-          <SheetDescription className="font-mono text-xs">
-            {tx?.id}
-          </SheetDescription>
+          <SheetDescription className="font-mono text-xs">{tx?.id}</SheetDescription>
         </SheetHeader>
         {tx ? (
           <div className="mt-6 max-h-[calc(100vh-8rem)] space-y-5 overflow-auto pr-1">
@@ -1056,7 +1050,6 @@ function TransactionDrawer({
             </dl>
 
             <EnviarLicencaSection tx={tx} />
-
 
             <div>
               <h4 className="text-sm font-semibold">Eventos de webhook</h4>
@@ -1115,7 +1108,6 @@ function Field2({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
 
 function EnviarLicencaSection({ tx }: { tx: Transaction }) {
   const [chave, setChave] = useState("");

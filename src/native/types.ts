@@ -21,9 +21,7 @@ export interface NativeError {
   cause?: unknown;
 }
 
-export type NativeResult<T = void> =
-  | { ok: true; data: T }
-  | { ok: false; error: NativeError };
+export type NativeResult<T = void> = { ok: true; data: T } | { ok: false; error: NativeError };
 
 export const ok = <T>(data: T): NativeResult<T> => ({ ok: true, data });
 
@@ -34,10 +32,7 @@ export const fail = (
 ): NativeResult<never> => ({ ok: false, error: { code, message, cause } });
 
 /** Wrapper para converter throws de plugins em `NativeResult`. */
-export async function safeCall<T>(
-  label: string,
-  fn: () => Promise<T>,
-): Promise<NativeResult<T>> {
+export async function safeCall<T>(label: string, fn: () => Promise<T>): Promise<NativeResult<T>> {
   try {
     return ok(await fn());
   } catch (cause) {

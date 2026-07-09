@@ -53,7 +53,6 @@ function RegistroPage() {
     }
     setLoading(true);
 
-
     const emailRedirectTo = window.location.origin;
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
@@ -110,7 +109,12 @@ function RegistroPage() {
       <h1 className="mb-4 text-lg font-semibold">Criar conta</h1>
       <form onSubmit={onSubmit} className="space-y-3.5">
         <Field label="Nome">
-          <input required value={nome} onChange={(e) => setNome(e.target.value)} className={inputCls} />
+          <input
+            required
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            className={inputCls}
+          />
         </Field>
         <Field label="E-mail">
           <input

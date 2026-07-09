@@ -27,12 +27,13 @@ function hashHue(str: string): number {
 function AutoCoverFallback({ title }: { title: string }) {
   const hue1 = hashHue(title || "prompt");
   const hue2 = (hue1 + 60) % 360;
-  const initials = (title || "?")
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase() ?? "")
-    .join("") || "?";
+  const initials =
+    (title || "?")
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() ?? "")
+      .join("") || "?";
   return (
     <div
       className="relative h-full w-full grid place-items-center overflow-hidden"

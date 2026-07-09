@@ -22,7 +22,6 @@ export const Route = createFileRoute("/admin/ajustar-creditos")({
   component: AjustarCreditosPage,
 });
 
-
 type Revendedor = {
   id: string;
   nome: string | null;
@@ -51,7 +50,6 @@ function AjustarCreditosPage() {
   const [qtd, setQtd] = useState<string>("10");
   const [motivo, setMotivo] = useState("");
 
-
   const { data: revendedores = [], isLoading } = useQuery({
     queryKey: ["admin-ajustar-creditos-revendedores"],
     queryFn: async () => {
@@ -69,9 +67,7 @@ function AjustarCreditosPage() {
     const q = search.trim().toLowerCase();
     if (!q) return revendedores;
     return revendedores.filter((r) =>
-      [r.nome, r.email, r.telefone].some((v) =>
-        (v ?? "").toLowerCase().includes(q),
-      ),
+      [r.nome, r.email, r.telefone].some((v) => (v ?? "").toLowerCase().includes(q)),
     );
   }, [revendedores, search]);
 
@@ -99,18 +95,14 @@ function AjustarCreditosPage() {
       const { error } = await (supabase as any).rpc("add_credits", {
         _revendedor_id: target.id,
         _delta: delta,
-        _motivo:
-          motivo.trim() ||
-          (mode === "add" ? "ajuste:admin:credito" : "ajuste:admin:debito"),
+        _motivo: motivo.trim() || (mode === "add" ? "ajuste:admin:credito" : "ajuste:admin:debito"),
         _ref_tipo: "ajuste_admin",
         _ref_id: null,
       });
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success(
-        mode === "add" ? "Créditos adicionados" : "Créditos removidos",
-      );
+      toast.success(mode === "add" ? "Créditos adicionados" : "Créditos removidos");
       setMotivo("");
       setQtd("10");
       qc.invalidateQueries({ queryKey: ["admin-ajustar-creditos-revendedores"] });
@@ -154,7 +146,9 @@ function AjustarCreditosPage() {
             onClick={() => setTab(t)}
             className={cn(
               "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition",
-              tab === t ? "gradient-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+              tab === t
+                ? "gradient-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {t === "revendedores" ? <User className="size-4" /> : <Clock className="size-4" />}
@@ -166,107 +160,100 @@ function AjustarCreditosPage() {
       {tab === "pedidos" ? (
         <PedidosAguardando />
       ) : (
-      <div className="glass overflow-hidden rounded-2xl">
-
-        <div className="grid grid-cols-[minmax(0,1fr)_140px_140px_140px] items-center gap-3 border-b border-white/5 px-5 py-3 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          <div>Revendedor</div>
-          <div className="text-right">Saldo</div>
-          <div className="text-right">Plano</div>
-          <div className="text-right">Ação</div>
+        <div className="glass overflow-hidden rounded-2xl">
+          <div className="grid grid-cols-[minmax(0,1fr)_140px_140px_140px] items-center gap-3 border-b border-white/5 px-5 py-3 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <div>Revendedor</div>
+            <div className="text-right">Saldo</div>
+            <div className="text-right">Plano</div>
+            <div className="text-right">Ação</div>
+          </div>
+          {isLoading ? (
+            <div className="grid place-items-center py-16">
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="grid place-items-center py-16 text-sm text-muted-foreground">
+              Nenhum revendedor encontrado.
+            </div>
+          ) : (
+            filtered.map((r) => {
+              const expira = r.plano_expira_em ? new Date(r.plano_expira_em) : null;
+              const vencido = expira ? expira.getTime() < Date.now() : true;
+              return (
+                <div
+                  key={r.id}
+                  className="grid grid-cols-[minmax(0,1fr)_140px_140px_140px] items-center gap-3 border-b border-white/5 px-5 py-4 last:border-b-0"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="grid size-9 place-items-center rounded-lg bg-white/5">
+                      <User className="size-4 text-muted-foreground" />
+                    </span>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-medium">{r.nome || "—"}</div>
+                      <div className="truncate text-xs text-muted-foreground">
+                        {r.email || r.telefone || "sem contato"}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1 text-sm font-semibold">
+                      <Coins className="size-3.5 text-amber-300" />
+                      {r.saldo_creditos ?? 0}
+                    </div>
+                  </div>
+                  <div className="text-right text-xs text-muted-foreground">
+                    {expira
+                      ? `${vencido ? "Vencido " : "Vence "}${expira.toLocaleDateString("pt-BR")}`
+                      : "Sem plano"}
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1"
+                      onClick={() => {
+                        setTarget(r);
+                        setMode("remove");
+                        setQtd("10");
+                        setMotivo("");
+                      }}
+                    >
+                      <Minus className="size-3.5" /> Remover
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="gap-1 gradient-primary"
+                      onClick={() => {
+                        setTarget(r);
+                        setMode("add");
+                        setQtd("10");
+                        setMotivo("");
+                      }}
+                    >
+                      <Plus className="size-3.5" /> Adicionar
+                    </Button>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
-        {isLoading ? (
-          <div className="grid place-items-center py-16">
-            <Loader2 className="size-5 animate-spin text-muted-foreground" />
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="grid place-items-center py-16 text-sm text-muted-foreground">
-            Nenhum revendedor encontrado.
-          </div>
-        ) : (
-          filtered.map((r) => {
-            const expira = r.plano_expira_em ? new Date(r.plano_expira_em) : null;
-            const vencido = expira ? expira.getTime() < Date.now() : true;
-            return (
-              <div
-                key={r.id}
-                className="grid grid-cols-[minmax(0,1fr)_140px_140px_140px] items-center gap-3 border-b border-white/5 px-5 py-4 last:border-b-0"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="grid size-9 place-items-center rounded-lg bg-white/5">
-                    <User className="size-4 text-muted-foreground" />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-medium">
-                      {r.nome || "—"}
-                    </div>
-                    <div className="truncate text-xs text-muted-foreground">
-                      {r.email || r.telefone || "sem contato"}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1 text-sm font-semibold">
-                    <Coins className="size-3.5 text-amber-300" />
-                    {r.saldo_creditos ?? 0}
-                  </div>
-                </div>
-                <div className="text-right text-xs text-muted-foreground">
-                  {expira
-                    ? `${vencido ? "Vencido " : "Vence "}${expira.toLocaleDateString("pt-BR")}`
-                    : "Sem plano"}
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="gap-1"
-                    onClick={() => {
-                      setTarget(r);
-                      setMode("remove");
-                      setQtd("10");
-                      setMotivo("");
-                    }}
-                  >
-                    <Minus className="size-3.5" /> Remover
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="gap-1 gradient-primary"
-                    onClick={() => {
-                      setTarget(r);
-                      setMode("add");
-                      setQtd("10");
-                      setMotivo("");
-                    }}
-                  >
-                    <Plus className="size-3.5" /> Adicionar
-                  </Button>
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
       )}
-
 
       <Dialog open={!!target} onOpenChange={(o) => !o && setTarget(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              {mode === "add" ? "Adicionar créditos" : "Remover créditos"}
-            </DialogTitle>
+            <DialogTitle>{mode === "add" ? "Adicionar créditos" : "Remover créditos"}</DialogTitle>
           </DialogHeader>
           {target && (
             <div className="space-y-4">
               <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
                 <div className="text-xs text-muted-foreground">Revendedor</div>
-                <div className="text-sm font-medium">
-                  {target.nome || target.email || "—"}
-                </div>
+                <div className="text-sm font-medium">{target.nome || target.email || "—"}</div>
                 <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Coins className="size-3.5 text-amber-300" />
-                  Saldo atual: <strong className="text-foreground">{target.saldo_creditos ?? 0}</strong>
+                  Saldo atual:{" "}
+                  <strong className="text-foreground">{target.saldo_creditos ?? 0}</strong>
                 </div>
               </div>
 
@@ -313,16 +300,15 @@ function AjustarCreditosPage() {
                   </div>
                   <div className="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-white/5 bg-white/[0.02] p-2">
                     {movimentos.map((m) => (
-                      <div
-                        key={m.id}
-                        className="flex items-center justify-between gap-2 text-xs"
-                      >
+                      <div key={m.id} className="flex items-center justify-between gap-2 text-xs">
                         <span className="truncate text-muted-foreground">
                           {new Date(m.created_at).toLocaleString("pt-BR")} · {m.motivo || "—"}
                         </span>
                         <span
                           className={
-                            m.delta >= 0 ? "font-semibold text-emerald-300" : "font-semibold text-rose-300"
+                            m.delta >= 0
+                              ? "font-semibold text-emerald-300"
+                              : "font-semibold text-rose-300"
                           }
                         >
                           {m.delta >= 0 ? "+" : ""}
@@ -422,8 +408,8 @@ function PedidosAguardando() {
   if (pedidos.length === 0) {
     return (
       <div className="glass rounded-2xl p-10 text-center text-sm text-muted-foreground">
-        Nenhum pedido aguardando. Quando um cliente comprar antes do gateway ser configurado,
-        o pedido aparece aqui para você liberar manualmente.
+        Nenhum pedido aguardando. Quando um cliente comprar antes do gateway ser configurado, o
+        pedido aparece aqui para você liberar manualmente.
       </div>
     );
   }

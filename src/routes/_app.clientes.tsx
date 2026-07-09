@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { KeyRound, MessageCircle, Search, ShieldCheck, MoreHorizontal, Loader2 } from "lucide-react";
+import {
+  KeyRound,
+  MessageCircle,
+  Search,
+  ShieldCheck,
+  MoreHorizontal,
+  Loader2,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,12 +55,14 @@ function ClientesPage() {
     } else {
       const now = Date.now();
       setClients(
-        ((data ?? []) as Array<{
-          id: string;
-          nome: string | null;
-          email: string | null;
-          licencas: Array<{ id: string; status: string; expira_em?: string | null }>;
-        }>).map((c) => {
+        (
+          (data ?? []) as Array<{
+            id: string;
+            nome: string | null;
+            email: string | null;
+            licencas: Array<{ id: string; status: string; expira_em?: string | null }>;
+          }>
+        ).map((c) => {
           const licencas = c.licencas ?? [];
           const ativas = licencas.filter((l) => l.status === "ativa").length;
           return {
@@ -82,10 +91,11 @@ function ClientesPage() {
     };
   }, []);
 
-  const filtered = clients.filter((c) =>
-    !query.trim() ||
-    c.email.toLowerCase().includes(query.toLowerCase()) ||
-    c.name.toLowerCase().includes(query.toLowerCase()),
+  const filtered = clients.filter(
+    (c) =>
+      !query.trim() ||
+      c.email.toLowerCase().includes(query.toLowerCase()) ||
+      c.name.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
@@ -95,17 +105,17 @@ function ClientesPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.22em] gradient-text-warm">
           Gestão
         </p>
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">
-          Clientes
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Clientes vinculados às suas licenças
-        </p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">Clientes</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Clientes vinculados às suas licenças</p>
       </header>
 
       {/* Search */}
       <label className="glass relative flex h-12 w-full items-center rounded-2xl pl-11 pr-4">
-        <Search className="absolute left-4 size-4 text-muted-foreground" strokeWidth={2} aria-hidden />
+        <Search
+          className="absolute left-4 size-4 text-muted-foreground"
+          strokeWidth={2}
+          aria-hidden
+        />
         <input
           type="search"
           value={query}
@@ -178,8 +188,19 @@ function ClientCard({ client, gradient }: { client: Client; gradient: readonly s
       </div>
 
       <div className="relative mt-5 flex items-center gap-4 border-t border-border/50 pt-4 text-xs">
-        <Stat icon={KeyRound} value={client.licencas} label="licença(s)" color="var(--brand-violet)" />
-        <Stat icon={ShieldCheck} value={client.ativas} label="ativa(s)" color="var(--brand-emerald)" highlight />
+        <Stat
+          icon={KeyRound}
+          value={client.licencas}
+          label="licença(s)"
+          color="var(--brand-violet)"
+        />
+        <Stat
+          icon={ShieldCheck}
+          value={client.ativas}
+          label="ativa(s)"
+          color="var(--brand-emerald)"
+          highlight
+        />
         <Stat icon={MessageCircle} value={client.mensagens} label="" color="var(--brand-blue)" />
       </div>
     </article>
@@ -201,12 +222,9 @@ function Stat({
 }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <Icon
-        className="size-3.5"
-        strokeWidth={2}
-        style={{ color }}
-      />
-      <span className={cn("font-semibold", highlight ? "text-foreground" : "text-foreground/85")}
+      <Icon className="size-3.5" strokeWidth={2} style={{ color }} />
+      <span
+        className={cn("font-semibold", highlight ? "text-foreground" : "text-foreground/85")}
         style={highlight ? { color } : undefined}
       >
         {value}

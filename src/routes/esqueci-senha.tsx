@@ -39,7 +39,9 @@ function EsqueciSenhaPage() {
       </p>
       {sent ? (
         <div className="space-y-3 text-sm">
-          <p className="text-foreground">Link enviado para <b>{email}</b>. Verifique sua caixa de entrada.</p>
+          <p className="text-foreground">
+            Link enviado para <b>{email}</b>. Verifique sua caixa de entrada.
+          </p>
           <Link to="/login" className="block text-center text-xs text-muted-foreground underline">
             Voltar para entrar
           </Link>
@@ -61,7 +63,9 @@ function EsqueciSenhaPage() {
             {loading ? "Enviando..." : "Enviar link"}
           </button>
           <p className="text-center text-xs text-muted-foreground">
-            <Link to="/login" className="text-foreground underline">Voltar</Link>
+            <Link to="/login" className="text-foreground underline">
+              Voltar
+            </Link>
           </p>
         </form>
       )}

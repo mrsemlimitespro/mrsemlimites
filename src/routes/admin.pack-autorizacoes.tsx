@@ -16,10 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/admin/pack-autorizacoes")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Autorizações de Packs — Admin" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Autorizações de Packs — Admin" }, { name: "robots", content: "noindex" }],
   }),
   component: PackAuthorizationsPage,
 });
@@ -35,12 +32,19 @@ function PackAuthorizationsPage() {
     queryKey: ["admin-premium-packs"],
     queryFn: () => listFn({ data: { limit: 200 } }),
   });
-  const packs = (packsData?.rows ?? []) as Array<{ id: string; nome: string; slug: string; categoria: string | null }>;
+  const packs = (packsData?.rows ?? []) as Array<{
+    id: string;
+    nome: string;
+    slug: string;
+    categoria: string | null;
+  }>;
 
   const filtered = useMemo(() => {
     if (!query.trim()) return packs;
     const q = query.toLowerCase();
-    return packs.filter((p) => p.nome.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q));
+    return packs.filter(
+      (p) => p.nome.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q),
+    );
   }, [packs, query]);
 
   return (
@@ -60,7 +64,9 @@ function PackAuthorizationsPage() {
           />
         </div>
         <div className="max-h-[70vh] space-y-1 overflow-y-auto pr-1">
-          {loadingPacks && <Loader2 className="mx-auto my-6 size-4 animate-spin text-muted-foreground" />}
+          {loadingPacks && (
+            <Loader2 className="mx-auto my-6 size-4 animate-spin text-muted-foreground" />
+          )}
           {!loadingPacks && filtered.length === 0 && (
             <div className="rounded-lg border border-dashed border-white/10 p-4 text-center text-xs text-muted-foreground">
               Nenhum pack encontrado. Cadastre um pack em /admin/loja ou pelo módulo de packs.
@@ -79,7 +85,9 @@ function PackAuthorizationsPage() {
               }
             >
               <div className="font-semibold">{p.nome}</div>
-              <div className="mt-0.5 truncate text-[10px] text-muted-foreground">{p.categoria ?? "—"} · {p.slug}</div>
+              <div className="mt-0.5 truncate text-[10px] text-muted-foreground">
+                {p.categoria ?? "—"} · {p.slug}
+              </div>
             </button>
           ))}
         </div>
@@ -134,7 +142,11 @@ function PackAuthorizationEditor({ packId }: { packId: string }) {
   const [notes, setNotes] = useState("");
 
   const grantMut = useMutation({
-    mutationFn: (input: { revendedor_id: string; expires_at: string | null; notes: string | null }) =>
+    mutationFn: (input: {
+      revendedor_id: string;
+      expires_at: string | null;
+      notes: string | null;
+    }) =>
       grantFn({
         data: {
           pack_id: packId,
@@ -171,14 +183,20 @@ function PackAuthorizationEditor({ packId }: { packId: string }) {
     revendedores: { id: string; nome: string | null; email: string | null } | null;
   }>;
 
-  const authorizedIds = new Set(rows.filter((r) => r.status === "active").map((r) => r.revendedores?.id));
+  const authorizedIds = new Set(
+    rows.filter((r) => r.status === "active").map((r) => r.revendedores?.id),
+  );
   const availableResellers = (resellers ?? []).filter((r) => !authorizedIds.has(r.id));
 
   return (
     <div className="space-y-6">
       <header>
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Autorizações</div>
-        <h2 className="mt-1 text-xl font-semibold">Revendedores autorizados a distribuir este pack</h2>
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          Autorizações
+        </div>
+        <h2 className="mt-1 text-xl font-semibold">
+          Revendedores autorizados a distribuir este pack
+        </h2>
         <p className="mt-1 text-xs text-muted-foreground">
           Um revendedor autorizado aqui poderá liberar o mesmo pack para os clientes dele. Sem essa
           autorização, nem o revendedor nem os clientes dele conseguem baixar o pack.
@@ -261,7 +279,9 @@ function PackAuthorizationEditor({ packId }: { packId: string }) {
               <tr key={r.id} className="border-t border-white/5">
                 <td className="p-3">
                   <div className="font-semibold">{r.revendedores?.nome ?? "—"}</div>
-                  <div className="text-[10px] text-muted-foreground">{r.revendedores?.email ?? ""}</div>
+                  <div className="text-[10px] text-muted-foreground">
+                    {r.revendedores?.email ?? ""}
+                  </div>
                 </td>
                 <td className="p-3">
                   <span

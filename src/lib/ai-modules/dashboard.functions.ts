@@ -36,7 +36,12 @@ export const getAINovaStats = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const isPacks = data.kind === "packs";
-    const table = data.kind === "prompts" ? "ai_prompts" : data.kind === "agents" ? "ai_agents" : "premium_packs";
+    const table =
+      data.kind === "prompts"
+        ? "ai_prompts"
+        : data.kind === "agents"
+          ? "ai_agents"
+          : "premium_packs";
 
     // Column name that stores the display title differs per module.
     const titleCol = isPacks ? "nome" : "titulo";
@@ -58,7 +63,10 @@ export const getAINovaStats = createServerFn({ method: "GET" })
     const [totalRes, destRes, novosRes, recentsRes, weeklyRes, catsRes, usosRes, favRes] =
       await Promise.all([
         applyBase(supabaseAdmin.from(table).select("id", { count: "exact", head: true })),
-        applyBase(supabaseAdmin.from(table).select("id", { count: "exact", head: true })).eq("destaque", true),
+        applyBase(supabaseAdmin.from(table).select("id", { count: "exact", head: true })).eq(
+          "destaque",
+          true,
+        ),
         applyBase(supabaseAdmin.from(table).select("id", { count: "exact", head: true })).gte(
           "created_at",
           sevenDaysAgo.toISOString(),
@@ -80,7 +88,9 @@ export const getAINovaStats = createServerFn({ method: "GET" })
         applyBase(supabaseAdmin.from(table).select("categoria").limit(5000)),
         applyBase(supabaseAdmin.from(table).select(usoCol).limit(5000)),
         data.kind === "prompts"
-          ? supabaseAdmin.from("prompt_favorites").select("prompt_id", { count: "exact", head: true })
+          ? supabaseAdmin
+              .from("prompt_favorites")
+              .select("prompt_id", { count: "exact", head: true })
           : Promise.resolve({ count: 0 } as any),
       ]);
 

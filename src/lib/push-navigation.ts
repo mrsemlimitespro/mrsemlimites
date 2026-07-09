@@ -14,9 +14,9 @@ export interface PushRoutePayload {
   [k: string]: unknown;
 }
 
-type RouteResolver = (data: PushRoutePayload) =>
-  | { to: string; params?: Record<string, string> }
-  | null;
+type RouteResolver = (
+  data: PushRoutePayload,
+) => { to: string; params?: Record<string, string> } | null;
 
 /**
  * Mapa canônico de "route key" → rota TanStack existente.

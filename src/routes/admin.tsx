@@ -20,7 +20,6 @@ import {
   Sparkles,
   Volume2,
   KeySquare,
-
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -75,10 +74,7 @@ function AdminLayout() {
             <p className="mt-2 text-sm text-muted-foreground">
               Informe a senha de administrador para desbloquear o painel.
             </p>
-            <Button
-              className="mt-5 w-full gradient-primary"
-              onClick={() => setDialogOpen(true)}
-            >
+            <Button className="mt-5 w-full gradient-primary" onClick={() => setDialogOpen(true)}>
               Informar senha
             </Button>
           </div>
@@ -107,25 +103,38 @@ type SpecialLink = {
 
 const specialLinks: SpecialLink[] = [
   { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true },
-  { key: "configuracoes", to: "/admin/configuracoes", label: "Configurações Gerais", icon: Settings2 },
+  {
+    key: "configuracoes",
+    to: "/admin/configuracoes",
+    label: "Configurações Gerais",
+    icon: Settings2,
+  },
   { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette },
   { key: "animacoes", to: "/admin/animacoes", label: "Animações", icon: Sparkles },
   { key: "sons", to: "/admin/sons", label: "Sons", icon: Volume2 },
   { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle },
   { key: "loja", to: "/admin/loja", label: "Loja", icon: Store },
   { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard },
-  { key: "ajustar-creditos", to: "/admin/ajustar-creditos", label: "Ajustar Créditos", icon: Coins },
+  {
+    key: "ajustar-creditos",
+    to: "/admin/ajustar-creditos",
+    label: "Ajustar Créditos",
+    icon: Coins,
+  },
   { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
-  { key: "pack-autorizacoes", to: "/admin/pack-autorizacoes", label: "Autorizações de Packs", icon: KeySquare },
+  {
+    key: "pack-autorizacoes",
+    to: "/admin/pack-autorizacoes",
+    label: "Autorizações de Packs",
+    icon: KeySquare,
+  },
   { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup },
 ];
 
 function AdminShell() {
   const navigate = useNavigate();
   const [authState, setAuthState] = useState<
-    | { kind: "loading" }
-    | { kind: "anon" }
-    | { kind: "signed"; email: string; isAdmin: boolean }
+    { kind: "loading" } | { kind: "anon" } | { kind: "signed"; email: string; isAdmin: boolean }
   >({ kind: "loading" });
   const [signOpen, setSignOpen] = useState(false);
   const claim = useServerFn(claimInitialAdmin);
@@ -135,7 +144,11 @@ function AdminShell() {
     const user = data.user;
     if (!user) return setAuthState({ kind: "anon" });
     const { data: role } = await (supabase as any)
-      .from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle();
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
     setAuthState({ kind: "signed", email: user.email ?? "", isAdmin: !!role });
   }
 
@@ -158,9 +171,7 @@ function AdminShell() {
           <div className="mb-6 flex items-center gap-2 px-2">
             <BrandMark size={36} />
             <div>
-              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                Admin
-              </div>
+              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Admin</div>
               <div className="text-sm font-semibold">{BRAND_NAME}</div>
             </div>
           </div>
@@ -241,43 +252,49 @@ function AdminShell() {
           <div className="mb-4">
             <PageBackButton />
           </div>
-          {authState.kind !== "loading" &&
-            (authState.kind === "anon" || !authState.isAdmin) && (
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 px-5 py-3 text-sm text-yellow-100/90">
-                <div>
-                  {authState.kind === "anon"
-                    ? "Você está visualizando o painel. Para salvar alterações, faça login como administrador."
-                    : "Sua conta não tem permissão de admin. Reivindique para editar."}
-                </div>
-                <div className="flex gap-2">
-                  {authState.kind === "anon" ? (
-                    <Button size="sm" className="gradient-primary" onClick={() => setSignOpen(true)}>
-                      Entrar
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      className="gradient-primary"
-                      onClick={async () => {
-                        try {
-                          await claim();
-                          toast.success("Você agora é administrador");
-                          refreshAuth();
-                        } catch (err) {
-                          toast.error(err instanceof Error ? err.message : "Falha");
-                        }
-                      }}
-                    >
-                      Reivindicar admin
-                    </Button>
-                  )}
-                </div>
+          {authState.kind !== "loading" && (authState.kind === "anon" || !authState.isAdmin) && (
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 px-5 py-3 text-sm text-yellow-100/90">
+              <div>
+                {authState.kind === "anon"
+                  ? "Você está visualizando o painel. Para salvar alterações, faça login como administrador."
+                  : "Sua conta não tem permissão de admin. Reivindique para editar."}
               </div>
-            )}
+              <div className="flex gap-2">
+                {authState.kind === "anon" ? (
+                  <Button size="sm" className="gradient-primary" onClick={() => setSignOpen(true)}>
+                    Entrar
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    className="gradient-primary"
+                    onClick={async () => {
+                      try {
+                        await claim();
+                        toast.success("Você agora é administrador");
+                        refreshAuth();
+                      } catch (err) {
+                        toast.error(err instanceof Error ? err.message : "Falha");
+                      }
+                    }}
+                  >
+                    Reivindicar admin
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
           <Outlet />
         </main>
       </div>
-      {signOpen && <SignInDialog onClose={() => { setSignOpen(false); refreshAuth(); }} />}
+      {signOpen && (
+        <SignInDialog
+          onClose={() => {
+            setSignOpen(false);
+            refreshAuth();
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -320,9 +337,12 @@ function SignInDialog({ onClose }: { onClose: () => void }) {
   }
 
   const title =
-    mode === "signin" ? "Entrar" : mode === "signup" ? "Criar conta" : "Criar administrador inicial";
-  const cta =
-    mode === "signin" ? "Entrar" : mode === "signup" ? "Criar conta" : "Criar admin";
+    mode === "signin"
+      ? "Entrar"
+      : mode === "signup"
+        ? "Criar conta"
+        : "Criar administrador inicial";
+  const cta = mode === "signin" ? "Entrar" : mode === "signup" ? "Criar conta" : "Criar admin";
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" onClick={onClose}>

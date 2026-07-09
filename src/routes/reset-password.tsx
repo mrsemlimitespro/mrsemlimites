@@ -49,7 +49,9 @@ function ResetPasswordPage() {
           {loading ? "Salvando..." : "Salvar nova senha"}
         </button>
         <p className="text-center text-xs text-muted-foreground">
-          <Link to="/login" className="text-foreground underline">Voltar para entrar</Link>
+          <Link to="/login" className="text-foreground underline">
+            Voltar para entrar
+          </Link>
         </p>
       </form>
     </AuthShell>

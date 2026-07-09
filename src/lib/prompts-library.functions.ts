@@ -57,9 +57,7 @@ function normalizePrompt(row: Record<string, unknown>): LibraryPrompt {
     nivel: String(row.nivel ?? ""),
     versao: String(row.versao ?? ""),
     status: statusArr,
-    compatibilidade: Array.isArray(row.compatibilidade)
-      ? (row.compatibilidade as string[])
-      : [],
+    compatibilidade: Array.isArray(row.compatibilidade) ? (row.compatibilidade as string[]) : [],
     uso_count: Number(row.uso_count ?? 0),
     download_count: Number(row.downloads ?? 0),
     created_at: String(row.created_at ?? ""),
@@ -129,16 +127,29 @@ export const listPromptsPaged = createServerFn({ method: "GET" })
     }
 
     switch (data.sort) {
-      case "oldest": q = q.order("created_at", { ascending: true }); break;
-      case "numero": q = q.order("numero", { ascending: true }); break;
+      case "oldest":
+        q = q.order("created_at", { ascending: true });
+        break;
+      case "numero":
+        q = q.order("numero", { ascending: true });
+        break;
       case "popular":
         q = q.order("destaque", { ascending: false }).order("uso_count", { ascending: false });
         break;
-      case "most_used": q = q.order("uso_count", { ascending: false }); break;
-      case "most_downloaded": q = q.order("downloads", { ascending: false }); break;
-      case "az": q = q.order("titulo", { ascending: true }); break;
-      case "za": q = q.order("titulo", { ascending: false }); break;
-      default: q = q.order("created_at", { ascending: false });
+      case "most_used":
+        q = q.order("uso_count", { ascending: false });
+        break;
+      case "most_downloaded":
+        q = q.order("downloads", { ascending: false });
+        break;
+      case "az":
+        q = q.order("titulo", { ascending: true });
+        break;
+      case "za":
+        q = q.order("titulo", { ascending: false });
+        break;
+      default:
+        q = q.order("created_at", { ascending: false });
     }
     q = q.order("id", { ascending: false }).range(from, to);
 
@@ -153,41 +164,39 @@ export const listPromptsPaged = createServerFn({ method: "GET" })
   });
 
 /** Categorias + contagem + subcategorias agregadas a partir do banco. */
-export const listPromptCategoriesTree = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const acc: Record<string, { total: number; subs: Record<string, number> }> = {};
-    const CHUNK = 1000;
-    for (let off = 0; off < 50000; off += CHUNK) {
-      const { data, error } = await supabaseAdmin
-        .from("ai_prompts")
-        .select("categoria,subcategoria")
-        .eq("ativo", true)
-        .eq("oculto", false)
-        .eq("mostrar_premium", true)
-        .range(off, off + CHUNK - 1);
-      if (error) throw new Error(error.message);
-      const batch = (data ?? []) as Array<{ categoria: string | null; subcategoria: string | null }>;
-      for (const r of batch) {
-        const c = (r.categoria || "Outros").trim() || "Outros";
-        const s = (r.subcategoria || "").trim();
-        if (!acc[c]) acc[c] = { total: 0, subs: {} };
-        acc[c].total += 1;
-        if (s) acc[c].subs[s] = (acc[c].subs[s] ?? 0) + 1;
-      }
-      if (batch.length < CHUNK) break;
+export const listPromptCategoriesTree = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const acc: Record<string, { total: number; subs: Record<string, number> }> = {};
+  const CHUNK = 1000;
+  for (let off = 0; off < 50000; off += CHUNK) {
+    const { data, error } = await supabaseAdmin
+      .from("ai_prompts")
+      .select("categoria,subcategoria")
+      .eq("ativo", true)
+      .eq("oculto", false)
+      .eq("mostrar_premium", true)
+      .range(off, off + CHUNK - 1);
+    if (error) throw new Error(error.message);
+    const batch = (data ?? []) as Array<{ categoria: string | null; subcategoria: string | null }>;
+    for (const r of batch) {
+      const c = (r.categoria || "Outros").trim() || "Outros";
+      const s = (r.subcategoria || "").trim();
+      if (!acc[c]) acc[c] = { total: 0, subs: {} };
+      acc[c].total += 1;
+      if (s) acc[c].subs[s] = (acc[c].subs[s] ?? 0) + 1;
     }
-    return Object.entries(acc)
-      .map(([categoria, v]) => ({
-        categoria,
-        total: v.total,
-        subs: Object.entries(v.subs)
-          .map(([nome, count]) => ({ nome, count }))
-          .sort((a, b) => b.count - a.count),
-      }))
-      .sort((a, b) => a.categoria.localeCompare(b.categoria, "pt-BR"));
-  },
-);
+    if (batch.length < CHUNK) break;
+  }
+  return Object.entries(acc)
+    .map(([categoria, v]) => ({
+      categoria,
+      total: v.total,
+      subs: Object.entries(v.subs)
+        .map(([nome, count]) => ({ nome, count }))
+        .sort((a, b) => b.count - a.count),
+    }))
+    .sort((a, b) => a.categoria.localeCompare(b.categoria, "pt-BR"));
+});
 
 export const listRecommendations = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) =>
@@ -263,10 +272,12 @@ export const toggleFavorite = createServerFn({ method: "POST" })
 export const recordPromptUsage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      promptId: z.string().uuid(),
-      action: z.enum(["open", "copy", "download"]).default("open"),
-    }).parse(d),
+    z
+      .object({
+        promptId: z.string().uuid(),
+        action: z.enum(["open", "copy", "download"]).default("open"),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase

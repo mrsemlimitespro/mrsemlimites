@@ -69,9 +69,15 @@ export function PackQuickActions({
       color: { dark: "#0a0a0a", light: "#ffffff" },
       errorCorrectionLevel: "M",
     })
-      .then((url) => { if (!cancelled) setQrDataUrl(url); })
-      .catch(() => { if (!cancelled) toast.error("Falha ao gerar QR Code"); });
-    return () => { cancelled = true; };
+      .then((url) => {
+        if (!cancelled) setQrDataUrl(url);
+      })
+      .catch(() => {
+        if (!cancelled) toast.error("Falha ao gerar QR Code");
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [qrOpen, publicUrl]);
 
   const copyPublic = async (e?: React.MouseEvent) => {
@@ -92,7 +98,9 @@ export function PackQuickActions({
       } else {
         await copyPublic();
       }
-    } catch { /* user cancelled */ }
+    } catch {
+      /* user cancelled */
+    }
   };
 
   const downloadQr = () => {
@@ -151,7 +159,8 @@ export function PackQuickActions({
               <QrCode className="h-4 w-4 text-ai-200" /> QR Code do Pack
             </DialogTitle>
             <DialogDescription className="text-xs text-white/55">
-              Use este QR Code em Kiwify, Hotmart, Eduzz, Mercado Pago, materiais impressos e divulgação.
+              Use este QR Code em Kiwify, Hotmart, Eduzz, Mercado Pago, materiais impressos e
+              divulgação.
             </DialogDescription>
           </DialogHeader>
           <div className="grid place-items-center py-2">
@@ -202,10 +211,16 @@ export function PackQuickActions({
             <StatBox icon={TrendingUp} label="Popularidade" value={fmt(pack.popularidade)} />
             <StatBox icon={Files} label="Arquivos" value={fmt(pack.qtd_arquivos)} />
             <StatBox icon={Files} label="Espaço" value={formatBytes(pack.espaco_bytes)} />
-            <StatBox icon={Clock} label="Atualizado" value={formatRelative(pack.ultima_atualizacao)} />
+            <StatBox
+              icon={Clock}
+              label="Atualizado"
+              value={formatRelative(pack.ultima_atualizacao)}
+            />
           </div>
           <div className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-[11px] text-white/65">
-            <div className="font-bold uppercase tracking-[0.2em] text-ai-200/80">Link público fixo</div>
+            <div className="font-bold uppercase tracking-[0.2em] text-ai-200/80">
+              Link público fixo
+            </div>
             <div className="mt-1 font-mono break-all text-white/85">{publicUrl}</div>
           </div>
           <DialogFooter>

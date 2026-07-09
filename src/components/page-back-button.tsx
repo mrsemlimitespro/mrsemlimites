@@ -79,7 +79,10 @@ export function PageBackButton({
         className,
       )}
     >
-      <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-0.5" strokeWidth={2.2} />
+      <ArrowLeft
+        className="size-3.5 transition-transform group-hover:-translate-x-0.5"
+        strokeWidth={2.2}
+      />
       <span>{label}</span>
     </button>
   );

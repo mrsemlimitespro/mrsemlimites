@@ -76,11 +76,8 @@ async function dataUrlToBlob(dataUrl: string): Promise<Blob> {
 }
 
 async function fileToPhoto(file: File, preferred: PhotoFormat): Promise<CameraPhoto> {
-  const format: PhotoFormat = file.type === "image/png"
-    ? "png"
-    : file.type === "image/webp"
-      ? "webp"
-      : "jpeg";
+  const format: PhotoFormat =
+    file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpeg";
   const finalFormat: PhotoFormat = preferred ?? format;
   const url = URL.createObjectURL(file);
   return {
@@ -158,7 +155,10 @@ function mapNativeSource(source: CameraSource | undefined, plugin: CapCamera) {
   }
 }
 
-async function nativeTake(opts: CameraOptions | undefined, source: CameraSource): Promise<NativeResult<CameraPhoto>> {
+async function nativeTake(
+  opts: CameraOptions | undefined,
+  source: CameraSource,
+): Promise<NativeResult<CameraPhoto>> {
   try {
     const plugin = await loadCameraPlugin();
     const { Camera, CameraResultType } = plugin;
@@ -219,7 +219,10 @@ async function nativeTake(opts: CameraOptions | undefined, source: CameraSource)
 // Web (fallback)
 // ────────────────────────────────────────────────────────────────
 
-async function webPick(source: CameraSource, opts?: CameraOptions): Promise<NativeResult<CameraPhoto>> {
+async function webPick(
+  source: CameraSource,
+  opts?: CameraOptions,
+): Promise<NativeResult<CameraPhoto>> {
   const accept = "image/jpeg,image/png,image/webp,image/*";
   const files = await openFileDialog(accept, false, source === "camera");
   if (files.length === 0) return fail("cancelled", "Nenhuma imagem selecionada.");
@@ -233,7 +236,9 @@ async function webPickMultiple(opts?: PickMultipleOptions): Promise<NativeResult
   if (files.length === 0) return fail("cancelled", "Nenhuma imagem selecionada.");
   const limit = opts?.limit ?? files.length;
   const selected = files.slice(0, limit);
-  const photos = await Promise.all(selected.map((f) => fileToPhoto(f, opts?.preferredFormat ?? "jpeg")));
+  const photos = await Promise.all(
+    selected.map((f) => fileToPhoto(f, opts?.preferredFormat ?? "jpeg")),
+  );
   return ok(photos);
 }
 
@@ -306,7 +311,9 @@ export const CameraService = {
   /**
    * Confere permissão sem solicitar. `kind`: "camera" | "photos".
    */
-  async checkPermission(kind: "camera" | "photos"): Promise<NativeResult<"granted" | "denied" | "prompt" | "limited">> {
+  async checkPermission(
+    kind: "camera" | "photos",
+  ): Promise<NativeResult<"granted" | "denied" | "prompt" | "limited">> {
     if (!isNative()) {
       // Web: navigator.permissions cobre camera; photos não existe (uso é via input file).
       if (kind === "photos") return ok("granted");
@@ -320,18 +327,24 @@ export const CameraService = {
     try {
       const { Camera } = await loadCameraPlugin();
       const r = await Camera.checkPermissions();
-      return ok((kind === "camera" ? r.camera : r.photos) as "granted" | "denied" | "prompt" | "limited");
+      return ok(
+        (kind === "camera" ? r.camera : r.photos) as "granted" | "denied" | "prompt" | "limited",
+      );
     } catch (cause) {
       return fail("not_available", "Falha ao checar permissão de câmera.", cause);
     }
   },
 
-  async requestPermission(kind: "camera" | "photos"): Promise<NativeResult<"granted" | "denied" | "prompt" | "limited">> {
+  async requestPermission(
+    kind: "camera" | "photos",
+  ): Promise<NativeResult<"granted" | "denied" | "prompt" | "limited">> {
     if (!isNative()) return this.checkPermission(kind);
     try {
       const { Camera } = await loadCameraPlugin();
       const r = await Camera.requestPermissions({ permissions: [kind] });
-      return ok((kind === "camera" ? r.camera : r.photos) as "granted" | "denied" | "prompt" | "limited");
+      return ok(
+        (kind === "camera" ? r.camera : r.photos) as "granted" | "denied" | "prompt" | "limited",
+      );
     } catch (cause) {
       return fail("not_available", "Falha ao solicitar permissão de câmera.", cause);
     }

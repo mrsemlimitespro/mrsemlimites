@@ -8,10 +8,7 @@ import { PackDetailPage } from "@/components/premium-packs/PackDetailPage";
 export const Route = createFileRoute("/_app/packs/$slug")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Pack Premium — MR Sem Limites" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Pack Premium — MR Sem Limites" }, { name: "robots", content: "noindex" }],
   }),
   component: PackDetailRoute,
   notFoundComponent: PackNotFound,
@@ -29,7 +26,10 @@ function PackDetailRoute() {
 
   if (isLoading) {
     return (
-      <div data-ai-theme="packs" className="ai-module grid min-h-[60vh] place-items-center bg-black text-white">
+      <div
+        data-ai-theme="packs"
+        className="ai-module grid min-h-[60vh] place-items-center bg-black text-white"
+      >
         <Loader2 className="h-8 w-8 animate-spin text-ai-200" />
       </div>
     );
@@ -43,7 +43,10 @@ function PackDetailRoute() {
 function PackNotFound() {
   const router = useRouter();
   return (
-    <div data-ai-theme="packs" className="ai-module grid min-h-[60vh] place-items-center bg-black text-white text-center px-6">
+    <div
+      data-ai-theme="packs"
+      className="ai-module grid min-h-[60vh] place-items-center bg-black text-white text-center px-6"
+    >
       <div>
         <h1 className="mb-2 text-2xl font-semibold">Pack não encontrado</h1>
         <p className="mb-6 text-sm text-white/60">
@@ -64,13 +67,19 @@ function PackNotFound() {
 function PackError({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   return (
-    <div data-ai-theme="packs" className="ai-module grid min-h-[60vh] place-items-center bg-black text-white text-center px-6">
+    <div
+      data-ai-theme="packs"
+      className="ai-module grid min-h-[60vh] place-items-center bg-black text-white text-center px-6"
+    >
       <div>
         <h1 className="mb-2 text-2xl font-semibold">Não foi possível carregar o pack</h1>
         <p className="mb-6 text-sm text-white/60">{error.message}</p>
         <button
           type="button"
-          onClick={() => { reset(); router.invalidate(); }}
+          onClick={() => {
+            reset();
+            router.invalidate();
+          }}
           className="inline-flex items-center gap-2 rounded-full border border-ai-300/40 bg-ai-500/15 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-ai-50 hover:border-ai-300/70"
         >
           Tentar novamente

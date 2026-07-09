@@ -59,12 +59,10 @@ type Promo = {
 
 type Gateway = { slug: string; nome: string };
 
-const brl = (n: number) =>
-  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 function readSearch() {
-  if (typeof window === "undefined")
-    return { plano: null, pack: null, produto: null, promo: null };
+  if (typeof window === "undefined") return { plano: null, pack: null, produto: null, promo: null };
   const url = new URL(window.location.href);
   return {
     plano: url.searchParams.get("plano"),
@@ -73,7 +71,6 @@ function readSearch() {
     promo: url.searchParams.get("promo"),
   };
 }
-
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -165,15 +162,18 @@ function CheckoutPage() {
     return 0;
   }, [promo, plano, pack]);
 
-  const item = plano ?? pack ?? (produto
-    ? {
-        id: produto.id,
-        nome: produto.titulo || produto.nome,
-        preco: produto.preco,
-        descricao: produto.descricao,
-        imagem_url: produto.imagem_url,
-      }
-    : null);
+  const item =
+    plano ??
+    pack ??
+    (produto
+      ? {
+          id: produto.id,
+          nome: produto.titulo || produto.nome,
+          preco: produto.preco,
+          descricao: produto.descricao,
+          imagem_url: produto.imagem_url,
+        }
+      : null);
 
   const valorBase = item ? Number(item.preco) : 0;
   const valorFinal = valorBase * (1 - descontoPct / 100);
@@ -209,7 +209,7 @@ function CheckoutPage() {
     }
 
     const status = semGateway ? "aguardando_configuracao" : "pendente";
-    const gwSlug = semGateway ? "aguardando" : gatewaySlug ?? "aguardando";
+    const gwSlug = semGateway ? "aguardando" : (gatewaySlug ?? "aguardando");
 
     const { data: tx, error } = await supabase
       .from("payment_transactions")
@@ -232,7 +232,6 @@ function CheckoutPage() {
               }
             : {}),
         },
-
       })
       .select("id, valor")
       .single();
@@ -307,17 +306,15 @@ function CheckoutPage() {
             <p className="mb-2 text-sm">
               Valor: <strong>{brl(pending.valor)}</strong>
             </p>
-            <p className="mb-3 text-xs text-muted-foreground">
-              Código do pedido:
-            </p>
+            <p className="mb-3 text-xs text-muted-foreground">Código do pedido:</p>
             <div className="mb-4 rounded-xl border border-border/70 bg-surface/60 p-3 font-mono text-xs break-all">
               {pending.id}
             </div>
             <div className="rounded-xl border border-border/60 bg-surface/40 p-3 text-xs text-muted-foreground">
               <p className="flex items-center gap-2">
-                <Bell className="size-3.5" />
-                O admin foi avisado e pode liberar seus créditos manualmente. Assim que o
-                gateway estiver configurado, o pagamento ficará disponível aqui.
+                <Bell className="size-3.5" />O admin foi avisado e pode liberar seus créditos
+                manualmente. Assim que o gateway estiver configurado, o pagamento ficará disponível
+                aqui.
               </p>
             </div>
             <button className={`${primaryBtn} mt-5`} onClick={() => navigate({ to: "/" })}>
@@ -364,10 +361,7 @@ function CheckoutPage() {
         </button>
       </div>
       <h1 className="mb-1 text-lg font-semibold">Finalizar compra</h1>
-      <p className="mb-4 text-xs text-muted-foreground">
-        Revise os detalhes e confirme.
-      </p>
-
+      <p className="mb-4 text-xs text-muted-foreground">Revise os detalhes e confirme.</p>
 
       {/* Resumo do item */}
       <div className="mb-4 flex items-start gap-3 rounded-xl border border-border/70 bg-surface/60 p-3">
@@ -382,7 +376,8 @@ function CheckoutPage() {
           <p className="text-sm font-semibold">{item.nome}</p>
           {plano && (
             <p className="text-[11px] text-muted-foreground">
-              {plano.creditos_incluidos.toLocaleString("pt-BR")} créditos · {plano.duracao_dias} dias
+              {plano.creditos_incluidos.toLocaleString("pt-BR")} créditos · {plano.duracao_dias}{" "}
+              dias
             </p>
           )}
           {pack && (
@@ -391,9 +386,7 @@ function CheckoutPage() {
             </p>
           )}
           {item.descricao && (
-            <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">
-              {item.descricao}
-            </p>
+            <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">{item.descricao}</p>
           )}
         </div>
         <p className="text-sm font-semibold">{brl(valorBase)}</p>
@@ -426,10 +419,10 @@ function CheckoutPage() {
             <p className="text-sm font-semibold">Aguardando configuração de pagamento</p>
           </div>
           <p className="text-xs text-muted-foreground">
-            O admin ainda não configurou um gateway (Mercado Pago, Kiwify, Cakto...).
-            Você pode continuar e registrar o pedido — o admin será avisado e pode
-            liberar os créditos manualmente. Quando o gateway estiver ativo, o pagamento
-            fica disponível aqui automaticamente.
+            O admin ainda não configurou um gateway (Mercado Pago, Kiwify, Cakto...). Você pode
+            continuar e registrar o pedido — o admin será avisado e pode liberar os créditos
+            manualmente. Quando o gateway estiver ativo, o pagamento fica disponível aqui
+            automaticamente.
           </p>
         </div>
       ) : (

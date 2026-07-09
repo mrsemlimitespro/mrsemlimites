@@ -37,16 +37,26 @@ export async function getBiometricHint(): Promise<string | null> {
  * Solicita biometria para desbloquear a sessão local.
  * Retorna `true` só quando o desbloqueio foi confirmado.
  */
-export async function unlockWithBiometric(reason = "Desbloquear MR sem limites"): Promise<
+export async function unlockWithBiometric(
+  reason = "Desbloquear MR sem limites",
+): Promise<
   | { ok: true }
-  | { ok: false; code: "cancelled" | "not_available" | "permission_denied" | "unsupported" | "unknown"; message: string }
+  | {
+      ok: false;
+      code: "cancelled" | "not_available" | "permission_denied" | "unsupported" | "unknown";
+      message: string;
+    }
 > {
   const avail = await NativeService.biometric.isAvailable();
   if (!avail.ok) {
     return { ok: false, code: "unknown", message: avail.error.message };
   }
   if (!avail.data.available || !avail.data.enrolled) {
-    return { ok: false, code: "not_available", message: "Biometria indisponível ou não cadastrada." };
+    return {
+      ok: false,
+      code: "not_available",
+      message: "Biometria indisponível ou não cadastrada.",
+    };
   }
   const r = await NativeService.biometric.authenticate({
     reason,

@@ -25,8 +25,7 @@ type Promocao = {
   link: string | null;
 };
 
-const brl = (n: number) =>
-  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 /**
  * Botão flutuante de fogo (canto inferior direito).
@@ -44,7 +43,9 @@ export function FirePromosButton() {
       const nowIso = new Date().toISOString();
       const { data } = await supabase
         .from("promocoes")
-        .select("id,titulo,descricao,imagem_url,desconto_percentual,inicio,fim,plano_id,pack_id,link")
+        .select(
+          "id,titulo,descricao,imagem_url,desconto_percentual,inicio,fim,plano_id,pack_id,link",
+        )
         .eq("ativo", true)
         .or(`inicio.is.null,inicio.lte.${nowIso}`)
         .or(`fim.is.null,fim.gte.${nowIso}`)
@@ -57,11 +58,7 @@ export function FirePromosButton() {
 
     const ch = supabase
       .channel("promocoes-live")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "promocoes" },
-        () => load(),
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "promocoes" }, () => load())
       .subscribe();
 
     return () => {
@@ -135,8 +132,7 @@ export function FirePromosButton() {
               <span
                 className="grid size-11 place-items-center rounded-2xl text-white"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #ff8a3d 0%, #ff2e6a 60%, #7a1c1c 100%)",
+                  background: "linear-gradient(135deg, #ff8a3d 0%, #ff2e6a 60%, #7a1c1c 100%)",
                 }}
               >
                 <Flame className="size-5" />
@@ -177,7 +173,13 @@ export function FirePromosButton() {
                   }}
                 >
                   {p.imagem_url ? (
-                    <img src={p.imagem_url} alt={p.titulo} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
+                    <img
+                      src={p.imagem_url}
+                      alt={p.titulo}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ) : (
                     <Flame className="absolute inset-0 m-auto size-6 text-white/90" />
                   )}
@@ -190,9 +192,7 @@ export function FirePromosButton() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{p.titulo}</p>
                   {p.descricao && (
-                    <p className="line-clamp-2 text-xs text-muted-foreground">
-                      {p.descricao}
-                    </p>
+                    <p className="line-clamp-2 text-xs text-muted-foreground">{p.descricao}</p>
                   )}
                   {p.fim && (
                     <p className="mt-1 text-[10px] uppercase tracking-wide text-[color:var(--brand-orange)]">

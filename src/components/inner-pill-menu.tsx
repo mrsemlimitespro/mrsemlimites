@@ -30,8 +30,7 @@ export function InnerPillMenu() {
       >
         {items.map((item) => {
           const Icon = item.icon;
-          const active =
-            item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+          const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
           return (
             <Link
               key={item.label}
@@ -48,8 +47,7 @@ export function InnerPillMenu() {
                   aria-hidden
                   className="pointer-events-none absolute inset-0 rounded-full gradient-primary"
                   style={{
-                    boxShadow:
-                      "0 0 24px -2px color-mix(in oklab, var(--primary) 80%, transparent)",
+                    boxShadow: "0 0 24px -2px color-mix(in oklab, var(--primary) 80%, transparent)",
                   }}
                 />
               )}

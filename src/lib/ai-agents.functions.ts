@@ -40,9 +40,21 @@ export type AiAgent = {
 };
 
 export const AGENT_CATEGORIES = [
-  "Atendimento", "Vendas", "Marketing", "Suporte", "Conteúdo",
-  "Produtividade", "Educação", "Pesquisa", "Programação", "Design",
-  "Análise de Dados", "RH", "Financeiro", "Jurídico", "Outros",
+  "Atendimento",
+  "Vendas",
+  "Marketing",
+  "Suporte",
+  "Conteúdo",
+  "Produtividade",
+  "Educação",
+  "Pesquisa",
+  "Programação",
+  "Design",
+  "Análise de Dados",
+  "RH",
+  "Financeiro",
+  "Jurídico",
+  "Outros",
 ] as const;
 
 export const getAgents = createServerFn({ method: "GET" }).handler(async () => {

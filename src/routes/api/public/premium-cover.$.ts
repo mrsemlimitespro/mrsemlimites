@@ -13,14 +13,21 @@ export const Route = createFileRoute("/api/public/premium-cover/$")({
 
         const ext = path.split(".").pop()?.toLowerCase();
         const contentType =
-          ext === "png" ? "image/png" :
-          ext === "webp" ? "image/webp" :
-          ext === "avif" ? "image/avif" :
-          ext === "svg" ? "image/svg+xml" :
-          ext === "mp4" ? "video/mp4" :
-          ext === "webm" ? "video/webm" :
-          ext === "jpg" || ext === "jpeg" ? "image/jpeg" :
-          (data.type || "application/octet-stream");
+          ext === "png"
+            ? "image/png"
+            : ext === "webp"
+              ? "image/webp"
+              : ext === "avif"
+                ? "image/avif"
+                : ext === "svg"
+                  ? "image/svg+xml"
+                  : ext === "mp4"
+                    ? "video/mp4"
+                    : ext === "webm"
+                      ? "video/webm"
+                      : ext === "jpg" || ext === "jpeg"
+                        ? "image/jpeg"
+                        : data.type || "application/octet-stream";
 
         return new Response(data, {
           status: 200,

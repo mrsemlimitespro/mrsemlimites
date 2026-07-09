@@ -87,9 +87,7 @@ function ConfiguracoesPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <header>
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          Sistema
-        </div>
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Sistema</div>
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
           <span className="gradient-text-warm">Configurações Gerais</span>
         </h1>
@@ -144,9 +142,7 @@ function ConfiguracoesPage() {
       <ExtensionUploadSection
         url={values.extension_url ?? ""}
         filename={values.extension_filename ?? ""}
-        onChange={(u, f) =>
-          setValues((v) => ({ ...v, extension_url: u, extension_filename: f }))
-        }
+        onChange={(u, f) => setValues((v) => ({ ...v, extension_url: u, extension_filename: f }))}
       />
 
       <section className="glass space-y-4 rounded-2xl p-6">
@@ -172,7 +168,13 @@ function ConfiguracoesPage() {
 
       <div className="flex justify-end">
         <Button className="gradient-primary" onClick={save} disabled={busy}>
-          {busy ? <Loader2 className="size-4 animate-spin" /> : <><Save className="size-4" /> Salvar</>}
+          {busy ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <>
+              <Save className="size-4" /> Salvar
+            </>
+          )}
         </Button>
       </div>
     </div>
@@ -194,7 +196,9 @@ function UploadField({
     try {
       const ext = file.name.split(".").pop() ?? "bin";
       const path = `config/${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("admin-media").upload(path, file, { upsert: false });
+      const { error } = await supabase.storage
+        .from("admin-media")
+        .upload(path, file, { upsert: false });
       if (error) throw error;
       const { data: signed, error: sErr } = await supabase.storage
         .from("admin-media")
@@ -214,7 +218,13 @@ function UploadField({
       <div className="space-y-2">
         {value && (
           <div className="relative w-fit">
-            <img src={value} alt="" className="max-h-24 rounded-lg border border-white/10 object-cover"  loading="lazy" decoding="async" />
+            <img
+              src={value}
+              alt=""
+              className="max-h-24 rounded-lg border border-white/10 object-cover"
+              loading="lazy"
+              decoding="async"
+            />
             <button
               type="button"
               onClick={() => onChange("")}
@@ -226,7 +236,11 @@ function UploadField({
         )}
         <div className="flex items-center gap-2">
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10">
-            {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+            {uploading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Upload className="size-4" />
+            )}
             <span>{value ? "Trocar" : "Enviar"}</span>
             <input
               type="file"
@@ -273,7 +287,10 @@ function ExtensionUploadSection({
       const path = `extension/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage
         .from("admin-media")
-        .upload(path, file, { upsert: false, contentType: file.type || "application/octet-stream" });
+        .upload(path, file, {
+          upsert: false,
+          contentType: file.type || "application/octet-stream",
+        });
       if (error) throw error;
       const { data: signed, error: sErr } = await supabase.storage
         .from("admin-media")

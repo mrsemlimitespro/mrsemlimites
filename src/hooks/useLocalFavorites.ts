@@ -15,7 +15,9 @@ function readSet(kind: string): Set<string> {
     if (!raw) return new Set();
     const arr = JSON.parse(raw);
     if (Array.isArray(arr)) return new Set(arr.filter((x): x is string => typeof x === "string"));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return new Set();
 }
 
@@ -23,7 +25,9 @@ function writeSet(kind: string, set: Set<string>) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(STORAGE_PREFIX + kind, JSON.stringify([...set]));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 export function useLocalFavorites(kind: string) {
@@ -35,14 +39,18 @@ export function useLocalFavorites(kind: string) {
 
   const isFav = useCallback((id: string) => ids.has(id), [ids]);
 
-  const toggle = useCallback((id: string) => {
-    setIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      writeSet(kind, next);
-      return next;
-    });
-  }, [kind]);
+  const toggle = useCallback(
+    (id: string) => {
+      setIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        writeSet(kind, next);
+        return next;
+      });
+    },
+    [kind],
+  );
 
   return { isFav, toggle };
 }

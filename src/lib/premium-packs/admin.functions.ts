@@ -7,16 +7,33 @@ import type { AdminPremiumPack, PremiumPack, PremiumPackSourceType } from "./typ
 const statusEnum = z.enum(["ativo", "rascunho", "em_breve"]);
 const visibilityEnum = z.enum(["publico", "privado", "expirado", "desativado"]);
 const salesPlatformEnum = z.enum([
-  "kiwify", "hotmart", "perfectpay", "cakto", "monetizze", "eduzz", "outro",
+  "kiwify",
+  "hotmart",
+  "perfectpay",
+  "cakto",
+  "monetizze",
+  "eduzz",
+  "outro",
 ]);
 const sourceTypeEnum = z.enum([
-  "none", "google_drive", "dropbox", "onedrive",
-  "cloudflare_r2", "supabase_storage", "local", "outro",
+  "none",
+  "google_drive",
+  "dropbox",
+  "onedrive",
+  "cloudflare_r2",
+  "supabase_storage",
+  "local",
+  "outro",
 ]);
 
 const upsertSchema = z.object({
   id: z.string().uuid().optional(),
-  slug: z.string().trim().min(1).max(160).regex(/^[a-z0-9-]+$/i, "Slug inválido"),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(160)
+    .regex(/^[a-z0-9-]+$/i, "Slug inválido"),
   nome: z.string().trim().min(1).max(200),
   categoria: z.string().trim().min(1).max(80).default("geral"),
   descricao_curta: z.string().trim().max(400).nullable().optional(),
@@ -93,7 +110,8 @@ export const adminListPremiumPacks = createServerFn({ method: "POST" })
     if (data.categoria) q = q.eq("categoria", data.categoria);
     if (data.q) {
       const safe = data.q.replace(/[%,]/g, " ").trim();
-      if (safe) q = q.or(`nome.ilike.%${safe}%,slug.ilike.%${safe}%,descricao_curta.ilike.%${safe}%`);
+      if (safe)
+        q = q.or(`nome.ilike.%${safe}%,slug.ilike.%${safe}%,descricao_curta.ilike.%${safe}%`);
     }
     const { data: rows, count, error } = await q;
     if (error) throw new Error(error.message);
@@ -125,7 +143,10 @@ export const adminRevealPackSource = createServerFn({ method: "POST" })
     z.object({ id: z.string().uuid(), reveal: z.boolean().default(false) }).parse(d),
   )
   .handler(
-    async ({ data, context }): Promise<{
+    async ({
+      data,
+      context,
+    }): Promise<{
       has_source: boolean;
       source_type: PremiumPackSourceType;
       source_folder_url: string | null;
@@ -139,10 +160,17 @@ export const adminRevealPackSource = createServerFn({ method: "POST" })
         .eq("id", data.id)
         .maybeSingle();
       if (error) throw new Error(error.message);
-      const r = row as { source_type?: string | null; source_url_encrypted?: unknown; source_metadata?: unknown } | null;
-      const blob = (r?.source_url_encrypted ?? null) as
-        | { v: 1; iv: string; tag: string; ct: string }
-        | null;
+      const r = row as {
+        source_type?: string | null;
+        source_url_encrypted?: unknown;
+        source_metadata?: unknown;
+      } | null;
+      const blob = (r?.source_url_encrypted ?? null) as {
+        v: 1;
+        iv: string;
+        tag: string;
+        ct: string;
+      } | null;
       let plain: string | null = null;
       if (data.reveal && blob) {
         const { decryptSecret } = await import("./crypto.server");
@@ -192,7 +220,10 @@ export const adminUpsertPremiumPack = createServerFn({ method: "POST" })
       if (error) throw new Error(error.message);
       savedRow = row as unknown as PremiumPack;
     } else {
-      const { id: _ignored, ...insertPayload } = payload as { id?: string } & Record<string, unknown>;
+      const { id: _ignored, ...insertPayload } = payload as { id?: string } & Record<
+        string,
+        unknown
+      >;
       const { data: row, error } = await supabaseAdmin
         .from("premium_packs")
         .insert(insertPayload as never)
@@ -217,7 +248,10 @@ export const adminDuplicatePremiumPack = createServerFn({ method: "POST" })
       .single();
     if (errSrc || !src) throw new Error(errSrc?.message ?? "Pack não encontrado");
     const {
-      id: _id, created_at: _c, updated_at: _u, public_token: _pt,
+      id: _id,
+      created_at: _c,
+      updated_at: _u,
+      public_token: _pt,
       ...rest
     } = src as AdminPremiumPack & Record<string, unknown>;
     const suffix = Math.random().toString(36).slice(2, 6);
@@ -257,7 +291,11 @@ export const adminRegeneratePublicToken = createServerFn({ method: "POST" })
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { randomBytes } = await import("crypto");
-    const token = randomBytes(5).toString("base64url").replace(/[-_]/g, "").toUpperCase().slice(0, 8);
+    const token = randomBytes(5)
+      .toString("base64url")
+      .replace(/[-_]/g, "")
+      .toUpperCase()
+      .slice(0, 8);
     const { data: row, error } = await supabaseAdmin
       .from("premium_packs")
       .update({ public_token: token } as never)

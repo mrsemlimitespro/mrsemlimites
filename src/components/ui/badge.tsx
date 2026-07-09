@@ -10,11 +10,9 @@ const badgeVariants = cva(
       variant: {
         default:
           "border-transparent gradient-primary text-primary-foreground shadow-[0_4px_14px_-4px_oklch(0_0_0/50%)]",
-        secondary:
-          "border-border bg-secondary/70 text-secondary-foreground",
+        secondary: "border-border bg-secondary/70 text-secondary-foreground",
         outline: "border-border text-foreground/90",
-        destructive:
-          "border-transparent bg-destructive text-destructive-foreground",
+        destructive: "border-transparent bg-destructive text-destructive-foreground",
         success:
           "border-transparent bg-[color-mix(in_oklab,var(--brand-cyan)_25%,transparent)] text-foreground",
       },
@@ -26,8 +24,7 @@ const badgeVariants = cva(
 );
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return <div className={cn(badgeVariants({ variant }), className)} {...props} />;

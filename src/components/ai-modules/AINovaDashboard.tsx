@@ -49,7 +49,14 @@ export interface AINovaDashboardProps {
   className?: string;
 }
 
-const ACTION_LABELS: Record<string, { label: string; Icon: React.ComponentType<{ className?: string }>; tone: "emerald" | "blue" | "amber" | "violet" }> = {
+const ACTION_LABELS: Record<
+  string,
+  {
+    label: string;
+    Icon: React.ComponentType<{ className?: string }>;
+    tone: "emerald" | "blue" | "amber" | "violet";
+  }
+> = {
   open: { label: "Prompt aberto", Icon: Eye, tone: "blue" },
   copy: { label: "Prompt copiado", Icon: Copy, tone: "emerald" },
   download: { label: "Prompt baixado", Icon: Download, tone: "amber" },
@@ -64,7 +71,10 @@ function fmtDelta(n: number, base: number) {
   if (!base) return { value: "+0%", tone: "up" as const };
   const pct = (n / base) * 100;
   const sign = pct >= 0 ? "+" : "";
-  return { value: `${sign}${pct.toFixed(1)}%`, tone: pct >= 0 ? ("up" as const) : ("down" as const) };
+  return {
+    value: `${sign}${pct.toFixed(1)}%`,
+    tone: pct >= 0 ? ("up" as const) : ("down" as const),
+  };
 }
 
 function relTime(iso: string) {
@@ -119,9 +129,17 @@ export function AINovaDashboard({
 
   const HeroIcon = isPrompts ? Wand2 : isPacks ? Package : Bot;
   const createLabel = isPrompts ? "Novo prompt" : isPacks ? "Novo pack" : "Novo agente";
-  const totalLabel = isPrompts ? "Total de Prompts" : isPacks ? "Total de Packs" : "Total de Agents";
+  const totalLabel = isPrompts
+    ? "Total de Prompts"
+    : isPacks
+      ? "Total de Packs"
+      : "Total de Agents";
   const totalUsosLabel = isPacks ? "Total de Downloads" : "Total de Usos";
-  const recentsLabel = isPrompts ? "Prompts Recentes" : isPacks ? "Packs Recentes" : "Agents Recentes";
+  const recentsLabel = isPrompts
+    ? "Prompts Recentes"
+    : isPacks
+      ? "Packs Recentes"
+      : "Agents Recentes";
   const fourthKpiLabel = isPrompts ? "Favoritos" : "Categorias";
 
   const greeting =
@@ -131,7 +149,6 @@ export function AINovaDashboard({
       : isPacks
         ? "Bem-vindo aos Packs Premium. Coleções exclusivas de conteúdo, ferramentas e recursos prontos para acelerar seus projetos — baixe, importe e monetize em segundos com acesso vitalício."
         : "Bem-vindo ao AI Agents. Agentes inteligentes que automatizam tarefas, respondem clientes, geram conteúdo e operam fluxos completos — sua equipe digital trabalhando 24/7 no piloto automático.");
-
 
   return (
     <div
@@ -185,13 +202,34 @@ export function AINovaDashboard({
         <div className="ai-spotlight" aria-hidden />
         {theme === "packs" && (
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-            <span className="ai-gold-particle" style={{ width: 6, height: 6, top: "22%", left: "18%", animationDelay: "0s" }} />
-            <span className="ai-gold-particle" style={{ width: 4, height: 4, top: "58%", left: "36%", animationDelay: "0.6s" }} />
-            <span className="ai-gold-particle" style={{ width: 5, height: 5, top: "12%", left: "62%", animationDelay: "1.1s" }} />
-            <span className="ai-gold-particle" style={{ width: 3, height: 3, top: "72%", left: "70%", animationDelay: "1.6s" }} />
-            <span className="ai-gold-particle" style={{ width: 6, height: 6, top: "38%", left: "88%", animationDelay: "2.1s" }} />
-            <span className="ai-gold-particle" style={{ width: 4, height: 4, top: "80%", left: "22%", animationDelay: "2.6s" }} />
-            <span className="ai-gold-particle" style={{ width: 3, height: 3, top: "30%", left: "48%", animationDelay: "0.3s" }} />
+            <span
+              className="ai-gold-particle"
+              style={{ width: 6, height: 6, top: "22%", left: "18%", animationDelay: "0s" }}
+            />
+            <span
+              className="ai-gold-particle"
+              style={{ width: 4, height: 4, top: "58%", left: "36%", animationDelay: "0.6s" }}
+            />
+            <span
+              className="ai-gold-particle"
+              style={{ width: 5, height: 5, top: "12%", left: "62%", animationDelay: "1.1s" }}
+            />
+            <span
+              className="ai-gold-particle"
+              style={{ width: 3, height: 3, top: "72%", left: "70%", animationDelay: "1.6s" }}
+            />
+            <span
+              className="ai-gold-particle"
+              style={{ width: 6, height: 6, top: "38%", left: "88%", animationDelay: "2.1s" }}
+            />
+            <span
+              className="ai-gold-particle"
+              style={{ width: 4, height: 4, top: "80%", left: "22%", animationDelay: "2.6s" }}
+            />
+            <span
+              className="ai-gold-particle"
+              style={{ width: 3, height: 3, top: "30%", left: "48%", animationDelay: "0.3s" }}
+            />
           </div>
         )}
         <div className="relative grid md:grid-cols-[1fr_auto] gap-6 items-center">
@@ -201,8 +239,12 @@ export function AINovaDashboard({
             </h1>
             <p className="mt-2 text-sm text-white/60 max-w-2xl leading-relaxed">{greeting}</p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <HeroButton icon={FolderOpen} onClick={onOpenLibrary}>Abrir biblioteca</HeroButton>
-              <HeroButton icon={Plus} onClick={onCreate}>{createLabel}</HeroButton>
+              <HeroButton icon={FolderOpen} onClick={onOpenLibrary}>
+                Abrir biblioteca
+              </HeroButton>
+              <HeroButton icon={Plus} onClick={onCreate}>
+                {createLabel}
+              </HeroButton>
               <HeroButton icon={FileBarChart}>Relatório</HeroButton>
               <HeroButton icon={Link2}>Integrações</HeroButton>
             </div>
@@ -211,7 +253,6 @@ export function AINovaDashboard({
           <Orb />
         </div>
       </section>
-
 
       <section className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 px-5 sm:px-8">
         <KpiCard
@@ -436,7 +477,14 @@ function KpiCard({
           </linearGradient>
         </defs>
         <path d={`${spark} L100 32 L0 32 Z`} fill={`url(#g-${gid})`} />
-        <path d={spark} fill="none" stroke={sparkColor} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+        <path
+          d={spark}
+          fill="none"
+          stroke={sparkColor}
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
       </svg>
     </div>
   );
@@ -489,7 +537,12 @@ function ActivityRow({
   };
   return (
     <div className="flex items-center gap-3 rounded-xl p-2 hover:bg-white/[0.03] transition">
-      <div className={cn("grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br", toneMap[tone])}>
+      <div
+        className={cn(
+          "grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br",
+          toneMap[tone],
+        )}
+      >
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0 flex-1">
@@ -524,7 +577,12 @@ function ProjectRow({
       onClick={onClick}
       className="flex w-full items-center gap-3 rounded-xl p-2 text-left hover:bg-white/[0.03] transition"
     >
-      <div className={cn("grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br shadow-lg", toneMap[tone])}>
+      <div
+        className={cn(
+          "grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br shadow-lg",
+          toneMap[tone],
+        )}
+      >
         <Icon className="h-4 w-4 text-white" />
       </div>
       <div className="min-w-0 flex-1">
@@ -538,13 +596,7 @@ function ProjectRow({
   );
 }
 
-function Dock({
-  onCenter,
-  onLibrary,
-}: {
-  onCenter?: () => void;
-  onLibrary?: () => void;
-}) {
+function Dock({ onCenter, onLibrary }: { onCenter?: () => void; onLibrary?: () => void }) {
   return (
     <div className="pointer-events-none absolute bottom-4 inset-x-0 z-20 flex justify-center px-4">
       <div className="pointer-events-auto relative flex items-center gap-1 rounded-2xl border border-white/10 bg-black/60 px-3 py-2 backdrop-blur-2xl shadow-[0_20px_60px_-20px_var(--ai-500)]">
