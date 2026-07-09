@@ -36,6 +36,18 @@ type Pack = {
   imagem_url: string | null;
 };
 
+type Produto = {
+  id: string;
+  nome: string;
+  titulo: string | null;
+  preco: number;
+  descricao: string | null;
+  imagem_url: string | null;
+  categoria: string | null;
+  status: string | null;
+  link: string | null;
+};
+
 type Promo = {
   id: string;
   titulo: string;
@@ -50,14 +62,17 @@ const brl = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 function readSearch() {
-  if (typeof window === "undefined") return { plano: null, pack: null, promo: null };
+  if (typeof window === "undefined")
+    return { plano: null, pack: null, produto: null, promo: null };
   const url = new URL(window.location.href);
   return {
     plano: url.searchParams.get("plano"),
     pack: url.searchParams.get("pack"),
+    produto: url.searchParams.get("produto"),
     promo: url.searchParams.get("promo"),
   };
 }
+
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -66,6 +81,8 @@ function CheckoutPage() {
   const [creating, setCreating] = useState(false);
   const [plano, setPlano] = useState<Plano | null>(null);
   const [pack, setPack] = useState<Pack | null>(null);
+  const [produto, setProduto] = useState<Produto | null>(null);
+
   const [promo, setPromo] = useState<Promo | null>(null);
   const [gateways, setGateways] = useState<Gateway[]>([]);
   const [gatewaySlug, setGatewaySlug] = useState<string | null>(null);
@@ -105,8 +122,9 @@ function CheckoutPage() {
         if (alive && data) setPromo(data as Promo);
       }
 
-      const planoId = s.plano ?? (s.promo ? null : null);
+      const planoId = s.plano ?? null;
       const packId = s.pack ?? null;
+      const produtoId = s.produto ?? null;
 
       if (planoId) {
         const { data } = await supabase
@@ -122,6 +140,13 @@ function CheckoutPage() {
           .eq("id", packId)
           .maybeSingle();
         if (alive && data) setPack(data as Pack);
+      } else if (produtoId) {
+        const { data } = await supabase
+          .from("produtos")
+          .select("id,nome,titulo,preco,descricao,imagem_url,categoria,status,link")
+          .eq("id", produtoId)
+          .maybeSingle();
+        if (alive && data) setProduto(data as Produto);
       }
 
       if (alive) setLoading(false);
@@ -139,7 +164,16 @@ function CheckoutPage() {
     return 0;
   }, [promo, plano, pack]);
 
-  const item = plano ?? pack;
+  const item = plano ?? pack ?? (produto
+    ? {
+        id: produto.id,
+        nome: produto.titulo || produto.nome,
+        preco: produto.preco,
+        descricao: produto.descricao,
+        imagem_url: produto.imagem_url,
+      }
+    : null);
+
   const valorBase = item ? Number(item.preco) : 0;
   const valorFinal = valorBase * (1 - descontoPct / 100);
   const semGateway = gateways.length === 0;
@@ -187,7 +221,17 @@ function CheckoutPage() {
         moeda: "BRL",
         status,
         metodo: gwSlug,
-        metadata: promo ? { promo_id: promo.id, desconto_pct: descontoPct } : null,
+        metadata: {
+          ...(promo ? { promo_id: promo.id, desconto_pct: descontoPct } : {}),
+          ...(produto
+            ? {
+                produto_id: produto.id,
+                produto_nome: produto.titulo || produto.nome,
+                produto_categoria: produto.categoria,
+              }
+            : {}),
+        },
+
       })
       .select("id, valor")
       .single();
