@@ -25,6 +25,8 @@ import {
   Eye,
   TrendingUp,
   Library,
+  FolderOpen,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { PremiumPack } from "@/lib/premium-packs/types";
