@@ -8,6 +8,7 @@ import { SoftParticles } from "@/components/soft-particles";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { WatermarkFooter } from "@/components/watermark-footer";
 import { InnerPillMenu } from "@/components/inner-pill-menu";
+import { PageBackButton } from "@/components/page-back-button";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -24,6 +25,9 @@ function AppLayout() {
           className="flex-1 px-3 pb-24 pt-4 md:px-8 md:pb-12 md:pt-6"
           style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}
         >
+          <div className="mb-3 md:mb-4">
+            <PageBackButton />
+          </div>
           <Outlet />
         </main>
       </div>

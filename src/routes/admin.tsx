@@ -32,6 +32,7 @@ import {
   adminGatePassed,
   clearAdminGate,
 } from "@/components/admin-password-gate";
+import { PageBackButton } from "@/components/page-back-button";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -237,6 +238,9 @@ function AdminShell() {
         </aside>
 
         <main className="flex-1 p-6 md:p-10">
+          <div className="mb-4">
+            <PageBackButton />
+          </div>
           {authState.kind !== "loading" &&
             (authState.kind === "anon" || !authState.isAdmin) && (
               <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 px-5 py-3 text-sm text-yellow-100/90">

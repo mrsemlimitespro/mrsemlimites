@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthShell, primaryBtn } from "./login";
 import { cn } from "@/lib/utils";
 import { playSfx } from "@/lib/sfx";
+import { PageBackButton } from "@/components/page-back-button";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -275,6 +276,9 @@ function CheckoutPage() {
   if (!item) {
     return (
       <AuthShell>
+        <div className="mb-3">
+          <PageBackButton forceShow fallback="/creditos" label="Voltar para a loja" />
+        </div>
         <h1 className="mb-3 text-lg font-semibold">Nenhum produto selecionado</h1>
         <p className="mb-4 text-sm text-muted-foreground">
           Volte à loja e escolha um pacote ou plano.
@@ -349,10 +353,21 @@ function CheckoutPage() {
 
   return (
     <AuthShell>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <PageBackButton forceShow fallback="/creditos" label="Continuar comprando" />
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/creditos" })}
+          className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Cancelar compra
+        </button>
+      </div>
       <h1 className="mb-1 text-lg font-semibold">Finalizar compra</h1>
       <p className="mb-4 text-xs text-muted-foreground">
         Revise os detalhes e confirme.
       </p>
+
 
       {/* Resumo do item */}
       <div className="mb-4 flex items-start gap-3 rounded-xl border border-border/70 bg-surface/60 p-3">
