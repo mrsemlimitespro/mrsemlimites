@@ -32,6 +32,7 @@ import {
   adminGatePassed,
   clearAdminGate,
 } from "@/components/admin-password-gate";
+import { PageBackButton } from "@/components/page-back-button";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
