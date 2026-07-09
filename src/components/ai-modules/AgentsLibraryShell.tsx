@@ -121,7 +121,16 @@ export function AgentsLibraryShell() {
         </div>
       )}
 
-      {open && <AgentModal agent={open} onClose={() => setOpen(null)} />}
+      {open && (
+        <AgentModal
+          agent={open}
+          onClose={() => setOpen(null)}
+          related={agents
+            .filter((a) => a.id !== open.id && (open.categoria ? a.categoria === open.categoria : true))
+            .slice(0, 3)}
+          onOpenOther={(a) => setOpen(a)}
+        />
+      )}
     </div>
   );
 }
