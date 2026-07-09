@@ -7,6 +7,7 @@
  */
 import { isNative, isAndroid } from "@/lib/platform";
 import { installExternalLinkInterceptor } from "@/lib/native-links";
+import { StorageService } from "@/native/StorageService";
 
 let initialized = false;
 let lastBackPressAt = 0;
