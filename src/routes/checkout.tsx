@@ -36,6 +36,18 @@ type Pack = {
   imagem_url: string | null;
 };
 
+type Produto = {
+  id: string;
+  nome: string;
+  titulo: string | null;
+  preco: number;
+  descricao: string | null;
+  imagem_url: string | null;
+  categoria: string | null;
+  status: string | null;
+  link: string | null;
+};
+
 type Promo = {
   id: string;
   titulo: string;
@@ -50,14 +62,17 @@ const brl = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 function readSearch() {
-  if (typeof window === "undefined") return { plano: null, pack: null, promo: null };
+  if (typeof window === "undefined")
+    return { plano: null, pack: null, produto: null, promo: null };
   const url = new URL(window.location.href);
   return {
     plano: url.searchParams.get("plano"),
     pack: url.searchParams.get("pack"),
+    produto: url.searchParams.get("produto"),
     promo: url.searchParams.get("promo"),
   };
 }
+
 
 function CheckoutPage() {
   const navigate = useNavigate();
