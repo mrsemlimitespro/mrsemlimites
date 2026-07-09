@@ -456,6 +456,39 @@ function AgentModal({ agent, onClose, related = [], onOpenOther }: { agent: AiAg
               </div>
             </>
           )}
+
+          {related.length > 0 && onOpenOther && (
+            <>
+              <Divider />
+              <div>
+                <h3 className="text-center text-[11px] uppercase tracking-[0.32em] text-ai-200 font-bold mb-4">
+                  Você também pode gostar
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {related.map((r) => (
+                    <button
+                      key={r.id}
+                      onClick={() => onOpenOther(r)}
+                      className="group text-left rounded-xl overflow-hidden border border-ai-300/15 bg-black/40 hover:border-ai-300/40 transition"
+                    >
+                      <div className="aspect-[3/4] relative bg-gradient-to-br from-ai-500/20 via-black to-ai-400/10">
+                        {r.cover_url ? (
+                          <img src={r.cover_url} alt={r.titulo} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                        ) : (
+                          <div className="absolute inset-0 grid place-items-center">
+                            <Bot className="w-8 h-8 text-ai-200/40" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-2 text-[11px] font-semibold text-white line-clamp-2 uppercase tracking-wide">
+                        {r.titulo}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
