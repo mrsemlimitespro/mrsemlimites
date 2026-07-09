@@ -26,7 +26,7 @@ let currentToken: string | null = null;
 
 const STORAGE_KEY = "mrsl.push.lastToken";
 
-async function upsertToken(userId: string, token: string, platform: "android" | "ios") {
+async function upsertToken(userId: string, token: string, platform: "android" | "ios" | "web") {
   try {
     const [infoRes, idRes] = await Promise.all([
       NativeService.device.getInfo(),
