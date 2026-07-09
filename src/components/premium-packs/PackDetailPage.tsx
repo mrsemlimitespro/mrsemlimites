@@ -211,6 +211,24 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
                 )}
 
                 <div className="mt-5 flex flex-wrap items-center gap-2">
+                  {driveEmbedUrl && pack.allow_view && (
+                    <button
+                      type="button"
+                      onClick={() => setViewerOpen(true)}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-ai-300/60 bg-gradient-to-r from-ai-500/30 to-ai-400/20 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-ai-50 transition hover:shadow-[0_0_28px_-6px_var(--ai-500)]"
+                    >
+                      <FolderOpen className="h-3.5 w-3.5" /> Abrir conteúdo
+                    </button>
+                  )}
+                  {archiveUrl && pack.allow_download && (
+                    <button
+                      type="button"
+                      onClick={handleDownload}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-ai-300/40 bg-gradient-to-r from-ai-500/20 to-ai-400/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-ai-50 transition hover:border-ai-300/70 hover:shadow-[0_0_24px_-8px_var(--ai-500)]"
+                    >
+                      <Download className="h-3.5 w-3.5" /> Baixar arquivo
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={handleShare}
@@ -231,6 +249,7 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
                     <Heart className={cn("h-3.5 w-3.5", favored && "fill-current")} /> {favored ? "Favoritado" : "Favoritar"}
                   </button>
                 </div>
+
               </div>
             </div>
 
