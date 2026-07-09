@@ -10,6 +10,8 @@
  */
 import { useMemo, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft,
   Heart,
@@ -28,6 +30,7 @@ import { toast } from "sonner";
 import type { PremiumPack } from "@/lib/premium-packs/types";
 import { formatBytes, formatRelative } from "@/lib/premium-packs/format";
 import { useLocalFavorites } from "@/hooks/useLocalFavorites";
+import { listPremiumPacks } from "@/lib/premium-packs/packs.functions";
 import { PackShareDialog } from "./PackShareDialog";
 import { PackCover } from "./PackCover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -41,6 +44,19 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   const router = useRouter();
   const { isFav, toggle } = useLocalFavorites("premium_pack");
   const favored = isFav(pack.id);
+
+  const listFn = useServerFn(listPremiumPacks);
+  const { data: relatedData } = useQuery({
+    queryKey: ["premium-packs", "related", pack.categoria ?? "_"],
+    queryFn: () =>
+      listFn({ data: { categoria: pack.categoria ?? undefined, limit: 8, offset: 0, sort: "popular" } }),
+    staleTime: 60_000,
+  });
+  const related = useMemo(
+    () => (relatedData?.rows ?? []).filter((p) => p.id !== pack.id).slice(0, 3),
+    [relatedData, pack.id],
+  );
+
 
   const shareUrl = useMemo(() => {
     const token = (pack as PremiumPack & { public_token?: string | null }).public_token;
@@ -266,7 +282,36 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
             </div>
           </TabsContent>
         </Tabs>
+
+        {related.length > 0 && (
+          <div className="mt-12">
+            <h3 className="mb-4 text-[11px] uppercase tracking-[0.32em] text-ai-200 font-bold">
+              Você também pode gostar
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {related.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => router.navigate({ to: "/packs/$slug", params: { slug: r.slug } })}
+                  className="group text-left rounded-2xl overflow-hidden border border-ai-300/15 bg-black/40 hover:border-ai-300/40 transition"
+                >
+                  <div className="aspect-[3/4] relative bg-black">
+                    <PackCover src={r.capa_url} title={r.nome} variant="card" rounded="rounded-none" />
+                  </div>
+                  <div className="p-3">
+                    <div className="text-[10px] uppercase tracking-[0.22em] text-ai-200/70 font-bold">
+                      {r.categoria || "Pack"}
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-white line-clamp-2">{r.nome}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
+
 
       <PackShareDialog
         open={shareOpen}
