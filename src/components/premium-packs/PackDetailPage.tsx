@@ -49,7 +49,7 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   const { data: relatedData } = useQuery({
     queryKey: ["premium-packs", "related", pack.categoria ?? "_"],
     queryFn: () =>
-      listFn({ data: { categoria: pack.categoria ?? undefined, limit: 8, offset: 0, sort: "popular" } }),
+      listFn({ data: { categoria: pack.categoria ?? undefined, limit: 8, offset: 0, sort: "populares" } }),
     staleTime: 60_000,
   });
   const related = useMemo(
