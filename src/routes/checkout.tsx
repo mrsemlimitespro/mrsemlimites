@@ -353,10 +353,21 @@ function CheckoutPage() {
 
   return (
     <AuthShell>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <PageBackButton forceShow fallback="/creditos" label="Continuar comprando" />
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/creditos" })}
+          className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Cancelar compra
+        </button>
+      </div>
       <h1 className="mb-1 text-lg font-semibold">Finalizar compra</h1>
       <p className="mb-4 text-xs text-muted-foreground">
         Revise os detalhes e confirme.
       </p>
+
 
       {/* Resumo do item */}
       <div className="mb-4 flex items-start gap-3 rounded-xl border border-border/70 bg-surface/60 p-3">
