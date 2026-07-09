@@ -77,6 +77,16 @@ export function PromptsLibraryShell() {
 
   useEffect(() => { setPage(1); }, [filters]);
 
+  // Permite reabrir o modal com outro prompt (usado por "Você também pode gostar")
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      if (typeof id === "string" && id) setOpenId(id);
+    };
+    window.addEventListener("open-prompt", onOpen as EventListener);
+    return () => window.removeEventListener("open-prompt", onOpen as EventListener);
+  }, []);
+
   const listFn = useServerFn(listPromptsPaged);
   const treeFn = useServerFn(listPromptCategoriesTree);
   const favIdsFn = useServerFn(listFavoriteIds);
