@@ -1,15 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Coins,
-  Flame,
-  Package,
-  ShoppingCart,
-  Sparkles,
-  UserCircle2,
-  Zap,
-} from "lucide-react";
+import { Coins, Flame, Package, ShoppingCart, Sparkles, UserCircle2, Zap } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
@@ -104,8 +96,7 @@ function LojaPage() {
                   aria-hidden
                   className="pointer-events-none absolute inset-0 rounded-xl gradient-primary"
                   style={{
-                    boxShadow:
-                      "0 0 20px -2px color-mix(in oklab, var(--primary) 75%, transparent)",
+                    boxShadow: "0 0 20px -2px color-mix(in oklab, var(--primary) 75%, transparent)",
                   }}
                 />
               )}
@@ -146,7 +137,9 @@ function LojaContent() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("planos")
-        .select("id,nome,tipo,preco,creditos_incluidos,duracao_dias,descricao,imagem_url,badge,cor_gradiente,ativo")
+        .select(
+          "id,nome,tipo,preco,creditos_incluidos,duracao_dias,descricao,imagem_url,badge,cor_gradiente,ativo",
+        )
         .eq("ativo", true)
         .order("preco", { ascending: true });
       if (error) throw error;
@@ -160,7 +153,9 @@ function LojaContent() {
       const now = new Date().toISOString();
       const { data } = await supabase
         .from("promocoes")
-        .select("id,titulo,descricao,imagem_url,desconto_percentual,inicio,fim,plano_id,pack_id,link")
+        .select(
+          "id,titulo,descricao,imagem_url,desconto_percentual,inicio,fim,plano_id,pack_id,link",
+        )
         .eq("ativo", true)
         .or(`inicio.is.null,inicio.lte.${now}`)
         .or(`fim.is.null,fim.gte.${now}`)
@@ -199,12 +194,10 @@ function LojaContent() {
 
         {empty && (
           <div className="glass rounded-2xl p-10 text-center">
-            <p className="text-sm text-muted-foreground">
-              Nenhum produto cadastrado ainda.
-            </p>
+            <p className="text-sm text-muted-foreground">Nenhum produto cadastrado ainda.</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              O admin pode adicionar cards em{" "}
-              <span className="font-mono">/admin/loja</span> → Pacotes de Créditos ou Planos.
+              O admin pode adicionar cards em <span className="font-mono">/admin/loja</span> →
+              Pacotes de Créditos ou Planos.
             </p>
           </div>
         )}
@@ -256,7 +249,13 @@ function PackCard({ pack }: { pack: Pack }) {
         }}
       >
         {pack.imagem_url ? (
-          <img src={pack.imagem_url} alt={pack.nome} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
+          <img
+            src={pack.imagem_url}
+            alt={pack.nome}
+            className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
           <Zap className="size-6 text-white" strokeWidth={2.5} />
         )}
@@ -271,9 +270,7 @@ function PackCard({ pack }: { pack: Pack }) {
       </div>
 
       {pack.quantidade > 1 && (
-        <p className="mt-3 text-xs text-muted-foreground">
-          {brl(unit)} por chave
-        </p>
+        <p className="mt-3 text-xs text-muted-foreground">{brl(unit)} por chave</p>
       )}
 
       <Button
@@ -332,7 +329,13 @@ function PlanoCard({ plano }: { plano: Plano }) {
 
       {plano.imagem_url && (
         <div className="relative mt-3 h-20 w-full overflow-hidden rounded-xl">
-          <img src={plano.imagem_url} alt={plano.nome} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
+          <img
+            src={plano.imagem_url}
+            alt={plano.nome}
+            className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       )}
 
@@ -350,9 +353,7 @@ function PlanoCard({ plano }: { plano: Plano }) {
           <span className="text-4xl font-black tracking-tight">
             {Math.floor(Number(plano.preco))}
           </span>
-          <span className="text-xl font-bold">
-            ,{Number(plano.preco).toFixed(2).split(".")[1]}
-          </span>
+          <span className="text-xl font-bold">,{Number(plano.preco).toFixed(2).split(".")[1]}</span>
         </div>
       </div>
 
@@ -397,7 +398,13 @@ function PromoBanner({ promo }: { promo: Promo }) {
           }}
         >
           {promo.imagem_url ? (
-            <img src={promo.imagem_url} alt={promo.titulo} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
+            <img
+              src={promo.imagem_url}
+              alt={promo.titulo}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           ) : (
             <Flame className="size-6 text-white" strokeWidth={2} />
           )}

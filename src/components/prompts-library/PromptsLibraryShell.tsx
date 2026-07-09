@@ -2,8 +2,22 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  Search, Copy, Check, X, Tag, Crown, Heart, Eye, Sparkles,
-  Filter, ChevronDown, ChevronRight, Clock, TrendingUp, Wand2, Loader2,
+  Search,
+  Copy,
+  Check,
+  X,
+  Tag,
+  Crown,
+  Heart,
+  Eye,
+  Sparkles,
+  Filter,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  TrendingUp,
+  Wand2,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -34,8 +48,7 @@ import { useIsAuthed } from "@/hooks/useIsAuthed";
 import { downloadItemAsHtml } from "@/lib/download-item";
 import { Download } from "lucide-react";
 
-type SortKey =
-  | "recent" | "popular" | "most_used" | "most_downloaded" | "numero" | "az" | "za";
+type SortKey = "recent" | "popular" | "most_used" | "most_downloaded" | "numero" | "az" | "za";
 
 const SORT_LABELS: Record<SortKey, string> = {
   recent: "Mais recentes",
@@ -75,7 +88,9 @@ export function PromptsLibraryShell() {
   const [showFilters, setShowFilters] = useState(false);
   const isAuthed = useIsAuthed();
 
-  useEffect(() => { setPage(1); }, [filters]);
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
 
   // Permite reabrir o modal com outro prompt (usado por "Você também pode gostar")
   useEffect(() => {
@@ -113,28 +128,32 @@ export function PromptsLibraryShell() {
   });
 
   const filterIds =
-    filters.view === "favorites" ? (favIds ?? []) :
-    filters.view === "recent" ? (recentIds ?? []) : undefined;
+    filters.view === "favorites"
+      ? (favIds ?? [])
+      : filters.view === "recent"
+        ? (recentIds ?? [])
+        : undefined;
 
   const queryEnabled = filters.view === "all" || (filterIds && filterIds.length > 0);
   const emptyFromIds = filters.view !== "all" && filterIds && filterIds.length === 0;
 
   const { data: page1, isFetching } = useQuery({
     queryKey: ["prompts-library", "page", { ...filters, page, filterIds }],
-    queryFn: () => listFn({
-      data: {
-        page,
-        pageSize: PAGE_SIZE,
-        search: filters.search,
-        categoria: filters.categoria,
-        subcategoria: filters.subcategoria,
-        compatibilidade: filters.compatibilidade.length ? filters.compatibilidade : undefined,
-        status: filters.status.length ? filters.status : undefined,
-        nivel: filters.nivel,
-        sort: filters.sort,
-        ids: filterIds,
-      },
-    }),
+    queryFn: () =>
+      listFn({
+        data: {
+          page,
+          pageSize: PAGE_SIZE,
+          search: filters.search,
+          categoria: filters.categoria,
+          subcategoria: filters.subcategoria,
+          compatibilidade: filters.compatibilidade.length ? filters.compatibilidade : undefined,
+          status: filters.status.length ? filters.status : undefined,
+          nivel: filters.nivel,
+          sort: filters.sort,
+          ids: filterIds,
+        },
+      }),
     enabled: !!queryEnabled,
     placeholderData: keepPreviousData,
     staleTime: 5 * 60_000,
@@ -148,19 +167,18 @@ export function PromptsLibraryShell() {
 
   return (
     <div data-ai-theme="prompts" className="ai-module relative w-full">
-
       <Toaster />
 
       {/* Hero */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-            PROMPTS
-          </h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">PROMPTS</h1>
           <p className="text-white/55 text-sm mt-1">
             Catálogo Premium de Prompts Profissionais.
             {typeof total === "number" && total > 0 ? (
-              <span className="ml-1 text-white/40">· {total.toLocaleString("pt-BR")} cadastrados</span>
+              <span className="ml-1 text-white/40">
+                · {total.toLocaleString("pt-BR")} cadastrados
+              </span>
             ) : null}
           </p>
         </div>
@@ -184,9 +202,7 @@ export function PromptsLibraryShell() {
           onToggleFilters={() => setShowFilters((v) => !v)}
         />
 
-        {showFilters && (
-          <FilterPanel filters={filters} onChange={setFilters} />
-        )}
+        {showFilters && <FilterPanel filters={filters} onChange={setFilters} />}
 
         {isFetching && !page1 ? (
           <SkeletonGrid />
@@ -229,11 +245,7 @@ export function PromptsLibraryShell() {
       />
 
       {openId && (
-        <PromptModal
-          id={openId}
-          favorited={favSet.has(openId)}
-          onClose={() => setOpenId(null)}
-        />
+        <PromptModal id={openId} favorited={favSet.has(openId)} onClose={() => setOpenId(null)} />
       )}
     </div>
   );
@@ -242,7 +254,11 @@ export function PromptsLibraryShell() {
 /* ============== Toolbar ============== */
 
 function Toolbar({
-  filters, onChange, total, showFilters, onToggleFilters,
+  filters,
+  onChange,
+  total,
+  showFilters,
+  onToggleFilters,
 }: {
   filters: Filters;
   onChange: (f: Filters) => void;
@@ -251,16 +267,43 @@ function Toolbar({
   onToggleFilters: () => void;
 }) {
   const activeChips: Array<{ k: string; label: string; onClear: () => void }> = [];
-  if (filters.categoria) activeChips.push({ k: "cat", label: filters.categoria, onClear: () => onChange({ ...filters, categoria: undefined, subcategoria: undefined }) });
-  if (filters.subcategoria) activeChips.push({ k: "sub", label: filters.subcategoria, onClear: () => onChange({ ...filters, subcategoria: undefined }) });
-  if (filters.nivel) activeChips.push({ k: "lvl", label: filters.nivel, onClear: () => onChange({ ...filters, nivel: undefined }) });
-  for (const s of filters.status) activeChips.push({ k: `st-${s}`, label: s, onClear: () => onChange({ ...filters, status: filters.status.filter((x) => x !== s) }) });
-  for (const c of filters.compatibilidade) activeChips.push({ k: `cp-${c}`, label: c, onClear: () => onChange({ ...filters, compatibilidade: filters.compatibilidade.filter((x) => x !== c) }) });
+  if (filters.categoria)
+    activeChips.push({
+      k: "cat",
+      label: filters.categoria,
+      onClear: () => onChange({ ...filters, categoria: undefined, subcategoria: undefined }),
+    });
+  if (filters.subcategoria)
+    activeChips.push({
+      k: "sub",
+      label: filters.subcategoria,
+      onClear: () => onChange({ ...filters, subcategoria: undefined }),
+    });
+  if (filters.nivel)
+    activeChips.push({
+      k: "lvl",
+      label: filters.nivel,
+      onClear: () => onChange({ ...filters, nivel: undefined }),
+    });
+  for (const s of filters.status)
+    activeChips.push({
+      k: `st-${s}`,
+      label: s,
+      onClear: () => onChange({ ...filters, status: filters.status.filter((x) => x !== s) }),
+    });
+  for (const c of filters.compatibilidade)
+    activeChips.push({
+      k: `cp-${c}`,
+      label: c,
+      onClear: () =>
+        onChange({ ...filters, compatibilidade: filters.compatibilidade.filter((x) => x !== c) }),
+    });
 
   return (
     <div className="sticky top-2 z-10 bg-[#06060a]/90 backdrop-blur rounded-xl py-2 mb-3 flex flex-wrap items-center gap-2">
       <Button
-        size="sm" variant="outline"
+        size="sm"
+        variant="outline"
         onClick={onToggleFilters}
         className="gap-1.5 border-ai-300/25 text-ai-100/80"
       >
@@ -272,7 +315,9 @@ function Toolbar({
         className="h-9 px-3 rounded-md bg-black/60 border border-ai-300/25 text-ai-50 text-sm"
       >
         {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
-          <option key={k} value={k} className="bg-black">{SORT_LABELS[k]}</option>
+          <option key={k} value={k} className="bg-black">
+            {SORT_LABELS[k]}
+          </option>
         ))}
       </select>
       <div className="text-[11px] text-ai-200/50 ml-auto">
@@ -281,8 +326,11 @@ function Toolbar({
       {activeChips.length > 0 && (
         <div className="w-full flex flex-wrap gap-1.5">
           {activeChips.map((c) => (
-            <button key={c.k} onClick={c.onClear}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border border-ai-300/30 bg-ai-500/10 text-ai-100 hover:bg-ai-500/20">
+            <button
+              key={c.k}
+              onClick={c.onClear}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border border-ai-300/30 bg-ai-500/10 text-ai-100 hover:bg-ai-500/20"
+            >
               {c.label} <X className="w-3 h-3" />
             </button>
           ))}
@@ -300,20 +348,37 @@ function FilterPanel({ filters, onChange }: { filters: Filters; onChange: (f: Fi
     <div className="mb-4 rounded-xl border border-ai-300/20 bg-black/40 p-4 space-y-4">
       <FilterGroup title="Status">
         {PROMPT_STATUS_OPTIONS.map((s) => (
-          <Chip key={s} active={filters.status.includes(s)}
-            onClick={() => onChange({ ...filters, status: toggle(filters.status, s) })}>{s}</Chip>
+          <Chip
+            key={s}
+            active={filters.status.includes(s)}
+            onClick={() => onChange({ ...filters, status: toggle(filters.status, s) })}
+          >
+            {s}
+          </Chip>
         ))}
       </FilterGroup>
       <FilterGroup title="Compatibilidade">
         {PROMPT_COMPATIBILITY.map((s) => (
-          <Chip key={s} active={filters.compatibilidade.includes(s)}
-            onClick={() => onChange({ ...filters, compatibilidade: toggle(filters.compatibilidade, s) })}>{s}</Chip>
+          <Chip
+            key={s}
+            active={filters.compatibilidade.includes(s)}
+            onClick={() =>
+              onChange({ ...filters, compatibilidade: toggle(filters.compatibilidade, s) })
+            }
+          >
+            {s}
+          </Chip>
         ))}
       </FilterGroup>
       <FilterGroup title="Nível">
         {PROMPT_LEVELS.map((s) => (
-          <Chip key={s} active={filters.nivel === s}
-            onClick={() => onChange({ ...filters, nivel: filters.nivel === s ? undefined : s })}>{s}</Chip>
+          <Chip
+            key={s}
+            active={filters.nivel === s}
+            onClick={() => onChange({ ...filters, nivel: filters.nivel === s ? undefined : s })}
+          >
+            {s}
+          </Chip>
         ))}
       </FilterGroup>
     </div>
@@ -323,30 +388,49 @@ function FilterPanel({ filters, onChange }: { filters: Filters; onChange: (f: Fi
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-[0.28em] text-ai-200/60 font-bold mb-2">{title}</div>
+      <div className="text-[10px] uppercase tracking-[0.28em] text-ai-200/60 font-bold mb-2">
+        {title}
+      </div>
       <div className="flex flex-wrap gap-1.5">{children}</div>
     </div>
   );
 }
 
-function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
-    <button onClick={onClick}
+    <button
+      onClick={onClick}
       className={cn(
         "px-2.5 py-1 rounded-full text-[11px] border transition",
         active
           ? "bg-ai-500/20 border-ai-300/60 text-ai-50"
           : "bg-black/60 border-ai-300/20 text-ai-100/65 hover:border-ai-300/40 hover:text-ai-50",
       )}
-    >{children}</button>
+    >
+      {children}
+    </button>
   );
 }
 
 /* ============== Card ============== */
 
 function PromptCard({
-  prompt, favorited, onOpen,
-}: { prompt: LibraryPrompt; favorited: boolean; onOpen: () => void }) {
+  prompt,
+  favorited,
+  onOpen,
+}: {
+  prompt: LibraryPrompt;
+  favorited: boolean;
+  onOpen: () => void;
+}) {
   const qc = useQueryClient();
   const isAuthed = useIsAuthed();
   const toggleFn = useServerFn(toggleFavoriteFn);
@@ -372,19 +456,26 @@ function PromptCard({
       toast.success("Prompt copiado!");
       setTimeout(() => setCopied(false), 2000);
       if (isAuthed) {
-        try { await recordFn({ data: { promptId: prompt.id, action: "copy" } }); } catch { /* noop */ }
+        try {
+          await recordFn({ data: { promptId: prompt.id, action: "copy" } });
+        } catch {
+          /* noop */
+        }
       }
     } catch {
       toast.error("Não foi possível copiar");
     }
   }
 
-  const cover = (prompt.cover_url && prompt.cover_url.trim()) ||
+  const cover =
+    (prompt.cover_url && prompt.cover_url.trim()) ||
     `autocover://${encodeURIComponent(prompt.titulo || "Prompt")}`;
 
   return (
-    <div className="group relative rounded-xl overflow-hidden border border-ai-300/15 bg-black/40 hover:border-ai-300/40 transition cursor-pointer"
-      onClick={onOpen}>
+    <div
+      className="group relative rounded-xl overflow-hidden border border-ai-300/15 bg-black/40 hover:border-ai-300/40 transition cursor-pointer"
+      onClick={onOpen}
+    >
       <div className="relative aspect-[4/5] bg-gradient-to-br from-zinc-900 to-black overflow-hidden">
         <SmartCover
           capaUrl={cover}
@@ -399,7 +490,10 @@ function PromptCard({
             {formatPromptNumber(prompt.numero)}
           </span>
           <button
-            onClick={(e) => { e.stopPropagation(); favMutation.mutate(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              favMutation.mutate();
+            }}
             className={cn(
               "p-1.5 rounded-full backdrop-blur-sm transition",
               favorited
@@ -414,20 +508,30 @@ function PromptCard({
         {prompt.status && prompt.status.length > 0 && (
           <div className="absolute bottom-12 left-2 flex flex-wrap gap-1">
             {prompt.status.slice(0, 2).map((s) => (
-              <span key={s} className={cn(
-                "text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded",
-                s === "Elite" ? "bg-gradient-to-r from-amber-400 to-ai-500 text-black" :
-                s === "Premium" ? "bg-ai-500/90 text-white" :
-                s === "Novo" ? "bg-emerald-500/90 text-black" :
-                s === "Popular" ? "bg-amber-500/90 text-black" :
-                "bg-blue-500/90 text-white",
-              )}>{s}</span>
+              <span
+                key={s}
+                className={cn(
+                  "text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded",
+                  s === "Elite"
+                    ? "bg-gradient-to-r from-amber-400 to-ai-500 text-black"
+                    : s === "Premium"
+                      ? "bg-ai-500/90 text-white"
+                      : s === "Novo"
+                        ? "bg-emerald-500/90 text-black"
+                        : s === "Popular"
+                          ? "bg-amber-500/90 text-black"
+                          : "bg-blue-500/90 text-white",
+                )}
+              >
+                {s}
+              </span>
             ))}
           </div>
         )}
         <div className="absolute bottom-0 inset-x-0 p-2.5 space-y-1">
           <div className="text-[9px] uppercase tracking-widest text-ai-200/70 truncate">
-            {prompt.categoria}{prompt.subcategoria ? ` • ${prompt.subcategoria}` : ""}
+            {prompt.categoria}
+            {prompt.subcategoria ? ` • ${prompt.subcategoria}` : ""}
           </div>
           <div className="text-[12px] font-semibold text-white line-clamp-2 leading-tight">
             {prompt.titulo}
@@ -439,7 +543,10 @@ function PromptCard({
         <div className="text-[10px] text-ai-200/60 truncate flex-1">
           {prompt.nivel}
           {prompt.compatibilidade && prompt.compatibilidade.length > 0 && (
-            <span className="text-ai-200/40"> • {prompt.compatibilidade.slice(0, 2).join(", ")}</span>
+            <span className="text-ai-200/40">
+              {" "}
+              • {prompt.compatibilidade.slice(0, 2).join(", ")}
+            </span>
           )}
         </div>
         <button
@@ -450,7 +557,10 @@ function PromptCard({
           {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
         </button>
         <button
-          onClick={(e) => { e.stopPropagation(); onOpen(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen();
+          }}
           className="p-1.5 rounded text-ai-200/80 hover:text-ai-50 hover:bg-ai-500/10"
           title="Abrir"
         >
@@ -484,13 +594,13 @@ function EmptyState({ filters }: { filters: Filters }) {
     <div className="text-center py-16 px-6 rounded-2xl border border-ai-300/15 bg-black/30">
       <Wand2 className="w-10 h-10 text-ai-300/60 mx-auto mb-3" />
       <h3 className="text-ai-100 font-semibold mb-1">
-        {filters.view === "favorites" ? "Nenhum favorito ainda"
-          : filters.view === "recent" ? "Sem histórico recente"
-          : "Nenhum prompt encontrado"}
+        {filters.view === "favorites"
+          ? "Nenhum favorito ainda"
+          : filters.view === "recent"
+            ? "Sem histórico recente"
+            : "Nenhum prompt encontrado"}
       </h3>
-      <p className="text-ai-200/55 text-sm">
-        Ajuste os filtros ou tente outra categoria.
-      </p>
+      <p className="text-ai-200/55 text-sm">Ajuste os filtros ou tente outra categoria.</p>
     </div>
   );
 }
@@ -498,8 +608,14 @@ function EmptyState({ filters }: { filters: Filters }) {
 /* ============== Modal ============== */
 
 function PromptModal({
-  id, favorited, onClose,
-}: { id: string; favorited: boolean; onClose: () => void }) {
+  id,
+  favorited,
+  onClose,
+}: {
+  id: string;
+  favorited: boolean;
+  onClose: () => void;
+}) {
   const detailFn = useServerFn(getPromptDetail);
   const recsFn = useServerFn(listRecommendations);
   const recordFn = useServerFn(recordPromptUsage);
@@ -519,7 +635,9 @@ function PromptModal({
   });
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -527,7 +645,9 @@ function PromptModal({
   useEffect(() => {
     if (item && !opened.current && isAuthed) {
       opened.current = true;
-      recordFn({ data: { promptId: id, action: "open" } }).catch(() => { /* noop */ });
+      recordFn({ data: { promptId: id, action: "open" } }).catch(() => {
+        /* noop */
+      });
     }
   }, [item, id, isAuthed, recordFn]);
 
@@ -539,22 +659,33 @@ function PromptModal({
       toast.success("Prompt copiado!");
       setTimeout(() => setCopied(false), 2000);
       if (isAuthed) {
-        try { await recordFn({ data: { promptId: id, action: "copy" } }); } catch { /* noop */ }
+        try {
+          await recordFn({ data: { promptId: id, action: "copy" } });
+        } catch {
+          /* noop */
+        }
       }
-    } catch { toast.error("Falha ao copiar"); }
+    } catch {
+      toast.error("Falha ao copiar");
+    }
   }
 
   async function fav() {
     try {
       await toggleFn({ data: { promptId: id } });
       qc.invalidateQueries({ queryKey: ["prompts-library", "fav-ids"] });
-    } catch { toast.error("Faça login para favoritar"); }
+    } catch {
+      toast.error("Faça login para favoritar");
+    }
   }
 
   // Status escalar no destino: normaliza para array para render.
-  const itemStatusArr = item && typeof (item as { status?: unknown }).status === "string" && (item as { status: string }).status.trim()
-    ? [(item as { status: string }).status.trim()]
-    : [];
+  const itemStatusArr =
+    item &&
+    typeof (item as { status?: unknown }).status === "string" &&
+    (item as { status: string }).status.trim()
+      ? [(item as { status: string }).status.trim()]
+      : [];
 
   return (
     <div
@@ -562,8 +693,10 @@ function PromptModal({
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="relative w-full max-w-3xl max-h-[92vh] overflow-hidden flex flex-col rounded-2xl border border-ai-300/25 bg-gradient-to-b from-[#0a0608] to-[#06060a] shadow-[0_40px_120px_-20px_rgba(225,29,72,0.5)]">
-        <button onClick={onClose}
-          className="absolute top-3 right-3 z-20 p-1.5 rounded-full bg-black/60 border border-ai-300/20 text-ai-100/70 hover:text-ai-50">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 z-20 p-1.5 rounded-full bg-black/60 border border-ai-300/20 text-ai-100/70 hover:text-ai-50"
+        >
           <X className="w-4 h-4" />
         </button>
 
@@ -575,9 +708,11 @@ function PromptModal({
           <>
             <div className="relative aspect-[21/9] overflow-hidden bg-gradient-to-br from-black to-zinc-900 border-b border-ai-300/10">
               <SmartCover
-                capaUrl={(typeof item.cover_url === "string" && item.cover_url.trim())
-                  ? item.cover_url
-                  : `autocover://${encodeURIComponent(item.titulo)}`}
+                capaUrl={
+                  typeof item.cover_url === "string" && item.cover_url.trim()
+                    ? item.cover_url
+                    : `autocover://${encodeURIComponent(item.titulo)}`
+                }
                 title={item.titulo}
                 alt={item.titulo}
                 className="absolute inset-0 h-full w-full"
@@ -594,7 +729,12 @@ function PromptModal({
                 <span>{item.categoria}</span>
                 {item.subcategoria && <span>• {item.subcategoria}</span>}
                 {itemStatusArr.map((s) => (
-                  <span key={s} className="px-1.5 py-0.5 rounded bg-ai-500/20 text-ai-50 border border-ai-300/30 normal-case tracking-normal">{s}</span>
+                  <span
+                    key={s}
+                    className="px-1.5 py-0.5 rounded bg-ai-500/20 text-ai-50 border border-ai-300/30 normal-case tracking-normal"
+                  >
+                    {s}
+                  </span>
                 ))}
                 {item.destaque && (
                   <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-gradient-to-r from-ai-300 to-red-500 text-black font-black tracking-widest normal-case">
@@ -602,25 +742,33 @@ function PromptModal({
                   </span>
                 )}
               </div>
-              <h2 className="text-2xl sm:text-3xl font-light leading-tight"
-                style={{ fontFamily: '"Cormorant Garamond", Georgia, serif' }}>
+              <h2
+                className="text-2xl sm:text-3xl font-light leading-tight"
+                style={{ fontFamily: '"Cormorant Garamond", Georgia, serif' }}
+              >
                 <span className="bg-gradient-to-b from-ai-100 via-ai-200 to-red-400 bg-clip-text text-transparent">
                   {item.titulo}
                 </span>
               </h2>
-              {item.descricao && (
-                <p className="mt-2 text-sm text-ai-100/60">{item.descricao}</p>
-              )}
+              {item.descricao && <p className="mt-2 text-sm text-ai-100/60">{item.descricao}</p>}
               <div className="mt-2 flex flex-wrap gap-1.5 text-[10px] text-ai-200/60">
-                {item.autor && <span>por <strong className="text-ai-100">{item.autor}</strong></span>}
+                {item.autor && (
+                  <span>
+                    por <strong className="text-ai-100">{item.autor}</strong>
+                  </span>
+                )}
                 {item.nivel && <span>• {item.nivel}</span>}
                 {item.versao && <span>• v{item.versao}</span>}
               </div>
               {Array.isArray(item.tags) && item.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mt-3">
                   {item.tags.map((t) => (
-                    <span key={t} className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border border-ai-300/20 bg-ai-500/[0.05] text-ai-200/80">
-                      <Tag className="w-2.5 h-2.5" />{t}
+                    <span
+                      key={t}
+                      className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border border-ai-300/20 bg-ai-500/[0.05] text-ai-200/80"
+                    >
+                      <Tag className="w-2.5 h-2.5" />
+                      {t}
                     </span>
                   ))}
                 </div>
@@ -630,14 +778,18 @@ function PromptModal({
             <div className="px-6 sm:px-8 py-5 overflow-y-auto flex-1 space-y-5">
               {item.descricao_completa && (
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.28em] text-ai-200/60 font-bold mb-2">Descrição</div>
+                  <div className="text-[10px] uppercase tracking-[0.28em] text-ai-200/60 font-bold mb-2">
+                    Descrição
+                  </div>
                   <p className="text-sm leading-relaxed text-ai-50/85 whitespace-pre-wrap">
                     {item.descricao_completa}
                   </p>
                 </div>
               )}
               <div>
-                <div className="text-[10px] uppercase tracking-[0.28em] text-ai-200/60 font-bold mb-2">Prompt completo</div>
+                <div className="text-[10px] uppercase tracking-[0.28em] text-ai-200/60 font-bold mb-2">
+                  Prompt completo
+                </div>
                 <pre className="whitespace-pre-wrap break-words font-mono text-[12.5px] leading-relaxed text-ai-50/90 bg-black/60 border border-ai-300/15 rounded-xl p-4 max-h-[40vh] overflow-y-auto min-h-[80px]">
                   {item.prompt}
                 </pre>
@@ -645,16 +797,31 @@ function PromptModal({
 
               {recs && recs.length > 0 && (
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.28em] text-ai-200/60 font-bold mb-2">Você também pode gostar</div>
+                  <div className="text-[10px] uppercase tracking-[0.28em] text-ai-200/60 font-bold mb-2">
+                    Você também pode gostar
+                  </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {recs.slice(0, 4).map((r) => (
-                      <button key={r.id}
-                        onClick={() => { onClose(); setTimeout(() => window.dispatchEvent(new CustomEvent("open-prompt", { detail: r.id })), 50); }}
-                        className="rounded-lg overflow-hidden border border-ai-300/15 bg-black/40 hover:border-ai-300/40 transition text-left">
+                      <button
+                        key={r.id}
+                        onClick={() => {
+                          onClose();
+                          setTimeout(
+                            () =>
+                              window.dispatchEvent(
+                                new CustomEvent("open-prompt", { detail: r.id }),
+                              ),
+                            50,
+                          );
+                        }}
+                        className="rounded-lg overflow-hidden border border-ai-300/15 bg-black/40 hover:border-ai-300/40 transition text-left"
+                      >
                         <div className="aspect-[4/5] relative">
                           <SmartCover
-                            capaUrl={(r.cover_url && r.cover_url.trim()) ||
-                              `autocover://${encodeURIComponent(r.titulo)}`}
+                            capaUrl={
+                              (r.cover_url && r.cover_url.trim()) ||
+                              `autocover://${encodeURIComponent(r.titulo)}`
+                            }
                             title={r.titulo}
                             alt={r.titulo}
                             className="absolute inset-0 h-full w-full"
@@ -670,13 +837,15 @@ function PromptModal({
             </div>
 
             <div className="px-6 sm:px-8 py-4 border-t border-ai-300/10 bg-black/40 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
-              <button onClick={fav}
+              <button
+                onClick={fav}
                 className={cn(
                   "inline-flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold border transition",
                   favorited
                     ? "bg-ai-500 text-white border-ai-400"
                     : "bg-black/60 text-ai-100 border-ai-300/30 hover:border-ai-300/60",
-                )}>
+                )}
+              >
                 <Heart className={cn("w-4 h-4", favorited && "fill-current")} />
                 {favorited ? "Favorito" : "Favoritar"}
               </button>
@@ -697,12 +866,23 @@ function PromptModal({
                     });
                     toast.success("Download iniciado");
                   }}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-black/60 border border-ai-300/40 text-ai-50 text-xs font-bold uppercase tracking-wider hover:border-ai-300/70 hover:bg-ai-500/10 transition">
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-black/60 border border-ai-300/40 text-ai-50 text-xs font-bold uppercase tracking-wider hover:border-ai-300/70 hover:bg-ai-500/10 transition"
+                >
                   <Download className="w-4 h-4" /> Baixar
                 </button>
-                <button onClick={copy}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-ai-400 via-red-500 to-ai-600 text-black text-sm font-black uppercase tracking-wider shadow-[0_0_30px_-8px_rgba(225,29,72,0.8)] hover:brightness-110 transition">
-                  {copied ? <><Check className="w-4 h-4" /> Copiado</> : <><Copy className="w-4 h-4" /> Copiar Prompt</>}
+                <button
+                  onClick={copy}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-ai-400 via-red-500 to-ai-600 text-black text-sm font-black uppercase tracking-wider shadow-[0_0_30px_-8px_rgba(225,29,72,0.8)] hover:brightness-110 transition"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4" /> Copiado
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" /> Copiar Prompt
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -716,7 +896,10 @@ function PromptModal({
 /* ============== CategoryDock (bottom floating dock) ============== */
 
 function CategoryDock({
-  tree, filters, onChange, favCount,
+  tree,
+  filters,
+  onChange,
+  favCount,
 }: {
   tree: Array<{ categoria: string; total: number; subs: { nome: string; count: number }[] }>;
   filters: Filters;
@@ -756,7 +939,15 @@ function CategoryDock({
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               <button
-                onClick={() => { onChange({ ...filters, categoria: undefined, subcategoria: undefined, view: "all" }); setOpenCats(false); }}
+                onClick={() => {
+                  onChange({
+                    ...filters,
+                    categoria: undefined,
+                    subcategoria: undefined,
+                    view: "all",
+                  });
+                  setOpenCats(false);
+                }}
                 className={cn(
                   "text-left px-3 py-2 rounded-lg text-[12px] font-medium border transition",
                   !activeCat && activeView === "all"
@@ -772,7 +963,10 @@ function CategoryDock({
                 return (
                   <button
                     key={c}
-                    onClick={() => { onChange({ ...filters, categoria: c, subcategoria: undefined, view: "all" }); setOpenCats(false); }}
+                    onClick={() => {
+                      onChange({ ...filters, categoria: c, subcategoria: undefined, view: "all" });
+                      setOpenCats(false);
+                    }}
                     className={cn(
                       "flex items-center justify-between gap-2 text-left px-3 py-2 rounded-lg text-[12px] font-medium border transition",
                       active
@@ -800,20 +994,36 @@ function CategoryDock({
             icon={Sparkles}
             label="Todos"
             active={activeView === "all" && !activeCat}
-            onClick={() => onChange({ ...filters, view: "all", categoria: undefined, subcategoria: undefined })}
+            onClick={() =>
+              onChange({ ...filters, view: "all", categoria: undefined, subcategoria: undefined })
+            }
           />
           <DockTab
             icon={Heart}
             label="Favoritos"
             badge={favCount || undefined}
             active={activeView === "favorites"}
-            onClick={() => onChange({ ...filters, view: "favorites", categoria: undefined, subcategoria: undefined })}
+            onClick={() =>
+              onChange({
+                ...filters,
+                view: "favorites",
+                categoria: undefined,
+                subcategoria: undefined,
+              })
+            }
           />
           <DockTab
             icon={Clock}
             label="Recentes"
             active={activeView === "recent"}
-            onClick={() => onChange({ ...filters, view: "recent", categoria: undefined, subcategoria: undefined })}
+            onClick={() =>
+              onChange({
+                ...filters,
+                view: "recent",
+                categoria: undefined,
+                subcategoria: undefined,
+              })
+            }
           />
           <DockTab
             icon={TrendingUp}
@@ -834,7 +1044,11 @@ function CategoryDock({
 }
 
 function DockTab({
-  icon: Icon, label, active, badge, onClick,
+  icon: Icon,
+  label,
+  active,
+  badge,
+  onClick,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;

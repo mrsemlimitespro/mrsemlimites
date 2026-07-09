@@ -5,10 +5,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/sons")({
   head: () => ({
-    meta: [
-      { title: "Catálogo de Sons — Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Catálogo de Sons — Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: SonsPage,
 });
@@ -62,24 +59,158 @@ function noise(ctx: AudioContext, dur: number, gain = 0.2, when = 0, lowpass = 2
 
 // ---------- 18 SOUNDS ----------
 const SOUNDS: SoundDef[] = [
-  { id: "click", nome: "Click", descricao: "Clique curto e limpo para botões.", play: (c) => tone(c, 900, 0.05, "square", 0.15) },
-  { id: "pop", nome: "Pop", descricao: "Pop de bolha, suave.", play: (c) => tone(c, 400, 0.12, "sine", 0.3, 0, 900) },
-  { id: "ding", nome: "Ding", descricao: "Sino curto de confirmação.", play: (c) => { tone(c, 1568, 0.4, "sine", 0.25); tone(c, 2093, 0.4, "sine", 0.15, 0.01); } },
-  { id: "success", nome: "Success", descricao: "Acorde ascendente de sucesso.", play: (c) => { tone(c, 523, 0.15, "triangle", 0.25); tone(c, 659, 0.15, "triangle", 0.25, 0.1); tone(c, 784, 0.3, "triangle", 0.25, 0.2); } },
-  { id: "error", nome: "Error", descricao: "Buzzer descendente de erro.", play: (c) => { tone(c, 300, 0.15, "sawtooth", 0.2); tone(c, 200, 0.25, "sawtooth", 0.2, 0.12); } },
-  { id: "notification", nome: "Notification", descricao: "Bip duplo para notificações.", play: (c) => { tone(c, 880, 0.1, "sine", 0.25); tone(c, 1320, 0.15, "sine", 0.25, 0.12); } },
-  { id: "coin", nome: "Coin", descricao: "Moeda 8-bit clássica.", play: (c) => { tone(c, 988, 0.08, "square", 0.2); tone(c, 1319, 0.2, "square", 0.2, 0.06); } },
-  { id: "level-up", nome: "Level Up", descricao: "Sequência ascendente épica.", play: (c) => { [523, 659, 784, 1047].forEach((f, i) => tone(c, f, 0.18, "square", 0.2, i * 0.08)); } },
-  { id: "cash", nome: "Cash Register", descricao: "Caixa registrando venda.", play: (c) => { tone(c, 1500, 0.05, "square", 0.3); noise(c, 0.15, 0.15, 0.05, 3000); tone(c, 1200, 0.1, "square", 0.25, 0.2); } },
-  { id: "whoosh", nome: "Whoosh", descricao: "Passagem rápida (transição).", play: (c) => noise(c, 0.4, 0.35, 0, 1500) },
-  { id: "magic", nome: "Magic Sparkle", descricao: "Brilho mágico com harmônicos.", play: (c) => { [1200, 1600, 2000, 2400].forEach((f, i) => tone(c, f, 0.25, "sine", 0.12, i * 0.05, f * 1.5)); } },
-  { id: "tap", nome: "Tap", descricao: "Toque de dedo, curtíssimo.", play: (c) => tone(c, 200, 0.03, "sine", 0.3) },
-  { id: "bell", nome: "Bell", descricao: "Sino brilhante.", play: (c) => { tone(c, 1046, 0.8, "sine", 0.2); tone(c, 2093, 0.6, "sine", 0.1, 0.01); tone(c, 3140, 0.4, "sine", 0.05, 0.02); } },
-  { id: "chime", nome: "Chime", descricao: "Sino tripla nota, elegante.", play: (c) => { tone(c, 1319, 0.5, "sine", 0.2); tone(c, 1568, 0.5, "sine", 0.2, 0.12); tone(c, 1976, 0.6, "sine", 0.2, 0.24); } },
-  { id: "alert", nome: "Alert", descricao: "Alerta intermitente.", play: (c) => { tone(c, 880, 0.12, "square", 0.25); tone(c, 660, 0.12, "square", 0.25, 0.14); tone(c, 880, 0.12, "square", 0.25, 0.28); } },
-  { id: "swipe", nome: "Swipe", descricao: "Deslize curto.", play: (c) => tone(c, 600, 0.15, "sine", 0.2, 0, 200) },
-  { id: "confirm", nome: "Confirm", descricao: "Confirmação suave (duas notas).", play: (c) => { tone(c, 784, 0.12, "triangle", 0.25); tone(c, 1175, 0.2, "triangle", 0.25, 0.1); } },
-  { id: "fire", nome: "Fire Crackle", descricao: "Crepitar de fogo (promoção).", play: (c) => { noise(c, 0.5, 0.25, 0, 800); [0.1, 0.22, 0.35].forEach((t) => tone(c, 120 + Math.random() * 60, 0.05, "sawtooth", 0.15, t)); } },
+  {
+    id: "click",
+    nome: "Click",
+    descricao: "Clique curto e limpo para botões.",
+    play: (c) => tone(c, 900, 0.05, "square", 0.15),
+  },
+  {
+    id: "pop",
+    nome: "Pop",
+    descricao: "Pop de bolha, suave.",
+    play: (c) => tone(c, 400, 0.12, "sine", 0.3, 0, 900),
+  },
+  {
+    id: "ding",
+    nome: "Ding",
+    descricao: "Sino curto de confirmação.",
+    play: (c) => {
+      tone(c, 1568, 0.4, "sine", 0.25);
+      tone(c, 2093, 0.4, "sine", 0.15, 0.01);
+    },
+  },
+  {
+    id: "success",
+    nome: "Success",
+    descricao: "Acorde ascendente de sucesso.",
+    play: (c) => {
+      tone(c, 523, 0.15, "triangle", 0.25);
+      tone(c, 659, 0.15, "triangle", 0.25, 0.1);
+      tone(c, 784, 0.3, "triangle", 0.25, 0.2);
+    },
+  },
+  {
+    id: "error",
+    nome: "Error",
+    descricao: "Buzzer descendente de erro.",
+    play: (c) => {
+      tone(c, 300, 0.15, "sawtooth", 0.2);
+      tone(c, 200, 0.25, "sawtooth", 0.2, 0.12);
+    },
+  },
+  {
+    id: "notification",
+    nome: "Notification",
+    descricao: "Bip duplo para notificações.",
+    play: (c) => {
+      tone(c, 880, 0.1, "sine", 0.25);
+      tone(c, 1320, 0.15, "sine", 0.25, 0.12);
+    },
+  },
+  {
+    id: "coin",
+    nome: "Coin",
+    descricao: "Moeda 8-bit clássica.",
+    play: (c) => {
+      tone(c, 988, 0.08, "square", 0.2);
+      tone(c, 1319, 0.2, "square", 0.2, 0.06);
+    },
+  },
+  {
+    id: "level-up",
+    nome: "Level Up",
+    descricao: "Sequência ascendente épica.",
+    play: (c) => {
+      [523, 659, 784, 1047].forEach((f, i) => tone(c, f, 0.18, "square", 0.2, i * 0.08));
+    },
+  },
+  {
+    id: "cash",
+    nome: "Cash Register",
+    descricao: "Caixa registrando venda.",
+    play: (c) => {
+      tone(c, 1500, 0.05, "square", 0.3);
+      noise(c, 0.15, 0.15, 0.05, 3000);
+      tone(c, 1200, 0.1, "square", 0.25, 0.2);
+    },
+  },
+  {
+    id: "whoosh",
+    nome: "Whoosh",
+    descricao: "Passagem rápida (transição).",
+    play: (c) => noise(c, 0.4, 0.35, 0, 1500),
+  },
+  {
+    id: "magic",
+    nome: "Magic Sparkle",
+    descricao: "Brilho mágico com harmônicos.",
+    play: (c) => {
+      [1200, 1600, 2000, 2400].forEach((f, i) => tone(c, f, 0.25, "sine", 0.12, i * 0.05, f * 1.5));
+    },
+  },
+  {
+    id: "tap",
+    nome: "Tap",
+    descricao: "Toque de dedo, curtíssimo.",
+    play: (c) => tone(c, 200, 0.03, "sine", 0.3),
+  },
+  {
+    id: "bell",
+    nome: "Bell",
+    descricao: "Sino brilhante.",
+    play: (c) => {
+      tone(c, 1046, 0.8, "sine", 0.2);
+      tone(c, 2093, 0.6, "sine", 0.1, 0.01);
+      tone(c, 3140, 0.4, "sine", 0.05, 0.02);
+    },
+  },
+  {
+    id: "chime",
+    nome: "Chime",
+    descricao: "Sino tripla nota, elegante.",
+    play: (c) => {
+      tone(c, 1319, 0.5, "sine", 0.2);
+      tone(c, 1568, 0.5, "sine", 0.2, 0.12);
+      tone(c, 1976, 0.6, "sine", 0.2, 0.24);
+    },
+  },
+  {
+    id: "alert",
+    nome: "Alert",
+    descricao: "Alerta intermitente.",
+    play: (c) => {
+      tone(c, 880, 0.12, "square", 0.25);
+      tone(c, 660, 0.12, "square", 0.25, 0.14);
+      tone(c, 880, 0.12, "square", 0.25, 0.28);
+    },
+  },
+  {
+    id: "swipe",
+    nome: "Swipe",
+    descricao: "Deslize curto.",
+    play: (c) => tone(c, 600, 0.15, "sine", 0.2, 0, 200),
+  },
+  {
+    id: "confirm",
+    nome: "Confirm",
+    descricao: "Confirmação suave (duas notas).",
+    play: (c) => {
+      tone(c, 784, 0.12, "triangle", 0.25);
+      tone(c, 1175, 0.2, "triangle", 0.25, 0.1);
+    },
+  },
+  {
+    id: "fire",
+    nome: "Fire Crackle",
+    descricao: "Crepitar de fogo (promoção).",
+    play: (c) => {
+      noise(c, 0.5, 0.25, 0, 800);
+      [0.1, 0.22, 0.35].forEach((t) =>
+        tone(c, 120 + Math.random() * 60, 0.05, "sawtooth", 0.15, t),
+      );
+    },
+  },
 ];
 
 function SonsPage() {
@@ -89,7 +220,9 @@ function SonsPage() {
 
   function getCtx() {
     if (!ctxRef.current) {
-      const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AC =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       ctxRef.current = new AC();
     }
     if (ctxRef.current.state === "suspended") ctxRef.current.resume();
@@ -124,8 +257,8 @@ function SonsPage() {
           <span className="gradient-text-warm">Sons disponíveis</span>
         </h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          18 efeitos sonoros procedurais (Web Audio API — sem custo, sem
-          download). Aperte <b>Play</b> para ouvir. Copie o nome e me peça:
+          18 efeitos sonoros procedurais (Web Audio API — sem custo, sem download). Aperte{" "}
+          <b>Play</b> para ouvir. Copie o nome e me peça:
           <i> "Aplica o som Success no botão de compra"</i> em qualquer projeto.
         </p>
       </header>

@@ -54,27 +54,23 @@ function AulasPage() {
             style={{
               background:
                 "linear-gradient(135deg, color-mix(in oklab, var(--brand-violet) 40%, transparent), color-mix(in oklab, var(--brand-blue) 30%, transparent))",
-              boxShadow:
-                "0 0 40px -6px color-mix(in oklab, var(--brand-violet) 70%, transparent)",
+              boxShadow: "0 0 40px -6px color-mix(in oklab, var(--brand-violet) 70%, transparent)",
             }}
           >
             <PlayCircle className="size-7 text-white" strokeWidth={2} />
           </span>
           <div className="space-y-1.5">
-            <h3 className="text-xl font-semibold tracking-tight">
-              Em breve, novas aulas
-            </h3>
+            <h3 className="text-xl font-semibold tracking-tight">Em breve, novas aulas</h3>
             <p className="mx-auto max-w-md text-sm text-muted-foreground">
-              Estamos preparando conteúdos exclusivos para você. Volte em breve
-              para assistir aos treinamentos oficiais do MR Lova.
+              Estamos preparando conteúdos exclusivos para você. Volte em breve para assistir aos
+              treinamentos oficiais do MR Lova.
             </p>
           </div>
-          <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-widest text-foreground/80"
+          <div
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-widest text-foreground/80"
             style={{
-              background:
-                "color-mix(in oklab, var(--brand-violet) 18%, transparent)",
-              border:
-                "1px solid color-mix(in oklab, var(--brand-violet) 35%, transparent)",
+              background: "color-mix(in oklab, var(--brand-violet) 18%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--brand-violet) 35%, transparent)",
             }}
           >
             <Sparkles className="size-3" strokeWidth={2} />

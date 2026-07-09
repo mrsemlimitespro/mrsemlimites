@@ -126,7 +126,9 @@ export function AgentsLibraryShell() {
           agent={open}
           onClose={() => setOpen(null)}
           related={agents
-            .filter((a) => a.id !== open.id && (open.categoria ? a.categoria === open.categoria : true))
+            .filter(
+              (a) => a.id !== open.id && (open.categoria ? a.categoria === open.categoria : true),
+            )
             .slice(0, 3)}
           onOpenOther={(a) => setOpen(a)}
         />
@@ -167,7 +169,17 @@ function AgentCard({ agent, onOpen }: { agent: AiAgent; onOpen: () => void }) {
   );
 }
 
-function AgentModal({ agent, onClose, related = [], onOpenOther }: { agent: AiAgent; onClose: () => void; related?: AiAgent[]; onOpenOther?: (a: AiAgent) => void }) {
+function AgentModal({
+  agent,
+  onClose,
+  related = [],
+  onOpenOther,
+}: {
+  agent: AiAgent;
+  onClose: () => void;
+  related?: AiAgent[];
+  onOpenOther?: (a: AiAgent) => void;
+}) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const { isFav, toggle } = useLocalFavorites("ai-agent");
   const fav = isFav(agent.id);
@@ -335,7 +347,9 @@ function AgentModal({ agent, onClose, related = [], onOpenOther }: { agent: AiAg
               size="sm"
               onClick={() => {
                 navigator.clipboard
-                  .writeText(agent.system_prompt || agent.descricao_completa || agent.descricao || "")
+                  .writeText(
+                    agent.system_prompt || agent.descricao_completa || agent.descricao || "",
+                  )
                   .then(() => toast.success("Prompt copiado"))
                   .catch(() => toast.error("Falha ao copiar"));
               }}
@@ -473,7 +487,12 @@ function AgentModal({ agent, onClose, related = [], onOpenOther }: { agent: AiAg
                     >
                       <div className="aspect-[3/4] relative bg-gradient-to-br from-ai-500/20 via-black to-ai-400/10">
                         {r.cover_url ? (
-                          <img src={r.cover_url} alt={r.titulo} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                          <img
+                            src={r.cover_url}
+                            alt={r.titulo}
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
                         ) : (
                           <div className="absolute inset-0 grid place-items-center">
                             <Bot className="w-8 h-8 text-ai-200/40" />

@@ -29,7 +29,6 @@ import {
   PropagandasSection,
 } from "@/components/home/home-sections";
 
-
 export const Route = createFileRoute("/_app/")({
   head: () => ({
     meta: [
@@ -49,7 +48,6 @@ type Kpi = {
   color: string;
   sparkline: number[];
 };
-
 
 type Metrics = {
   receitaTotal: number;
@@ -81,8 +79,7 @@ type ActivityRow = {
   metadata: Record<string, unknown> | null;
 };
 
-const brl = (n: number) =>
-  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 function startOfDayUTC(d: Date) {
   const x = new Date(d);
@@ -112,16 +109,12 @@ async function loadMetrics(): Promise<Metrics> {
       .from("payment_transactions")
       .select("valor,status,created_at")
       .gte("created_at", since.toISOString()),
-    supabase
-      .from("clientes")
-      .select("created_at")
-      .gte("created_at", since.toISOString()),
+    supabase.from("clientes").select("created_at").gte("created_at", since.toISOString()),
     supabase
       .from("notificacoes")
       .select("id", { count: "exact", head: true })
       .eq("categoria", "suporte")
       .is("lida_em", null),
-
   ]);
 
   const v = (viewRes.data ?? {}) as {
@@ -183,11 +176,7 @@ async function loadMetrics(): Promise<Metrics> {
   };
 }
 
-
-const EVENT_META: Record<
-  string,
-  { label: string; icon: IconType; color: string }
-> = {
+const EVENT_META: Record<string, { label: string; icon: IconType; color: string }> = {
   novo_cliente: { label: "Novo cliente cadastrado", icon: UserPlus, color: "var(--brand-emerald)" },
   compra_aprovada: { label: "Compra aprovada", icon: CreditCard, color: "var(--brand-blue)" },
   compra_recusada: { label: "Compra recusada", icon: XCircle, color: "var(--brand-orange)" },
@@ -262,15 +251,11 @@ function DashboardPage() {
           refreshSales();
         },
       )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "clientes" },
-        () => refreshMetrics(),
+      .on("postgres_changes", { event: "*", schema: "public", table: "clientes" }, () =>
+        refreshMetrics(),
       )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "access_logs" },
-        () => refreshActivity(),
+      .on("postgres_changes", { event: "*", schema: "public", table: "access_logs" }, () =>
+        refreshActivity(),
       )
       .subscribe();
 
@@ -347,9 +332,6 @@ function DashboardPage() {
       {/* Produtos */}
       <ProdutosSection />
 
-
-
-
       {/* 4 KPI cards */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((kpi) => (
@@ -357,20 +339,12 @@ function DashboardPage() {
         ))}
       </section>
 
-
-
-
       {/* Bottom 3-column row */}
       <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
         <ActivityCard items={activity} />
-        <ChartCard
-          days={metrics?.chartDays ?? []}
-          values={metrics?.chartValues ?? []}
-        />
+        <ChartCard days={metrics?.chartDays ?? []} values={metrics?.chartValues ?? []} />
         <RecentSalesCard sales={sales} />
       </section>
-
-      
     </div>
   );
 }
@@ -389,9 +363,7 @@ function KpiCard({ kpi }: { kpi: Kpi }) {
         </span>
       </div>
 
-      <p className="mt-4 text-[28px] font-semibold tracking-tight md:text-[30px]">
-        {kpi.value}
-      </p>
+      <p className="mt-4 text-[28px] font-semibold tracking-tight md:text-[30px]">{kpi.value}</p>
       <p className="mt-1 text-xs text-muted-foreground/80">Últimos 7 dias</p>
 
       <Sparkline data={kpi.sparkline} color={kpi.color} className="mt-4" />
@@ -410,8 +382,7 @@ function ActivityCard({ items }: { items: ActivityRow[] }) {
             className="size-1.5 rounded-full"
             style={{
               background: "var(--brand-emerald)",
-              boxShadow:
-                "0 0 8px color-mix(in oklab, var(--brand-emerald) 80%, transparent)",
+              boxShadow: "0 0 8px color-mix(in oklab, var(--brand-emerald) 80%, transparent)",
             }}
           />
           Ao vivo
@@ -447,8 +418,7 @@ function ActivityCard({ items }: { items: ActivityRow[] }) {
 
 function statusStyle(status: string | null) {
   const s = (status ?? "").toLowerCase();
-  if (s === "aprovado")
-    return { label: "Aprovado", color: "var(--brand-emerald)" };
+  if (s === "aprovado") return { label: "Aprovado", color: "var(--brand-emerald)" };
   if (s === "pendente" || s === "aguardando")
     return { label: "Pendente", color: "var(--brand-orange)" };
   if (s === "recusado" || s === "rejeitado")
@@ -468,8 +438,7 @@ function RecentSalesCard({ sales }: { sales: PaymentRow[] }) {
             className="size-1.5 rounded-full"
             style={{
               background: "var(--brand-blue)",
-              boxShadow:
-                "0 0 8px color-mix(in oklab, var(--brand-blue) 80%, transparent)",
+              boxShadow: "0 0 8px color-mix(in oklab, var(--brand-blue) 80%, transparent)",
             }}
           />
           Tempo real
@@ -491,19 +460,14 @@ function RecentSalesCard({ sales }: { sales: PaymentRow[] }) {
                   <DollarSign className="size-4" strokeWidth={2} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">
-                    {s.cliente_nome ?? "Cliente"}
-                  </p>
+                  <p className="truncate text-sm font-medium">{s.cliente_nome ?? "Cliente"}</p>
                   <p className="truncate text-xs text-muted-foreground">
                     {produto} · {timeAgo(s.created_at)}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold">{brl(Number(s.valor ?? 0))}</p>
-                  <p
-                    className="text-[10px] font-medium"
-                    style={{ color: st.color }}
-                  >
+                  <p className="text-[10px] font-medium" style={{ color: st.color }}>
                     {st.label}
                   </p>
                 </div>
@@ -535,9 +499,9 @@ function ChartCard({ days, values }: { days: string[]; values: number[] }) {
 }
 
 function BigChart({ days, values }: { days: string[]; values: number[] }) {
-  const fallbackDays = days.length ? days : last7Days().map((d) =>
-    d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }),
-  );
+  const fallbackDays = days.length
+    ? days
+    : last7Days().map((d) => d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }));
   const fallbackValues = values.length ? values : [0, 0, 0, 0, 0, 0, 0];
 
   const w = 700;
@@ -562,10 +526,7 @@ function BigChart({ days, values }: { days: string[]; values: number[] }) {
     .join(" ");
   const area = `${path} L ${w - padX},${h - padY} L ${padX},${h - padY} Z`;
 
-  const maxIdx = fallbackValues.reduce(
-    (best, v, i) => (v > fallbackValues[best] ? i : best),
-    0,
-  );
+  const maxIdx = fallbackValues.reduce((best, v, i) => (v > fallbackValues[best] ? i : best), 0);
   const [hx, hy] = points[maxIdx];
   const yLabels = [0, 0.5, 1];
 
@@ -606,8 +567,7 @@ function BigChart({ days, values }: { days: string[]; values: number[] }) {
         {yLabels.map((r) => {
           const y = padY + (1 - r) * (h - padY * 2);
           const val = max * r;
-          const label =
-            val >= 1000 ? `${Math.round(val / 100) / 10}k` : `${Math.round(val)}`;
+          const label = val >= 1000 ? `${Math.round(val / 100) / 10}k` : `${Math.round(val)}`;
           return (
             <text
               key={r}
@@ -705,9 +665,7 @@ function Sparkline({
     const y = h - ((v - min) / range) * (h - 8) - 4;
     return [x, y] as const;
   });
-  const line = points
-    .map(([x, y], i) => (i === 0 ? `M ${x},${y}` : `L ${x},${y}`))
-    .join(" ");
+  const line = points.map(([x, y], i) => (i === 0 ? `M ${x},${y}` : `L ${x},${y}`)).join(" ");
   const area = `${line} L ${w},${h} L 0,${h} Z`;
   const gid = `spark-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -739,4 +697,3 @@ function Sparkline({
     </svg>
   );
 }
-

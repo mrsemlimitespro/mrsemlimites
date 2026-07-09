@@ -130,7 +130,8 @@ export function AICard({
       className={cn(
         "group relative rounded-2xl border border-ai-300/15 bg-gradient-to-br from-white/[0.04] via-white/[0.02] to-transparent p-4 transition-all duration-300",
         "hover:border-ai-300/40 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-12px_var(--ai-500)]",
-        glow && "before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-ai-500/0 before:to-ai-400/0 hover:before:from-ai-500/10 hover:before:to-ai-400/5 before:transition",
+        glow &&
+          "before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-ai-500/0 before:to-ai-400/0 hover:before:from-ai-500/10 hover:before:to-ai-400/5 before:transition",
         className,
       )}
     >
@@ -178,9 +179,7 @@ export function AIEmptyState({
         <Icon className="h-7 w-7 text-ai-100" />
       </div>
       <h2 className="mb-2 text-xl font-semibold text-white">{title}</h2>
-      {description && (
-        <p className="mx-auto max-w-md text-sm text-white/55">{description}</p>
-      )}
+      {description && <p className="mx-auto max-w-md text-sm text-white/55">{description}</p>}
       {action && <div className="mt-5">{action}</div>}
     </div>
   );

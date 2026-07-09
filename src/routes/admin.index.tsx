@@ -12,20 +12,22 @@ function AdminHome() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <header className="space-y-1">
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          Painel
-        </div>
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Painel</div>
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
           <span className="gradient-text-warm">Visão geral</span>
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Gerencie tudo do MR Lova em um só lugar.
-        </p>
+        <p className="text-sm text-muted-foreground">Gerencie tudo do MR Lova em um só lugar.</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {resources.map((r) => (
-          <ResourceCard key={r.key} resourceKey={r.key} table={r.table} label={r.label} Icon={r.icon} />
+          <ResourceCard
+            key={r.key}
+            resourceKey={r.key}
+            table={r.table}
+            label={r.label}
+            Icon={r.icon}
+          />
         ))}
       </div>
     </div>

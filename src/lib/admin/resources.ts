@@ -53,7 +53,11 @@ export type Resource = {
   table: string;
   icon: IconType;
   fields: Field[];
-  listColumns: { key: string; label: string; format?: "text" | "boolean" | "date" | "currency" | "number" }[];
+  listColumns: {
+    key: string;
+    label: string;
+    format?: "text" | "boolean" | "date" | "currency" | "number";
+  }[];
   orderBy?: { column: string; ascending: boolean };
   searchColumns?: string[];
   group?: string;
@@ -108,30 +112,120 @@ export const resources: Resource[] = [
     searchColumns: ["chave", "plano", "email"],
     fields: [
       // === Identificação ===
-      { key: "chave", label: "Chave MR (visível ao cliente)", type: "text", required: true, tab: "Identificação", helperText: "Ex.: MR-2026-ABCD-EFGH — é a chave que o cliente cola na extensão." },
-      { key: "produto_id", label: "Produto", type: "select_from_table", fromTable: { table: "licenca_produtos", labelKey: "nome" }, tab: "Identificação" },
-      { key: "plano", label: "Plano (rótulo)", type: "text", placeholder: "Ex.: Premium anual", tab: "Identificação" },
-      { key: "tipo", label: "Tipo", type: "select", options: tipoLicencaOptions, required: true, tab: "Identificação", helperText: "Ao mudar de Teste → Premium, o tempo e a expiração são limpos automaticamente (mesma chave)." },
-      { key: "status", label: "Status", type: "select", options: statusOptions, required: true, tab: "Identificação" },
-      { key: "expira_em", label: "Expira em (Premium com validade)", type: "datetime", tab: "Identificação" },
+      {
+        key: "chave",
+        label: "Chave MR (visível ao cliente)",
+        type: "text",
+        required: true,
+        tab: "Identificação",
+        helperText: "Ex.: MR-2026-ABCD-EFGH — é a chave que o cliente cola na extensão.",
+      },
+      {
+        key: "produto_id",
+        label: "Produto",
+        type: "select_from_table",
+        fromTable: { table: "licenca_produtos", labelKey: "nome" },
+        tab: "Identificação",
+      },
+      {
+        key: "plano",
+        label: "Plano (rótulo)",
+        type: "text",
+        placeholder: "Ex.: Premium anual",
+        tab: "Identificação",
+      },
+      {
+        key: "tipo",
+        label: "Tipo",
+        type: "select",
+        options: tipoLicencaOptions,
+        required: true,
+        tab: "Identificação",
+        helperText:
+          "Ao mudar de Teste → Premium, o tempo e a expiração são limpos automaticamente (mesma chave).",
+      },
+      {
+        key: "status",
+        label: "Status",
+        type: "select",
+        options: statusOptions,
+        required: true,
+        tab: "Identificação",
+      },
+      {
+        key: "expira_em",
+        label: "Expira em (Premium com validade)",
+        type: "datetime",
+        tab: "Identificação",
+      },
 
       // === Fornecedor (oculto do cliente) ===
-      { key: "fornecedor_slug", label: "Fornecedor", type: "select", options: fornecedorSlugOptions, tab: "Fornecedor" },
-      { key: "chave_fornecedor", label: "Chave do fornecedor (privada)", type: "textarea", tab: "Fornecedor", helperText: "NUNCA aparece para o cliente. O servidor a usa por trás para autorizar a extensão. Deixe vazio se não usa fornecedor." },
+      {
+        key: "fornecedor_slug",
+        label: "Fornecedor",
+        type: "select",
+        options: fornecedorSlugOptions,
+        tab: "Fornecedor",
+      },
+      {
+        key: "chave_fornecedor",
+        label: "Chave do fornecedor (privada)",
+        type: "textarea",
+        tab: "Fornecedor",
+        helperText:
+          "NUNCA aparece para o cliente. O servidor a usa por trás para autorizar a extensão. Deixe vazio se não usa fornecedor.",
+      },
       // fornecedor_config (jsonb) fica gerenciado pelo servidor; se precisar customizar, edite via banco.
 
       // === Teste ===
-      { key: "trial_duracao_minutos", label: "Duração do teste", type: "select", options: trialDuracaoOptions, tab: "Teste", helperText: "Só se aplica quando Tipo = Teste. Contagem começa na primeira validação da extensão." },
-      { key: "trial_iniciado_em", label: "Teste iniciado em (readonly)", type: "datetime", tab: "Teste" },
+      {
+        key: "trial_duracao_minutos",
+        label: "Duração do teste",
+        type: "select",
+        options: trialDuracaoOptions,
+        tab: "Teste",
+        helperText:
+          "Só se aplica quando Tipo = Teste. Contagem começa na primeira validação da extensão.",
+      },
+      {
+        key: "trial_iniciado_em",
+        label: "Teste iniciado em (readonly)",
+        type: "datetime",
+        tab: "Teste",
+      },
 
       // === Dispositivos ===
-      { key: "max_dispositivos", label: "Máx. de dispositivos", type: "select", options: maxDispositivosOptions, tab: "Dispositivos", helperText: "0 = ilimitado. A extensão fica travada aos dispositivos registrados." },
-      { key: "versao_min", label: "Versão mínima da extensão", type: "text", placeholder: "Ex.: 1.2.0", tab: "Dispositivos" },
+      {
+        key: "max_dispositivos",
+        label: "Máx. de dispositivos",
+        type: "select",
+        options: maxDispositivosOptions,
+        tab: "Dispositivos",
+        helperText: "0 = ilimitado. A extensão fica travada aos dispositivos registrados.",
+      },
+      {
+        key: "versao_min",
+        label: "Versão mínima da extensão",
+        type: "text",
+        placeholder: "Ex.: 1.2.0",
+        tab: "Dispositivos",
+      },
 
       // === Cliente ===
-      { key: "cliente_id", label: "Cliente", type: "select_from_table", fromTable: { table: "clientes", labelKey: "nome" }, tab: "Cliente" },
+      {
+        key: "cliente_id",
+        label: "Cliente",
+        type: "select_from_table",
+        fromTable: { table: "clientes", labelKey: "nome" },
+        tab: "Cliente",
+      },
       { key: "email", label: "E-mail (para validação)", type: "text", tab: "Cliente" },
-      { key: "duracao_dias", label: "Duração padrão (dias) — legado", type: "number", tab: "Cliente" },
+      {
+        key: "duracao_dias",
+        label: "Duração padrão (dias) — legado",
+        type: "number",
+        tab: "Cliente",
+      },
       { key: "observacoes_admin", label: "Observações internas", type: "textarea", tab: "Cliente" },
     ],
     listColumns: [
@@ -154,9 +248,20 @@ export const resources: Resource[] = [
     searchColumns: ["nome", "slug"],
     fields: [
       { key: "nome", label: "Nome", type: "text", required: true },
-      { key: "slug", label: "Slug", type: "text", required: true, placeholder: "ex.: mr-extension-pro" },
+      {
+        key: "slug",
+        label: "Slug",
+        type: "text",
+        required: true,
+        placeholder: "ex.: mr-extension-pro",
+      },
       { key: "descricao", label: "Descrição", type: "textarea" },
-      { key: "fornecedor_padrao", label: "Fornecedor padrão", type: "select", options: fornecedorSlugOptions },
+      {
+        key: "fornecedor_padrao",
+        label: "Fornecedor padrão",
+        type: "select",
+        options: fornecedorSlugOptions,
+      },
       { key: "versao_atual", label: "Versão atual", type: "text" },
       { key: "ativo", label: "Ativo", type: "boolean" },
     ],
@@ -363,7 +468,13 @@ export const resources: Resource[] = [
       { key: "nome", label: "Nome", type: "text", required: true },
       { key: "preco", label: "Preço (R$)", type: "number", step: 0.01, required: true },
       { key: "creditos_incluidos", label: "Créditos incluídos", type: "number", required: true },
-      { key: "duracao_dias", label: "Duração (dias)", type: "number", required: true, helperText: "Ex: 30 = mensal, 365 = anual, 3650 = vitalício." },
+      {
+        key: "duracao_dias",
+        label: "Duração (dias)",
+        type: "number",
+        required: true,
+        helperText: "Ex: 30 = mensal, 365 = anual, 3650 = vitalício.",
+      },
       {
         key: "tipo",
         label: "Tipo",
@@ -569,7 +680,12 @@ export const resources: Resource[] = [
         ],
       },
       { key: "ordem", label: "Ordem", type: "number" },
-      { key: "tempo_segundos", label: "Tempo (segundos)", type: "number", helperText: "Duração de exibição em segundos" },
+      {
+        key: "tempo_segundos",
+        label: "Tempo (segundos)",
+        type: "number",
+        helperText: "Duração de exibição em segundos",
+      },
       { key: "mostrar_premium", label: "Somente Premium", type: "boolean" },
       { key: "inicio", label: "Início", type: "datetime" },
       { key: "fim", label: "Fim", type: "datetime" },
@@ -636,7 +752,13 @@ export const resources: Resource[] = [
     searchColumns: ["titulo"],
     fields: [
       { key: "titulo", label: "Título", type: "text", required: true },
-      { key: "url", label: "URL do vídeo / Upload", type: "image", required: true, placeholder: "https://... ou envie o arquivo" },
+      {
+        key: "url",
+        label: "URL do vídeo / Upload",
+        type: "image",
+        required: true,
+        placeholder: "https://... ou envie o arquivo",
+      },
       { key: "thumbnail_url", label: "Thumbnail", type: "image" },
       { key: "descricao", label: "Descrição", type: "textarea" },
     ],
@@ -733,27 +855,44 @@ export const resources: Resource[] = [
     fields: [
       { key: "titulo", label: "Título", type: "text", required: true, tab: "Informações" },
       { key: "descricao", label: "Descrição curta", type: "textarea", tab: "Informações" },
-      { key: "descricao_completa", label: "Descrição completa", type: "textarea", tab: "Informações" },
+      {
+        key: "descricao_completa",
+        label: "Descrição completa",
+        type: "textarea",
+        tab: "Informações",
+      },
       { key: "categoria", label: "Categoria", type: "text", tab: "Informações" },
       { key: "subcategoria", label: "Subcategoria", type: "text", tab: "Informações" },
       { key: "autor", label: "Autor", type: "text", tab: "Informações" },
-      { key: "nivel", label: "Nível", type: "select", options: [
-        { value: "iniciante", label: "Iniciante" },
-        { value: "intermediario", label: "Intermediário" },
-        { value: "avancado", label: "Avançado" },
-      ], tab: "Informações" },
+      {
+        key: "nivel",
+        label: "Nível",
+        type: "select",
+        options: [
+          { value: "iniciante", label: "Iniciante" },
+          { value: "intermediario", label: "Intermediário" },
+          { value: "avancado", label: "Avançado" },
+        ],
+        tab: "Informações",
+      },
       { key: "versao", label: "Versão", type: "text", placeholder: "1.0.0", tab: "Informações" },
 
       { key: "system_prompt", label: "System Prompt", type: "textarea", tab: "Prompt" },
       { key: "instrucoes", label: "Instruções ao usuário", type: "textarea", tab: "Prompt" },
 
-      { key: "provedor", label: "Provedor", type: "select", options: [
-        { value: "google", label: "Google (Gemini)" },
-        { value: "openai", label: "OpenAI" },
-        { value: "anthropic", label: "Anthropic" },
-        { value: "meta", label: "Meta" },
-        { value: "outros", label: "Outros" },
-      ], tab: "IA" },
+      {
+        key: "provedor",
+        label: "Provedor",
+        type: "select",
+        options: [
+          { value: "google", label: "Google (Gemini)" },
+          { value: "openai", label: "OpenAI" },
+          { value: "anthropic", label: "Anthropic" },
+          { value: "meta", label: "Meta" },
+          { value: "outros", label: "Outros" },
+        ],
+        tab: "IA",
+      },
       { key: "modelo", label: "Modelo", type: "text", placeholder: "gemini-2.5-flash", tab: "IA" },
       { key: "temperatura", label: "Temperatura", type: "number", step: 0.1, tab: "IA" },
       { key: "max_tokens", label: "Máx. tokens", type: "number", tab: "IA" },
@@ -764,7 +903,12 @@ export const resources: Resource[] = [
       { key: "cover_url", label: "Capa", type: "image", tab: "Arquivos" },
       { key: "tags", label: "Tags (vírgulas)", type: "array", tab: "Arquivos" },
 
-      { key: "ativo", label: "Publicado (visível para clientes)", type: "boolean", tab: "Publicação" },
+      {
+        key: "ativo",
+        label: "Publicado (visível para clientes)",
+        type: "boolean",
+        tab: "Publicação",
+      },
       { key: "destaque", label: "Em destaque", type: "boolean", tab: "Publicação" },
       { key: "oculto", label: "Oculto", type: "boolean", tab: "Publicação" },
       { key: "visible_mobile", label: "Visível no mobile", type: "boolean", tab: "Publicação" },
@@ -797,31 +941,58 @@ export const resources: Resource[] = [
       { key: "categoria", label: "Categoria", type: "text", tab: "Informações" },
       { key: "subcategoria", label: "Subcategoria", type: "text", tab: "Informações" },
       { key: "autor", label: "Autor", type: "text", tab: "Informações" },
-      { key: "nivel", label: "Nível", type: "select", options: [
-        { value: "iniciante", label: "Iniciante" },
-        { value: "intermediario", label: "Intermediário" },
-        { value: "avancado", label: "Avançado" },
-      ], tab: "Informações" },
+      {
+        key: "nivel",
+        label: "Nível",
+        type: "select",
+        options: [
+          { value: "iniciante", label: "Iniciante" },
+          { value: "intermediario", label: "Intermediário" },
+          { value: "avancado", label: "Avançado" },
+        ],
+        tab: "Informações",
+      },
       { key: "versao", label: "Versão", type: "text", tab: "Informações" },
 
       { key: "prompt", label: "Prompt completo", type: "textarea", required: true, tab: "Prompt" },
 
-      { key: "compatibilidade", label: "Compatibilidade (ChatGPT, Gemini, Claude...)", type: "array", tab: "IA" },
+      {
+        key: "compatibilidade",
+        label: "Compatibilidade (ChatGPT, Gemini, Claude...)",
+        type: "array",
+        tab: "IA",
+      },
       { key: "tags", label: "Tags (vírgulas)", type: "array", tab: "IA" },
 
       { key: "cover_url", label: "Capa", type: "image", tab: "Arquivos" },
 
-      { key: "status", label: "Status", type: "select", options: [
-        { value: "rascunho", label: "Rascunho" },
-        { value: "publicado", label: "Publicado" },
-        { value: "arquivado", label: "Arquivado" },
-      ], tab: "Publicação" },
-      { key: "ativo", label: "Publicado (visível para clientes)", type: "boolean", tab: "Publicação" },
+      {
+        key: "status",
+        label: "Status",
+        type: "select",
+        options: [
+          { value: "rascunho", label: "Rascunho" },
+          { value: "publicado", label: "Publicado" },
+          { value: "arquivado", label: "Arquivado" },
+        ],
+        tab: "Publicação",
+      },
+      {
+        key: "ativo",
+        label: "Publicado (visível para clientes)",
+        type: "boolean",
+        tab: "Publicação",
+      },
       { key: "destaque", label: "Em destaque", type: "boolean", tab: "Publicação" },
       { key: "oculto", label: "Oculto", type: "boolean", tab: "Publicação" },
       { key: "mostrar_premium", label: "Mostrar em Premium", type: "boolean", tab: "Publicação" },
       { key: "mostrar_tv", label: "Mostrar em TV", type: "boolean", tab: "Publicação" },
-      { key: "mostrar_seguidores", label: "Mostrar em Seguidores", type: "boolean", tab: "Publicação" },
+      {
+        key: "mostrar_seguidores",
+        label: "Mostrar em Seguidores",
+        type: "boolean",
+        tab: "Publicação",
+      },
       { key: "visible_mobile", label: "Visível no mobile", type: "boolean", tab: "Publicação" },
     ],
     listColumns: [
@@ -851,7 +1022,12 @@ export const resources: Resource[] = [
       { key: "slug", label: "Slug (URL)", type: "text", required: true, tab: "Informações" },
       { key: "categoria", label: "Categoria", type: "text", tab: "Informações" },
       { key: "descricao_curta", label: "Descrição curta", type: "textarea", tab: "Informações" },
-      { key: "descricao_completa", label: "Descrição completa", type: "textarea", tab: "Informações" },
+      {
+        key: "descricao_completa",
+        label: "Descrição completa",
+        type: "textarea",
+        tab: "Informações",
+      },
       { key: "autor", label: "Autor", type: "text", tab: "Informações" },
       { key: "versao", label: "Versão", type: "text", tab: "Informações" },
       { key: "observacoes", label: "Observações", type: "textarea", tab: "Informações" },
@@ -863,40 +1039,84 @@ export const resources: Resource[] = [
       { key: "capa_url", label: "Capa", type: "image", tab: "Arquivos" },
       { key: "icone_url", label: "Ícone", type: "image", tab: "Arquivos" },
       { key: "video_url", label: "Vídeo (URL)", type: "text", tab: "Arquivos" },
-      { key: "source_type", label: "Tipo da fonte", type: "select", options: [
-        { value: "google_drive", label: "Google Drive" },
-        { value: "mega", label: "Mega" },
-        { value: "dropbox", label: "Dropbox" },
-        { value: "storage", label: "Lovable Cloud Storage" },
-        { value: "external", label: "Link externo" },
-      ], tab: "Arquivos" },
-      { key: "drive_url", label: "Link do Google Drive (pasta ou arquivo)", type: "text", tab: "Arquivos", placeholder: "https://drive.google.com/…", helperText: "Abre dentro da plataforma via visualizador embutido." },
-      { key: "archive_url", label: "Arquivo compactado (.zip/.rar)", type: "file", tab: "Arquivos", accept: ".zip,.rar,.7z,.tar,.gz,application/zip,application/x-rar-compressed,application/x-7z-compressed", helperText: "Enviado ao armazenamento interno. Clientes baixam direto sem sair do app." },
+      {
+        key: "source_type",
+        label: "Tipo da fonte",
+        type: "select",
+        options: [
+          { value: "google_drive", label: "Google Drive" },
+          { value: "mega", label: "Mega" },
+          { value: "dropbox", label: "Dropbox" },
+          { value: "storage", label: "Lovable Cloud Storage" },
+          { value: "external", label: "Link externo" },
+        ],
+        tab: "Arquivos",
+      },
+      {
+        key: "drive_url",
+        label: "Link do Google Drive (pasta ou arquivo)",
+        type: "text",
+        tab: "Arquivos",
+        placeholder: "https://drive.google.com/…",
+        helperText: "Abre dentro da plataforma via visualizador embutido.",
+      },
+      {
+        key: "archive_url",
+        label: "Arquivo compactado (.zip/.rar)",
+        type: "file",
+        tab: "Arquivos",
+        accept:
+          ".zip,.rar,.7z,.tar,.gz,application/zip,application/x-rar-compressed,application/x-7z-compressed",
+        helperText: "Enviado ao armazenamento interno. Clientes baixam direto sem sair do app.",
+      },
       { key: "qtd_arquivos", label: "Qtd. de arquivos", type: "number", tab: "Arquivos" },
       { key: "espaco_bytes", label: "Espaço (bytes)", type: "number", tab: "Arquivos" },
 
-      { key: "status", label: "Status", type: "select", options: [
-        { value: "rascunho", label: "Rascunho" },
-        { value: "publicado", label: "Publicado" },
-        { value: "arquivado", label: "Arquivado" },
-      ], tab: "Publicação" },
-      { key: "visibility_status", label: "Visibilidade", type: "select", options: [
-        { value: "public", label: "Público" },
-        { value: "unlisted", label: "Não listado" },
-        { value: "private", label: "Privado" },
-      ], tab: "Publicação" },
+      {
+        key: "status",
+        label: "Status",
+        type: "select",
+        options: [
+          { value: "rascunho", label: "Rascunho" },
+          { value: "publicado", label: "Publicado" },
+          { value: "arquivado", label: "Arquivado" },
+        ],
+        tab: "Publicação",
+      },
+      {
+        key: "visibility_status",
+        label: "Visibilidade",
+        type: "select",
+        options: [
+          { value: "public", label: "Público" },
+          { value: "unlisted", label: "Não listado" },
+          { value: "private", label: "Privado" },
+        ],
+        tab: "Publicação",
+      },
       { key: "allow_view", label: "Permite visualizar", type: "boolean", tab: "Publicação" },
       { key: "allow_download", label: "Permite download", type: "boolean", tab: "Publicação" },
-      { key: "is_shareable", label: "Compartilhável (link público)", type: "boolean", tab: "Publicação" },
+      {
+        key: "is_shareable",
+        label: "Compartilhável (link público)",
+        type: "boolean",
+        tab: "Publicação",
+      },
       { key: "destaque", label: "Em destaque", type: "boolean", tab: "Publicação" },
-      { key: "sales_platform", label: "Plataforma de venda", type: "select", options: [
-        { value: "kiwify", label: "Kiwify" },
-        { value: "hotmart", label: "Hotmart" },
-        { value: "eduzz", label: "Eduzz" },
-        { value: "cakto", label: "Cakto" },
-        { value: "mercadopago", label: "Mercado Pago" },
-        { value: "outros", label: "Outros" },
-      ], tab: "Publicação" },
+      {
+        key: "sales_platform",
+        label: "Plataforma de venda",
+        type: "select",
+        options: [
+          { value: "kiwify", label: "Kiwify" },
+          { value: "hotmart", label: "Hotmart" },
+          { value: "eduzz", label: "Eduzz" },
+          { value: "cakto", label: "Cakto" },
+          { value: "mercadopago", label: "Mercado Pago" },
+          { value: "outros", label: "Outros" },
+        ],
+        tab: "Publicação",
+      },
       { key: "sales_product_id", label: "Link de venda (URL)", type: "text", tab: "Publicação" },
       { key: "ordem", label: "Ordem de exibição", type: "number", tab: "Publicação" },
     ],

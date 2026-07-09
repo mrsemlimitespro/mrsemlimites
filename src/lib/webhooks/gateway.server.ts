@@ -66,19 +66,13 @@ export function normalizeEvent(slug: GatewaySlug, payload: any): NormalizedEvent
   if (slug === "kiwify") {
     return {
       slug,
-      eventType:
-        pickString(raw.webhook_event_type, raw.event, raw.order_status) ?? "order.update",
+      eventType: pickString(raw.webhook_event_type, raw.event, raw.order_status) ?? "order.update",
       externalId: pickString(raw.order_id, raw.transaction_id, raw.id),
       refCandidates: [
         pickString(raw.order_ref, raw.reference, raw.external_reference, raw.metadata?.ref),
       ].filter(Boolean) as string[],
       status: mapStatus(pickString(raw.order_status, raw.status)),
-      amount: pickNumber(
-        raw.Commissions?.charge_amount,
-        raw.order_amount,
-        raw.total,
-        raw.amount,
-      ),
+      amount: pickNumber(raw.Commissions?.charge_amount, raw.order_amount, raw.total, raw.amount),
       currency: pickString(raw.currency) ?? "BRL",
       method: pickString(raw.payment_method, raw.method),
       clienteNome: pickString(raw.Customer?.full_name, raw.customer?.name, raw.customer_name),
@@ -133,7 +127,9 @@ export function verifySignature(opts: {
     } catch {}
     const manifest = `id:${dataId};request-id:${reqId};ts:${ts};`;
     const expected = createHmac("sha256", secret).update(manifest).digest("hex");
-    return safeEq(v1, expected) ? { ok: true, reason: "mp-ok" } : { ok: false, reason: "mp-mismatch" };
+    return safeEq(v1, expected)
+      ? { ok: true, reason: "mp-ok" }
+      : { ok: false, reason: "mp-mismatch" };
   }
 
   // Kiwify / Cakto: raw body HMAC-SHA256 (hex) via common header names

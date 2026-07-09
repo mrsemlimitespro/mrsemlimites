@@ -22,23 +22,26 @@ const listSchema = z
 
 function orderFor(sort: PremiumPackSort): { column: string; ascending: boolean } {
   switch (sort) {
-    case "atualizados": return { column: "ultima_atualizacao", ascending: false };
-    case "baixados":    return { column: "downloads", ascending: false };
-    case "populares":   return { column: "popularidade", ascending: false };
-    case "nome":        return { column: "nome", ascending: true };
+    case "atualizados":
+      return { column: "ultima_atualizacao", ascending: false };
+    case "baixados":
+      return { column: "downloads", ascending: false };
+    case "populares":
+      return { column: "popularidade", ascending: false };
+    case "nome":
+      return { column: "nome", ascending: true };
     case "recentes":
-    default:            return { column: "created_at", ascending: false };
+    default:
+      return { column: "created_at", ascending: false };
   }
 }
 
 function publicClient() {
   // Import dinâmico para não expor supabase-js no bundle do client.
   return import("@supabase/supabase-js").then(({ createClient }) =>
-    createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PUBLISHABLE_KEY!,
-      { auth: { persistSession: false, autoRefreshToken: false } },
-    ),
+    createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    }),
   );
 }
 
@@ -89,9 +92,7 @@ export const getPremiumPackBySlug = createServerFn({ method: "GET" })
  * Returns the pack only when visibility allows public viewing.
  */
 export const getPremiumPackByToken = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) =>
-    z.object({ token: z.string().trim().min(4).max(32) }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ token: z.string().trim().min(4).max(32) }).parse(d))
   .handler(async ({ data }): Promise<PremiumPack | null> => {
     const supabase = await publicClient();
     const { data: row, error } = await supabase

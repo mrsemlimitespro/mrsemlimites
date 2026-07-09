@@ -12,7 +12,11 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { assertAdmin } from "./_guard";
 
-const emailSchema = z.string().email().max(320).transform((v) => v.toLowerCase().trim());
+const emailSchema = z
+  .string()
+  .email()
+  .max(320)
+  .transform((v) => v.toLowerCase().trim());
 
 export const listPackAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

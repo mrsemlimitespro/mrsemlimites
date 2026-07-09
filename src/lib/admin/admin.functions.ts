@@ -19,7 +19,9 @@ export const claimInitialAdmin = createServerFn({ method: "POST" })
 
     if (countErr) throw new Error(countErr.message);
     if ((count ?? 0) > 0) {
-      throw new Error("Já existe um administrador. Peça a ele para promover sua conta pelo painel.");
+      throw new Error(
+        "Já existe um administrador. Peça a ele para promover sua conta pelo painel.",
+      );
     }
 
     const { error: insErr } = await supabaseAdmin
@@ -36,7 +38,9 @@ export const claimInitialAdmin = createServerFn({ method: "POST" })
  */
 export const createInitialAdmin = createServerFn({ method: "POST" })
   .inputValidator((data: { email: string; password: string }) => {
-    const email = String(data?.email ?? "").trim().toLowerCase();
+    const email = String(data?.email ?? "")
+      .trim()
+      .toLowerCase();
     const password = String(data?.password ?? "");
     if (!email || !email.includes("@")) throw new Error("E-mail inválido");
     if (password.length < 6) throw new Error("Senha muito curta (mín. 6 caracteres)");
@@ -56,12 +60,11 @@ export const createInitialAdmin = createServerFn({ method: "POST" })
 
     // Cria (ou reaproveita) o usuário no auth
     let userId: string | null = null;
-    const { data: created, error: createErr } =
-      await supabaseAdmin.auth.admin.createUser({
-        email: data.email,
-        password: data.password,
-        email_confirm: true,
-      });
+    const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+      email: data.email,
+      password: data.password,
+      email_confirm: true,
+    });
 
     if (createErr) {
       // Se já existir, procura na lista
@@ -69,9 +72,7 @@ export const createInitialAdmin = createServerFn({ method: "POST" })
         page: 1,
         perPage: 200,
       });
-      const found = list?.users?.find(
-        (u) => (u.email ?? "").toLowerCase() === data.email,
-      );
+      const found = list?.users?.find((u) => (u.email ?? "").toLowerCase() === data.email);
       if (!found) throw new Error(createErr.message);
       // Atualiza a senha caso a conta já exista
       await supabaseAdmin.auth.admin.updateUserById(found.id, {

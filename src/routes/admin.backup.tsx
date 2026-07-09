@@ -27,7 +27,10 @@ function BackupPage() {
         dump[r.table] = data ?? [];
       }
       const { data: settings } = await (supabase as any)
-        .from("admin_settings").select("id, site_name, logo_url, favicon_url, primary_color, accent_color, welcome_text, footer_text, notification_message, notification_active");
+        .from("admin_settings")
+        .select(
+          "id, site_name, logo_url, favicon_url, primary_color, accent_color, welcome_text, footer_text, notification_message, notification_active",
+        );
       dump["admin_settings"] = settings ?? [];
 
       const blob = new Blob([JSON.stringify(dump, null, 2)], { type: "application/json" });
@@ -68,7 +71,13 @@ function BackupPage() {
               Inclui: {resources.map((r) => r.label).join(", ")} e configurações do sistema.
             </p>
             <Button className="mt-4 gradient-primary" onClick={exportAll} disabled={busy}>
-              {busy ? <Loader2 className="size-4 animate-spin" /> : <><Download className="size-4" /> Baixar backup (.json)</>}
+              {busy ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <>
+                  <Download className="size-4" /> Baixar backup (.json)
+                </>
+              )}
             </Button>
           </div>
         </div>

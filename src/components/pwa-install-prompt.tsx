@@ -136,8 +136,12 @@ export function PwaInstallPrompt() {
                 <Share className="size-3.5 text-primary" />
                 <span>Toque em Compartilhar</span>
               </li>
-              <li>2. Escolha <b>Adicionar à Tela de Início</b></li>
-              <li>3. Confirme em <b>Adicionar</b></li>
+              <li>
+                2. Escolha <b>Adicionar à Tela de Início</b>
+              </li>
+              <li>
+                3. Confirme em <b>Adicionar</b>
+              </li>
             </ol>
           ) : (
             <div className="mt-3 flex gap-2">

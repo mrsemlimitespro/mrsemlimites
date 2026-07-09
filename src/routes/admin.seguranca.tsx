@@ -49,7 +49,8 @@ function SegurancaPage() {
           <span className="gradient-text-warm">Segurança</span>
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Altere a senha do administrador. Após salvar, o painel será bloqueado e você precisará entrar novamente.
+          Altere a senha do administrador. Após salvar, o painel será bloqueado e você precisará
+          entrar novamente.
         </p>
       </header>
 
@@ -61,20 +62,46 @@ function SegurancaPage() {
 
         <div>
           <Label htmlFor="cur">Senha atual</Label>
-          <Input id="cur" type="password" value={current} onChange={(e) => setCurrent(e.target.value)} required />
+          <Input
+            id="cur"
+            type="password"
+            value={current}
+            onChange={(e) => setCurrent(e.target.value)}
+            required
+          />
         </div>
         <div>
           <Label htmlFor="new">Nova senha</Label>
-          <Input id="new" type="password" value={next} onChange={(e) => setNext(e.target.value)} minLength={4} required />
+          <Input
+            id="new"
+            type="password"
+            value={next}
+            onChange={(e) => setNext(e.target.value)}
+            minLength={4}
+            required
+          />
         </div>
         <div>
           <Label htmlFor="conf">Confirmar nova senha</Label>
-          <Input id="conf" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} minLength={4} required />
+          <Input
+            id="conf"
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            minLength={4}
+            required
+          />
         </div>
 
         <div className="flex justify-end">
           <Button type="submit" className="gradient-primary" disabled={busy}>
-            {busy ? <Loader2 className="size-4 animate-spin" /> : <><Save className="size-4" /> Atualizar senha</>}
+            {busy ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <>
+                <Save className="size-4" /> Atualizar senha
+              </>
+            )}
           </Button>
         </div>
       </form>

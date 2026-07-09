@@ -101,13 +101,21 @@ async function processEvent(
   }
 
   // Avoid duplicate approval
-  if (txn.status === "aprovado" && (txn.creditos_liberados ?? 0) > 0 && event.status === "aprovado") {
+  if (
+    txn.status === "aprovado" &&
+    (txn.creditos_liberados ?? 0) > 0 &&
+    event.status === "aprovado"
+  ) {
     return { status: "duplicate", error: null };
   }
 
   // Map our internal status literal
   const nextStatus =
-    event.status === "outro" ? txn.status : event.status === "cancelado" ? "recusado" : event.status;
+    event.status === "outro"
+      ? txn.status
+      : event.status === "cancelado"
+        ? "recusado"
+        : event.status;
 
   const update = {
     status: nextStatus,

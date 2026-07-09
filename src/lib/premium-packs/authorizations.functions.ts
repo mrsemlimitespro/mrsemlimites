@@ -20,15 +20,15 @@ const emailSchema = z
 // ------------------------- Admin → Revendedor -------------------------
 export const listAdminAuthorizations = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ pack_id: z.string().uuid() }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ pack_id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("pack_authorizations")
-      .select("id,pack_id,revendedor_id,status,expires_at,notes,created_at,revendedores(id,nome,email)")
+      .select(
+        "id,pack_id,revendedor_id,status,expires_at,notes,created_at,revendedores(id,nome,email)",
+      )
       .eq("pack_id", data.pack_id)
       .eq("level", "admin_to_reseller")
       .order("created_at", { ascending: false });
@@ -89,9 +89,7 @@ export const revokeAdminAuthorization = createServerFn({ method: "POST" })
 // ------------------------- Revendedor → Cliente -----------------------
 export const listResellerAuthorizations = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ pack_id: z.string().uuid().optional() }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ pack_id: z.string().uuid().optional() }).parse(d))
   .handler(async ({ data, context }) => {
     let q = context.supabase
       .from("pack_authorizations")
@@ -123,8 +121,7 @@ export const grantResellerToClient = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    const { data: rev } = await context.supabase
-      .rpc("current_revendedor_id");
+    const { data: rev } = await context.supabase.rpc("current_revendedor_id");
     const revendedor_id = rev as string | null;
     if (!revendedor_id) throw new Error("Somente revendedores podem liberar packs a clientes.");
 
@@ -162,9 +159,7 @@ export const revokeResellerAuthorization = createServerFn({ method: "POST" })
 // ------------------------- Request download --------------------------
 export const requestPackDownload = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ pack_id: z.string().uuid() }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ pack_id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     // pega email do usuário logado
     const email = (context.claims as { email?: string } | undefined)?.email;

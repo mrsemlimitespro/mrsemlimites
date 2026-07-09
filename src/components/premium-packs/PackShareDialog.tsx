@@ -96,9 +96,15 @@ export function PackShareDialog({ open, onOpenChange, pack, baseUrl }: Props) {
         u.searchParams.set("exp", String(res.exp));
         setTempUrl(u.toString());
       })
-      .catch(() => { if (!cancelled) setTempUrl(""); })
-      .finally(() => { if (!cancelled) setTempMinting(false); });
-    return () => { cancelled = true; };
+      .catch(() => {
+        if (!cancelled) setTempUrl("");
+      })
+      .finally(() => {
+        if (!cancelled) setTempMinting(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [open, expiry, baseUrl, pack.slug, mint]);
 
   useEffect(() => {
@@ -149,9 +155,7 @@ export function PackShareDialog({ open, onOpenChange, pack, baseUrl }: Props) {
             <LinkIcon className="h-5 w-5 text-ai-200" />
             Compartilhar Pack
           </DialogTitle>
-          <DialogDescription className="text-white/55">
-            {pack.nome}
-          </DialogDescription>
+          <DialogDescription className="text-white/55">{pack.nome}</DialogDescription>
         </DialogHeader>
 
         {blocked && (
@@ -169,7 +173,11 @@ export function PackShareDialog({ open, onOpenChange, pack, baseUrl }: Props) {
           </TabsList>
 
           <TabsContent value="links" className="mt-4 space-y-4">
-            <Section icon={InfinityIcon} title="Link Permanente" description="Disponível enquanto o pack permanecer público.">
+            <Section
+              icon={InfinityIcon}
+              title="Link Permanente"
+              description="Disponível enquanto o pack permanecer público."
+            >
               <UrlRow
                 url={permanentUrl}
                 copied={copiedKey === "perm-copy"}
@@ -178,7 +186,11 @@ export function PackShareDialog({ open, onOpenChange, pack, baseUrl }: Props) {
               />
             </Section>
 
-            <Section icon={Clock} title="Link Temporário" description="Expira automaticamente após o tempo escolhido.">
+            <Section
+              icon={Clock}
+              title="Link Temporário"
+              description="Expira automaticamente após o tempo escolhido."
+            >
               <div className="mb-3 flex flex-wrap gap-2">
                 {(Object.keys(EXPIRY_LABEL) as Expiry[]).map((k) => (
                   <button
@@ -202,23 +214,55 @@ export function PackShareDialog({ open, onOpenChange, pack, baseUrl }: Props) {
                 disabled={blocked || tempMinting || !tempUrl}
                 onCopy={() => tempUrl && copy(tempUrl, "temp-copy")}
               />
-              <p className="mt-2 text-[11px] text-white/50">
-                Expira em {EXPIRY_LABEL[expiry]}.
-              </p>
+              <p className="mt-2 text-[11px] text-white/50">Expira em {EXPIRY_LABEL[expiry]}.</p>
             </Section>
           </TabsContent>
 
           <TabsContent value="canais" className="mt-4">
-            <p className="mb-3 text-xs text-white/60">
-              Compartilhe usando o link permanente.
-            </p>
+            <p className="mb-3 text-xs text-white/60">Compartilhe usando o link permanente.</p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              <ChannelBtn label="WhatsApp" icon={MessageCircle} tone="text-emerald-300" onClick={() => shareSocial("whatsapp", permanentUrl)} disabled={blocked} />
-              <ChannelBtn label="Telegram" icon={Send} tone="text-sky-300" onClick={() => shareSocial("telegram", permanentUrl)} disabled={blocked} />
-              <ChannelBtn label="Facebook" icon={FacebookIcon} tone="text-blue-300" onClick={() => shareSocial("facebook", permanentUrl)} disabled={blocked} />
-              <ChannelBtn label="X" icon={XIcon} tone="text-white" onClick={() => shareSocial("x", permanentUrl)} disabled={blocked} />
-              <ChannelBtn label="Email" icon={Mail} tone="text-amber-200" onClick={() => shareSocial("email", permanentUrl)} disabled={blocked} />
-              <ChannelBtn label="Copiar Link" icon={Copy} tone="text-ai-200" onClick={() => copy(permanentUrl, "perm-copy")} disabled={blocked} />
+              <ChannelBtn
+                label="WhatsApp"
+                icon={MessageCircle}
+                tone="text-emerald-300"
+                onClick={() => shareSocial("whatsapp", permanentUrl)}
+                disabled={blocked}
+              />
+              <ChannelBtn
+                label="Telegram"
+                icon={Send}
+                tone="text-sky-300"
+                onClick={() => shareSocial("telegram", permanentUrl)}
+                disabled={blocked}
+              />
+              <ChannelBtn
+                label="Facebook"
+                icon={FacebookIcon}
+                tone="text-blue-300"
+                onClick={() => shareSocial("facebook", permanentUrl)}
+                disabled={blocked}
+              />
+              <ChannelBtn
+                label="X"
+                icon={XIcon}
+                tone="text-white"
+                onClick={() => shareSocial("x", permanentUrl)}
+                disabled={blocked}
+              />
+              <ChannelBtn
+                label="Email"
+                icon={Mail}
+                tone="text-amber-200"
+                onClick={() => shareSocial("email", permanentUrl)}
+                disabled={blocked}
+              />
+              <ChannelBtn
+                label="Copiar Link"
+                icon={Copy}
+                tone="text-ai-200"
+                onClick={() => copy(permanentUrl, "perm-copy")}
+                disabled={blocked}
+              />
             </div>
           </TabsContent>
 
@@ -226,14 +270,19 @@ export function PackShareDialog({ open, onOpenChange, pack, baseUrl }: Props) {
             <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center">
               <div className="rounded-2xl border border-white/10 bg-white p-3">
                 {qrDataUrl ? (
-                  <img src={qrDataUrl} alt="QR Code do pack" width={200} height={200}  loading="lazy" decoding="async" />
+                  <img
+                    src={qrDataUrl}
+                    alt="QR Code do pack"
+                    width={200}
+                    height={200}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 ) : (
                   <div className="h-[200px] w-[200px] animate-pulse bg-white/70" />
                 )}
               </div>
-              <p className="text-xs text-white/60">
-                Aponte a câmera para abrir o pack.
-              </p>
+              <p className="text-xs text-white/60">Aponte a câmera para abrir o pack.</p>
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <Button
                   size="sm"

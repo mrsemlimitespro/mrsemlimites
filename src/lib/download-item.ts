@@ -24,13 +24,15 @@ function esc(s: string) {
 }
 
 function slugify(s: string) {
-  return s
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-zA-Z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "")
-    .toLowerCase()
-    .slice(0, 80) || "item";
+  return (
+    s
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "")
+      .toLowerCase()
+      .slice(0, 80) || "item"
+  );
 }
 
 export function downloadItemAsHtml(item: DownloadableItem) {
@@ -73,8 +75,12 @@ export function downloadItemAsHtml(item: DownloadableItem) {
   ${info ? `<div class="muted">${esc(info)}</div>` : ""}
   ${item.descricao ? `<h2>Descrição</h2><p>${esc(item.descricao)}</p>` : ""}
   ${item.descricao_completa ? `<h2>Descrição completa</h2><p>${esc(item.descricao_completa)}</p>` : ""}
-  ${item.prompt ? `<h2>Prompt completo</h2><pre>${esc(item.prompt)}</pre>
-    <a class="btn" href="#" onclick="navigator.clipboard.writeText(document.querySelector('pre').innerText);this.textContent='Copiado ✓';return false;">Copiar prompt</a>` : ""}
+  ${
+    item.prompt
+      ? `<h2>Prompt completo</h2><pre>${esc(item.prompt)}</pre>
+    <a class="btn" href="#" onclick="navigator.clipboard.writeText(document.querySelector('pre').innerText);this.textContent='Copiado ✓';return false;">Copiar prompt</a>`
+      : ""
+  }
   <footer>Baixado de MR Sem Limites</footer>
 </main>
 </body>

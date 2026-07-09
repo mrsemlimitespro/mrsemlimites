@@ -21,12 +21,7 @@ export const PREMIUM_PACK_SOURCE_TYPES: { value: PremiumPackSourceType; label: s
   { value: "outro", label: "Outro" },
 ];
 
-export type PremiumPackSort =
-  | "recentes"
-  | "atualizados"
-  | "baixados"
-  | "populares"
-  | "nome";
+export type PremiumPackSort = "recentes" | "atualizados" | "baixados" | "populares" | "nome";
 
 export type PremiumPackVisibility = "publico" | "privado" | "expirado" | "desativado";
 

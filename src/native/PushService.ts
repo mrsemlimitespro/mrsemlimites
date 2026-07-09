@@ -21,18 +21,8 @@
  *   - Unregister + removeAllListeners
  */
 import { getPlatform, isAndroid, isIOS, isNative, isWeb } from "@/lib/platform";
-import {
-  fail,
-  ok,
-  type NativeResult,
-  unsupported,
-  type Platform,
-} from "./types";
-import {
-  CATEGORY_LABEL,
-  PUSH_CATEGORIES,
-  type PushCategory,
-} from "@/lib/push-categories";
+import { fail, ok, type NativeResult, unsupported, type Platform } from "./types";
+import { CATEGORY_LABEL, PUSH_CATEGORIES, type PushCategory } from "@/lib/push-categories";
 
 export interface PushRegistration {
   token: string;
@@ -97,12 +87,11 @@ async function addListener<T>(
   cb: (payload: T) => void,
 ): Promise<Unsubscribe> {
   const { PushNotifications } = await loadPlugin();
-  const handle = await (PushNotifications as unknown as {
-    addListener: (
-      e: string,
-      c: (p: T) => void,
-    ) => Promise<{ remove: () => Promise<void> }>;
-  }).addListener(event, cb);
+  const handle = await (
+    PushNotifications as unknown as {
+      addListener: (e: string, c: (p: T) => void) => Promise<{ remove: () => Promise<void> }>;
+    }
+  ).addListener(event, cb);
   return () => {
     void handle.remove();
   };
@@ -151,11 +140,7 @@ function defaultCategories(): PushCategoryDef[] {
 
 let webListeners: Array<(m: PushMessage) => void> = [];
 function webPushSupported(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    "Notification" in window &&
-    "serviceWorker" in navigator
-  );
+  return typeof window !== "undefined" && "Notification" in window && "serviceWorker" in navigator;
 }
 
 async function webRegister(): Promise<NativeResult<PushRegistration>> {
@@ -229,10 +214,7 @@ export const PushService = {
         void addListener<{ error: string }>("registrationError", (e) => {
           finish(fail("not_available", `Falha ao registrar: ${e.error}`, e));
         }).then((u) => cleanup.push(u));
-        setTimeout(
-          () => finish(fail("unknown", "Tempo esgotado ao registrar push.")),
-          15000,
-        );
+        setTimeout(() => finish(fail("unknown", "Tempo esgotado ao registrar push.")), 15000);
       });
 
       // Cria canais Android antes de registrar

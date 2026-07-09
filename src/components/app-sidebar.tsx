@@ -36,11 +36,12 @@ const primaryItems: NavItem[] = [
   { title: "Aulas", url: "/aulas", icon: GraduationCap },
 ];
 
-const footerItems: (NavItem | { title: string; action: "extension" | "logout"; icon: IconType })[] = [
-  { title: "Baixar Extensão", action: "extension", icon: Download },
-  { title: "Perfil", url: "/perfil", icon: UserRound },
-  { title: "Sair", action: "logout", icon: LogOut },
-];
+const footerItems: (NavItem | { title: string; action: "extension" | "logout"; icon: IconType })[] =
+  [
+    { title: "Baixar Extensão", action: "extension", icon: Download },
+    { title: "Perfil", url: "/perfil", icon: UserRound },
+    { title: "Sair", action: "logout", icon: LogOut },
+  ];
 
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
@@ -65,75 +66,73 @@ export function AppSidebar() {
 
   return (
     <>
-    <TooltipProvider delayDuration={150}>
-      <aside
-        aria-label="Navegação principal"
-        className={cn(
-          "fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 md:flex",
-          "flex-col items-center gap-1 rounded-full px-2 py-3",
-          "border border-border/70 bg-surface/50 backdrop-blur-xl",
-        )}
-        style={{
-          boxShadow:
-            "0 0 0 1px oklch(1 0 0 / 4%), 0 20px 60px -20px oklch(0 0 0 / 70%), 0 0 40px -6px color-mix(in oklab, var(--brand-magenta) 45%, transparent)",
-        }}
-      >
-        <Link
-          to="/"
-          aria-label={`${BRAND_NAME} — ir para o dashboard`}
-          className="mb-2 transition-transform duration-200 hover:scale-105"
+      <TooltipProvider delayDuration={150}>
+        <aside
+          aria-label="Navegação principal"
+          className={cn(
+            "fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 md:flex",
+            "flex-col items-center gap-1 rounded-full px-2 py-3",
+            "border border-border/70 bg-surface/50 backdrop-blur-xl",
+          )}
+          style={{
+            boxShadow:
+              "0 0 0 1px oklch(1 0 0 / 4%), 0 20px 60px -20px oklch(0 0 0 / 70%), 0 0 40px -6px color-mix(in oklab, var(--brand-magenta) 45%, transparent)",
+          }}
         >
-          <BrandMark size={38} />
-        </Link>
+          <Link
+            to="/"
+            aria-label={`${BRAND_NAME} — ir para o dashboard`}
+            className="mb-2 transition-transform duration-200 hover:scale-105"
+          >
+            <BrandMark size={38} />
+          </Link>
 
-        <div className="mb-1 h-px w-6 bg-border/70" aria-hidden />
+          <div className="mb-1 h-px w-6 bg-border/70" aria-hidden />
 
-        <nav className="flex flex-col gap-1.5">
-          {primaryItems.map((item) => (
-            <RailButton key={item.title} item={item} active={isActive(item.url)} />
-          ))}
-        </nav>
+          <nav className="flex flex-col gap-1.5">
+            {primaryItems.map((item) => (
+              <RailButton key={item.title} item={item} active={isActive(item.url)} />
+            ))}
+          </nav>
 
-        <div className="my-2 h-px w-6 bg-border/70" aria-hidden />
+          <div className="my-2 h-px w-6 bg-border/70" aria-hidden />
 
-        <div className="flex flex-col gap-1.5">
-          {footerItems.map((item) => {
-            if ("url" in item) {
-              return <RailButton key={item.title} item={item} active={isActive(item.url)} />;
-            }
-            const isLogout = item.action === "logout";
-            return (
-              <RailAction
-                key={item.title}
-                title={item.title}
-                tooltip={
-                  isLogout && userEmail ? (
-                    <div className="flex flex-col gap-0.5">
-                      <span>{item.title}</span>
-                      <span className="text-[10px] text-muted-foreground">
-                        {userEmail}
-                      </span>
-                    </div>
-                  ) : (
-                    item.title
-                  )
-                }
-                icon={item.icon}
-                variant={isLogout ? "danger" : "muted"}
-                onClick={
-                  isLogout
-                    ? () => setLogoutOpen(true)
-                    : item.action === "extension"
-                    ? () => void downloadExtension()
-                    : undefined
-                }
-              />
-            );
-          })}
-        </div>
-      </aside>
-    </TooltipProvider>
-    <LogoutIncentiveDialog open={logoutOpen} onOpenChange={setLogoutOpen} />
+          <div className="flex flex-col gap-1.5">
+            {footerItems.map((item) => {
+              if ("url" in item) {
+                return <RailButton key={item.title} item={item} active={isActive(item.url)} />;
+              }
+              const isLogout = item.action === "logout";
+              return (
+                <RailAction
+                  key={item.title}
+                  title={item.title}
+                  tooltip={
+                    isLogout && userEmail ? (
+                      <div className="flex flex-col gap-0.5">
+                        <span>{item.title}</span>
+                        <span className="text-[10px] text-muted-foreground">{userEmail}</span>
+                      </div>
+                    ) : (
+                      item.title
+                    )
+                  }
+                  icon={item.icon}
+                  variant={isLogout ? "danger" : "muted"}
+                  onClick={
+                    isLogout
+                      ? () => setLogoutOpen(true)
+                      : item.action === "extension"
+                        ? () => void downloadExtension()
+                        : undefined
+                  }
+                />
+              );
+            })}
+          </div>
+        </aside>
+      </TooltipProvider>
+      <LogoutIncentiveDialog open={logoutOpen} onOpenChange={setLogoutOpen} />
     </>
   );
 }

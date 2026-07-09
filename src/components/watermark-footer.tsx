@@ -14,8 +14,7 @@ export function WatermarkFooter() {
             '"Courier New", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace',
           fontWeight: 700,
           color: "color-mix(in oklab, var(--foreground) 32%, transparent)",
-          textShadow:
-            "0 0 12px color-mix(in oklab, var(--brand-magenta) 25%, transparent)",
+          textShadow: "0 0 12px color-mix(in oklab, var(--brand-magenta) 25%, transparent)",
           overflow: "hidden",
           whiteSpace: "nowrap",
           borderRight: "2px solid color-mix(in oklab, var(--brand-magenta) 60%, transparent)",

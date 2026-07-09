@@ -50,12 +50,12 @@ export function BrandMark({
               background:
                 "conic-gradient(from 0deg, transparent 0 65%, color-mix(in oklab, var(--brand-magenta) 100%, transparent) 78%, color-mix(in oklab, var(--brand-blue) 100%, transparent) 90%, transparent 100%)",
               padding: "2px",
-              WebkitMask:
-                "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+              WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
               WebkitMaskComposite: "xor",
               maskComposite: "exclude",
               animation: "brand-scan 3s linear infinite",
-              filter: "drop-shadow(0 0 6px color-mix(in oklab, var(--brand-magenta) 80%, transparent))",
+              filter:
+                "drop-shadow(0 0 6px color-mix(in oklab, var(--brand-magenta) 80%, transparent))",
             }}
           />
         </>

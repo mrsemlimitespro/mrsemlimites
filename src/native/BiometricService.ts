@@ -106,14 +106,16 @@ export const BiometricService = {
         androidSubtitle: opts.subtitle,
         cancelTitle: opts.cancelLabel ?? "Cancelar",
         allowDeviceCredential: opts.allowDeviceCredential ?? true,
-        iosFallbackTitle: opts.allowDeviceCredential === false ? undefined : "Usar senha do dispositivo",
+        iosFallbackTitle:
+          opts.allowDeviceCredential === false ? undefined : "Usar senha do dispositivo",
       });
       return ok(undefined);
     } catch (cause) {
       // Plugin usa códigos padrão: userCancel, appCancel, systemCancel, userFallback,
       // biometryNotAvailable, biometryNotEnrolled, biometryLockout, authenticationFailed, ...
       const code = (cause as { code?: string })?.code ?? "";
-      const message = (cause as { message?: string })?.message ?? "Falha na autenticação biométrica.";
+      const message =
+        (cause as { message?: string })?.message ?? "Falha na autenticação biométrica.";
       if (
         code === "userCancel" ||
         code === "appCancel" ||

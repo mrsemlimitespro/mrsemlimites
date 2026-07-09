@@ -1,11 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  Home,
-  ShoppingBag,
-  Sparkles,
-  Library,
-  User,
-} from "lucide-react";
+import { Home, ShoppingBag, Sparkles, Library, User } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
@@ -55,9 +49,7 @@ const items: TabItem[] = [
 
 function matchTab(pathname: string, tab: TabItem): boolean {
   if (tab.id === "home") return pathname === "/";
-  return tab.matches.some((p) =>
-    p === pathname || pathname.startsWith(`${p}/`),
-  );
+  return tab.matches.some((p) => p === pathname || pathname.startsWith(`${p}/`));
 }
 
 export function MobileBottomNav() {
@@ -75,8 +67,7 @@ export function MobileBottomNav() {
         paddingLeft: "env(safe-area-inset-left)",
         paddingRight: "env(safe-area-inset-right)",
         // Elevation sutil acima do conteúdo
-        boxShadow:
-          "0 -1px 0 0 oklch(1 0 0 / 4%), 0 -12px 40px -12px oklch(0 0 0 / 55%)",
+        boxShadow: "0 -1px 0 0 oklch(1 0 0 / 4%), 0 -12px 40px -12px oklch(0 0 0 / 55%)",
       }}
     >
       <ul className="mx-auto flex w-full max-w-[640px] items-stretch justify-around px-1">
@@ -94,9 +85,7 @@ export function MobileBottomNav() {
                   "relative mx-auto flex h-14 min-h-14 w-full min-w-12 flex-col items-center justify-center gap-0.5",
                   "outline-none transition-colors",
                   "active:scale-[0.94] transition-transform duration-100",
-                  active
-                    ? "text-primary-foreground"
-                    : "text-foreground/60 hover:text-foreground",
+                  active ? "text-primary-foreground" : "text-foreground/60 hover:text-foreground",
                 )}
               >
                 {/* Indicador ativo — pill translúcido no topo */}
@@ -104,9 +93,7 @@ export function MobileBottomNav() {
                   aria-hidden
                   className={cn(
                     "pointer-events-none absolute left-1/2 top-1.5 h-1 w-8 -translate-x-1/2 rounded-full transition-all duration-200",
-                    active
-                      ? "gradient-primary opacity-100"
-                      : "bg-transparent opacity-0",
+                    active ? "gradient-primary opacity-100" : "bg-transparent opacity-0",
                   )}
                   style={
                     active

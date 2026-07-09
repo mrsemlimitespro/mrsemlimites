@@ -27,7 +27,10 @@ function PersonalizacaoPage() {
     queryKey: ["admin-settings"],
     queryFn: async () => {
       const { data, error } = await (supabase as any)
-        .from("admin_settings").select("*").limit(1).maybeSingle();
+        .from("admin_settings")
+        .select("*")
+        .limit(1)
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -64,12 +67,15 @@ function PersonalizacaoPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <header>
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Aparência</div>
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          Aparência
+        </div>
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
           <span className="gradient-text-warm">Personalização</span>
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Ajuste as cores do sistema. Escolha um preset ou informe suas próprias cores em <code className="text-xs">oklch()</code>.
+          Ajuste as cores do sistema. Escolha um preset ou informe suas próprias cores em{" "}
+          <code className="text-xs">oklch()</code>.
         </p>
       </header>
 
@@ -134,7 +140,13 @@ function PersonalizacaoPage() {
 
       <div className="flex justify-end">
         <Button className="gradient-primary" onClick={save} disabled={busy}>
-          {busy ? <Loader2 className="size-4 animate-spin" /> : <><Save className="size-4" /> Salvar cores</>}
+          {busy ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <>
+              <Save className="size-4" /> Salvar cores
+            </>
+          )}
         </Button>
       </div>
     </div>

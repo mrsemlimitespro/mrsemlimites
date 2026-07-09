@@ -5,11 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { BrandMark } from "@/components/brand";
 import { AdminPasswordDialog } from "@/components/admin-password-gate";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type Notif = {
   id: string;
@@ -53,8 +49,7 @@ export function TopBar() {
       }
       const email: string = (session.user.email || "").toLowerCase();
       const emailMatch =
-        email.startsWith(ADMIN_EMAIL_PREFIX + "@") ||
-        email.split("@")[0] === ADMIN_EMAIL_PREFIX;
+        email.startsWith(ADMIN_EMAIL_PREFIX + "@") || email.split("@")[0] === ADMIN_EMAIL_PREFIX;
       if (mounted) setIsAdminUser(emailMatch);
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
@@ -84,10 +79,8 @@ export function TopBar() {
     reload();
     const ch = supabase
       .channel("notif-topbar")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "notificacoes" },
-        () => reload(),
+      .on("postgres_changes", { event: "*", schema: "public", table: "notificacoes" }, () =>
+        reload(),
       )
       .subscribe();
     return () => {
@@ -153,8 +146,7 @@ export function TopBar() {
                   className="absolute -right-0.5 -top-0.5 grid min-w-[18px] place-items-center rounded-full px-1 text-[10px] font-semibold text-white"
                   style={{
                     background: "var(--brand-magenta)",
-                    boxShadow:
-                      "0 0 8px color-mix(in oklab, var(--brand-magenta) 80%, transparent)",
+                    boxShadow: "0 0 8px color-mix(in oklab, var(--brand-magenta) 80%, transparent)",
                   }}
                 >
                   {unread > 9 ? "9+" : unread}
@@ -162,11 +154,7 @@ export function TopBar() {
               )}
             </button>
           </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            className="glass-strong w-[360px] p-0"
-            sideOffset={10}
-          >
+          <PopoverContent align="end" className="glass-strong w-[360px] p-0" sideOffset={10}>
             <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
               <h4 className="text-sm font-semibold">Notificações</h4>
               {unread > 0 ? (
@@ -202,18 +190,14 @@ export function TopBar() {
                           aria-hidden
                           className="mt-1.5 size-1.5 shrink-0 rounded-full"
                           style={{
-                            background: n.lida_em
-                              ? "transparent"
-                              : "var(--brand-magenta)",
+                            background: n.lida_em ? "transparent" : "var(--brand-magenta)",
                             boxShadow: n.lida_em
                               ? undefined
                               : "0 0 8px color-mix(in oklab, var(--brand-magenta) 80%, transparent)",
                           }}
                         />
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium">
-                            {n.titulo}
-                          </p>
+                          <p className="truncate text-sm font-medium">{n.titulo}</p>
                           {n.mensagem ? (
                             <p className="line-clamp-2 text-xs text-muted-foreground">
                               {n.mensagem}
@@ -228,11 +212,7 @@ export function TopBar() {
                     return (
                       <li key={n.id}>
                         {n.link ? (
-                          <Link
-                            to={n.link}
-                            onClick={() => markOne(n.id)}
-                            className="block"
-                          >
+                          <Link to={n.link} onClick={() => markOne(n.id)} className="block">
                             {body}
                           </Link>
                         ) : (
@@ -254,11 +234,7 @@ export function TopBar() {
         </Popover>
 
         {isAdminUser && (
-          <IconBadge
-            dot
-            aria-label="Painel administrativo"
-            onClick={() => setAdminOpen(true)}
-          >
+          <IconBadge dot aria-label="Painel administrativo" onClick={() => setAdminOpen(true)}>
             <Settings className="size-[18px]" strokeWidth={2} />
           </IconBadge>
         )}

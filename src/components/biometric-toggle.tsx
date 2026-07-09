@@ -9,11 +9,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { NativeService } from "@/native/NativeService";
-import {
-  disableBiometric,
-  enableBiometric,
-  isBiometricEnabled,
-} from "@/lib/biometric-session";
+import { disableBiometric, enableBiometric, isBiometricEnabled } from "@/lib/biometric-session";
 
 interface Props {
   /** e-mail ou identificador que aparecerá no botão da tela de login. */
@@ -95,7 +91,9 @@ export function BiometricToggle({ userHint }: Props) {
       className="flex w-full items-center justify-between rounded-2xl border border-border/60 bg-surface/40 p-4 text-left transition hover:bg-surface/60"
     >
       <span>
-        <span className="block text-sm font-medium text-foreground">Entrar com {biometricLabel}</span>
+        <span className="block text-sm font-medium text-foreground">
+          Entrar com {biometricLabel}
+        </span>
         <span className="block text-xs text-muted-foreground">
           Use sua biometria para desbloquear o app rapidamente.
         </span>

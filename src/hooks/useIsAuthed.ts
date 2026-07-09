@@ -23,20 +23,29 @@ function localHasSession(): boolean | null {
           const parsed = JSON.parse(raw);
           const token = parsed?.access_token ?? parsed?.currentSession?.access_token;
           if (token) return true;
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
       }
     }
     return false;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export function useIsAuthed(): boolean | null {
   const [authed, setAuthed] = useState<boolean | null>(() => localHasSession());
   useEffect(() => {
     let alive = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (alive) setAuthed(!!data.user);
-    }).catch(() => { /* keep local-first value */ });
+    supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        if (alive) setAuthed(!!data.user);
+      })
+      .catch(() => {
+        /* keep local-first value */
+      });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       setAuthed(!!session?.user);
     });

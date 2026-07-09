@@ -33,20 +33,18 @@ async function upsertToken(userId: string, token: string, platform: "android" | 
       NativeService.device.getId(),
     ]);
     const deviceId = idRes.ok ? idRes.data : null;
-    const appVersion = infoRes.ok ? infoRes.data.appVersion ?? null : null;
-    await supabase
-      .from("device_push_tokens" as never)
-      .upsert(
-        {
-          user_id: userId,
-          token,
-          platform,
-          device_id: deviceId,
-          app_version: appVersion,
-          last_seen_at: new Date().toISOString(),
-        } as never,
-        { onConflict: "token" } as never,
-      );
+    const appVersion = infoRes.ok ? (infoRes.data.appVersion ?? null) : null;
+    await supabase.from("device_push_tokens" as never).upsert(
+      {
+        user_id: userId,
+        token,
+        platform,
+        device_id: deviceId,
+        app_version: appVersion,
+        last_seen_at: new Date().toISOString(),
+      } as never,
+      { onConflict: "token" } as never,
+    );
     await NativeService.storage.setSecure(STORAGE_KEY, token);
     currentToken = token;
   } catch (err) {
@@ -56,7 +54,10 @@ async function upsertToken(userId: string, token: string, platform: "android" | 
 
 async function removeToken(token: string) {
   try {
-    await supabase.from("device_push_tokens" as never).delete().eq("token", token);
+    await supabase
+      .from("device_push_tokens" as never)
+      .delete()
+      .eq("token", token);
   } catch (err) {
     console.warn("[push] removeToken falhou:", err);
   }
@@ -107,9 +108,7 @@ export async function startPush(router: AnyRouter, userId: string): Promise<void
       }
       // Emite um CustomEvent — telas interessadas podem escutar sem
       // acoplar-se ao plugin.
-      window.dispatchEvent(
-        new CustomEvent("mrsl:push:received", { detail: msg }),
-      );
+      window.dispatchEvent(new CustomEvent("mrsl:push:received", { detail: msg }));
     }),
   );
 

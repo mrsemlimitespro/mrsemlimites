@@ -51,9 +51,9 @@ function AppLayout() {
           </div>
           <Outlet />
         </main>
-      <NetworkStatusWatcher />
-      <PushBootstrapper />
-    </div>
+        <NetworkStatusWatcher />
+        <PushBootstrapper />
+      </div>
       <FirePromosButton />
       <MobileBottomNav />
       <PwaInstallPrompt />
@@ -61,4 +61,3 @@ function AppLayout() {
     </div>
   );
 }
-

@@ -51,14 +51,15 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   const { data: relatedData } = useQuery({
     queryKey: ["premium-packs", "related", pack.categoria ?? "_"],
     queryFn: () =>
-      listFn({ data: { categoria: pack.categoria ?? undefined, limit: 8, offset: 0, sort: "populares" } }),
+      listFn({
+        data: { categoria: pack.categoria ?? undefined, limit: 8, offset: 0, sort: "populares" },
+      }),
     staleTime: 60_000,
   });
   const related = useMemo(
     () => (relatedData?.rows ?? []).filter((p) => p.id !== pack.id).slice(0, 3),
     [relatedData, pack.id],
   );
-
 
   const shareUrl = useMemo(() => {
     const token = (pack as PremiumPack & { public_token?: string | null }).public_token;
@@ -92,7 +93,9 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
       const objUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = objUrl;
-      const fname = decodeURIComponent(archiveUrl.split("?")[0].split("/").pop() ?? `${pack.slug}.zip`);
+      const fname = decodeURIComponent(
+        archiveUrl.split("?")[0].split("/").pop() ?? `${pack.slug}.zip`,
+      );
       a.download = fname;
       document.body.appendChild(a);
       a.click();
@@ -119,7 +122,9 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
         });
         return;
       }
-    } catch { /* cancel */ }
+    } catch {
+      /* cancel */
+    }
     setShareOpen(true);
   };
 
@@ -153,7 +158,10 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   }, [pack.ultima_atualizacao, pack.updated_at, pack.created_at, version]);
 
   return (
-    <div data-ai-theme="packs" className="ai-module relative min-h-screen overflow-hidden bg-black text-white animate-fade-in">
+    <div
+      data-ai-theme="packs"
+      className="ai-module relative min-h-screen overflow-hidden bg-black text-white animate-fade-in"
+    >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--ai-500)_0%,transparent_55%)] opacity-[0.12]" />
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[34rem] w-[34rem] rounded-full bg-ai-500/[0.08] blur-[140px]" />
@@ -188,7 +196,12 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
             <div className="grid grid-cols-[minmax(0,1fr)] gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-8">
               <div className="hidden sm:block">
                 <div className="relative h-48 w-36 overflow-hidden rounded-2xl border border-ai-300/30 bg-black shadow-[0_30px_80px_-25px_var(--ai-500)]">
-                  <PackCover src={pack.capa_url} title={pack.nome} variant="card" rounded="rounded-none" />
+                  <PackCover
+                    src={pack.capa_url}
+                    title={pack.nome}
+                    variant="card"
+                    rounded="rounded-none"
+                  />
                 </div>
               </div>
 
@@ -246,10 +259,10 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
                         : "border-white/15 bg-white/[0.04] text-white/80 hover:border-ai-300/40 hover:text-ai-50",
                     )}
                   >
-                    <Heart className={cn("h-3.5 w-3.5", favored && "fill-current")} /> {favored ? "Favoritado" : "Favoritar"}
+                    <Heart className={cn("h-3.5 w-3.5", favored && "fill-current")} />{" "}
+                    {favored ? "Favoritado" : "Favoritar"}
                   </button>
                 </div>
-
               </div>
             </div>
 
@@ -282,16 +295,22 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
               </div>
             ) : (
               <EmptyBox icon={Sparkles} title="Sem descrição detalhada">
-                Este pack ainda não possui descrição completa. Compartilhe para receber acesso à comunidade.
+                Este pack ainda não possui descrição completa. Compartilhe para receber acesso à
+                comunidade.
               </EmptyBox>
             )}
 
             {(pack.tags?.length ?? 0) > 0 && (
               <div className="rounded-2xl border border-ai-300/15 bg-black/40 p-6">
-                <h3 className="mb-3 text-[10px] font-bold uppercase tracking-[0.28em] text-ai-200/80">Tags</h3>
+                <h3 className="mb-3 text-[10px] font-bold uppercase tracking-[0.28em] text-ai-200/80">
+                  Tags
+                </h3>
                 <div className="flex flex-wrap gap-1.5">
                   {pack.tags.map((t) => (
-                    <span key={t} className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] uppercase tracking-wider text-white/70">
+                    <span
+                      key={t}
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] uppercase tracking-wider text-white/70"
+                    >
                       #{t}
                     </span>
                   ))}
@@ -302,7 +321,11 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <MetaRow label="Autor" value={pack.autor ?? "—"} />
               <MetaRow label="Popularidade" value={fmt(pack.popularidade)} icon={TrendingUp} />
-              <MetaRow label="Última atualização" value={formatRelative(pack.ultima_atualizacao)} icon={Clock} />
+              <MetaRow
+                label="Última atualização"
+                value={formatRelative(pack.ultima_atualizacao)}
+                icon={Clock}
+              />
             </div>
           </TabsContent>
 
@@ -354,13 +377,20 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
                   className="group text-left rounded-2xl overflow-hidden border border-ai-300/15 bg-black/40 hover:border-ai-300/40 transition"
                 >
                   <div className="aspect-[3/4] relative bg-black">
-                    <PackCover src={r.capa_url} title={r.nome} variant="card" rounded="rounded-none" />
+                    <PackCover
+                      src={r.capa_url}
+                      title={r.nome}
+                      variant="card"
+                      rounded="rounded-none"
+                    />
                   </div>
                   <div className="p-3">
                     <div className="text-[10px] uppercase tracking-[0.22em] text-ai-200/70 font-bold">
                       {r.categoria || "Pack"}
                     </div>
-                    <div className="mt-1 text-sm font-semibold text-white line-clamp-2">{r.nome}</div>
+                    <div className="mt-1 text-sm font-semibold text-white line-clamp-2">
+                      {r.nome}
+                    </div>
                   </div>
                 </button>
               ))}
@@ -368,7 +398,6 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
           </div>
         )}
       </section>
-
 
       <PackShareDialog
         open={shareOpen}
@@ -434,7 +463,15 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   );
 }
 
-function KpiCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
+function KpiCard({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="rounded-xl border border-ai-300/15 bg-black/40 px-3 py-2.5 backdrop-blur">
       <div className="flex items-center gap-2">
@@ -442,7 +479,9 @@ function KpiCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ cla
           <Icon className="h-4 w-4" />
         </span>
         <div className="min-w-0">
-          <div className="truncate text-[9px] font-bold uppercase tracking-[0.22em] text-white/45">{label}</div>
+          <div className="truncate text-[9px] font-bold uppercase tracking-[0.22em] text-white/45">
+            {label}
+          </div>
           <div className="truncate text-base font-semibold text-white">{value}</div>
         </div>
       </div>
@@ -450,7 +489,15 @@ function KpiCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ cla
   );
 }
 
-function MetaRow({ label, value, icon: Icon }: { label: string; value: string; icon?: React.ComponentType<{ className?: string }> }) {
+function MetaRow({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string;
+  value: string;
+  icon?: React.ComponentType<{ className?: string }>;
+}) {
   return (
     <div className="rounded-xl border border-ai-300/15 bg-black/40 px-4 py-3">
       <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/45">{label}</div>
@@ -462,7 +509,15 @@ function MetaRow({ label, value, icon: Icon }: { label: string; value: string; i
   );
 }
 
-function EmptyBox({ icon: Icon, title, children }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode }) {
+function EmptyBox({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-2xl border border-ai-300/20 bg-gradient-to-br from-ai-500/[0.05] via-black/40 to-ai-400/[0.03] p-10 text-center">
       <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-ai-500/30 to-ai-400/20 shadow-[0_0_30px_-8px_var(--ai-500)]">

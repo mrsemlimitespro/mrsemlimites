@@ -73,9 +73,7 @@ export function PromocoesSection() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {items.map((p) => {
           const img = p.banner_desktop_url || p.imagem_url;
-          const color = p.cor
-            ? `var(--brand-${p.cor}, ${p.cor})`
-            : "var(--brand-magenta)";
+          const color = p.cor ? `var(--brand-${p.cor}, ${p.cor})` : "var(--brand-magenta)";
           return (
             <a
               key={p.id}
@@ -96,9 +94,7 @@ export function PromocoesSection() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h3 className="text-base font-semibold">{p.titulo}</h3>
-                    {p.subtitulo && (
-                      <p className="text-xs text-muted-foreground">{p.subtitulo}</p>
-                    )}
+                    {p.subtitulo && <p className="text-xs text-muted-foreground">{p.subtitulo}</p>}
                   </div>
                   {p.desconto_percentual != null && p.desconto_percentual > 0 && (
                     <span
@@ -261,9 +257,7 @@ export function ProdutosSection() {
   const items = useLive<Produto>("produtos", async () => {
     const { data } = await supabase
       .from("produtos")
-      .select(
-        "id,nome,titulo,descricao,categoria,preco,imagem_url,estoque,status,botao_texto,link",
-      )
+      .select("id,nome,titulo,descricao,categoria,preco,imagem_url,estoque,status,botao_texto,link")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .order("created_at", { ascending: false });
@@ -440,9 +434,7 @@ export function PropagandasSection({ posicao = "home" }: { posicao?: string }) {
             )}
             <div className="flex flex-1 flex-col justify-center gap-0.5 p-3">
               <h4 className="text-sm font-semibold">{p.titulo}</h4>
-              {p.subtitulo && (
-                <p className="text-xs text-muted-foreground">{p.subtitulo}</p>
-              )}
+              {p.subtitulo && <p className="text-xs text-muted-foreground">{p.subtitulo}</p>}
               {p.texto && (
                 <p className="line-clamp-2 text-xs text-muted-foreground/80">{p.texto}</p>
               )}

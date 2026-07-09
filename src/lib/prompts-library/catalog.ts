@@ -36,8 +36,15 @@ export type PromptLibraryCategory = (typeof PROMPT_LIBRARY_CATEGORIES)[number];
 
 export const PROMPT_LIBRARY_SUBCATEGORIES: Record<string, string[]> = {
   Imagem: [
-    "Instagram", "Facebook", "Banner", "Logo", "Mockup",
-    "Produto", "Thumbnail", "Outdoor", "Story",
+    "Instagram",
+    "Facebook",
+    "Banner",
+    "Logo",
+    "Mockup",
+    "Produto",
+    "Thumbnail",
+    "Outdoor",
+    "Story",
   ],
   Vídeo: ["Reels", "TikTok", "YouTube", "Shorts", "VSL", "Anúncio"],
   Copywriting: ["Headlines", "E-mail", "Sales Letter", "Bio", "CTA"],
@@ -66,21 +73,10 @@ export const PROMPT_LIBRARY_SUBCATEGORIES: Record<string, string[]> = {
   "Omega Elite": ["VIP", "Exclusivo"],
 };
 
-export const PROMPT_STATUS_OPTIONS = [
-  "Premium",
-  "Elite",
-  "Novo",
-  "Atualizado",
-  "Popular",
-] as const;
+export const PROMPT_STATUS_OPTIONS = ["Premium", "Elite", "Novo", "Atualizado", "Popular"] as const;
 export type PromptStatus = (typeof PROMPT_STATUS_OPTIONS)[number];
 
-export const PROMPT_LEVELS = [
-  "Iniciante",
-  "Intermediário",
-  "Avançado",
-  "Elite",
-] as const;
+export const PROMPT_LEVELS = ["Iniciante", "Intermediário", "Avançado", "Elite"] as const;
 export type PromptLevel = (typeof PROMPT_LEVELS)[number];
 
 export const PROMPT_COMPATIBILITY = [

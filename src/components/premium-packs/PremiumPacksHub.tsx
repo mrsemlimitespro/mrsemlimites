@@ -34,7 +34,11 @@ import { PackCover } from "./PackCover";
 
 const PAGE = 24;
 
-const SORTS: { key: PremiumPackSort; label: string; Icon: React.ComponentType<{ className?: string }> }[] = [
+const SORTS: {
+  key: PremiumPackSort;
+  label: string;
+  Icon: React.ComponentType<{ className?: string }>;
+}[] = [
   { key: "recentes", label: "Mais recentes", Icon: Sparkles },
   { key: "atualizados", label: "Atualizados", Icon: RefreshCcw },
   { key: "baixados", label: "Mais baixados", Icon: Download },
@@ -62,8 +66,7 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
   const [sort, setSort] = useState<PremiumPackSort>("recentes");
   const [onlyFavs, setOnlyFavs] = useState(false);
   const navigate = useNavigate();
-  const openPack = (p: PremiumPack) =>
-    navigate({ to: "/packs/$slug", params: { slug: p.slug } });
+  const openPack = (p: PremiumPack) => navigate({ to: "/packs/$slug", params: { slug: p.slug } });
   const qDebounced = useDebounced(q);
 
   const { isFav, toggle } = useLocalFavorites("premium_pack");
@@ -87,10 +90,7 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
     gcTime: 5 * 60_000,
   });
 
-  const rows = useMemo(
-    () => (query.data?.pages ?? []).flatMap((p) => p.rows),
-    [query.data],
-  );
+  const rows = useMemo(() => (query.data?.pages ?? []).flatMap((p) => p.rows), [query.data]);
   const total = query.data?.pages?.[0]?.total ?? 0;
 
   const totalDownloads = useMemo(
@@ -134,7 +134,10 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
 
   const destaques = useMemo(() => filtered.filter((p) => p.destaque).slice(0, 6), [filtered]);
   const novidades = useMemo(
-    () => [...filtered].sort((a, b) => (b.created_at || "").localeCompare(a.created_at || "")).slice(0, 6),
+    () =>
+      [...filtered]
+        .sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""))
+        .slice(0, 6),
     [filtered],
   );
   const maisBaixados = useMemo(
@@ -167,13 +170,18 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
         await navigator.clipboard.writeText(url);
         toast.success("Link copiado");
       }
-    } catch { /* user cancelled */ }
+    } catch {
+      /* user cancelled */
+    }
   };
 
   const hasFilters = Boolean(q || categoria || tag || onlyFavs || sort !== "recentes");
 
   return (
-    <div data-ai-theme="packs" className="ai-module relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 animate-fade-in">
+    <div
+      data-ai-theme="packs"
+      className="ai-module relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 animate-fade-in"
+    >
       {onBack && (
         <button
           onClick={onBack}
@@ -184,8 +192,14 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
       )}
       {/* HERO */}
       <div className="relative mt-2 mb-6 overflow-hidden rounded-3xl border border-ai-300/15 bg-gradient-to-br from-ai-500/[0.08] via-black/60 to-ai-400/[0.04] p-5 sm:p-8">
-        <div aria-hidden className="pointer-events-none absolute -top-24 -left-10 h-64 w-64 rounded-full bg-ai-500/25 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-10 h-72 w-72 rounded-full bg-ai-400/20 blur-3xl" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 -left-10 h-64 w-64 rounded-full bg-ai-500/25 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-24 -right-10 h-72 w-72 rounded-full bg-ai-400/20 blur-3xl"
+        />
 
         <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 sm:flex sm:flex-wrap sm:items-end sm:justify-between">
           <div className="min-w-0">
@@ -197,7 +211,8 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
               Central de Packs Premium
             </h1>
             <p className="mt-1.5 max-w-2xl text-sm text-white/60">
-              Curadoria com acesso vitalício — busque por categoria, popularidade e atualizações recentes.
+              Curadoria com acesso vitalício — busque por categoria, popularidade e atualizações
+              recentes.
             </p>
           </div>
 
@@ -231,7 +246,11 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
           <StatPill icon={PackageOpen} label="Total de packs" value={fmt(total || rows.length)} />
           <StatPill icon={Download} label="Downloads" value={fmt(totalDownloads)} />
           <StatPill icon={Star} label="Em destaque" value={fmt(destaques.length)} />
-          <StatPill icon={Clock} label="Última atualização" value={lastUpdate ? formatRelative(lastUpdate) : "—"} />
+          <StatPill
+            icon={Clock}
+            label="Última atualização"
+            value={lastUpdate ? formatRelative(lastUpdate) : "—"}
+          />
         </div>
 
         <div className="relative mt-5 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] gap-2">
@@ -271,7 +290,11 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
             <Sparkles className="h-3 w-3" /> Todas ({fmt(total || rows.length)})
           </AIPill>
           {categorias.map(([c, n]) => (
-            <AIPill key={c} active={categoria === c} onClick={() => setCategoria(categoria === c ? null : c)}>
+            <AIPill
+              key={c}
+              active={categoria === c}
+              onClick={() => setCategoria(categoria === c ? null : c)}
+            >
               {c} ({n})
             </AIPill>
           ))}
@@ -325,7 +348,13 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
           {hasFilters && (
             <button
               type="button"
-              onClick={() => { setQ(""); setCategoria(null); setTag(null); setOnlyFavs(false); setSort("recentes"); }}
+              onClick={() => {
+                setQ("");
+                setCategoria(null);
+                setTag(null);
+                setOnlyFavs(false);
+                setSort("recentes");
+              }}
               className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-ai-300/40 bg-ai-500/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-ai-50 hover:border-ai-300/70"
             >
               <X className="h-3.5 w-3.5" /> Limpar filtros
@@ -337,13 +366,37 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
           {!q && !categoria && !tag && !onlyFavs && (
             <div className="space-y-8 mb-10">
               {destaques.length > 0 && (
-                <ShowcaseRow title="Packs em destaque" icon={Star} description="Selecionados pela curadoria." items={destaques} onOpen={openPack} isFav={isFav} onFav={(p) => toggle(p.id)} />
+                <ShowcaseRow
+                  title="Packs em destaque"
+                  icon={Star}
+                  description="Selecionados pela curadoria."
+                  items={destaques}
+                  onOpen={openPack}
+                  isFav={isFav}
+                  onFav={(p) => toggle(p.id)}
+                />
               )}
               {maisBaixados.length > 0 && (
-                <ShowcaseRow title="Mais baixados" icon={Flame} description="Os favoritos da comunidade." items={maisBaixados} onOpen={openPack} isFav={isFav} onFav={(p) => toggle(p.id)} />
+                <ShowcaseRow
+                  title="Mais baixados"
+                  icon={Flame}
+                  description="Os favoritos da comunidade."
+                  items={maisBaixados}
+                  onOpen={openPack}
+                  isFav={isFav}
+                  onFav={(p) => toggle(p.id)}
+                />
               )}
               {novidades.length > 0 && (
-                <ShowcaseRow title="Novidades & lançamentos" icon={Rocket} description="Recém-chegados à Central." items={novidades} onOpen={openPack} isFav={isFav} onFav={(p) => toggle(p.id)} />
+                <ShowcaseRow
+                  title="Novidades & lançamentos"
+                  icon={Rocket}
+                  description="Recém-chegados à Central."
+                  items={novidades}
+                  onOpen={openPack}
+                  isFav={isFav}
+                  onFav={(p) => toggle(p.id)}
+                />
               )}
             </div>
           )}
@@ -392,7 +445,15 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
 
 /* ============ Sub-componentes ============ */
 
-function StatPill({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
+function StatPill({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="group relative overflow-hidden rounded-xl border border-ai-300/15 bg-black/40 px-3 py-2.5 backdrop-blur transition hover:border-ai-300/40">
       <div className="flex items-center gap-2">
@@ -400,7 +461,9 @@ function StatPill({ icon: Icon, label, value }: { icon: React.ComponentType<{ cl
           <Icon className="h-4 w-4" />
         </span>
         <div className="min-w-0">
-          <div className="truncate text-[9px] font-bold uppercase tracking-[0.22em] text-white/45">{label}</div>
+          <div className="truncate text-[9px] font-bold uppercase tracking-[0.22em] text-white/45">
+            {label}
+          </div>
           <div className="truncate text-base font-semibold text-white">{value}</div>
         </div>
       </div>
@@ -409,7 +472,13 @@ function StatPill({ icon: Icon, label, value }: { icon: React.ComponentType<{ cl
 }
 
 function ShowcaseRow({
-  title, icon: Icon, description, items, onOpen, isFav, onFav,
+  title,
+  icon: Icon,
+  description,
+  items,
+  onOpen,
+  isFav,
+  onFav,
 }: {
   title: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -447,7 +516,11 @@ function ShowcaseRow({
 }
 
 function PackTile({
-  pack, onOpen, isFav, onFav, compact = false,
+  pack,
+  onOpen,
+  isFav,
+  onFav,
+  compact = false,
 }: {
   pack: PremiumPack;
   onOpen: (p: PremiumPack) => void;
@@ -455,12 +528,14 @@ function PackTile({
   onFav: () => void;
   compact?: boolean;
 }) {
-  const statusLabel = pack.status === "ativo" ? "Ativo" : pack.status === "em_breve" ? "Em breve" : "Rascunho";
-  const statusTone = pack.status === "ativo"
-    ? "border-emerald-400/40 text-emerald-200 bg-emerald-500/10"
-    : pack.status === "em_breve"
-      ? "border-amber-400/40 text-amber-200 bg-amber-500/10"
-      : "border-white/15 text-white/55 bg-white/[0.04]";
+  const statusLabel =
+    pack.status === "ativo" ? "Ativo" : pack.status === "em_breve" ? "Em breve" : "Rascunho";
+  const statusTone =
+    pack.status === "ativo"
+      ? "border-emerald-400/40 text-emerald-200 bg-emerald-500/10"
+      : pack.status === "em_breve"
+        ? "border-amber-400/40 text-amber-200 bg-amber-500/10"
+        : "border-white/15 text-white/55 bg-white/[0.04]";
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -472,13 +547,18 @@ function PackTile({
         await navigator.clipboard.writeText(url);
         toast.success("Link copiado");
       }
-    } catch { /* user cancelled */ }
+    } catch {
+      /* user cancelled */
+    }
   };
 
   return (
     <AICard
       onClick={() => onOpen(pack)}
-      className={cn("group cursor-pointer overflow-hidden p-0 flex flex-col", compact ? "h-full" : "")}
+      className={cn(
+        "group cursor-pointer overflow-hidden p-0 flex flex-col",
+        compact ? "h-full" : "",
+      )}
     >
       <div className="relative overflow-hidden">
         <PackCover
@@ -491,10 +571,12 @@ function PackTile({
           overlay={
             <>
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-              <span className={cn(
-                "pointer-events-auto absolute top-2 left-2 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.22em] backdrop-blur",
-                statusTone,
-              )}>
+              <span
+                className={cn(
+                  "pointer-events-auto absolute top-2 left-2 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.22em] backdrop-blur",
+                  statusTone,
+                )}
+              >
                 <Sparkles className="h-2.5 w-2.5" /> {statusLabel}
               </span>
               {pack.destaque && (
@@ -507,7 +589,10 @@ function PackTile({
                   <Share2 className="h-3.5 w-3.5" />
                 </IconChip>
                 <IconChip
-                  onClick={(e) => { e.stopPropagation(); onFav(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onFav();
+                  }}
                   label="Favoritar"
                   active={isFav}
                 >
@@ -534,9 +619,13 @@ function PackTile({
       </div>
 
       <div className="px-4 pt-2 pb-4 flex-1 flex flex-col">
-        <h3 className="line-clamp-2 text-[15px] font-semibold leading-tight text-white">{pack.nome}</h3>
+        <h3 className="line-clamp-2 text-[15px] font-semibold leading-tight text-white">
+          {pack.nome}
+        </h3>
         <div className="mt-1 flex items-center gap-2 flex-wrap">
-          <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-ai-200/80">{pack.categoria}</span>
+          <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-ai-200/80">
+            {pack.categoria}
+          </span>
           {pack.versao && (
             <span className="rounded-full border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[9px] font-mono uppercase tracking-wider text-white/70">
               v{pack.versao}
@@ -566,7 +655,10 @@ function PackTile({
         {pack.tags?.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1">
             {pack.tags.slice(0, compact ? 3 : 4).map((t) => (
-              <span key={t} className="rounded-full border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-white/55">
+              <span
+                key={t}
+                className="rounded-full border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-white/55"
+              >
                 {t}
               </span>
             ))}
@@ -575,7 +667,10 @@ function PackTile({
 
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onOpen(pack); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen(pack);
+          }}
           className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-ai-300/40 bg-gradient-to-r from-ai-500/20 to-ai-400/10 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-ai-50 transition hover:border-ai-300/70 hover:shadow-[0_0_24px_-8px_var(--ai-500)]"
         >
           Abrir Pack
@@ -585,7 +680,15 @@ function PackTile({
   );
 }
 
-function Metric({ icon: Icon, value, hint }: { icon: React.ComponentType<{ className?: string }>; value: string; hint: string }) {
+function Metric({
+  icon: Icon,
+  value,
+  hint,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  value: string;
+  hint: string;
+}) {
   return (
     <div className="inline-flex items-center gap-1" title={hint}>
       <Icon className="h-3 w-3 text-ai-200/70" />
@@ -599,7 +702,9 @@ function PackBadges({ pack }: { pack: PremiumPack }) {
   const created = pack.created_at ? new Date(pack.created_at).getTime() : 0;
   const updated = pack.ultima_atualizacao
     ? new Date(pack.ultima_atualizacao).getTime()
-    : pack.updated_at ? new Date(pack.updated_at).getTime() : 0;
+    : pack.updated_at
+      ? new Date(pack.updated_at).getTime()
+      : 0;
   const DAY = 86_400_000;
   const isNew = created && now - created <= 14 * DAY;
   const isUpdated = updated && now - updated <= 30 * DAY && Math.abs(updated - created) > DAY;
@@ -625,7 +730,12 @@ function PackBadges({ pack }: { pack: PremiumPack }) {
   );
 }
 
-function IconChip({ children, onClick, label, active }: {
+function IconChip({
+  children,
+  onClick,
+  label,
+  active,
+}: {
   children: React.ReactNode;
   onClick: (e: React.MouseEvent) => void;
   label: string;

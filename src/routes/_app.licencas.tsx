@@ -54,7 +54,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
-
 export const Route = createFileRoute("/_app/licencas")({
   head: () => ({
     meta: [
@@ -143,7 +142,9 @@ function LicencasPage() {
     setLoading(true);
     const { data, error } = await (supabase as any)
       .from("licencas")
-      .select("id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, clientes(nome)")
+      .select(
+        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, clientes(nome)",
+      )
       .order("created_at", { ascending: false });
     if (error) {
       toast.error(error.message);
@@ -164,7 +165,6 @@ function LicencasPage() {
       supabase.removeChannel(ch);
     };
   }, []);
-
 
   const licenses = rows.map(computeView);
 
@@ -215,7 +215,6 @@ function LicencasPage() {
     reload();
   }
 
-
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
       {/* Header */}
@@ -224,9 +223,7 @@ function LicencasPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] gradient-text-warm">
             Gestão
           </p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">
-            Licenças
-          </h1>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">Licenças</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Gerencie as licenças criadas por você
           </p>
@@ -364,10 +361,14 @@ function LicencasPage() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="glass-strong">
-                    <DropdownMenuItem onClick={() => setHistoryOf(rows.find((r) => r.id === l.id) ?? null)}>
+                    <DropdownMenuItem
+                      onClick={() => setHistoryOf(rows.find((r) => r.id === l.id) ?? null)}
+                    >
                       <History className="size-4" /> Histórico
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setRenovarOf(rows.find((r) => r.id === l.id) ?? null)}>
+                    <DropdownMenuItem
+                      onClick={() => setRenovarOf(rows.find((r) => r.id === l.id) ?? null)}
+                    >
                       <CalendarPlus className="size-4" /> Renovar
                     </DropdownMenuItem>
                     {l.device ? (
@@ -396,54 +397,40 @@ function LicencasPage() {
         )}
       </div>
 
-      <NovaLicencaModal
-        open={openNova}
-        onOpenChange={setOpenNova}
-        onSaved={reload}
-      />
-      <ChaveTesteModal
-        open={openTeste}
-        onOpenChange={setOpenTeste}
-        onSaved={reload}
-      />
-      <HistoricoLicencaSheet
-        licenca={historyOf}
-        onOpenChange={(v) => !v && setHistoryOf(null)}
-      />
+      <NovaLicencaModal open={openNova} onOpenChange={setOpenNova} onSaved={reload} />
+      <ChaveTesteModal open={openTeste} onOpenChange={setOpenTeste} onSaved={reload} />
+      <HistoricoLicencaSheet licenca={historyOf} onOpenChange={(v) => !v && setHistoryOf(null)} />
       <RenovarLicencaModal
         licenca={renovarOf}
         onOpenChange={(v) => !v && setRenovarOf(null)}
         onSaved={reload}
       />
     </div>
-
   );
 }
 
 function StatusPill({ status }: { status: License["status"] }) {
-  const map: Record<
-    License["status"],
-    { label: string; color: string; bg: string; text: string }
-  > = {
-    ativa: {
-      label: "ATIVA",
-      color: "var(--brand-emerald)",
-      bg: "color-mix(in oklab, var(--brand-emerald) 20%, transparent)",
-      text: "oklch(0.88 0.14 165)",
-    },
-    expirada: {
-      label: "EXPIRADA",
-      color: "var(--brand-orange)",
-      bg: "color-mix(in oklab, var(--brand-orange) 20%, transparent)",
-      text: "oklch(0.9 0.16 60)",
-    },
-    revogada: {
-      label: "REVOGADA",
-      color: "var(--destructive)",
-      bg: "color-mix(in oklab, var(--destructive) 22%, transparent)",
-      text: "oklch(0.88 0.16 25)",
-    },
-  };
+  const map: Record<License["status"], { label: string; color: string; bg: string; text: string }> =
+    {
+      ativa: {
+        label: "ATIVA",
+        color: "var(--brand-emerald)",
+        bg: "color-mix(in oklab, var(--brand-emerald) 20%, transparent)",
+        text: "oklch(0.88 0.14 165)",
+      },
+      expirada: {
+        label: "EXPIRADA",
+        color: "var(--brand-orange)",
+        bg: "color-mix(in oklab, var(--brand-orange) 20%, transparent)",
+        text: "oklch(0.9 0.16 60)",
+      },
+      revogada: {
+        label: "REVOGADA",
+        color: "var(--destructive)",
+        bg: "color-mix(in oklab, var(--destructive) 22%, transparent)",
+        text: "oklch(0.88 0.16 25)",
+      },
+    };
   const s = map[status];
   return (
     <span
@@ -580,10 +567,11 @@ function ChaveTesteModal({
       if (cliErr) throw cliErr;
 
       // 2. Atribui a chave
-      const { error: linkErr } = await (supabase as any).rpc(
-        "atribuir_licenca_cliente",
-        { _chave: chave.trim(), _cliente_id: cli.id, _email: email.trim() },
-      );
+      const { error: linkErr } = await (supabase as any).rpc("atribuir_licenca_cliente", {
+        _chave: chave.trim(),
+        _cliente_id: cli.id,
+        _email: email.trim(),
+      });
       if (linkErr) throw linkErr;
 
       toast.success("Licença vinculada ao cliente");
@@ -604,9 +592,7 @@ function ChaveTesteModal({
       <DialogContent className="glass-strong sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>Vincular Chave ao Cliente</DialogTitle>
-          <DialogDescription>
-            Cole uma chave do estoque e vincule ao cliente.
-          </DialogDescription>
+          <DialogDescription>Cole uma chave do estoque e vincule ao cliente.</DialogDescription>
         </DialogHeader>
 
         <form className="space-y-4" onSubmit={submit}>
@@ -642,7 +628,11 @@ function ChaveTesteModal({
             </div>
           </Field>
           <Field label="Nome do cliente">
-            <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex: João Silva" />
+            <Input
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Ex: João Silva"
+            />
           </Field>
           <Field label="Email do cliente">
             <Input
@@ -657,7 +647,11 @@ function ChaveTesteModal({
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={busy} className="gradient-primary text-primary-foreground">
+            <Button
+              type="submit"
+              disabled={busy}
+              className="gradient-primary text-primary-foreground"
+            >
               {busy ? <Loader2 className="size-4 animate-spin" /> : "Vincular"}
             </Button>
           </DialogFooter>
@@ -667,16 +661,16 @@ function ChaveTesteModal({
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <Label className={cn("text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground")}>{label}</Label>
+      <Label
+        className={cn(
+          "text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground",
+        )}
+      >
+        {label}
+      </Label>
       {children}
     </div>
   );
@@ -721,9 +715,7 @@ function HistoricoLicencaSheet({
       <SheetContent className="glass-strong w-full sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Histórico da licença</SheetTitle>
-          <SheetDescription className="font-mono text-xs">
-            {licenca?.chave}
-          </SheetDescription>
+          <SheetDescription className="font-mono text-xs">{licenca?.chave}</SheetDescription>
         </SheetHeader>
         <div className="mt-6 max-h-[calc(100vh-8rem)] overflow-auto pr-1">
           {loading ? (
@@ -737,10 +729,7 @@ function HistoricoLicencaSheet({
           ) : (
             <ul className="space-y-3">
               {events.map((e) => (
-                <li
-                  key={e.id}
-                  className="rounded-xl border border-border/50 bg-white/[0.02] p-3"
-                >
+                <li key={e.id} className="rounded-xl border border-border/50 bg-white/[0.02] p-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
                       {e.tipo}
@@ -803,9 +792,7 @@ function RenovarLicencaModal({
       <DialogContent className="glass-strong sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>Renovar licença</DialogTitle>
-          <DialogDescription className="font-mono text-xs">
-            {licenca?.chave}
-          </DialogDescription>
+          <DialogDescription className="font-mono text-xs">{licenca?.chave}</DialogDescription>
         </DialogHeader>
         <form className="space-y-4" onSubmit={submit}>
           <Field label="Dias a adicionar">

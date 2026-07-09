@@ -54,14 +54,16 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
 
         if (!chave) return fail(cors, "Licença inválida ou expirada.");
 
-        const sb = createClient(
-          process.env.SUPABASE_URL!,
-          process.env.SUPABASE_SERVICE_ROLE_KEY!,
-          { auth: { persistSession: false, autoRefreshToken: false } },
-        );
+        const sb = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+          auth: { persistSession: false, autoRefreshToken: false },
+        });
 
         // Expira quaisquer trials vencidos (lazy)
-        try { await sb.rpc("expirar_trials_vencidos"); } catch { /* noop */ }
+        try {
+          await sb.rpc("expirar_trials_vencidos");
+        } catch {
+          /* noop */
+        }
 
         // Carrega a licença completa
         const { data: lic, error: errLic } = await sb
@@ -114,14 +116,24 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           if (expira_em && new Date(expira_em).getTime() < Date.now()) {
             await sb.from("licencas").update({ status: "expirada" }).eq("id", lic.id);
             await logAcesso(sb, lic.id, chave, device_id, ip, user_agent, versao, "trial_expired");
-            return jsonResp(cors, { ok: false, valid: false, reason: "trial_expired", error: "Licença inválida ou expirada." });
+            return jsonResp(cors, {
+              ok: false,
+              valid: false,
+              reason: "trial_expired",
+              error: "Licença inválida ou expirada.",
+            });
           }
         } else {
           // Premium: se tiver expira_em setado, respeita
           if (expira_em && new Date(expira_em).getTime() < Date.now()) {
             await sb.from("licencas").update({ status: "expirada" }).eq("id", lic.id);
             await logAcesso(sb, lic.id, chave, device_id, ip, user_agent, versao, "trial_expired");
-            return jsonResp(cors, { ok: false, valid: false, reason: "expired", error: "Licença inválida ou expirada." });
+            return jsonResp(cors, {
+              ok: false,
+              valid: false,
+              reason: "expired",
+              error: "Licença inválida ou expirada.",
+            });
           }
         }
 
@@ -141,7 +153,12 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           } else {
             if (maxDev > 0 && (existing?.length ?? 0) >= maxDev) {
               await logAcesso(sb, lic.id, chave, device_id, ip, user_agent, versao, "device_limit");
-              return jsonResp(cors, { ok: false, valid: false, reason: "device_limit", error: "Licença já está em uso em outro dispositivo." });
+              return jsonResp(cors, {
+                ok: false,
+                valid: false,
+                reason: "device_limit",
+                error: "Licença já está em uso em outro dispositivo.",
+              });
             }
             await sb.from("licenca_dispositivos").insert({
               licenca_id: lic.id,
@@ -156,7 +173,10 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
             }
           }
         }
-        await sb.from("licencas").update({ ultimo_acesso: new Date().toISOString() }).eq("id", lic.id);
+        await sb
+          .from("licencas")
+          .update({ ultimo_acesso: new Date().toISOString() })
+          .eq("id", lic.id);
 
         // Proxy ao fornecedor (server-side, chave nunca sai)
         if (lic.fornecedor_slug && lic.chave_fornecedor) {
@@ -166,15 +186,30 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
             (lic.fornecedor_config ?? {}) as Record<string, unknown>,
           );
           if (!upstream.ok) {
-            await logAcesso(sb, lic.id, chave, device_id, ip, user_agent, versao, "upstream_denied");
-            return jsonResp(cors, { ok: false, valid: false, reason: "upstream_unavailable", error: "Licença inválida ou expirada." });
+            await logAcesso(
+              sb,
+              lic.id,
+              chave,
+              device_id,
+              ip,
+              user_agent,
+              versao,
+              "upstream_denied",
+            );
+            return jsonResp(cors, {
+              ok: false,
+              valid: false,
+              reason: "upstream_unavailable",
+              error: "Licença inválida ou expirada.",
+            });
           }
         }
 
         await logAcesso(sb, lic.id, chave, device_id, ip, user_agent, versao, "ok");
 
-        const expires_in =
-          expira_em ? Math.max(0, Math.floor((new Date(expira_em).getTime() - Date.now()) / 1000)) : null;
+        const expires_in = expira_em
+          ? Math.max(0, Math.floor((new Date(expira_em).getTime() - Date.now()) / 1000))
+          : null;
 
         return jsonResp(cors, {
           ok: true,
@@ -250,9 +285,7 @@ async function validarNoFornecedor(
       if (!endpoint) return { ok: true };
       const method = String(config.method ?? "POST").toUpperCase();
       const bodyTpl = (config.body_template as Record<string, unknown>) ?? {};
-      const body = JSON.parse(
-        JSON.stringify(bodyTpl).replaceAll("{{chave}}", chaveFornecedor),
-      );
+      const body = JSON.parse(JSON.stringify(bodyTpl).replaceAll("{{chave}}", chaveFornecedor));
       const resp = await fetch(endpoint, {
         method,
         headers: { "content-type": "application/json" },

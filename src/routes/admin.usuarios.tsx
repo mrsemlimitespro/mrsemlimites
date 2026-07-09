@@ -46,7 +46,10 @@ function UsuariosPage() {
           <div className="flex flex-col items-center gap-2 p-10 text-center text-sm text-muted-foreground">
             <UserCircle className="size-8" />
             <p>Nenhum papel atribuído ainda.</p>
-            <p className="text-xs">Use a área <b>Segurança</b> para configurar a senha; os papéis são criados quando um usuário reivindica admin.</p>
+            <p className="text-xs">
+              Use a área <b>Segurança</b> para configurar a senha; os papéis são criados quando um
+              usuário reivindica admin.
+            </p>
           </div>
         ) : (
           <table className="w-full text-sm">
