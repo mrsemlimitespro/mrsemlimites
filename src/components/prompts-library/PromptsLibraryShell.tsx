@@ -680,10 +680,31 @@ function PromptModal({
                 <Heart className={cn("w-4 h-4", favorited && "fill-current")} />
                 {favorited ? "Favorito" : "Favoritar"}
               </button>
-              <button onClick={copy}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-ai-400 via-red-500 to-ai-600 text-black text-sm font-black uppercase tracking-wider shadow-[0_0_30px_-8px_rgba(225,29,72,0.8)] hover:brightness-110 transition">
-                {copied ? <><Check className="w-4 h-4" /> Copiado</> : <><Copy className="w-4 h-4" /> Copiar Prompt</>}
-              </button>
+              <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                <button
+                  onClick={() => {
+                    if (!item) return;
+                    downloadItemAsHtml({
+                      titulo: item.titulo,
+                      categoria: item.categoria,
+                      subcategoria: item.subcategoria,
+                      descricao: item.descricao,
+                      descricao_completa: item.descricao_completa,
+                      prompt: item.prompt,
+                      cover_url: item.cover_url,
+                      autor: item.autor,
+                      versao: item.versao,
+                    });
+                    toast.success("Download iniciado");
+                  }}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-black/60 border border-ai-300/40 text-ai-50 text-xs font-bold uppercase tracking-wider hover:border-ai-300/70 hover:bg-ai-500/10 transition">
+                  <Download className="w-4 h-4" /> Baixar
+                </button>
+                <button onClick={copy}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-ai-400 via-red-500 to-ai-600 text-black text-sm font-black uppercase tracking-wider shadow-[0_0_30px_-8px_rgba(225,29,72,0.8)] hover:brightness-110 transition">
+                  {copied ? <><Check className="w-4 h-4" /> Copiado</> : <><Copy className="w-4 h-4" /> Copiar Prompt</>}
+                </button>
+              </div>
             </div>
           </>
         )}
