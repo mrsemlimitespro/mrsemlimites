@@ -276,6 +276,9 @@ function CheckoutPage() {
   if (!item) {
     return (
       <AuthShell>
+        <div className="mb-3">
+          <PageBackButton forceShow fallback="/creditos" label="Voltar para a loja" />
+        </div>
         <h1 className="mb-3 text-lg font-semibold">Nenhum produto selecionado</h1>
         <p className="mb-4 text-sm text-muted-foreground">
           Volte à loja e escolha um pacote ou plano.
