@@ -525,6 +525,14 @@ textarea,
   user-select: text;
 }
 
+/* iOS zooma inputs com font-size < 16px quando ganham foco. Força 16px mínimo. */
+input,
+select,
+textarea {
+  font-size: max(16px, 1rem);
+}
+
+
 /* Utilitário de área de toque mínima (48×48 — Material) com 44×44 (Apple HIG) garantido. */
 @utility tap-target {
   min-width: 48px;
