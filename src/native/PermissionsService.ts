@@ -50,8 +50,15 @@ export const PermissionsService = {
     if (!isNative()) {
       return ok(await webCheck(kind));
     }
+    if (kind === "camera" || kind === "photos") {
+      const { CameraService } = await import("./CameraService");
+      const r = await CameraService.checkPermission(kind);
+      if (!r.ok) return r;
+      const s = r.data === "limited" ? "granted" : r.data;
+      return ok(s as PermissionState);
+    }
     // Nativo: cada plugin tem checkPermissions próprio — plugado nas fases
-    // dedicadas (Push, Camera, Geolocation, Biometric).
+    // dedicadas (Push, Geolocation, Biometric).
     return notImplemented(`PermissionsService.check(${kind}) nativo`);
   },
 
