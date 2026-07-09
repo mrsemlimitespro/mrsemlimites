@@ -28,9 +28,12 @@ const STORAGE_KEY = "mrsl.push.lastToken";
 
 async function upsertToken(userId: string, token: string, platform: "android" | "ios") {
   try {
-    const device = await NativeService.device.getInfo();
-    const deviceId = device.ok ? device.data.deviceId ?? null : null;
-    const appVersion = device.ok ? device.data.appVersion ?? null : null;
+    const [infoRes, idRes] = await Promise.all([
+      NativeService.device.getInfo(),
+      NativeService.device.getId(),
+    ]);
+    const deviceId = idRes.ok ? idRes.data : null;
+    const appVersion = infoRes.ok ? infoRes.data.appVersion ?? null : null;
     await supabase
       .from("device_push_tokens" as never)
       .upsert(
