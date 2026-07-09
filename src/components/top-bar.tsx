@@ -144,9 +144,9 @@ export function TopBar() {
             <button
               type="button"
               aria-label="Notificações"
-              className="relative grid size-9 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground md:size-11"
+              className="relative grid size-11 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground active:scale-95"
             >
-              <Bell className="size-4 md:size-[18px]" strokeWidth={2} />
+              <Bell className="size-[18px]" strokeWidth={2} />
               {unread > 0 && (
                 <span
                   aria-hidden
@@ -259,15 +259,15 @@ export function TopBar() {
             aria-label="Painel administrativo"
             onClick={() => setAdminOpen(true)}
           >
-            <Settings className="size-4 md:size-[18px]" strokeWidth={2} />
+            <Settings className="size-[18px]" strokeWidth={2} />
           </IconBadge>
         )}
         <button
           type="button"
           aria-label="Perfil"
-          className="grid size-9 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl md:size-11"
+          className="grid size-11 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl active:scale-95 transition-transform"
         >
-          <BrandMark size={32} glow={false} className="rounded-full md:!size-10" />
+          <BrandMark size={36} glow={false} className="rounded-full" />
         </button>
       </div>
 
@@ -292,13 +292,13 @@ function IconBadge({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="relative grid size-9 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground md:size-11"
+      className="relative grid size-11 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground active:scale-95"
     >
       {children}
       {dot && (
         <span
           aria-hidden
-          className="absolute right-1.5 top-1.5 size-1.5 rounded-full md:right-2.5 md:top-2.5 md:size-2"
+          className="absolute right-2.5 top-2.5 size-2 rounded-full"
           style={{
             background: "var(--brand-magenta)",
             boxShadow: "0 0 8px color-mix(in oklab, var(--brand-magenta) 80%, transparent)",
