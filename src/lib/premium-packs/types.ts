@@ -93,6 +93,8 @@ export type PremiumPack = {
   og_image_url: string | null;
   twitter_image_url: string | null;
   source_type: PremiumPackSourceType;
+  drive_url: string | null;
+  archive_url: string | null;
   ultima_atualizacao: string;
   created_at: string;
   updated_at: string;

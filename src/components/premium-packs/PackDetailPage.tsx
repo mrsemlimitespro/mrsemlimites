@@ -25,6 +25,8 @@ import {
   Eye,
   TrendingUp,
   Library,
+  FolderOpen,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { PremiumPack } from "@/lib/premium-packs/types";
@@ -65,6 +67,42 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   }, [pack]);
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [viewerOpen, setViewerOpen] = useState(false);
+
+  const driveUrl = (pack as PremiumPack & { drive_url?: string | null }).drive_url ?? null;
+  const archiveUrl = (pack as PremiumPack & { archive_url?: string | null }).archive_url ?? null;
+
+  const driveEmbedUrl = useMemo(() => {
+    if (!driveUrl) return null;
+    const folderMatch = driveUrl.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+    if (folderMatch) return `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#list`;
+    const fileMatch = driveUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch) return `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
+    const openMatch = driveUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (openMatch) return `https://drive.google.com/file/d/${openMatch[1]}/preview`;
+    return driveUrl;
+  }, [driveUrl]);
+
+  const handleDownload = async () => {
+    if (!archiveUrl) return;
+    try {
+      const res = await fetch(archiveUrl);
+      if (!res.ok) throw new Error("Não foi possível baixar o arquivo");
+      const blob = await res.blob();
+      const objUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objUrl;
+      const fname = decodeURIComponent(archiveUrl.split("?")[0].split("/").pop() ?? `${pack.slug}.zip`);
+      a.download = fname;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
+      toast.success("Download iniciado");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha no download");
+    }
+  };
 
   const handleBack = () => {
     if (typeof window !== "undefined" && window.history.length > 1) router.history.back();
@@ -173,6 +211,24 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
                 )}
 
                 <div className="mt-5 flex flex-wrap items-center gap-2">
+                  {driveEmbedUrl && pack.allow_view && (
+                    <button
+                      type="button"
+                      onClick={() => setViewerOpen(true)}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-ai-300/60 bg-gradient-to-r from-ai-500/30 to-ai-400/20 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-ai-50 transition hover:shadow-[0_0_28px_-6px_var(--ai-500)]"
+                    >
+                      <FolderOpen className="h-3.5 w-3.5" /> Abrir conteúdo
+                    </button>
+                  )}
+                  {archiveUrl && pack.allow_download && (
+                    <button
+                      type="button"
+                      onClick={handleDownload}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-ai-300/40 bg-gradient-to-r from-ai-500/20 to-ai-400/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-ai-50 transition hover:border-ai-300/70 hover:shadow-[0_0_24px_-8px_var(--ai-500)]"
+                    >
+                      <Download className="h-3.5 w-3.5" /> Baixar arquivo
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={handleShare}
@@ -193,6 +249,7 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
                     <Heart className={cn("h-3.5 w-3.5", favored && "fill-current")} /> {favored ? "Favoritado" : "Favoritar"}
                   </button>
                 </div>
+
               </div>
             </div>
 
@@ -326,6 +383,53 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
         }}
         baseUrl={shareUrl}
       />
+
+      {viewerOpen && driveEmbedUrl && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-3 sm:p-6 backdrop-blur-sm animate-fade-in"
+          onClick={() => setViewerOpen(false)}
+        >
+          <div
+            className="relative flex h-full max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-ai-300/30 bg-black shadow-[0_40px_120px_-20px_var(--ai-500)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
+              <div className="flex items-center gap-2 min-w-0">
+                <FolderOpen className="h-4 w-4 text-ai-200 shrink-0" />
+                <span className="truncate text-xs font-semibold uppercase tracking-[0.24em] text-ai-100">
+                  {pack.nome}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                {archiveUrl && pack.allow_download && (
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-ai-300/40 bg-ai-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-ai-50 hover:bg-ai-500/20"
+                  >
+                    <Download className="h-3 w-3" /> Baixar
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setViewerOpen(false)}
+                  className="grid size-7 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/80 hover:bg-white/10"
+                  aria-label="Fechar"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+            <iframe
+              src={driveEmbedUrl}
+              title={`Conteúdo do pack ${pack.nome}`}
+              className="flex-1 w-full bg-white"
+              referrerPolicy="no-referrer"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

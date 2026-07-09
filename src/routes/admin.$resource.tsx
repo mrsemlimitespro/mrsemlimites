@@ -616,6 +616,9 @@ function FieldInput({
   if (field.type === "image") {
     return <ImageInput field={field} value={value} onChange={onChange} />;
   }
+  if (field.type === "file") {
+    return <FileInput field={field} value={value} onChange={onChange} />;
+  }
   if (field.type === "array") {
     const str = Array.isArray(value) ? (value as string[]).join(", ") : ((value as string) ?? "");
     return (
@@ -781,6 +784,95 @@ function ImageInput({
             className="flex-1"
           />
         </div>
+      </div>
+    </div>
+  );
+}
+
+function FileInput({
+  field,
+  value,
+  onChange,
+}: {
+  field: Field;
+  value: unknown;
+  onChange: (v: unknown) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const url = (value as string) || "";
+  const fileName = url ? decodeURIComponent(url.split("?")[0].split("/").pop() ?? "arquivo") : "";
+
+  async function handleFile(file: File) {
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() ?? "bin";
+      const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `${field.key}/${crypto.randomUUID()}-${safe}.${ext}`;
+      const { error } = await supabase.storage.from("admin-media").upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: file.type || undefined,
+      });
+      if (error) throw error;
+      const { data: signed, error: sErr } = await supabase.storage
+        .from("admin-media")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+      if (sErr) throw sErr;
+      onChange(signed?.signedUrl ?? "");
+      toast.success("Arquivo enviado");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha no upload");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div>
+      <Label>{field.label}</Label>
+      <div className="space-y-2">
+        {url && (
+          <div className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs">
+            <span className="truncate">{fileName || "arquivo enviado"}</span>
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="grid size-6 place-items-center rounded-full bg-black/60 text-white"
+              aria-label="Remover"
+            >
+              <X className="size-3" />
+            </button>
+          </div>
+        )}
+        <div className="flex items-center gap-2">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10">
+            {uploading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Upload className="size-4" />
+            )}
+            <span>{url ? "Trocar arquivo" : "Enviar arquivo"}</span>
+            <input
+              type="file"
+              accept={field.accept ?? "*/*"}
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleFile(f);
+              }}
+            />
+          </label>
+          <Input
+            type="text"
+            value={url}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="ou cole uma URL"
+            className="flex-1"
+          />
+        </div>
+        {field.helperText && (
+          <p className="text-[11px] text-muted-foreground">{field.helperText}</p>
+        )}
       </div>
     </div>
   );

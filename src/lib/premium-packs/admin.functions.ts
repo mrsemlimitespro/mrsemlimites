@@ -63,7 +63,7 @@ const upsertSchema = z.object({
 export type AdminPackInput = z.infer<typeof upsertSchema>;
 
 const ADMIN_LIST_COLUMNS =
-  "id,slug,public_token,visibility_status,sales_platform,sales_product_id,nome,categoria,descricao_curta,descricao_completa,banner_url,capa_url,icone_url,video_url,galeria,tags,status,destaque,is_shareable,allow_download,allow_view,qtd_arquivos,espaco_bytes,ordem,downloads,views,popularidade,autor,versao,compatibilidade,observacoes,qr_code_url,public_link,seo_meta_title,seo_meta_description,og_image_url,twitter_image_url,source_type,source_metadata,ultima_atualizacao,created_at,updated_at";
+  "id,slug,public_token,visibility_status,sales_platform,sales_product_id,nome,categoria,descricao_curta,descricao_completa,banner_url,capa_url,icone_url,video_url,galeria,tags,status,destaque,is_shareable,allow_download,allow_view,qtd_arquivos,espaco_bytes,ordem,downloads,views,popularidade,autor,versao,compatibilidade,observacoes,qr_code_url,public_link,seo_meta_title,seo_meta_description,og_image_url,twitter_image_url,source_type,source_metadata,drive_url,archive_url,ultima_atualizacao,created_at,updated_at";
 
 export const adminListPremiumPacks = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

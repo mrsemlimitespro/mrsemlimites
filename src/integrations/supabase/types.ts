@@ -1582,6 +1582,7 @@ export type Database = {
         Row: {
           allow_download: boolean
           allow_view: boolean
+          archive_url: string | null
           autor: string | null
           banner_url: string | null
           capa_url: string | null
@@ -1592,6 +1593,7 @@ export type Database = {
           descricao_curta: string | null
           destaque: boolean
           downloads: number
+          drive_url: string | null
           espaco_bytes: number
           galeria: string[]
           icone_url: string | null
@@ -1627,6 +1629,7 @@ export type Database = {
         Insert: {
           allow_download?: boolean
           allow_view?: boolean
+          archive_url?: string | null
           autor?: string | null
           banner_url?: string | null
           capa_url?: string | null
@@ -1637,6 +1640,7 @@ export type Database = {
           descricao_curta?: string | null
           destaque?: boolean
           downloads?: number
+          drive_url?: string | null
           espaco_bytes?: number
           galeria?: string[]
           icone_url?: string | null
@@ -1672,6 +1676,7 @@ export type Database = {
         Update: {
           allow_download?: boolean
           allow_view?: boolean
+          archive_url?: string | null
           autor?: string | null
           banner_url?: string | null
           capa_url?: string | null
@@ -1682,6 +1687,7 @@ export type Database = {
           descricao_curta?: string | null
           destaque?: boolean
           downloads?: number
+          drive_url?: string | null
           espaco_bytes?: number
           galeria?: string[]
           icone_url?: string | null

@@ -29,6 +29,7 @@ export type FieldType =
   | "select_from_table"
   | "image"
   | "media"
+  | "file"
   | "array";
 
 export type Field = {
@@ -42,6 +43,7 @@ export type Field = {
   step?: number;
   helperText?: string;
   tab?: string;
+  accept?: string;
 };
 
 export type Resource = {
@@ -797,6 +799,8 @@ export const resources: Resource[] = [
         { value: "storage", label: "Lovable Cloud Storage" },
         { value: "external", label: "Link externo" },
       ], tab: "Arquivos" },
+      { key: "drive_url", label: "Link do Google Drive (pasta ou arquivo)", type: "text", tab: "Arquivos", placeholder: "https://drive.google.com/…", helperText: "Abre dentro da plataforma via visualizador embutido." },
+      { key: "archive_url", label: "Arquivo compactado (.zip/.rar)", type: "file", tab: "Arquivos", accept: ".zip,.rar,.7z,.tar,.gz,application/zip,application/x-rar-compressed,application/x-7z-compressed", helperText: "Enviado ao armazenamento interno. Clientes baixam direto sem sair do app." },
       { key: "qtd_arquivos", label: "Qtd. de arquivos", type: "number", tab: "Arquivos" },
       { key: "espaco_bytes", label: "Espaço (bytes)", type: "number", tab: "Arquivos" },
 
