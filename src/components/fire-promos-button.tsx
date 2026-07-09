@@ -177,7 +177,7 @@ export function FirePromosButton() {
                   }}
                 >
                   {p.imagem_url ? (
-                    <img src={p.imagem_url} alt={p.titulo} className="h-full w-full object-cover" />
+                    <img src={p.imagem_url} alt={p.titulo} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
                   ) : (
                     <Flame className="absolute inset-0 m-auto size-6 text-white/90" />
                   )}

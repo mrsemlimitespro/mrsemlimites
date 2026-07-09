@@ -226,7 +226,7 @@ export function PackShareDialog({ open, onOpenChange, pack, baseUrl }: Props) {
             <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center">
               <div className="rounded-2xl border border-white/10 bg-white p-3">
                 {qrDataUrl ? (
-                  <img src={qrDataUrl} alt="QR Code do pack" width={200} height={200} />
+                  <img src={qrDataUrl} alt="QR Code do pack" width={200} height={200}  loading="lazy" decoding="async" />
                 ) : (
                   <div className="h-[200px] w-[200px] animate-pulse bg-white/70" />
                 )}

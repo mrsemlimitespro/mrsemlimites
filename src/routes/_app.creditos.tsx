@@ -256,7 +256,7 @@ function PackCard({ pack }: { pack: Pack }) {
         }}
       >
         {pack.imagem_url ? (
-          <img src={pack.imagem_url} alt={pack.nome} className="h-full w-full object-cover" />
+          <img src={pack.imagem_url} alt={pack.nome} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
         ) : (
           <Zap className="size-6 text-white" strokeWidth={2.5} />
         )}
@@ -332,7 +332,7 @@ function PlanoCard({ plano }: { plano: Plano }) {
 
       {plano.imagem_url && (
         <div className="relative mt-3 h-20 w-full overflow-hidden rounded-xl">
-          <img src={plano.imagem_url} alt={plano.nome} className="h-full w-full object-cover" />
+          <img src={plano.imagem_url} alt={plano.nome} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
         </div>
       )}
 
@@ -397,7 +397,7 @@ function PromoBanner({ promo }: { promo: Promo }) {
           }}
         >
           {promo.imagem_url ? (
-            <img src={promo.imagem_url} alt={promo.titulo} className="h-full w-full object-cover" />
+            <img src={promo.imagem_url} alt={promo.titulo} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
           ) : (
             <Flame className="size-6 text-white" strokeWidth={2} />
           )}
