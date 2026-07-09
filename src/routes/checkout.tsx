@@ -122,8 +122,9 @@ function CheckoutPage() {
         if (alive && data) setPromo(data as Promo);
       }
 
-      const planoId = s.plano ?? (s.promo ? null : null);
+      const planoId = s.plano ?? null;
       const packId = s.pack ?? null;
+      const produtoId = s.produto ?? null;
 
       if (planoId) {
         const { data } = await supabase
@@ -139,6 +140,13 @@ function CheckoutPage() {
           .eq("id", packId)
           .maybeSingle();
         if (alive && data) setPack(data as Pack);
+      } else if (produtoId) {
+        const { data } = await supabase
+          .from("produtos")
+          .select("id,nome,titulo,preco,descricao,imagem_url,categoria,status,link")
+          .eq("id", produtoId)
+          .maybeSingle();
+        if (alive && data) setProduto(data as Produto);
       }
 
       if (alive) setLoading(false);
@@ -156,7 +164,16 @@ function CheckoutPage() {
     return 0;
   }, [promo, plano, pack]);
 
-  const item = plano ?? pack;
+  const item = plano ?? pack ?? (produto
+    ? {
+        id: produto.id,
+        nome: produto.titulo || produto.nome,
+        preco: produto.preco,
+        descricao: produto.descricao,
+        imagem_url: produto.imagem_url,
+      }
+    : null);
+
   const valorBase = item ? Number(item.preco) : 0;
   const valorFinal = valorBase * (1 - descontoPct / 100);
   const semGateway = gateways.length === 0;
