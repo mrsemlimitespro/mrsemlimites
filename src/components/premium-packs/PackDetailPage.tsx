@@ -10,6 +10,8 @@
  */
 import { useMemo, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft,
   Heart,
@@ -28,6 +30,7 @@ import { toast } from "sonner";
 import type { PremiumPack } from "@/lib/premium-packs/types";
 import { formatBytes, formatRelative } from "@/lib/premium-packs/format";
 import { useLocalFavorites } from "@/hooks/useLocalFavorites";
+import { listPremiumPacks } from "@/lib/premium-packs/packs.functions";
 import { PackShareDialog } from "./PackShareDialog";
 import { PackCover } from "./PackCover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
