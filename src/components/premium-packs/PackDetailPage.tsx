@@ -67,6 +67,42 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   }, [pack]);
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [viewerOpen, setViewerOpen] = useState(false);
+
+  const driveUrl = (pack as PremiumPack & { drive_url?: string | null }).drive_url ?? null;
+  const archiveUrl = (pack as PremiumPack & { archive_url?: string | null }).archive_url ?? null;
+
+  const driveEmbedUrl = useMemo(() => {
+    if (!driveUrl) return null;
+    const folderMatch = driveUrl.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+    if (folderMatch) return `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#list`;
+    const fileMatch = driveUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch) return `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
+    const openMatch = driveUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (openMatch) return `https://drive.google.com/file/d/${openMatch[1]}/preview`;
+    return driveUrl;
+  }, [driveUrl]);
+
+  const handleDownload = async () => {
+    if (!archiveUrl) return;
+    try {
+      const res = await fetch(archiveUrl);
+      if (!res.ok) throw new Error("Não foi possível baixar o arquivo");
+      const blob = await res.blob();
+      const objUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objUrl;
+      const fname = decodeURIComponent(archiveUrl.split("?")[0].split("/").pop() ?? `${pack.slug}.zip`);
+      a.download = fname;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
+      toast.success("Download iniciado");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha no download");
+    }
+  };
 
   const handleBack = () => {
     if (typeof window !== "undefined" && window.history.length > 1) router.history.back();
