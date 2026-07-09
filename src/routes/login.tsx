@@ -1,8 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandLockup } from "@/components/brand";
 import { PasswordInput, SocialSignIn } from "@/components/auth-extras";
+import { NativeService } from "@/native/NativeService";
+import {
+  enableBiometric,
+  getBiometricHint,
+  isBiometricEnabled,
+  unlockWithBiometric,
+} from "@/lib/biometric-session";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
