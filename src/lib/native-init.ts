@@ -94,4 +94,13 @@ export async function initNativePlatform(): Promise<void> {
 
   // Links externos → Capacitor Browser (in-app browser tab).
   installExternalLinkInterceptor();
+
+  // Migração idempotente: leva preferências do localStorage do WebView
+  // para o Preferences nativo (persistente entre boots). Roda uma única vez.
+  void StorageService.migrateFromWebStorage([
+    "theme",
+    "mrsl.web.deviceId",
+    "mrsl.onboarding.done",
+    "mrsl.notifications.optin",
+  ]);
 }
