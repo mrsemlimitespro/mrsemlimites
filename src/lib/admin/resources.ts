@@ -63,7 +63,37 @@ const statusOptions = [
   { value: "ativa", label: "Ativa" },
   { value: "suspensa", label: "Suspensa" },
   { value: "expirada", label: "Expirada" },
-  { value: "teste", label: "Teste" },
+  { value: "cancelada", label: "Cancelada" },
+];
+
+const tipoLicencaOptions = [
+  { value: "teste", label: "Teste (com tempo)" },
+  { value: "premium", label: "Premium (sem limite)" },
+];
+
+const trialDuracaoOptions = [
+  { value: "15", label: "15 minutos" },
+  { value: "30", label: "30 minutos" },
+  { value: "60", label: "1 hora" },
+  { value: "120", label: "2 horas" },
+  { value: "1440", label: "24 horas" },
+  { value: "10080", label: "7 dias" },
+  { value: "43200", label: "30 dias" },
+];
+
+const maxDispositivosOptions = [
+  { value: "1", label: "1 dispositivo" },
+  { value: "2", label: "2 dispositivos" },
+  { value: "5", label: "5 dispositivos" },
+  { value: "0", label: "Ilimitado" },
+];
+
+const fornecedorSlugOptions = [
+  { value: "", label: "— nenhum —" },
+  { value: "omega", label: "Omega" },
+  { value: "alpha", label: "Alpha" },
+  { value: "custom_http", label: "HTTP customizado (config JSON)" },
+  { value: "outro", label: "Outro (sem validação upstream)" },
 ];
 
 export const resources: Resource[] = [
@@ -75,25 +105,66 @@ export const resources: Resource[] = [
     icon: KeyRound,
     group: "Comercial",
     orderBy: { column: "created_at", ascending: false },
-    searchColumns: ["chave", "plano"],
+    searchColumns: ["chave", "plano", "email"],
     fields: [
-      { key: "chave", label: "Chave", type: "text", required: true },
-      {
-        key: "cliente_id",
-        label: "Cliente",
-        type: "select_from_table",
-        fromTable: { table: "clientes", labelKey: "nome" },
-      },
-      { key: "plano", label: "Plano", type: "text", placeholder: "Ex.: Premium anual" },
-      { key: "status", label: "Status", type: "select", options: statusOptions, required: true },
-      { key: "expira_em", label: "Expira em", type: "datetime" },
+      // === Identificação ===
+      { key: "chave", label: "Chave MR (visível ao cliente)", type: "text", required: true, tab: "Identificação", helperText: "Ex.: MR-2026-ABCD-EFGH — é a chave que o cliente cola na extensão." },
+      { key: "produto_id", label: "Produto", type: "select_from_table", fromTable: { table: "licenca_produtos", labelKey: "nome" }, tab: "Identificação" },
+      { key: "plano", label: "Plano (rótulo)", type: "text", placeholder: "Ex.: Premium anual", tab: "Identificação" },
+      { key: "tipo", label: "Tipo", type: "select", options: tipoLicencaOptions, required: true, tab: "Identificação", helperText: "Ao mudar de Teste → Premium, o tempo e a expiração são limpos automaticamente (mesma chave)." },
+      { key: "status", label: "Status", type: "select", options: statusOptions, required: true, tab: "Identificação" },
+      { key: "expira_em", label: "Expira em (Premium com validade)", type: "datetime", tab: "Identificação" },
+
+      // === Fornecedor (oculto do cliente) ===
+      { key: "fornecedor_slug", label: "Fornecedor", type: "select", options: fornecedorSlugOptions, tab: "Fornecedor" },
+      { key: "chave_fornecedor", label: "Chave do fornecedor (privada)", type: "textarea", tab: "Fornecedor", helperText: "NUNCA aparece para o cliente. O servidor a usa por trás para autorizar a extensão. Deixe vazio se não usa fornecedor." },
+      // fornecedor_config (jsonb) fica gerenciado pelo servidor; se precisar customizar, edite via banco.
+
+      // === Teste ===
+      { key: "trial_duracao_minutos", label: "Duração do teste", type: "select", options: trialDuracaoOptions, tab: "Teste", helperText: "Só se aplica quando Tipo = Teste. Contagem começa na primeira validação da extensão." },
+      { key: "trial_iniciado_em", label: "Teste iniciado em (readonly)", type: "datetime", tab: "Teste" },
+
+      // === Dispositivos ===
+      { key: "max_dispositivos", label: "Máx. de dispositivos", type: "select", options: maxDispositivosOptions, tab: "Dispositivos", helperText: "0 = ilimitado. A extensão fica travada aos dispositivos registrados." },
+      { key: "versao_min", label: "Versão mínima da extensão", type: "text", placeholder: "Ex.: 1.2.0", tab: "Dispositivos" },
+
+      // === Cliente ===
+      { key: "cliente_id", label: "Cliente", type: "select_from_table", fromTable: { table: "clientes", labelKey: "nome" }, tab: "Cliente" },
+      { key: "email", label: "E-mail (para validação)", type: "text", tab: "Cliente" },
+      { key: "duracao_dias", label: "Duração padrão (dias) — legado", type: "number", tab: "Cliente" },
+      { key: "observacoes_admin", label: "Observações internas", type: "textarea", tab: "Cliente" },
     ],
     listColumns: [
-      { key: "chave", label: "Chave" },
-      { key: "plano", label: "Plano" },
+      { key: "chave", label: "Chave MR" },
+      { key: "tipo", label: "Tipo" },
       { key: "status", label: "Status" },
+      { key: "email", label: "E-mail" },
       { key: "expira_em", label: "Expira", format: "date" },
       { key: "created_at", label: "Criada", format: "date" },
+    ],
+  },
+  {
+    key: "licenca_produtos",
+    label: "Produtos (Licenças)",
+    singular: "Produto",
+    table: "licenca_produtos",
+    icon: Package,
+    group: "Comercial",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["nome", "slug"],
+    fields: [
+      { key: "nome", label: "Nome", type: "text", required: true },
+      { key: "slug", label: "Slug", type: "text", required: true, placeholder: "ex.: mr-extension-pro" },
+      { key: "descricao", label: "Descrição", type: "textarea" },
+      { key: "fornecedor_padrao", label: "Fornecedor padrão", type: "select", options: fornecedorSlugOptions },
+      { key: "versao_atual", label: "Versão atual", type: "text" },
+      { key: "ativo", label: "Ativo", type: "boolean" },
+    ],
+    listColumns: [
+      { key: "nome", label: "Nome" },
+      { key: "slug", label: "Slug" },
+      { key: "versao_atual", label: "Versão" },
+      { key: "ativo", label: "Ativo", format: "boolean" },
     ],
   },
   {

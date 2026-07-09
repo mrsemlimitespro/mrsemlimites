@@ -857,54 +857,211 @@ export type Database = {
         }
         Relationships: []
       }
+      licenca_acessos: {
+        Row: {
+          chave: string | null
+          created_at: string
+          device_id: string | null
+          id: string
+          ip: string | null
+          licenca_id: string | null
+          metadata: Json
+          resultado: string
+          user_agent: string | null
+          versao: string | null
+        }
+        Insert: {
+          chave?: string | null
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          ip?: string | null
+          licenca_id?: string | null
+          metadata?: Json
+          resultado: string
+          user_agent?: string | null
+          versao?: string | null
+        }
+        Update: {
+          chave?: string | null
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          ip?: string | null
+          licenca_id?: string | null
+          metadata?: Json
+          resultado?: string
+          user_agent?: string | null
+          versao?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licenca_acessos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licenca_dispositivos: {
+        Row: {
+          cidade: string | null
+          device_id: string
+          device_nome: string | null
+          id: string
+          ip: string | null
+          licenca_id: string
+          primeiro_acesso: string
+          ultimo_acesso: string
+          user_agent: string | null
+        }
+        Insert: {
+          cidade?: string | null
+          device_id: string
+          device_nome?: string | null
+          id?: string
+          ip?: string | null
+          licenca_id: string
+          primeiro_acesso?: string
+          ultimo_acesso?: string
+          user_agent?: string | null
+        }
+        Update: {
+          cidade?: string | null
+          device_id?: string
+          device_nome?: string | null
+          id?: string
+          ip?: string | null
+          licenca_id?: string
+          primeiro_acesso?: string
+          ultimo_acesso?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licenca_dispositivos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licenca_produtos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          descricao: string | null
+          fornecedor_padrao: string | null
+          id: string
+          nome: string
+          slug: string
+          updated_at: string
+          versao_atual: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          fornecedor_padrao?: string | null
+          id?: string
+          nome: string
+          slug: string
+          updated_at?: string
+          versao_atual?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          fornecedor_padrao?: string | null
+          id?: string
+          nome?: string
+          slug?: string
+          updated_at?: string
+          versao_atual?: string | null
+        }
+        Relationships: []
+      }
       licencas: {
         Row: {
           ativada_em: string | null
           chave: string
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
           id: string
+          max_dispositivos: number
+          observacoes_admin: string | null
           plano: string | null
+          produto_id: string | null
           revendedor_id: string | null
           status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
           ultimo_acesso: string | null
           updated_at: string
+          versao_min: string | null
         }
         Insert: {
           ativada_em?: string | null
           chave: string
+          chave_fornecedor?: string | null
           cliente_id?: string | null
           created_at?: string
           device_id?: string | null
           duracao_dias?: number
           email?: string | null
           expira_em?: string | null
+          fornecedor_config?: Json
+          fornecedor_slug?: string | null
           id?: string
+          max_dispositivos?: number
+          observacoes_admin?: string | null
           plano?: string | null
+          produto_id?: string | null
           revendedor_id?: string | null
           status?: string
+          tipo?: string
+          trial_duracao_minutos?: number | null
+          trial_iniciado_em?: string | null
           ultimo_acesso?: string | null
           updated_at?: string
+          versao_min?: string | null
         }
         Update: {
           ativada_em?: string | null
           chave?: string
+          chave_fornecedor?: string | null
           cliente_id?: string | null
           created_at?: string
           device_id?: string | null
           duracao_dias?: number
           email?: string | null
           expira_em?: string | null
+          fornecedor_config?: Json
+          fornecedor_slug?: string | null
           id?: string
+          max_dispositivos?: number
+          observacoes_admin?: string | null
           plano?: string | null
+          produto_id?: string | null
           revendedor_id?: string | null
           status?: string
+          tipo?: string
+          trial_duracao_minutos?: number | null
+          trial_iniciado_em?: string | null
           ultimo_acesso?: string | null
           updated_at?: string
+          versao_min?: string | null
         }
         Relationships: [
           {
@@ -912,6 +1069,13 @@ export type Database = {
             columns: ["cliente_id"]
             isOneToOne: false
             referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licencas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "licenca_produtos"
             referencedColumns: ["id"]
           },
           {
@@ -2317,18 +2481,28 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
           id: string
+          max_dispositivos: number
+          observacoes_admin: string | null
           plano: string | null
+          produto_id: string | null
           revendedor_id: string | null
           status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
           ultimo_acesso: string | null
           updated_at: string
+          versao_min: string | null
         }
         SetofOptions: {
           from: "*"
@@ -2351,18 +2525,63 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
           id: string
+          max_dispositivos: number
+          observacoes_admin: string | null
           plano: string | null
+          produto_id: string | null
           revendedor_id: string | null
           status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
           ultimo_acesso: string | null
           updated_at: string
+          versao_min: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "licencas"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      converter_licenca_em_premium: {
+        Args: { _licenca_id: string }
+        Returns: {
+          ativada_em: string | null
+          chave: string
+          chave_fornecedor: string | null
+          cliente_id: string | null
+          created_at: string
+          device_id: string | null
+          duracao_dias: number
+          email: string | null
+          expira_em: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
+          id: string
+          max_dispositivos: number
+          observacoes_admin: string | null
+          plano: string | null
+          produto_id: string | null
+          revendedor_id: string | null
+          status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
+          ultimo_acesso: string | null
+          updated_at: string
+          versao_min: string | null
         }
         SetofOptions: {
           from: "*"
@@ -2389,6 +2608,7 @@ export type Database = {
       }
       current_revendedor_id: { Args: never; Returns: string }
       expirar_licencas_vencidas: { Args: never; Returns: number }
+      expirar_trials_vencidos: { Args: never; Returns: number }
       gerar_chave_licenca: { Args: never; Returns: string }
       gerar_licencas: {
         Args: {
@@ -2399,18 +2619,28 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
           id: string
+          max_dispositivos: number
+          observacoes_admin: string | null
           plano: string | null
+          produto_id: string | null
           revendedor_id: string | null
           status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
           ultimo_acesso: string | null
           updated_at: string
+          versao_min: string | null
         }[]
         SetofOptions: {
           from: "*"
@@ -2437,18 +2667,28 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
           id: string
+          max_dispositivos: number
+          observacoes_admin: string | null
           plano: string | null
+          produto_id: string | null
           revendedor_id: string | null
           status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
           ultimo_acesso: string | null
           updated_at: string
+          versao_min: string | null
         }
         SetofOptions: {
           from: "*"
@@ -2462,18 +2702,28 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
           id: string
+          max_dispositivos: number
+          observacoes_admin: string | null
           plano: string | null
+          produto_id: string | null
           revendedor_id: string | null
           status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
           ultimo_acesso: string | null
           updated_at: string
+          versao_min: string | null
         }
         SetofOptions: {
           from: "*"
@@ -2487,18 +2737,28 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
           id: string
+          max_dispositivos: number
+          observacoes_admin: string | null
           plano: string | null
+          produto_id: string | null
           revendedor_id: string | null
           status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
           ultimo_acesso: string | null
           updated_at: string
+          versao_min: string | null
         }
         SetofOptions: {
           from: "*"
