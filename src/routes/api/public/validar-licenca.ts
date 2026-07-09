@@ -198,7 +198,7 @@ function jsonResp(cors: Record<string, string>, body: unknown) {
 }
 
 async function logAcesso(
-  sb: ReturnType<typeof createClient>,
+  sb: any,
   licenca_id: string | null,
   chave: string,
   device_id: string | null,
