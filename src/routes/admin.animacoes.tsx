@@ -158,9 +158,9 @@ function AnimacoesPage() {
               </div>
               <button
                 type="button"
-                onClick={() => copy(s.id, s.nome)}
+                onClick={() => copy(s)}
                 className="shrink-0 rounded-lg border border-white/10 bg-white/5 p-2 text-muted-foreground transition hover:bg-white/10 hover:text-foreground"
-                title="Copiar nome do estilo"
+                title="Copiar código da animação"
                 aria-label={`Copiar ${s.nome}`}
               >
                 {copied === s.id ? (
