@@ -221,7 +221,17 @@ function CheckoutPage() {
         moeda: "BRL",
         status,
         metodo: gwSlug,
-        metadata: promo ? { promo_id: promo.id, desconto_pct: descontoPct } : null,
+        metadata: {
+          ...(promo ? { promo_id: promo.id, desconto_pct: descontoPct } : {}),
+          ...(produto
+            ? {
+                produto_id: produto.id,
+                produto_nome: produto.titulo || produto.nome,
+                produto_categoria: produto.categoria,
+              }
+            : {}),
+        },
+
       })
       .select("id, valor")
       .single();
