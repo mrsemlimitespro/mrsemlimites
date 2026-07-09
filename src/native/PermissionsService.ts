@@ -79,6 +79,13 @@ export const PermissionsService = {
       const state = await webCheck(kind);
       return ok(state);
     }
+    if (kind === "camera" || kind === "photos") {
+      const { CameraService } = await import("./CameraService");
+      const r = await CameraService.requestPermission(kind);
+      if (!r.ok) return r;
+      const s = r.data === "limited" ? "granted" : r.data;
+      return ok(s as PermissionState);
+    }
     return notImplemented(`PermissionsService.request(${kind}) nativo`);
   },
 };
