@@ -815,7 +815,6 @@ export const resources: Resource[] = [
       { key: "is_shareable", label: "Compartilhável (link público)", type: "boolean", tab: "Publicação" },
       { key: "destaque", label: "Em destaque", type: "boolean", tab: "Publicação" },
       { key: "sales_platform", label: "Plataforma de venda", type: "select", options: [
-        { value: "", label: "Nenhuma" },
         { value: "kiwify", label: "Kiwify" },
         { value: "hotmart", label: "Hotmart" },
         { value: "eduzz", label: "Eduzz" },
