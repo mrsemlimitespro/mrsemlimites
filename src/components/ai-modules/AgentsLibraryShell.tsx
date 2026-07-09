@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { getAgents, type AiAgent } from "@/lib/ai-agents.functions";
 import { AICard, AIEmptyState, AIPill } from "@/components/ai-modules/AIModuleShell";
 import { useLocalFavorites } from "@/hooks/useLocalFavorites";
+import { downloadItemAsHtml } from "@/lib/download-item";
 
 export function AgentsLibraryShell() {
   const fetchAgents = useServerFn(getAgents);
