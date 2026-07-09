@@ -1,10 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard,
-  KeyRound,
-  Users,
-  Coins,
-  GraduationCap,
+  Home,
+  ShoppingBag,
+  Sparkles,
+  Library,
+  User,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
@@ -13,65 +13,130 @@ import { playSfx } from "@/lib/sfx";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
-const items: { title: string; url: string; icon: IconType }[] = [
-  { title: "Início", url: "/", icon: LayoutDashboard },
-  { title: "Licenças", url: "/licencas", icon: KeyRound },
-  { title: "Clientes", url: "/clientes", icon: Users },
-  { title: "Créditos", url: "/creditos", icon: Coins },
-  { title: "Aulas", url: "/aulas", icon: GraduationCap },
+type TabItem = {
+  id: string;
+  title: string;
+  to: string;
+  icon: IconType;
+  /** Rotas que também ativam esta aba (submenus internos). */
+  matches: string[];
+};
+
+/**
+ * Bottom Navigation unificado (Material Design + Human Interface Guidelines).
+ * 5 abas principais que agrupam todas as áreas do app. Nenhuma rota foi removida —
+ * apenas reagrupadas via `matches[]` para preservar toda a lógica existente.
+ */
+const items: TabItem[] = [
+  { id: "home", title: "Início", to: "/", icon: Home, matches: ["/"] },
+  {
+    id: "loja",
+    title: "Loja",
+    to: "/creditos",
+    icon: ShoppingBag,
+    matches: ["/creditos"],
+  },
+  {
+    id: "ia",
+    title: "IA",
+    to: "/prompts",
+    icon: Sparkles,
+    matches: ["/prompts", "/agents", "/packs"],
+  },
+  {
+    id: "biblioteca",
+    title: "Biblioteca",
+    to: "/licencas",
+    icon: Library,
+    matches: ["/licencas", "/aulas", "/clientes"],
+  },
+  { id: "perfil", title: "Perfil", to: "/perfil", icon: User, matches: ["/perfil"] },
 ];
+
+function matchTab(pathname: string, tab: TabItem): boolean {
+  if (tab.id === "home") return pathname === "/";
+  return tab.matches.some((p) =>
+    p === pathname || pathname.startsWith(`${p}/`),
+  );
+}
 
 export function MobileBottomNav() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
-  const isActive = (path: string) =>
-    path === "/" ? currentPath === "/" : currentPath.startsWith(path);
 
   return (
     <nav
-      aria-label="Navegação inferior"
+      aria-label="Navegação principal"
       className={cn(
-        "fixed inset-x-3 bottom-3 z-40 md:hidden",
-        "flex items-center justify-between gap-1 rounded-full px-2 py-2",
-        "border border-border/70 bg-surface/70 backdrop-blur-xl",
+        "fixed inset-x-0 bottom-0 z-40 md:hidden",
+        "border-t border-border/60 bg-surface/85 backdrop-blur-2xl",
       )}
       style={{
-        paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))",
+        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingLeft: "env(safe-area-inset-left)",
+        paddingRight: "env(safe-area-inset-right)",
+        // Elevation sutil acima do conteúdo
         boxShadow:
-          "0 0 0 1px oklch(1 0 0 / 4%), 0 20px 60px -20px oklch(0 0 0 / 70%), 0 0 40px -6px color-mix(in oklab, var(--brand-magenta) 45%, transparent)",
+          "0 -1px 0 0 oklch(1 0 0 / 4%), 0 -12px 40px -12px oklch(0 0 0 / 55%)",
       }}
     >
-      {items.map((item) => {
-        const active = isActive(item.url);
-        const Icon = item.icon;
-        return (
-          <Link
-            key={item.url}
-            to={item.url}
-            onClick={() => playSfx("swipe")}
-            aria-label={item.title}
-            className={cn(
-              "relative grid flex-1 place-items-center gap-0.5 rounded-full px-2 py-1.5 transition-all",
-              "text-foreground/60",
-              active && "text-primary-foreground",
-            )}
-          >
-            {active && (
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-full gradient-primary"
-                style={{
-                  boxShadow:
-                    "0 0 24px -2px color-mix(in oklab, var(--primary) 85%, transparent)",
-                }}
-              />
-            )}
-            <Icon className="relative z-10 size-[18px]" strokeWidth={2} />
-            <span className="relative z-10 text-[10px] font-medium leading-none">
-              {item.title}
-            </span>
-          </Link>
-        );
-      })}
+      <ul className="mx-auto flex w-full max-w-[640px] items-stretch justify-around px-1">
+        {items.map((item) => {
+          const active = matchTab(currentPath, item);
+          const Icon = item.icon;
+          return (
+            <li key={item.id} className="flex-1">
+              <Link
+                to={item.to}
+                onClick={() => playSfx("swipe")}
+                aria-label={item.title}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "relative mx-auto flex h-14 min-h-14 w-full min-w-12 flex-col items-center justify-center gap-0.5",
+                  "outline-none transition-colors",
+                  "active:scale-[0.94] transition-transform duration-100",
+                  active
+                    ? "text-primary-foreground"
+                    : "text-foreground/60 hover:text-foreground",
+                )}
+              >
+                {/* Indicador ativo — pill translúcido no topo */}
+                <span
+                  aria-hidden
+                  className={cn(
+                    "pointer-events-none absolute left-1/2 top-1.5 h-1 w-8 -translate-x-1/2 rounded-full transition-all duration-200",
+                    active
+                      ? "gradient-primary opacity-100"
+                      : "bg-transparent opacity-0",
+                  )}
+                  style={
+                    active
+                      ? {
+                          boxShadow:
+                            "0 0 12px -2px color-mix(in oklab, var(--primary) 85%, transparent)",
+                        }
+                      : undefined
+                  }
+                />
+                <Icon
+                  className={cn(
+                    "size-[22px] transition-transform duration-200",
+                    active && "scale-110",
+                  )}
+                  strokeWidth={active ? 2.4 : 2}
+                />
+                <span
+                  className={cn(
+                    "text-[11px] font-medium leading-none tracking-tight",
+                    active && "font-semibold",
+                  )}
+                >
+                  {item.title}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </nav>
   );
 }
