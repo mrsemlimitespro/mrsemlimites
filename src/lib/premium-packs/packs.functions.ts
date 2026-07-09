@@ -6,7 +6,7 @@ import type { ListPremiumPacksResult, PremiumPack, PremiumPackSort } from "./typ
 // or `source_metadata` (admin-only). Keeping this explicit prevents
 // future `select('*')` regressions from leaking the private origin blob.
 const PUBLIC_COLUMNS =
-  "id,slug,public_token,visibility_status,nome,categoria,descricao_curta,descricao_completa,banner_url,capa_url,icone_url,video_url,galeria,tags,status,destaque,is_shareable,allow_download,allow_view,qtd_arquivos,espaco_bytes,ordem,downloads,views,popularidade,autor,versao,compatibilidade,observacoes,qr_code_url,public_link,seo_meta_title,seo_meta_description,og_image_url,twitter_image_url,source_type,ultima_atualizacao,created_at,updated_at";
+  "id,slug,public_token,visibility_status,nome,categoria,descricao_curta,descricao_completa,banner_url,capa_url,icone_url,video_url,galeria,tags,status,destaque,is_shareable,allow_download,allow_view,qtd_arquivos,espaco_bytes,ordem,downloads,views,popularidade,autor,versao,compatibilidade,observacoes,qr_code_url,public_link,seo_meta_title,seo_meta_description,og_image_url,twitter_image_url,source_type,drive_url,archive_url,ultima_atualizacao,created_at,updated_at";
 
 const sortSchema = z.enum(["recentes", "atualizados", "baixados", "populares", "nome"]);
 
