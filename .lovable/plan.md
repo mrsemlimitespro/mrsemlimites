@@ -1,116 +1,114 @@
-## O que será construído
+# Plano: MR Sem Limites → App Nativo Android + iOS via Capacitor
 
-Um sistema de licenças em duas camadas: a **chave do fornecedor** fica criptografada no servidor e **nunca sai dele**; o cliente recebe apenas a **chave MR pública**. A extensão consulta a API MR, que decide se libera, e opcionalmente valida contra o fornecedor por baixo. Nada quebra do que já existe hoje — tudo é aditivo.
+Vou transformar o projeto atual em um app nativo mantendo 100% do código web/PWA intacto. A arquitetura será híbrida: mesma base de código, dois modos de build.
 
----
-
-### 1. Banco de dados (migração)
-
-Novas colunas em `public.licencas`:
-
-- `chave_fornecedor_encrypted` (jsonb) — chave real do fornecedor, AES-256-GCM (mesma crypto dos packs).
-- `fornecedor_slug` (text) — ex.: `omega`, `alpha`, `outro`. Define qual proxy chamar.
-- `produto_id` (uuid, FK para nova `licenca_produtos`).
-- `tipo` (enum: `teste` | `premium`).
-- `trial_duracao_minutos` (int) — 15, 30, 60, 120, 1440, 10080, 43200.
-- `trial_iniciado_em` (timestamp) — gravado na 1ª validação.
-- `max_dispositivos` (int, default 1) — 1, 2, 5, ou `NULL` = ilimitado.
-- `versao_min` (text, nullable).
-- `observacoes_admin` (text, nullable).
-
-Nova tabela `public.licenca_produtos`:
-- `nome`, `slug`, `descricao`, `fornecedor_padrao`, `versao_atual`, `ativo`.
-
-Nova tabela `public.licenca_dispositivos` (substitui o `device_id` único quando `max_dispositivos > 1`):
-- `licenca_id`, `device_id`, `device_nome`, `ip`, `user_agent`, `cidade`, `primeiro_acesso`, `ultimo_acesso`.
-- Unique `(licenca_id, device_id)`.
-
-Nova tabela `public.licenca_acessos` (histórico):
-- `licenca_id`, `device_id`, `ip`, `user_agent`, `versao`, `resultado` (`ok` | `trial_expired` | `blocked` | `device_limit` | `invalid`), `created_at`.
-
-Nova função SQL `expirar_trials_vencidos()` — marca `status='expirada'` quando `tipo='teste' AND trial_iniciado_em + trial_duracao_minutos < now()`. Chamada pela API a cada validação (lazy) + agendada.
-
-RLS: mesmas regras das `licencas` existentes; `service_role` full; `authenticated` scoped por revendedor.
-
-### 2. Server functions admin (`src/lib/licencas/*.functions.ts`)
-
-- `adminListLicencas` — lista com filtros por tipo/status/produto.
-- `adminUpsertLicenca` — cria/edita; recebe `chave_fornecedor_plain` opcional (criptografa server-side); nunca retorna a chave em plain.
-- `adminRevelarChaveFornecedor` — retorna a chave descriptografada só sob `has_role('admin')`, para exibir uma vez ao admin.
-- `adminConverterEmPremium` — muda `tipo='premium'`, zera `trial_iniciado_em`, remove `expira_em`, mantém a mesma chave MR.
-- `adminBloquearLicenca`, `adminReativarLicenca`, `adminResetDispositivos`.
-- `adminListDispositivos(licencaId)`, `adminListAcessos(licencaId)`.
-- `adminListProdutos`, `adminUpsertProduto`.
-
-Todas com `requireSupabaseAuth` + `assertAdmin`.
-
-### 3. Endpoint público estendido (`/api/public/validar-licenca`)
-
-Mantém o mesmo path (não quebra a extensão atual). Novo comportamento:
+## Arquitetura final
 
 ```text
-POST /api/public/validar-licenca
-{ email, chave, device_id, versao?, ip? }
-
-→ 1. Busca licença pela chave MR.
-  2. Se tipo=teste e trial_iniciado_em NULL → grava now(), calcula expira_em = now() + duracao.
-  3. Chama expirar_trials_vencidos() lazy.
-  4. Valida device: se count(dispositivos) >= max_dispositivos e device_id novo → nega.
-     Registra dispositivo no primeiro acesso.
-  5. Se fornecedor_slug != null → chama proxy interno ao fornecedor (server-side, com a chave descriptografada).
-  6. Insere log em licenca_acessos.
-  7. Retorna { ok, premium, expires_in, reason? }.
+┌─────────────────────────────────────────────────┐
+│         SRC (código compartilhado 95%)          │
+│  rotas, componentes, hooks, integração Supabase │
+└──────────────┬──────────────────┬───────────────┘
+               │                  │
+       ┌───────▼────────┐  ┌──────▼──────────────┐
+       │  BUILD: WEB    │  │  BUILD: MOBILE      │
+       │  TanStack SSR  │  │  SPA estático       │
+       │  Cloudflare    │  │  Capacitor          │
+       │  mrsemlimites  │  │  Android + iOS      │
+       │  .lovable.app  │  │  .apk / .ipa        │
+       └────────────────┘  └─────────┬───────────┘
+                                     │
+                          Chama Server Functions
+                          via HTTPS → domínio web
+                          (mesma Supabase, RLS)
 ```
 
-`expires_in` calculado dinamicamente para o warning de 5 min.
+## Fases de implementação
 
-### 4. Proxy ao fornecedor (`src/lib/licencas/fornecedores.server.ts`)
+### Fase 1 — Fundação Capacitor (esta fase)
+1. Instalar Capacitor core + CLI + plugins nativos essenciais
+2. Criar `capacitor.config.ts` com configuração Android/iOS
+3. Criar script de build mobile (`build:mobile`) que gera SPA estático em `dist-mobile/`
+4. Adicionar detecção de plataforma (`src/lib/platform.ts`): `isNative()`, `isAndroid()`, `isIOS()`, `isWeb()`
+5. Criar `.env.mobile` com URL do backend web publicado
+6. Ajustar `src/integrations/supabase/client.ts` para usar URL absoluta no modo mobile
+7. Configurar fetch de Server Functions para apontar ao domínio publicado quando rodando no app
 
-Handlers por `fornecedor_slug`. Cada handler recebe a chave descriptografada e faz `fetch` ao endpoint do fornecedor. Registro inicial com adapter genérico (`custom_http`) configurável por produto — endpoint, método, template de body. Assim novos fornecedores entram sem código novo.
+### Fase 2 — Recursos nativos (próximas mensagens)
+Plugins Capacitor:
+- `@capacitor/push-notifications` + FCM (Android) / APNs (iOS) → notificações
+- `@capacitor-community/biometric-auth` → login biométrico
+- `@capacitor/camera` → foto/galeria
+- `@capacitor/filesystem` + `@capacitor/share` → upload/compartilhamento
+- `@capacitor/preferences` → armazenamento seguro chave-valor
+- `@capacitor/network` → detectar offline/online
+- `@capacitor/app` + `@capacitor/status-bar` + `@capacitor/splash-screen` → UX nativa
+- `@capacitor/geolocation` → GPS (opcional, sob demanda)
 
-Falha do fornecedor → retorna `{ ok:false, reason:'upstream_unavailable' }`; NÃO libera por default (fail-closed).
+Hooks React que abstraem web ↔ nativo:
+- `useNativeAuth()` — biometria + fallback web
+- `useNativeCamera()` — camera nativa + fallback `<input type="file">`
+- `useNativeShare()` — share sheet nativo + fallback Web Share API
+- `useNetworkStatus()` — online/offline unificado
+- `usePushNotifications()` — registro de token FCM/APNs
 
-### 5. UI Admin
+### Fase 3 — Offline parcial + sync
+- IndexedDB via `@tanstack/query-persist-client-core` para cache persistente
+- Fila de mutations offline com replay automático ao reconectar
+- Realtime Supabase reconecta sozinho ao voltar online
 
-Estende a página existente `admin.$resource.tsx` com o recurso `licencas` atualizado em `src/lib/admin/resources.ts`:
+### Fase 4 — Publicação
+- Gerar ícones e splash screens (todas resoluções Android + iOS)
+- Configurar `AndroidManifest.xml` (permissões, deep links)
+- Configurar `Info.plist` (permissões, URL schemes)
+- Preparar assets para Play Store e App Store
+- Documentar processo de build/assinatura em `MOBILE.md`
 
-- Aba **Identificação**: produto, tipo (teste/premium), chave MR (gerada automaticamente ao criar).
-- Aba **Fornecedor**: fornecedor_slug (select), campo secreto para chave do fornecedor (com botão "revelar/editar"), endpoint custom se `outro`.
-- Aba **Teste**: duração (dropdown com presets), preview do horário de expiração.
-- Aba **Dispositivos**: max_dispositivos (1/2/5/ilimitado), lista de dispositivos registrados com botão "resetar".
-- Aba **Cliente**: nome, email, telefone, empresa (já existe).
-- Aba **Histórico**: tabela de `licenca_acessos` — IP, cidade, versão, resultado, timestamp.
-- Botões de ação no topo do detalhe: **Converter em Premium**, **Bloquear**, **Renovar**, **Resetar Dispositivos**.
+## O que esta primeira entrega inclui
 
-Novo recurso `licenca_produtos` no admin sidebar.
+Apenas a **Fase 1** — fundação técnica funcional:
+- Capacitor instalado e configurado
+- Projeto Android criado (`android/`)
+- Projeto iOS criado (`ios/`)
+- Build mobile funcionando (`bun run build:mobile`)
+- Detecção de plataforma
+- Zero impacto no build web atual (SSR continua igual)
 
-### 6. UI Revendedor (`_app.licencas.tsx`)
+Ao final desta fase, você já poderá:
+- Abrir Android Studio e rodar o app no emulador/dispositivo
+- Ver o site inteiro rodando dentro do WebView nativo
+- Chamar Server Functions do web publicado
 
-Adição mínima: coluna "Tipo" (teste/premium) + badge de tempo restante quando trial. Sem exposição de fornecedor.
+## Decisões técnicas importantes
 
----
+**Backend do app mobile aponta para o domínio publicado.** O app instalado no celular fará requests HTTPS para `https://mrsemlimites.lovable.app/_serverFn/*` e Supabase Realtime. Isso significa:
+- ✅ Uma única fonte de verdade (Supabase)
+- ✅ Webhooks (Cakto/Kiwify/MP) continuam funcionando no servidor web
+- ✅ Sincronização em tempo real automática entre web/PWA/mobile
+- ⚠️ App mobile precisa que o site esteja publicado para funcionar (o que já é o caso)
 
-## Detalhes técnicos
+**Build separado (`dist-mobile/`).** O Vite gera um bundle SPA puro para o Capacitor empacotar. O `dist/` web continua com SSR.
 
-- Criptografia reaproveita `src/lib/premium-packs/crypto.server.ts` (AES-256-GCM, chave derivada de `SUPABASE_SERVICE_ROLE_KEY`).
-- Geração de chave MR: prefixo `MR-YYYY-XXXX-XXXX-XXXX` (mesma base32 sem ambíguos da `gerar_chave_licenca`, com prefixo custom).
-- `expirar_trials_vencidos()` roda como SECURITY DEFINER, chamada dentro do endpoint público (lazy) — sem cron externo.
-- Endpoint público continua retornando o shape antigo `{ ok, expira_em, cliente_id }` **mais** os novos campos (`premium`, `expires_in`, `reason`) — extensões antigas continuam funcionando.
-- Fail-closed em qualquer erro upstream.
+**Server Functions via URL absoluta.** No modo mobile, `useServerFn` é interceptado para prefixar a URL do backend.
 
-## Arquivos que serão criados
+## Detalhes técnicos (para revisão do usuário)
 
-- `supabase/migrations/<timestamp>_licencas_v2.sql`
-- `src/lib/licencas/_guard.ts`
-- `src/lib/licencas/admin.functions.ts`
-- `src/lib/licencas/produtos.functions.ts`
-- `src/lib/licencas/fornecedores.server.ts`
-- `src/lib/licencas/gerar-chave.ts`
+Arquivos que serão criados/modificados nesta fase:
+- ➕ `capacitor.config.ts` (novo)
+- ➕ `src/lib/platform.ts` (novo)
+- ➕ `src/lib/mobile-fetch.ts` (novo — intercepta chamadas para apontar ao domínio web)
+- ➕ `.env.mobile` (novo — `VITE_MOBILE_BACKEND_URL`)
+- ➕ `android/` (gerado pelo Capacitor CLI)
+- ➕ `ios/` (gerado pelo Capacitor CLI)
+- ➕ `MOBILE.md` (documentação)
+- 🔧 `package.json` — adiciona scripts `build:mobile`, `cap:sync`, `cap:android`, `cap:ios`
+- 🔧 `vite.config.ts` — modo `mobile` gera SPA em `dist-mobile/`
+- 🔧 `src/routes/__root.tsx` — inicializa Capacitor plugins quando `isNative()`
 
-## Arquivos editados (sem quebrar)
+**Não** vou modificar: SSR, rotas existentes, componentes, RLS, migrations, webhooks, `.env` atual.
 
-- `src/routes/api/public/validar-licenca.ts` — retrocompatível.
-- `src/lib/admin/resources.ts` — recurso `licencas` estendido + novo `licenca_produtos`.
-- `src/routes/_app.licencas.tsx` — coluna tipo/tempo restante.
+## Próximo passo após sua aprovação
 
-Confirma que posso seguir e implementar tudo isso?
+Executo a Fase 1 completa (instalação + configuração + primeiro build mobile funcional). Depois te mostro como testar no Android Studio e confirmamos antes de partir para a Fase 2 (recursos nativos).
+
+**Confirma que posso executar a Fase 1?**
