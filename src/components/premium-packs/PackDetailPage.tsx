@@ -282,7 +282,36 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
             </div>
           </TabsContent>
         </Tabs>
+
+        {related.length > 0 && (
+          <div className="mt-12">
+            <h3 className="mb-4 text-[11px] uppercase tracking-[0.32em] text-ai-200 font-bold">
+              Você também pode gostar
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {related.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => router.navigate({ to: "/packs/$slug", params: { slug: r.slug } })}
+                  className="group text-left rounded-2xl overflow-hidden border border-ai-300/15 bg-black/40 hover:border-ai-300/40 transition"
+                >
+                  <div className="aspect-[3/4] relative bg-black">
+                    <PackCover src={r.capa_url} title={r.nome} variant="card" rounded="rounded-none" />
+                  </div>
+                  <div className="p-3">
+                    <div className="text-[10px] uppercase tracking-[0.22em] text-ai-200/70 font-bold">
+                      {r.categoria || "Pack"}
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-white line-clamp-2">{r.nome}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
+
 
       <PackShareDialog
         open={shareOpen}
