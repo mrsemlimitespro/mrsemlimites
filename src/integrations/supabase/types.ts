@@ -988,7 +988,7 @@ export type Database = {
         Row: {
           ativada_em: string | null
           chave: string
-          chave_fornecedor_encrypted: Json | null
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
@@ -1014,7 +1014,7 @@ export type Database = {
         Insert: {
           ativada_em?: string | null
           chave: string
-          chave_fornecedor_encrypted?: Json | null
+          chave_fornecedor?: string | null
           cliente_id?: string | null
           created_at?: string
           device_id?: string | null
@@ -1040,7 +1040,7 @@ export type Database = {
         Update: {
           ativada_em?: string | null
           chave?: string
-          chave_fornecedor_encrypted?: Json | null
+          chave_fornecedor?: string | null
           cliente_id?: string | null
           created_at?: string
           device_id?: string | null
@@ -2481,7 +2481,7 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
-          chave_fornecedor_encrypted: Json | null
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
@@ -2525,7 +2525,7 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
-          chave_fornecedor_encrypted: Json | null
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
@@ -2560,7 +2560,7 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
-          chave_fornecedor_encrypted: Json | null
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
@@ -2619,7 +2619,7 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
-          chave_fornecedor_encrypted: Json | null
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
@@ -2667,7 +2667,7 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
-          chave_fornecedor_encrypted: Json | null
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
@@ -2702,7 +2702,7 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
-          chave_fornecedor_encrypted: Json | null
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
@@ -2737,7 +2737,7 @@ export type Database = {
         Returns: {
           ativada_em: string | null
           chave: string
-          chave_fornecedor_encrypted: Json | null
+          chave_fornecedor: string | null
           cliente_id: string | null
           created_at: string
           device_id: string | null
