@@ -1,8 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandLockup } from "@/components/brand";
 import { PasswordInput, SocialSignIn } from "@/components/auth-extras";
+import { NativeService } from "@/native/NativeService";
+import {
+  enableBiometric,
+  getBiometricHint,
+  isBiometricEnabled,
+  unlockWithBiometric,
+} from "@/lib/biometric-session";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -21,6 +28,62 @@ function LoginPage() {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bioReady, setBioReady] = useState(false);
+  const [bioLabel, setBioLabel] = useState("biometria");
+  const [bioHint, setBioHint] = useState<string | null>(null);
+  const [bioLoading, setBioLoading] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      if (!NativeService.platform.isNative()) return;
+      const enabled = await isBiometricEnabled();
+      if (!enabled) return;
+      const avail = await NativeService.biometric.isAvailable();
+      if (!avail.ok || !avail.data.available || !avail.data.enrolled) return;
+      // Só oferece biometria se ainda existir sessão Supabase válida neste dispositivo.
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) return;
+      if (!alive) return;
+      setBioReady(true);
+      setBioHint(await getBiometricHint());
+      if (avail.data.type === "face") setBioLabel("Face ID");
+      else if (avail.data.type === "fingerprint") setBioLabel("impressão digital");
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  async function handleBiometricUnlock() {
+    setBioLoading(true);
+    setError(null);
+    const r = await unlockWithBiometric("Entre no MR sem limites com sua biometria.");
+    setBioLoading(false);
+    if (!r.ok) {
+      if (r.code !== "cancelled") setError(r.message);
+      return;
+    }
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      setError("Sessão expirada. Entre com seu e-mail e senha.");
+      return;
+    }
+    navigate({ to: "/" });
+  }
+
+  async function offerBiometricEnrollment(userHint: string) {
+    if (!NativeService.platform.isNative()) return;
+    if (await isBiometricEnabled()) return;
+    const avail = await NativeService.biometric.isAvailable();
+    if (!avail.ok || !avail.data.available || !avail.data.enrolled) return;
+    // Confirma vontade do usuário com o próprio prompt do sistema.
+    const r = await NativeService.biometric.authenticate({
+      reason: "Ative a biometria para entrar mais rápido nas próximas vezes.",
+      title: "Ativar biometria",
+    });
+    if (r.ok) await enableBiometric(userHint);
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -66,6 +129,9 @@ function LoginPage() {
       return;
     }
 
+    // Oferece habilitar biometria após login bem-sucedido (só native, só 1x).
+    await offerBiometricEnrollment(email);
+
     navigate({ to: "/" });
   }
 
@@ -105,6 +171,21 @@ function LoginPage() {
         <button type="submit" disabled={loading} className={primaryBtn}>
           {loading ? "Entrando..." : "Entrar"}
         </button>
+
+        {bioReady && (
+          <button
+            type="button"
+            onClick={handleBiometricUnlock}
+            disabled={bioLoading}
+            className="w-full rounded-full border border-border/70 bg-surface/60 px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-surface/80 disabled:opacity-60"
+          >
+            {bioLoading
+              ? "Verificando..."
+              : bioHint
+                ? `Entrar com ${bioLabel} (${bioHint})`
+                : `Entrar com ${bioLabel}`}
+          </button>
+        )}
 
         <SocialSignIn mode="signin" />
 
