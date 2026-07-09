@@ -133,6 +133,12 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    // Inicializa plugins nativos (splash, status bar, back button) quando
+    // rodando dentro do Capacitor. No navegador web/PWA é no-op.
+    void import("@/lib/native-init").then((m) => m.initNativePlatform());
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
