@@ -31,6 +31,8 @@ import {
 } from "@/lib/prompts-library.functions";
 import { getPromptDetail } from "@/lib/prompts.functions";
 import { useIsAuthed } from "@/hooks/useIsAuthed";
+import { downloadItemAsHtml } from "@/lib/download-item";
+import { Download } from "lucide-react";
 
 type SortKey =
   | "recent" | "popular" | "most_used" | "most_downloaded" | "numero" | "az" | "za";
