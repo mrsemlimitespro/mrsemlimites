@@ -705,6 +705,39 @@ export type Database = {
         }
         Relationships: []
       }
+      device_push_tokens: {
+        Row: {
+          app_version: string | null
+          created_at: string
+          device_id: string | null
+          id: string
+          last_seen_at: string
+          platform: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          app_version?: string | null
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          last_seen_at?: string
+          platform: string
+          token: string
+          user_id: string
+        }
+        Update: {
+          app_version?: string | null
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          last_seen_at?: string
+          platform?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       dispositivos: {
         Row: {
           bloqueado: boolean
@@ -2192,6 +2225,36 @@ export type Database = {
           texto?: string | null
           titulo?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      push_preferences: {
+        Row: {
+          categories: Json
+          created_at: string
+          enabled: boolean
+          sound: boolean
+          updated_at: string
+          user_id: string
+          vibration: boolean
+        }
+        Insert: {
+          categories?: Json
+          created_at?: string
+          enabled?: boolean
+          sound?: boolean
+          updated_at?: string
+          user_id: string
+          vibration?: boolean
+        }
+        Update: {
+          categories?: Json
+          created_at?: string
+          enabled?: boolean
+          sound?: boolean
+          updated_at?: string
+          user_id?: string
+          vibration?: boolean
         }
         Relationships: []
       }
