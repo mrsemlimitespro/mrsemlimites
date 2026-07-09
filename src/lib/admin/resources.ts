@@ -118,7 +118,7 @@ export const resources: Resource[] = [
       // === Fornecedor (oculto do cliente) ===
       { key: "fornecedor_slug", label: "Fornecedor", type: "select", options: fornecedorSlugOptions, tab: "Fornecedor" },
       { key: "chave_fornecedor", label: "Chave do fornecedor (privada)", type: "textarea", tab: "Fornecedor", helperText: "NUNCA aparece para o cliente. O servidor a usa por trás para autorizar a extensão. Deixe vazio se não usa fornecedor." },
-      { key: "fornecedor_config", label: "Config JSON (endpoint HTTP customizado)", type: "textarea", tab: "Fornecedor", helperText: 'Ex.: {"endpoint":"https://api.fornecedor.com/check","method":"POST","body_template":{"key":"{{chave}}"}}' },
+      // fornecedor_config (jsonb) fica gerenciado pelo servidor; se precisar customizar, edite via banco.
 
       // === Teste ===
       { key: "trial_duracao_minutos", label: "Duração do teste", type: "select", options: trialDuracaoOptions, tab: "Teste", helperText: "Só se aplica quando Tipo = Teste. Contagem começa na primeira validação da extensão." },
