@@ -9,6 +9,7 @@ import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { WatermarkFooter } from "@/components/watermark-footer";
 import { PageBackButton } from "@/components/page-back-button";
 import { NetworkStatusWatcher } from "@/components/network-status-watcher";
+import { PushBootstrapper } from "@/components/push-bootstrapper";
 
 // Decorativo: canvas de partículas só monta em telas médias+ (evita CPU/bateria no mobile).
 const SoftParticles = lazy(() =>
@@ -51,6 +52,7 @@ function AppLayout() {
           <Outlet />
         </main>
       <NetworkStatusWatcher />
+      <PushBootstrapper />
     </div>
       <FirePromosButton />
       <MobileBottomNav />
