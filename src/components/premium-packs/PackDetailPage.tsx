@@ -8,7 +8,7 @@
  *  - A biblioteca de arquivos (PackViewer + Google Drive tree) será entregue
  *    na Fase 3.7 (integrações externas) — aqui deixamos placeholder claro.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -69,6 +69,18 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
 
   const [shareOpen, setShareOpen] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
+
+  // Body scroll lock enquanto o viewer (modal customizado) estiver aberto.
+  // Radix Dialog/Sheet/Drawer já lidam com isso sozinhos — este é o único
+  // overlay do app que não usa a primitive Radix.
+  useEffect(() => {
+    if (!viewerOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [viewerOpen]);
 
   const driveUrl = (pack as PremiumPack & { drive_url?: string | null }).drive_url ?? null;
   const archiveUrl = (pack as PremiumPack & { archive_url?: string | null }).archive_url ?? null;
@@ -415,8 +427,9 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
 
       {viewerOpen && driveEmbedUrl && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-3 sm:p-6 backdrop-blur-sm animate-fade-in"
+          className="fixed inset-0 z-[100] flex items-center justify-center overscroll-contain bg-black/85 p-3 sm:p-6 backdrop-blur-sm animate-fade-in"
           onClick={() => setViewerOpen(false)}
+          onTouchMove={(e) => e.preventDefault()}
         >
           <div
             className="relative flex h-full max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-ai-300/30 bg-black shadow-[0_40px_120px_-20px_var(--ai-500)]"
