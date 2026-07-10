@@ -341,6 +341,49 @@
   }
 }
 
+/* Section title com barra de acento gradiente à esquerda */
+@utility section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--foreground);
+  text-transform: uppercase;
+}
+@utility section-title-bar {
+  display: inline-block;
+  width: 3px;
+  height: 1rem;
+  border-radius: 9999px;
+  background-image: var(--gradient-primary);
+  box-shadow: 0 0 12px -2px color-mix(in oklab, var(--brand-magenta) 70%, transparent);
+}
+
+/* Card premium com hover sutil (lift + glow) */
+@utility card-premium {
+  background: color-mix(in oklab, var(--surface) 65%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-soft), inset 0 1px 0 oklch(1 0 0 / 6%);
+  transition:
+    transform var(--transition-smooth),
+    box-shadow var(--transition-smooth),
+    border-color var(--transition-smooth);
+}
+@utility card-premium-hover {
+  &:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--brand-magenta) 32%, var(--border));
+    box-shadow:
+      var(--shadow-elevated),
+      inset 0 1px 0 oklch(1 0 0 / 8%),
+      0 0 40px -12px color-mix(in oklab, var(--brand-magenta) 55%, transparent);
+  }
+}
+
 /* Quantum Lovable - watermark removal */
 #lovable-badge {
   display: none !important;
