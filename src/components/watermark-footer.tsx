@@ -1,4 +1,4 @@
-const TEXT = "Brasil 2026 — MR sem limites";
+const TEXT = "◆ MR SEM LIMITES · PREMIUM ACCESS ◆";
 
 export function WatermarkFooter() {
   return (
@@ -8,31 +8,29 @@ export function WatermarkFooter() {
       style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 6px)" }}
     >
       <p
-        className="select-none truncate text-center text-[10px] tracking-[0.28em] md:text-xs"
+        className="select-none truncate text-center text-[10px] font-bold uppercase tracking-[0.42em] md:text-[11px]"
         style={{
           fontFamily:
-            '"Courier New", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace',
-          fontWeight: 700,
-          color: "color-mix(in oklab, var(--foreground) 32%, transparent)",
-          textShadow: "0 0 12px color-mix(in oklab, var(--brand-magenta) 25%, transparent)",
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-          borderRight: "2px solid color-mix(in oklab, var(--brand-magenta) 60%, transparent)",
-          width: "fit-content",
-          maxWidth: "100%",
-          animation:
-            "watermark-type 3.5s steps(28, end) 0.4s 1 normal both, watermark-caret 0.8s step-end infinite",
+            'ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Courier New", monospace',
+          background:
+            "linear-gradient(90deg, color-mix(in oklab, var(--brand-magenta) 90%, transparent) 0%, color-mix(in oklab, var(--brand-blue) 90%, transparent) 50%, color-mix(in oklab, var(--brand-magenta) 90%, transparent) 100%)",
+          backgroundSize: "200% 100%",
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          color: "transparent",
+          textShadow: "0 0 18px color-mix(in oklab, var(--brand-magenta) 35%, transparent)",
+          filter:
+            "drop-shadow(0 0 6px color-mix(in oklab, var(--brand-blue) 25%, transparent))",
+          animation: "watermark-shine 6s linear infinite",
         }}
       >
         {TEXT}
       </p>
       <style>{`
-        @keyframes watermark-type {
-          from { width: 0; }
-          to { width: 22ch; }
-        }
-        @keyframes watermark-caret {
-          50% { border-color: transparent; }
+        @keyframes watermark-shine {
+          0%   { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
         }
       `}</style>
     </div>
