@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { copyText } from "@/lib/clipboard";
 import { SmartCover } from "@/components/SmartCover";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -451,7 +452,8 @@ function PromptCard({
     e.stopPropagation();
     try {
       const detail = await detailFn({ data: { id: prompt.id } });
-      await navigator.clipboard.writeText(detail.prompt ?? "");
+      const ok = await copyText(detail.prompt ?? "");
+      if (!ok) throw new Error("copy failed");
       setCopied(true);
       toast.success("Prompt copiado!");
       setTimeout(() => setCopied(false), 2000);
@@ -654,7 +656,8 @@ function PromptModal({
   async function copy() {
     if (!item?.prompt) return;
     try {
-      await navigator.clipboard.writeText(item.prompt);
+      const ok = await copyText(item.prompt);
+      if (!ok) throw new Error("copy failed");
       setCopied(true);
       toast.success("Prompt copiado!");
       setTimeout(() => setCopied(false), 2000);
