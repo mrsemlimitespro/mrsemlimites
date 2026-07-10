@@ -1,4 +1,4 @@
-const TEXT = "Brasil 2026 — MR sem limites";
+const TEXT = "◆ MR SEM LIMITES · PREMIUM ACCESS ◆";
 
 export function WatermarkFooter() {
   return (
