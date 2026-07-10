@@ -161,11 +161,11 @@
     oklch(1 0 0 / 2%) 100%
   );
 
-  /* Sunset ambient — glow suave/discreto no topo (referência: cantos pontuais, não domina) */
+  /* Ambient glow bem discreto — no print o fundo é praticamente preto puro */
   --sunset-bg:
-    radial-gradient(60% 40% at 15% 0%, color-mix(in oklab, var(--brand-violet) 30%, transparent) 0%, transparent 60%),
-    radial-gradient(55% 35% at 85% 5%, color-mix(in oklab, var(--brand-magenta) 25%, transparent) 0%, transparent 60%),
-    radial-gradient(70% 45% at 50% -10%, color-mix(in oklab, var(--brand-pink) 18%, transparent) 0%, transparent 65%);
+    radial-gradient(50% 30% at 20% 0%, color-mix(in oklab, var(--brand-violet) 15%, transparent) 0%, transparent 70%),
+    radial-gradient(50% 30% at 80% 0%, color-mix(in oklab, var(--brand-magenta) 12%, transparent) 0%, transparent 70%);
+
 
 
   /* Shadows */
