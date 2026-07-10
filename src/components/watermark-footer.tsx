@@ -28,12 +28,9 @@ export function WatermarkFooter() {
         {TEXT}
       </p>
       <style>{`
-        @keyframes watermark-type {
-          from { width: 0; }
-          to { width: 22ch; }
-        }
-        @keyframes watermark-caret {
-          50% { border-color: transparent; }
+        @keyframes watermark-shine {
+          0%   { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
         }
       `}</style>
     </div>
