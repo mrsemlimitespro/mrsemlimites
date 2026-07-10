@@ -31,13 +31,9 @@ function AppLayout() {
       </div>
       <AppSidebar />
       <div
-        className="relative z-10 flex min-h-screen flex-col pl-0 pt-2 md:pl-20 md:pt-4"
-        style={{
-          paddingTop: "calc(0.5rem + env(safe-area-inset-top))",
-          paddingLeft: "env(safe-area-inset-left)",
-          paddingRight: "env(safe-area-inset-right)",
-        }}
+        className="relative z-10 flex min-h-screen flex-col pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(0.5rem+env(safe-area-inset-top))] md:pl-[calc(5rem+env(safe-area-inset-left))] md:pt-[calc(1rem+env(safe-area-inset-top))]"
       >
+
         <TopBar />
         <main
           className="flex-1 px-3 pt-4 md:px-8 md:pt-6"
