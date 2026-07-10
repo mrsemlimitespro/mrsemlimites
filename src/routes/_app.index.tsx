@@ -16,7 +16,7 @@ import {
   Coins,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useId } from "react";
 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -499,9 +499,10 @@ function ChartCard({ days, values }: { days: string[]; values: number[] }) {
 }
 
 function BigChart({ days, values }: { days: string[]; values: number[] }) {
-  const fallbackDays = days.length
-    ? days
-    : last7Days().map((d) => d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }));
+  // Fallbacks determinísticos: SSR e cliente devem renderizar o mesmo texto.
+  // Enquanto `days` estiver vazio, mostramos placeholders neutros ("—") em vez
+  // de datas derivadas de `new Date()` (que divergem entre servidor e cliente).
+  const fallbackDays = days.length ? days : ["—", "—", "—", "—", "—", "—", "—"];
   const fallbackValues = values.length ? values : [0, 0, 0, 0, 0, 0, 0];
 
   const w = 700;
@@ -667,7 +668,9 @@ function Sparkline({
   });
   const line = points.map(([x, y], i) => (i === 0 ? `M ${x},${y}` : `L ${x},${y}`)).join(" ");
   const area = `${line} L ${w},${h} L 0,${h} Z`;
-  const gid = `spark-${Math.random().toString(36).slice(2, 8)}`;
+  // useId → id estável entre SSR e cliente (evita hydration mismatch)
+  const rid = useId();
+  const gid = `spark-${rid.replace(/[:]/g, "")}`;
 
   return (
     <svg
