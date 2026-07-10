@@ -70,6 +70,18 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
   const [shareOpen, setShareOpen] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
 
+  // Body scroll lock enquanto o viewer (modal customizado) estiver aberto.
+  // Radix Dialog/Sheet/Drawer já lidam com isso sozinhos — este é o único
+  // overlay do app que não usa a primitive Radix.
+  useEffect(() => {
+    if (!viewerOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [viewerOpen]);
+
   const driveUrl = (pack as PremiumPack & { drive_url?: string | null }).drive_url ?? null;
   const archiveUrl = (pack as PremiumPack & { archive_url?: string | null }).archive_url ?? null;
 
