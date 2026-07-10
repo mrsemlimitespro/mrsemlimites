@@ -8,7 +8,7 @@
  *  - A biblioteca de arquivos (PackViewer + Google Drive tree) será entregue
  *    na Fase 3.7 (integrações externas) — aqui deixamos placeholder claro.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
