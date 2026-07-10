@@ -71,49 +71,50 @@
 :root {
   --radius: 0.875rem;
 
-  /* Deep near-black with a warm violet undertone (matches sunset reference) */
-  --background: oklch(0.11 0.025 320);
-  --foreground: oklch(0.98 0.005 20);
+  /* Deep near-black with a subtle violet undertone (matches print reference) */
+  --background: oklch(0.08 0.012 300);
+  --foreground: oklch(0.985 0.004 320);
 
-  /* Elevated glass surfaces */
-  --surface: oklch(0.17 0.035 320);
-  --surface-elevated: oklch(0.21 0.045 325);
+  /* Elevated glass surfaces — cards do print (dark navy/violet) */
+  --surface: oklch(0.145 0.028 295);
+  --surface-elevated: oklch(0.175 0.035 295);
 
-  --card: oklch(0.17 0.035 320);
-  --card-foreground: oklch(0.98 0.005 20);
+  --card: oklch(0.145 0.028 295);
+  --card-foreground: oklch(0.985 0.004 320);
 
-  --popover: oklch(0.19 0.04 320);
-  --popover-foreground: oklch(0.98 0.005 20);
+  --popover: oklch(0.16 0.032 295);
+  --popover-foreground: oklch(0.985 0.004 320);
 
-  /* Primary = warm magenta→pink brand */
-  --primary: oklch(0.7 0.26 355);
+  /* Primary = warm magenta→pink brand (usado em botões/gradiente) */
+  --primary: oklch(0.68 0.28 340);
   --primary-foreground: oklch(0.99 0.005 20);
 
-  --secondary: oklch(0.24 0.04 320);
+  --secondary: oklch(0.22 0.04 295);
   --secondary-foreground: oklch(0.97 0.01 20);
 
-  --muted: oklch(0.22 0.03 320);
-  --muted-foreground: oklch(0.74 0.03 20);
+  --muted: oklch(0.2 0.028 295);
+  --muted-foreground: oklch(0.72 0.025 300);
 
-  --accent: oklch(0.3 0.08 350);
-  --accent-foreground: oklch(0.98 0.005 20);
+  --accent: oklch(0.28 0.08 330);
+  --accent-foreground: oklch(0.985 0.005 20);
 
-  --destructive: oklch(0.68 0.24 25);
+  --destructive: oklch(0.66 0.24 25);
   --destructive-foreground: oklch(0.98 0.005 20);
 
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.72 0.24 355);
+  --border: oklch(1 0 0 / 7%);
+  --input: oklch(1 0 0 / 9%);
+  --ring: oklch(0.72 0.26 340);
 
-  /* Brand palette — cool (default) + warm accents */
-  --brand-violet: oklch(0.65 0.24 295);
-  --brand-blue: oklch(0.68 0.2 250);
+  /* Brand palette — magenta/violet/pink/orange do print */
+  --brand-violet: oklch(0.62 0.24 295);
+  --brand-blue: oklch(0.66 0.2 260);
   --brand-cyan: oklch(0.78 0.14 210);
   --brand-magenta: oklch(0.68 0.28 340);
-  --brand-pink: oklch(0.7 0.27 5);
-  --brand-orange: oklch(0.75 0.19 55);
+  --brand-pink: oklch(0.72 0.26 5);
+  --brand-orange: oklch(0.74 0.2 45);
   --brand-emerald: oklch(0.72 0.16 165);
   --brand-amber: oklch(0.78 0.16 80);
+
 
   /* Charts */
   --chart-1: oklch(0.68 0.22 285);
@@ -160,12 +161,12 @@
     oklch(1 0 0 / 2%) 100%
   );
 
-  /* Sunset ambient — replicates the mountain-glow background from the reference */
+  /* Sunset ambient — glow suave/discreto no topo (referência: cantos pontuais, não domina) */
   --sunset-bg:
-    radial-gradient(120% 60% at 50% -10%, color-mix(in oklab, var(--brand-pink) 55%, transparent) 0%, transparent 55%),
-    radial-gradient(80% 45% at 20% -5%, color-mix(in oklab, var(--brand-violet) 50%, transparent) 0%, transparent 60%),
-    radial-gradient(85% 50% at 85% 5%, color-mix(in oklab, var(--brand-orange) 45%, transparent) 0%, transparent 60%),
-    radial-gradient(70% 40% at 50% 10%, color-mix(in oklab, var(--brand-magenta) 40%, transparent) 0%, transparent 65%);
+    radial-gradient(60% 40% at 15% 0%, color-mix(in oklab, var(--brand-violet) 30%, transparent) 0%, transparent 60%),
+    radial-gradient(55% 35% at 85% 5%, color-mix(in oklab, var(--brand-magenta) 25%, transparent) 0%, transparent 60%),
+    radial-gradient(70% 45% at 50% -10%, color-mix(in oklab, var(--brand-pink) 18%, transparent) 0%, transparent 65%);
+
 
   /* Shadows */
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 30%), 0 8px 24px -12px oklch(0 0 0 / 40%);
@@ -185,28 +186,29 @@
 
 /* .dark mirrors :root so the `dark` class is a no-op — dark is the only theme. */
 .dark {
-  --background: oklch(0.11 0.025 320);
-  --foreground: oklch(0.98 0.005 20);
-  --surface: oklch(0.17 0.035 320);
-  --surface-elevated: oklch(0.21 0.045 325);
-  --card: oklch(0.17 0.035 320);
-  --card-foreground: oklch(0.98 0.005 20);
-  --popover: oklch(0.19 0.04 320);
-  --popover-foreground: oklch(0.98 0.005 20);
-  --primary: oklch(0.7 0.26 355);
+  --background: oklch(0.08 0.012 300);
+  --foreground: oklch(0.985 0.004 320);
+  --surface: oklch(0.145 0.028 295);
+  --surface-elevated: oklch(0.175 0.035 295);
+  --card: oklch(0.145 0.028 295);
+  --card-foreground: oklch(0.985 0.004 320);
+  --popover: oklch(0.16 0.032 295);
+  --popover-foreground: oklch(0.985 0.004 320);
+  --primary: oklch(0.68 0.28 340);
   --primary-foreground: oklch(0.99 0.005 20);
-  --secondary: oklch(0.24 0.04 320);
+  --secondary: oklch(0.22 0.04 295);
   --secondary-foreground: oklch(0.97 0.01 20);
-  --muted: oklch(0.22 0.03 320);
-  --muted-foreground: oklch(0.74 0.03 20);
-  --accent: oklch(0.3 0.08 350);
-  --accent-foreground: oklch(0.98 0.005 20);
-  --destructive: oklch(0.68 0.24 25);
+  --muted: oklch(0.2 0.028 295);
+  --muted-foreground: oklch(0.72 0.025 300);
+  --accent: oklch(0.28 0.08 330);
+  --accent-foreground: oklch(0.985 0.005 20);
+  --destructive: oklch(0.66 0.24 25);
   --destructive-foreground: oklch(0.98 0.005 20);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.72 0.24 355);
+  --border: oklch(1 0 0 / 7%);
+  --input: oklch(1 0 0 / 9%);
+  --ring: oklch(0.72 0.26 340);
 }
+
 
 @utility glass {
   background: color-mix(in oklab, var(--surface) 65%, transparent);
@@ -317,34 +319,17 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Sunset ambient — warm glow at the top like the reference. */
+  /* Ambient glow discreto no topo — sem silhueta de montanha (fiel ao print). */
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     background: var(--sunset-bg);
-    opacity: 0.9;
+    opacity: 0.55;
     z-index: 0;
   }
 
-  /* Distant mountain silhouette layer under the sunset glow. */
-  body::after {
-    content: "";
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 34vh;
-    height: 42vh;
-    pointer-events: none;
-    z-index: 0;
-    background:
-      radial-gradient(60% 100% at 82% 100%, oklch(0.14 0.03 320) 0%, transparent 60%),
-      radial-gradient(70% 100% at 22% 100%, oklch(0.12 0.025 320) 0%, transparent 65%),
-      radial-gradient(80% 100% at 55% 110%, oklch(0.1 0.02 320) 0%, transparent 55%);
-    mask: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
-    -webkit-mask: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
-  }
 
   h1, h2, h3, h4 {
     letter-spacing: -0.015em;
