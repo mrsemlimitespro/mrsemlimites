@@ -67,7 +67,8 @@ export function PromocoesSection() {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-semibold tracking-wide text-muted-foreground">
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" />
         Promoções ativas
       </h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -174,7 +175,10 @@ export function PlanosSection() {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-semibold tracking-wide text-muted-foreground">Planos</h2>
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" />
+        Planos
+      </h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {items.map((p) => {
           const color = p.cor
@@ -279,7 +283,10 @@ export function ProdutosSection() {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-semibold tracking-wide text-muted-foreground">Produtos</h2>
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" />
+        Produtos
+      </h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {items.map((p) => (
           <button

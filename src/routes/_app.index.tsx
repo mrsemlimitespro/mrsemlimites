@@ -296,9 +296,9 @@ function DashboardPage() {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-6 pb-32">
-      {/* Hero — Logo centralizada */}
-      <section className="relative flex flex-col items-center justify-center py-6 md:py-10">
+    <div className="mx-auto w-full max-w-[1280px] space-y-8 pb-32">
+      {/* Hero — Logo centralizada + boas-vindas */}
+      <section className="relative flex flex-col items-center justify-center gap-4 py-6 md:py-10">
         <div
           className="relative grid place-items-center rounded-[26%] overflow-hidden"
           style={{
@@ -314,6 +314,14 @@ function DashboardPage() {
             className="h-full w-full object-cover"
             draggable={false}
           />
+        </div>
+        <div className="flex flex-col items-center gap-1 text-center">
+          <h1 className="gradient-text-warm text-2xl font-bold tracking-tight md:text-3xl">
+            {BRAND_NAME}
+          </h1>
+          <p className="max-w-md text-xs text-muted-foreground md:text-sm">
+            Painel de controle em tempo real — vendas, clientes e atividade.
+          </p>
         </div>
       </section>
 
@@ -332,11 +340,17 @@ function DashboardPage() {
       {/* Produtos */}
       <ProdutosSection />
 
-      {/* 4 KPI cards */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {kpis.map((kpi) => (
-          <KpiCard key={kpi.label} kpi={kpi} />
-        ))}
+      {/* Métricas — cabeçalho + 4 KPI cards */}
+      <section className="space-y-3">
+        <div className="section-title">
+          <span aria-hidden className="section-title-bar" />
+          Métricas em tempo real
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {kpis.map((kpi) => (
+            <KpiCard key={kpi.label} kpi={kpi} />
+          ))}
+        </div>
       </section>
 
       {/* Bottom 3-column row */}
@@ -352,21 +366,33 @@ function DashboardPage() {
 function KpiCard({ kpi }: { kpi: Kpi }) {
   const Icon = kpi.icon;
   return (
-    <div className="glass relative overflow-hidden rounded-2xl p-5">
-      <div className="flex items-start justify-between">
-        <p className="text-sm font-medium text-muted-foreground">{kpi.label}</p>
-        <span
-          className="icon-tile size-10 shrink-0"
-          style={{ ["--tile-color" as never]: kpi.color }}
-        >
+    <div
+      className="card-premium card-premium-hover group relative overflow-hidden p-5"
+      style={{ ["--tile-color" as never]: kpi.color }}
+    >
+      {/* halo colorido no canto — muito sutil */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-40 blur-2xl transition-opacity duration-300 group-hover:opacity-70"
+        style={{
+          background: `radial-gradient(circle, color-mix(in oklab, ${kpi.color} 55%, transparent) 0%, transparent 70%)`,
+        }}
+      />
+      <div className="relative flex items-start justify-between">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {kpi.label}
+        </p>
+        <span className="icon-tile size-10 shrink-0">
           <Icon className="size-[18px]" strokeWidth={2} />
         </span>
       </div>
 
-      <p className="mt-4 text-[28px] font-semibold tracking-tight md:text-[30px]">{kpi.value}</p>
-      <p className="mt-1 text-xs text-muted-foreground/80">Últimos 7 dias</p>
+      <p className="relative mt-4 text-[30px] font-semibold tracking-tight md:text-[32px]">
+        {kpi.value}
+      </p>
+      <p className="relative mt-1 text-xs text-muted-foreground/80">Últimos 7 dias</p>
 
-      <Sparkline data={kpi.sparkline} color={kpi.color} className="mt-4" />
+      <Sparkline data={kpi.sparkline} color={kpi.color} className="relative mt-4" />
     </div>
   );
 }
