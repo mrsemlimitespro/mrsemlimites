@@ -290,7 +290,7 @@ function DashboardPage() {
       label: "Tickets Abertos",
       value: metrics ? String(metrics.ticketsAbertos) : "—",
       icon: MessageSquare,
-      color: "var(--brand-orange)",
+      color: "var(--brand-pink)",
       sparkline: metrics?.ticketsSpark ?? [0, 0, 0, 0, 0, 0, 0],
     },
   ];
