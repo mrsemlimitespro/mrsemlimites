@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { getAgents, type AiAgent } from "@/lib/ai-agents.functions";
 import { AICard, AIEmptyState, AIPill } from "@/components/ai-modules/AIModuleShell";
 import { useLocalFavorites } from "@/hooks/useLocalFavorites";
+import { copyText } from "@/lib/clipboard";
 import { downloadItemAsHtml } from "@/lib/download-item";
 
 export function AgentsLibraryShell() {
@@ -345,13 +346,12 @@ function AgentModal({
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
             <Button
               size="sm"
-              onClick={() => {
-                navigator.clipboard
-                  .writeText(
-                    agent.system_prompt || agent.descricao_completa || agent.descricao || "",
-                  )
-                  .then(() => toast.success("Prompt copiado"))
-                  .catch(() => toast.error("Falha ao copiar"));
+              onClick={async () => {
+                const ok = await copyText(
+                  agent.system_prompt || agent.descricao_completa || agent.descricao || "",
+                );
+                if (ok) toast.success("Prompt copiado");
+                else toast.error("Falha ao copiar");
               }}
               className="h-8 gap-1.5 bg-gradient-to-r from-ai-500 to-ai-400 text-black font-bold"
             >
@@ -527,12 +527,12 @@ function SectionBlock({
 }) {
   const [copied, setCopied] = useState(false);
   const onCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(content);
+    const ok = await copyText(content);
+    if (ok) {
       setCopied(true);
       toast.success(`${title} copiado`);
       setTimeout(() => setCopied(false), 1800);
-    } catch {
+    } else {
       toast.error("Falha ao copiar");
     }
   };
