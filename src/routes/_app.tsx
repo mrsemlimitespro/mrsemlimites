@@ -51,7 +51,7 @@ function AppLayout() {
         <PushBootstrapper />
       </div>
       <FirePromosButton />
-      <MobileBottomNav />
+      <InnerPillMenu />
       <PwaInstallPrompt />
       <WatermarkFooter />
     </div>
