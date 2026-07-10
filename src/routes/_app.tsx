@@ -2,7 +2,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 
 import { AppSidebar } from "@/components/app-sidebar";
-import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import { InnerPillMenu } from "@/components/inner-pill-menu";
 import { TopBar } from "@/components/top-bar";
 import { FirePromosButton } from "@/components/fire-promos-button";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
