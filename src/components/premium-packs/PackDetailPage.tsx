@@ -427,8 +427,9 @@ export function PackDetailPage({ pack }: { pack: PremiumPack }) {
 
       {viewerOpen && driveEmbedUrl && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-3 sm:p-6 backdrop-blur-sm animate-fade-in"
+          className="fixed inset-0 z-[100] flex items-center justify-center overscroll-contain bg-black/85 p-3 sm:p-6 backdrop-blur-sm animate-fade-in"
           onClick={() => setViewerOpen(false)}
+          onTouchMove={(e) => e.preventDefault()}
         >
           <div
             className="relative flex h-full max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-ai-300/30 bg-black shadow-[0_40px_120px_-20px_var(--ai-500)]"
