@@ -26,6 +26,7 @@ import {
   PromocoesSection,
   PlanosSection,
   ProdutosSection,
+  ProdutosBannerCarousel,
   PropagandasSection,
 } from "@/components/home/home-sections";
 
