@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { getPreset } from "@/lib/gradient-presets";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/creditos")({
   head: () => ({
@@ -16,7 +17,11 @@ export const Route = createFileRoute("/_app/creditos")({
       { name: "description", content: "Loja de chaves, créditos e planos." },
     ],
   }),
-  component: LojaPage,
+  component: () => (
+    <RequireAuth>
+      <LojaPage />
+    </RequireAuth>
+  ),
 });
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
