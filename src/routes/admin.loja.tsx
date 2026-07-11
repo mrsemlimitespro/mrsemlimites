@@ -19,7 +19,14 @@ const shortcuts = [
     to: "produtos",
     label: "Produtos",
     icon: Package,
-    desc: "Cadastrar, editar e excluir produtos.",
+    desc: "Editor rápido (tabela).",
+  },
+  {
+    to: "__gallery__",
+    label: "Produtos & Galeria",
+    icon: Sparkles,
+    desc: "Editor premium: upload múltiplo, capa, WebP, preview.",
+    premium: true,
   },
   { to: "estoque", label: "Estoque", icon: Boxes, desc: "Controle quantidades e itens." },
   {
