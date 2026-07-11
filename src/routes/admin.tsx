@@ -106,6 +106,7 @@ type SpecialLink = {
 
 const specialLinks: SpecialLink[] = [
   { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true },
+  { key: "home", to: "/admin/home", label: "Home", icon: HomeIcon },
   { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks },
   {
     key: "configuracoes",
