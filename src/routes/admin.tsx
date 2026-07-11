@@ -21,6 +21,7 @@ import {
   Volume2,
   KeySquare,
   Blocks,
+  Home as HomeIcon,
 } from "lucide-react";
 import { useModules } from "@/lib/admin/use-modules";
 
