@@ -464,12 +464,12 @@ function DepoimentosSection() {
  * ============================================================= */
 const FAQ = [
   {
-    q: "Como funciona a ativação?",
-    a: "Após a aprovação do pagamento, os créditos ou licenças são liberados automaticamente no seu painel em segundos.",
+    q: "Como funciona a entrega?",
+    a: "Após a confirmação do pagamento no checkout, o cadastro será processado e o acesso será liberado conforme o plano adquirido. O cliente receberá sua chave de acesso e instruções de utilização após a confirmação do pagamento.",
   },
   {
-    q: "Posso testar antes de comprar?",
-    a: "Sim, oferecemos garantia de 7 dias. Se você não ficar satisfeito, devolvemos 100% do valor pago.",
+    q: "O que a plataforma oferece?",
+    a: "Agentes IA, Prompts, Packs, Extensões, Ferramentas, Automações, Templates e uma comunidade ativa focada em Inteligência Artificial, Marketing Digital, Transformação Digital e Vendas.",
   },
   {
     q: "Quais formas de pagamento vocês aceitam?",
@@ -477,13 +477,14 @@ const FAQ = [
   },
   {
     q: "Tem suporte?",
-    a: "Sim, oferecemos suporte 24/7 via WhatsApp. Nossa equipe está sempre pronta para ajudar.",
+    a: "Sim, oferecemos suporte humano via WhatsApp. Nossa equipe está pronta para tirar dúvidas e orientar no uso da plataforma.",
   },
   {
     q: "Preciso ter conhecimento técnico?",
-    a: "Não. A plataforma foi desenhada para ser simples e intuitiva. Ainda oferecemos aulas gratuitas.",
+    a: "Não. A plataforma foi desenhada para ser simples e intuitiva, com materiais de apoio para você começar rápido.",
   },
 ];
+
 
 function FaqSection() {
   const [open, setOpen] = useState<number | null>(0);
