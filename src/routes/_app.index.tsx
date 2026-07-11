@@ -134,9 +134,10 @@ function HeroSection({ authed, showDashboard }: { authed: boolean; showDashboard
           {BRAND_NAME}
         </h1>
         <p className="max-w-2xl px-2 text-sm text-muted-foreground md:text-base">
-          Créditos, licenças, IPTV, agentes de IA, prompts, packs e aplicativos —
-          ativação automática 24/7, suporte no WhatsApp e garantia de 7 dias.
+          Agentes IA, Prompts, Packs, Extensões, Automações, Templates e Comunidade —
+          entrega após a confirmação do pagamento, com suporte humano no WhatsApp.
         </p>
+
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
