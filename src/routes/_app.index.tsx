@@ -26,6 +26,7 @@ import {
   PromocoesSection,
   PlanosSection,
   ProdutosSection,
+  ProdutosBannerCarousel,
   PropagandasSection,
 } from "@/components/home/home-sections";
 
@@ -330,6 +331,10 @@ function DashboardPage() {
 
       {/* Propagandas (topo) */}
       <PropagandasSection posicao="home" />
+
+      {/* Banner premium com produtos */}
+      <ProdutosBannerCarousel />
+
 
       {/* Promoções ativas */}
       <PromocoesSection />
