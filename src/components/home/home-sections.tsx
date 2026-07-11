@@ -649,7 +649,13 @@ export function ProdutosBannerCarousel() {
     return () => clearInterval(t);
   }, [withImage.length]);
 
-  if (withImage.length === 0) return null;
+  if (withImage.length === 0) {
+    return (
+      <SectionShell title="Banners">
+        <EmptyState message="Nenhum banner cadastrado." adminHref="/admin/loja-produtos" />
+      </SectionShell>
+    );
+  }
   const active = withImage[idx % withImage.length];
   const cover = galleryOf(active)[0];
 
