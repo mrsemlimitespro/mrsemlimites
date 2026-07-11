@@ -23,7 +23,7 @@ export function InnerPillMenu() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center px-4">
+    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-30 hidden justify-center px-4 md:flex">
       <nav
         aria-label="Menu interno"
         className="pill-nav pointer-events-auto flex items-center gap-1 px-2 py-2"
