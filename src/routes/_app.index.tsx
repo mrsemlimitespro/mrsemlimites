@@ -74,10 +74,11 @@ function LandingPage() {
   const { visibleIn, modules } = useModules();
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-10 pb-24 md:space-y-14 md:pb-32">
+    <div className="mx-auto w-full max-w-[1280px] space-y-10 pb-40 md:space-y-14 md:pb-48">
       <HeroSection authed={!!authed} showDashboard={authed === true} />
       <SearchBar />
       <CategoriasSection />
+      <DestaquesSection />
 
       {/* Seções dinâmicas gerenciadas via /admin/home ------------- */}
       <DynamicHomeSections visibleIn={visibleIn} modules={modules} />
@@ -85,9 +86,11 @@ function LandingPage() {
       <BeneficiosSection />
       <EstatisticasSection />
       <DepoimentosSection />
+      <ComunidadeSection />
       <FaqSection />
       <CtaFinalSection />
       <FooterSection />
+
 
       {/* Atalho de admin/revendedor para o painel */}
       {authed === true && isAdmin && (
