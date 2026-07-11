@@ -29,6 +29,7 @@ import {
   ProdutosBannerCarousel,
   PropagandasSection,
 } from "@/components/home/home-sections";
+import { useModules } from "@/lib/admin/use-modules";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
