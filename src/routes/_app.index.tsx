@@ -29,6 +29,7 @@ import {
   ProdutosBannerCarousel,
   PropagandasSection,
 } from "@/components/home/home-sections";
+import { useModules } from "@/lib/admin/use-modules";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -210,6 +211,7 @@ function timeAgo(iso: string) {
 }
 
 function DashboardPage() {
+  const { isActive } = useModules();
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [sales, setSales] = useState<PaymentRow[]>([]);
   const [activity, setActivity] = useState<ActivityRow[]>([]);
@@ -327,23 +329,23 @@ function DashboardPage() {
       </section>
 
       {/* Carrossel promocional infinito */}
-      <PromoCarousel />
+      {isActive("carrossel") && <PromoCarousel />}
 
       {/* Propagandas (topo) */}
-      <PropagandasSection posicao="home" />
+      {isActive("propagandas") && <PropagandasSection posicao="home" />}
 
       {/* Banner premium com produtos */}
-      <ProdutosBannerCarousel />
+      {isActive("loja-produtos") && <ProdutosBannerCarousel />}
 
 
       {/* Promoções ativas */}
-      <PromocoesSection />
+      {isActive("promocoes") && <PromocoesSection />}
 
       {/* Planos */}
-      <PlanosSection />
+      {isActive("planos") && <PlanosSection />}
 
       {/* Produtos */}
-      <ProdutosSection />
+      {isActive("produtos") && <ProdutosSection />}
 
       {/* Métricas — cabeçalho + 4 KPI cards */}
       <section className="space-y-3">
