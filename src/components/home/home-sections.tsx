@@ -276,7 +276,7 @@ export function PlanosSection() {
 }
 
 /* ============ PRODUTOS ============ */
-type Produto = {
+export type Produto = {
   id: string;
   nome: string;
   titulo: string | null;
@@ -291,12 +291,13 @@ type Produto = {
   link: string | null;
 };
 
-function galleryOf(p: Produto): string[] {
+export function galleryOf(p: Produto): string[] {
   const arr = [p.imagem_url, ...((p.imagens ?? []) as string[])]
     .filter((x): x is string => !!x && x.trim().length > 0)
     .map((x) => x.trim());
   return Array.from(new Set(arr));
 }
+
 
 export function ProdutosSection() {
   const items = useLive<Produto>("produtos", async () => {
@@ -383,7 +384,7 @@ export function ProdutosSection() {
   );
 }
 
-function ProdutoModal({
+export function ProdutoModal({
   produto,
   onClose,
   onBuy,
