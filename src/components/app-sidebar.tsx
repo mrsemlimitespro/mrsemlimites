@@ -60,6 +60,7 @@ export function AppSidebar() {
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const authed = useIsAuthed();
 
   useEffect(() => {
     let mounted = true;
@@ -74,6 +75,10 @@ export function AppSidebar() {
       sub.subscription.unsubscribe();
     };
   }, []);
+
+  // Antes da checagem terminar, mostramos só os itens públicos para evitar flash.
+  const primaryItems: NavItem[] =
+    authed === true ? [...publicItems, ...commercialItems] : publicItems;
 
   return (
     <>
