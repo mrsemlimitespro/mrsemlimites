@@ -385,10 +385,11 @@ function EstatisticasSection() {
 
   const items = [
     { label: "Clientes ativos", value: stats.clientes.toLocaleString("pt-BR"), color: "var(--brand-violet)" },
-    { label: "Licenças entregues", value: stats.licencas.toLocaleString("pt-BR"), color: "var(--brand-blue)" },
+    { label: "Acessos entregues", value: stats.licencas.toLocaleString("pt-BR"), color: "var(--brand-blue)" },
     { label: "Produtos no catálogo", value: stats.produtos.toLocaleString("pt-BR"), color: "var(--brand-magenta)" },
     { label: "Satisfação", value: `${stats.satisfacao}%`, color: "var(--brand-emerald)" },
   ];
+
 
   return (
     <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
