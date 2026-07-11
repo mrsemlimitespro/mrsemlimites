@@ -20,7 +20,9 @@ import {
   Sparkles,
   Volume2,
   KeySquare,
+  Blocks,
 } from "lucide-react";
+import { useModules } from "@/lib/admin/use-modules";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
