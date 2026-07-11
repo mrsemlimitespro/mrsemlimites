@@ -120,13 +120,16 @@ function ProdutosGaleriaPage() {
     };
     try {
       if (selectedId) {
-        const { error } = await supabase.from("produtos").update(payload).eq("id", selectedId);
+        const { error } = await supabase
+          .from("produtos")
+          .update(payload as never)
+          .eq("id", selectedId);
         if (error) throw error;
         toast.success("Produto atualizado");
       } else {
         const { data, error } = await supabase
           .from("produtos")
-          .insert(payload)
+          .insert(payload as never)
           .select("id")
           .single();
         if (error) throw error;

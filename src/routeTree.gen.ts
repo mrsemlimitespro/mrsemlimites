@@ -24,6 +24,7 @@ import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
 import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
 import { Route as AdminPagamentosRouteImport } from './routes/admin.pagamentos'
 import { Route as AdminPackAutorizacoesRouteImport } from './routes/admin.pack-autorizacoes'
+import { Route as AdminLojaProdutosRouteImport } from './routes/admin.loja-produtos'
 import { Route as AdminLojaRouteImport } from './routes/admin.loja'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
@@ -117,6 +118,11 @@ const AdminPagamentosRoute = AdminPagamentosRouteImport.update({
 const AdminPackAutorizacoesRoute = AdminPackAutorizacoesRouteImport.update({
   id: '/pack-autorizacoes',
   path: '/pack-autorizacoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLojaProdutosRoute = AdminLojaProdutosRouteImport.update({
+  id: '/loja-produtos',
+  path: '/loja-produtos',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLojaRoute = AdminLojaRouteImport.update({
@@ -244,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
+  '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/pack-autorizacoes': typeof AdminPackAutorizacoesRoute
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
@@ -278,6 +285,7 @@ export interface FileRoutesByTo {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
+  '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/pack-autorizacoes': typeof AdminPackAutorizacoesRoute
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/loja': typeof AdminLojaRoute
+  '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/pack-autorizacoes': typeof AdminPackAutorizacoesRoute
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
@@ -355,6 +364,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
+    | '/admin/loja-produtos'
     | '/admin/pack-autorizacoes'
     | '/admin/pagamentos'
     | '/admin/personalizacao'
@@ -389,6 +399,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
+    | '/admin/loja-produtos'
     | '/admin/pack-autorizacoes'
     | '/admin/pagamentos'
     | '/admin/personalizacao'
@@ -426,6 +437,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/loja'
+    | '/admin/loja-produtos'
     | '/admin/pack-autorizacoes'
     | '/admin/pagamentos'
     | '/admin/personalizacao'
@@ -562,6 +574,13 @@ declare module '@tanstack/react-router' {
       path: '/pack-autorizacoes'
       fullPath: '/admin/pack-autorizacoes'
       preLoaderRoute: typeof AdminPackAutorizacoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/loja-produtos': {
+      id: '/admin/loja-produtos'
+      path: '/loja-produtos'
+      fullPath: '/admin/loja-produtos'
+      preLoaderRoute: typeof AdminLojaProdutosRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/loja': {
@@ -752,6 +771,7 @@ interface AdminRouteChildren {
   AdminBackupRoute: typeof AdminBackupRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminLojaRoute: typeof AdminLojaRoute
+  AdminLojaProdutosRoute: typeof AdminLojaProdutosRoute
   AdminPackAutorizacoesRoute: typeof AdminPackAutorizacoesRoute
   AdminPagamentosRoute: typeof AdminPagamentosRoute
   AdminPersonalizacaoRoute: typeof AdminPersonalizacaoRoute
@@ -768,6 +788,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBackupRoute: AdminBackupRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminLojaRoute: AdminLojaRoute,
+  AdminLojaProdutosRoute: AdminLojaProdutosRoute,
   AdminPackAutorizacoesRoute: AdminPackAutorizacoesRoute,
   AdminPagamentosRoute: AdminPagamentosRoute,
   AdminPersonalizacaoRoute: AdminPersonalizacaoRoute,
