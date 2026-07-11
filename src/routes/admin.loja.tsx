@@ -67,26 +67,54 @@ function LojaPage() {
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {shortcuts.map((s) => (
-          <Link
-            key={s.to}
-            to="/admin/$resource"
-            params={{ resource: s.to }}
-            className="glass group flex items-start justify-between gap-3 rounded-2xl p-5 transition-all hover:-translate-y-0.5"
-          >
-            <div className="flex items-start gap-3">
-              <span className="grid size-10 place-items-center rounded-xl gradient-primary">
-                <s.icon className="size-5 text-white" strokeWidth={2} />
-              </span>
-              <div>
-                <div className="text-sm font-semibold">{s.label}</div>
-                <div className="mt-1 text-xs text-muted-foreground">{s.desc}</div>
+        {shortcuts.map((s) => {
+          const inner = (
+            <>
+              <div className="flex items-start gap-3">
+                <span
+                  className={`grid size-10 place-items-center rounded-xl ${
+                    s.premium ? "gradient-warm" : "gradient-primary"
+                  }`}
+                >
+                  <s.icon className="size-5 text-white" strokeWidth={2} />
+                </span>
+                <div>
+                  <div className="text-sm font-semibold">
+                    {s.label}
+                    {s.premium && (
+                      <span className="ml-2 rounded-md bg-amber-400/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-300">
+                        Premium
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground">{s.desc}</div>
+                </div>
               </div>
-            </div>
-            <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        ))}
+              <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            </>
+          );
+          const cls =
+            "glass group flex items-start justify-between gap-3 rounded-2xl p-5 transition-all hover:-translate-y-0.5";
+          if (s.to === "__gallery__") {
+            return (
+              <Link key={s.to} to="/admin/loja-produtos" className={cls}>
+                {inner}
+              </Link>
+            );
+          }
+          return (
+            <Link
+              key={s.to}
+              to="/admin/$resource"
+              params={{ resource: s.to }}
+              className={cls}
+            >
+              {inner}
+            </Link>
+          );
+        })}
       </div>
+
     </div>
   );
 }
