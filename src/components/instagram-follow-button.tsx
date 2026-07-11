@@ -13,7 +13,7 @@ export function InstagramFollowButton() {
       onClick={() => playSfx("swipe")}
       aria-label="Segue a @linkmrstore no Instagram — descontos exclusivos"
       title="Segue a @linkmrstore e ganha descontos exclusivos na comunidade e nos packs"
-      className="group fixed bottom-40 right-4 z-50 inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-black/70 px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.24em] text-white backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-pink-300/60 md:bottom-24 md:right-6 md:px-5 md:py-3 md:text-xs"
+      className="group fixed bottom-60 right-4 z-50 inline-flex w-[13.5rem] items-center gap-2.5 rounded-full border border-white/15 bg-black/70 px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.24em] text-white backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-pink-300/60 md:bottom-44 md:right-6 md:w-[15rem] md:px-5 md:py-3 md:text-xs"
       style={{
         boxShadow:
           "0 0 0 1px oklch(1 0 0 / 6%), 0 20px 50px -18px oklch(0 0 0 / 80%), 0 0 42px -8px color-mix(in oklab, oklch(0.68 0.28 340) 60%, transparent)",
