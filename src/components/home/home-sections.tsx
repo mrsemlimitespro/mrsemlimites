@@ -371,7 +371,13 @@ export function ProdutosSection() {
 
   const [open, setOpen] = useState<Produto | null>(null);
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <SectionShell title="Produtos">
+        <EmptyState message="Nenhum produto cadastrado." adminHref="/admin/loja-produtos" />
+      </SectionShell>
+    );
+  }
 
   const handleAdquirir = (p: Produto) => {
     if (p.status === "esgotado") return;
