@@ -21,7 +21,7 @@ function useLive<T>(table: string, query: () => Promise<T[]>) {
     };
     load();
     const ch = supabase
-      .channel(`home-${table}`)
+      .channel(`home-${table}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table }, load)
       .subscribe();
     return () => {
