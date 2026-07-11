@@ -1929,6 +1929,7 @@ export type Database = {
           estoque: number
           id: string
           imagem_url: string | null
+          imagens: string[]
           link: string | null
           nome: string
           ordem: number
@@ -1946,6 +1947,7 @@ export type Database = {
           estoque?: number
           id?: string
           imagem_url?: string | null
+          imagens?: string[]
           link?: string | null
           nome: string
           ordem?: number
@@ -1963,6 +1965,7 @@ export type Database = {
           estoque?: number
           id?: string
           imagem_url?: string | null
+          imagens?: string[]
           link?: string | null
           nome?: string
           ordem?: number
