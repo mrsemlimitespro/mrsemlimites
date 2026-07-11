@@ -363,26 +363,13 @@ function DashboardPage() {
         </div>
       </section>
 
-      {/* Carrossel promocional infinito */}
-      {showHome("carrossel") && <PromoCarousel />}
+      {/* Seções da Home — ordem e visibilidade controladas em /admin/home */}
+      {homeSections.map((slug) => {
+        const render = HOME_SECTION_RENDERERS[slug];
+        return render ? render() : null;
+      })}
 
-      {/* Propagandas (topo) */}
-      {showHome("propagandas") && <PropagandasSection posicao="home" />}
 
-      {/* Banner premium com produtos */}
-      {showHome("loja-produtos") && <ProdutosBannerCarousel />}
-
-      {/* Promoções ativas */}
-      {showHome("promocoes") && <PromocoesSection />}
-
-      {/* Planos */}
-      {showHome("planos") && <PlanosSection />}
-
-      {/* Produtos */}
-      {showHome("produtos") && <ProdutosSection />}
-
-      {/* Vídeos */}
-      {showHome("videos") && <VideosSection />}
 
 
       {/* Métricas — cabeçalho + 4 KPI cards */}
