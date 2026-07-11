@@ -329,23 +329,23 @@ function DashboardPage() {
       </section>
 
       {/* Carrossel promocional infinito */}
-      <PromoCarousel />
+      {isActive("carrossel") && <PromoCarousel />}
 
       {/* Propagandas (topo) */}
-      <PropagandasSection posicao="home" />
+      {isActive("propagandas") && <PropagandasSection posicao="home" />}
 
       {/* Banner premium com produtos */}
-      <ProdutosBannerCarousel />
+      {isActive("loja-produtos") && <ProdutosBannerCarousel />}
 
 
       {/* Promoções ativas */}
-      <PromocoesSection />
+      {isActive("promocoes") && <PromocoesSection />}
 
       {/* Planos */}
-      <PlanosSection />
+      {isActive("planos") && <PlanosSection />}
 
       {/* Produtos */}
-      <ProdutosSection />
+      {isActive("produtos") && <ProdutosSection />}
 
       {/* Métricas — cabeçalho + 4 KPI cards */}
       <section className="space-y-3">
