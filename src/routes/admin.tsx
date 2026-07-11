@@ -161,7 +161,12 @@ function AdminShell() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  const grouped = resources.reduce<Record<string, typeof resources>>((acc, r) => {
+  const { visibleIn } = useModules();
+
+  const visibleSpecialLinks = specialLinks.filter((l) => visibleIn("sidebar", l.key));
+  const visibleResources = resources.filter((r) => visibleIn("sidebar", r.key));
+
+  const grouped = visibleResources.reduce<Record<string, typeof resources>>((acc, r) => {
     const g = r.group ?? "Outros";
     (acc[g] ||= []).push(r);
     return acc;
