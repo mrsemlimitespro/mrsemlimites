@@ -4,27 +4,31 @@ import {
   Bot,
   Wand2,
   Package,
-  KeyRound,
-  Coins,
-  GraduationCap,
   Puzzle,
-  Tv,
   Sparkles,
   Search,
   ShieldCheck,
   Zap,
   Headphones,
-  RotateCcw,
   Star,
   ChevronDown,
   LayoutDashboard,
   ArrowRight,
+  Rocket,
+  Brain,
+  Megaphone,
+  TrendingUp,
+  Users,
+  Wrench,
+  LayoutTemplate,
+  Workflow,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND_LOGO_URL, BRAND_NAME } from "@/components/brand";
 import { PromoCarousel } from "@/components/promo-carousel";
+
 import {
   PromocoesSection,
   PlanosSection,
