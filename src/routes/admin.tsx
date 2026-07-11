@@ -20,7 +20,9 @@ import {
   Sparkles,
   Volume2,
   KeySquare,
+  Blocks,
 } from "lucide-react";
+import { useModules } from "@/lib/admin/use-modules";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -103,6 +105,7 @@ type SpecialLink = {
 
 const specialLinks: SpecialLink[] = [
   { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true },
+  { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks },
   {
     key: "configuracoes",
     to: "/admin/configuracoes",
@@ -158,7 +161,12 @@ function AdminShell() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  const grouped = resources.reduce<Record<string, typeof resources>>((acc, r) => {
+  const { visibleIn } = useModules();
+
+  const visibleSpecialLinks = specialLinks.filter((l) => visibleIn("sidebar", l.key));
+  const visibleResources = resources.filter((r) => visibleIn("sidebar", r.key));
+
+  const grouped = visibleResources.reduce<Record<string, typeof resources>>((acc, r) => {
     const g = r.group ?? "Outros";
     (acc[g] ||= []).push(r);
     return acc;
@@ -178,7 +186,7 @@ function AdminShell() {
 
           <nav className="flex-1 space-y-4 overflow-y-auto pr-1">
             <div className="space-y-1">
-              {specialLinks.map((l) => (
+              {visibleSpecialLinks.map((l) => (
                 <SideLink
                   key={l.key}
                   to={l.to}

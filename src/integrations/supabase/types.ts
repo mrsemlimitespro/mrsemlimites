@@ -2388,6 +2388,69 @@ export type Database = {
           },
         ]
       }
+      system_modules: {
+        Row: {
+          ativo: boolean
+          categoria: string
+          cor: string | null
+          created_at: string
+          descricao: string | null
+          favorito: boolean
+          icone: string
+          id: string
+          mostrar_busca: boolean
+          mostrar_dashboard: boolean
+          mostrar_home: boolean
+          mostrar_sidebar: boolean
+          nome: string
+          ordem: number
+          roles: Json
+          rota: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          categoria?: string
+          cor?: string | null
+          created_at?: string
+          descricao?: string | null
+          favorito?: boolean
+          icone?: string
+          id?: string
+          mostrar_busca?: boolean
+          mostrar_dashboard?: boolean
+          mostrar_home?: boolean
+          mostrar_sidebar?: boolean
+          nome: string
+          ordem?: number
+          roles?: Json
+          rota?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          categoria?: string
+          cor?: string | null
+          created_at?: string
+          descricao?: string | null
+          favorito?: boolean
+          icone?: string
+          id?: string
+          mostrar_busca?: boolean
+          mostrar_dashboard?: boolean
+          mostrar_home?: boolean
+          mostrar_sidebar?: boolean
+          nome?: string
+          ordem?: number
+          roles?: Json
+          rota?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
