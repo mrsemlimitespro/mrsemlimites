@@ -218,15 +218,20 @@ type Categoria = {
 };
 
 const CATEGORIAS: Categoria[] = [
-  { titulo: "Créditos", descricao: "Ative clientes na hora", icon: Coins, href: "/creditos", color: "var(--brand-orange)" },
-  { titulo: "Licenças", descricao: "Chaves premium", icon: KeyRound, href: "/licencas", color: "var(--brand-violet)" },
-  { titulo: "Packs Premium", descricao: "Bibliotecas exclusivas", icon: Package, href: "/packs", color: "var(--brand-magenta)" },
-  { titulo: "IPTV & Apps", descricao: "Streaming completo", icon: Tv, href: "/packs", color: "var(--brand-blue)" },
   { titulo: "Agentes IA", descricao: "Automação inteligente", icon: Bot, href: "/agents", color: "var(--brand-cyan)" },
-  { titulo: "Prompts IA", descricao: "Modelos prontos", icon: Wand2, href: "/prompts", color: "var(--brand-emerald)" },
-  { titulo: "Aulas", descricao: "Aprenda a revender", icon: GraduationCap, href: "/aulas", color: "var(--brand-pink)" },
+  { titulo: "Prompts", descricao: "Modelos prontos", icon: Wand2, href: "/prompts", color: "var(--brand-emerald)" },
+  { titulo: "Packs", descricao: "Bibliotecas exclusivas", icon: Package, href: "/packs", color: "var(--brand-magenta)" },
   { titulo: "Extensões", descricao: "Ferramentas de apoio", icon: Puzzle, href: "/agents", color: "var(--brand-violet)" },
+  { titulo: "Ferramentas", descricao: "Recursos essenciais", icon: Wrench, href: "/packs", color: "var(--brand-blue)" },
+  { titulo: "Automações", descricao: "Fluxos que vendem", icon: Workflow, href: "/packs", color: "var(--brand-orange)" },
+  { titulo: "Templates", descricao: "Prontos para usar", icon: LayoutTemplate, href: "/packs", color: "var(--brand-pink)" },
+  { titulo: "Comunidade", descricao: "Networking premium", icon: Users, href: "/", color: "var(--brand-violet)" },
+  { titulo: "Inteligência Artificial", descricao: "IA aplicada ao negócio", icon: Brain, href: "/agents", color: "var(--brand-cyan)" },
+  { titulo: "Marketing Digital", descricao: "Conteúdo e tráfego", icon: Megaphone, href: "/packs", color: "var(--brand-magenta)" },
+  { titulo: "Transformação Digital", descricao: "Escale seu negócio", icon: Rocket, href: "/packs", color: "var(--brand-orange)" },
+  { titulo: "Vendas", descricao: "Feche mais clientes", icon: TrendingUp, href: "/packs", color: "var(--brand-emerald)" },
 ];
+
 
 function CategoriasSection() {
   return (
