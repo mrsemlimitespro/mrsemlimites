@@ -53,6 +53,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/licencas")({
   head: () => ({
@@ -61,7 +62,11 @@ export const Route = createFileRoute("/_app/licencas")({
       { name: "description", content: "Gestão de licenças no MR sem limites." },
     ],
   }),
-  component: LicencasPage,
+  component: () => (
+    <RequireAuth>
+      <LicencasPage />
+    </RequireAuth>
+  ),
 });
 
 type LicencaRow = {

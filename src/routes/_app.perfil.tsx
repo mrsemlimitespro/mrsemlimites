@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/perfil")({
   head: () => ({
@@ -7,7 +8,11 @@ export const Route = createFileRoute("/_app/perfil")({
       { name: "description", content: "Perfil do usuário no MR Lova." },
     ],
   }),
-  component: PerfilPage,
+  component: () => (
+    <RequireAuth>
+      <PerfilPage />
+    </RequireAuth>
+  ),
 });
 
 function PerfilPage() {

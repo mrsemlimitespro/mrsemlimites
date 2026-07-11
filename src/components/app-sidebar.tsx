@@ -9,6 +9,9 @@ import {
   Download,
   UserRound,
   LogOut,
+  LogIn,
+  Bot,
+  Wand2,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { toast } from "sonner";
@@ -19,6 +22,7 @@ import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BRAND_NAME, BrandMark } from "@/components/brand";
 import { LogoutIncentiveDialog } from "@/components/logout-incentive-dialog";
+import { useIsAuthed } from "@/hooks/useIsAuthed";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -28,20 +32,30 @@ type NavItem = {
   icon: IconType;
 };
 
-const primaryItems: NavItem[] = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+// Público: acessível sem login (Home + Agents + Prompts)
+const publicItems: NavItem[] = [
+  { title: "Início", url: "/", icon: LayoutDashboard },
+  { title: "Agentes", url: "/agents", icon: Bot },
+  { title: "Prompts", url: "/prompts", icon: Wand2 },
+];
+
+// Comercial: requer login
+const commercialItems: NavItem[] = [
   { title: "Licenças", url: "/licencas", icon: KeyRound },
   { title: "Clientes", url: "/clientes", icon: Users },
   { title: "Créditos", url: "/creditos", icon: Coins },
   { title: "Aulas", url: "/aulas", icon: GraduationCap },
 ];
 
-const footerItems: (NavItem | { title: string; action: "extension" | "logout"; icon: IconType })[] =
-  [
-    { title: "Baixar Extensão", action: "extension", icon: Download },
-    { title: "Perfil", url: "/perfil", icon: UserRound },
-    { title: "Sair", action: "logout", icon: LogOut },
-  ];
+type FooterItem = NavItem | { title: string; action: "extension" | "logout"; icon: IconType };
+
+const authedFooterItems: FooterItem[] = [
+  { title: "Baixar Extensão", action: "extension", icon: Download },
+  { title: "Perfil", url: "/perfil", icon: UserRound },
+  { title: "Sair", action: "logout", icon: LogOut },
+];
+
+const anonFooterItems: FooterItem[] = [{ title: "Entrar", url: "/login", icon: LogIn }];
 
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
@@ -49,6 +63,7 @@ export function AppSidebar() {
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const authed = useIsAuthed();
 
   useEffect(() => {
     let mounted = true;
@@ -63,6 +78,11 @@ export function AppSidebar() {
       sub.subscription.unsubscribe();
     };
   }, []);
+
+  // Antes da checagem terminar, mostramos só os itens públicos para evitar flash.
+  const primaryItems: NavItem[] =
+    authed === true ? [...publicItems, ...commercialItems] : publicItems;
+  const footerItems: FooterItem[] = authed === true ? authedFooterItems : anonFooterItems;
 
   return (
     <>

@@ -238,13 +238,22 @@ export function TopBar() {
             <Settings className="size-[18px]" strokeWidth={2} />
           </IconBadge>
         )}
-        <button
-          type="button"
-          aria-label="Perfil"
-          className="grid size-11 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl active:scale-95 transition-transform"
-        >
-          <BrandMark size={36} glow={false} className="rounded-full" />
-        </button>
+        {signedIn === false ? (
+          <Link
+            to="/login"
+            className="inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold text-primary-foreground gradient-primary active:scale-95 transition-transform"
+          >
+            Entrar
+          </Link>
+        ) : (
+          <button
+            type="button"
+            aria-label="Perfil"
+            className="grid size-11 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl active:scale-95 transition-transform"
+          >
+            <BrandMark size={36} glow={false} className="rounded-full" />
+          </button>
+        )}
       </div>
 
       <AdminPasswordDialog open={adminOpen} onOpenChange={setAdminOpen} />

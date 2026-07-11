@@ -11,6 +11,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/clientes")({
   head: () => ({
@@ -19,7 +20,11 @@ export const Route = createFileRoute("/_app/clientes")({
       { name: "description", content: "Clientes vinculados às suas licenças." },
     ],
   }),
-  component: ClientesPage,
+  component: () => (
+    <RequireAuth>
+      <ClientesPage />
+    </RequireAuth>
+  ),
 });
 
 type Client = {

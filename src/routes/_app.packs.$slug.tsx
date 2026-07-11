@@ -4,13 +4,18 @@ import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { getPremiumPackBySlug } from "@/lib/premium-packs/packs.functions";
 import { PackDetailPage } from "@/components/premium-packs/PackDetailPage";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/packs/$slug")({
   ssr: false,
   head: () => ({
     meta: [{ title: "Pack Premium — MR Sem Limites" }, { name: "robots", content: "noindex" }],
   }),
-  component: PackDetailRoute,
+  component: () => (
+    <RequireAuth>
+      <PackDetailRoute />
+    </RequireAuth>
+  ),
   notFoundComponent: PackNotFound,
   errorComponent: PackError,
 });

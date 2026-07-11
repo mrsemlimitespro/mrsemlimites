@@ -5,6 +5,7 @@ import { AINovaDashboard } from "@/components/ai-modules/AINovaDashboard";
 import { getAINovaStats } from "@/lib/ai-modules/dashboard.functions";
 import { PremiumPacksHub } from "@/components/premium-packs/PremiumPacksHub";
 import { supabase } from "@/integrations/supabase/client";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/packs")({
   ssr: false,
@@ -15,7 +16,11 @@ export const Route = createFileRoute("/_app/packs")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: PacksPage,
+  component: () => (
+    <RequireAuth>
+      <PacksPage />
+    </RequireAuth>
+  ),
 });
 
 function useDisplayName() {
