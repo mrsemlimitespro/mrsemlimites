@@ -10,6 +10,7 @@ import { WatermarkFooter } from "@/components/watermark-footer";
 import { PageBackButton } from "@/components/page-back-button";
 import { NetworkStatusWatcher } from "@/components/network-status-watcher";
 import { PushBootstrapper } from "@/components/push-bootstrapper";
+import { WhatsappZapButton } from "@/components/whatsapp-zap-button";
 
 // Decorativo: canvas de partículas só monta em telas médias+ (evita CPU/bateria no mobile).
 const SoftParticles = lazy(() =>
@@ -51,6 +52,7 @@ function AppLayout() {
         <PushBootstrapper />
       </div>
       <FirePromosButton />
+      <WhatsappZapButton />
       <InnerPillMenu />
       <PwaInstallPrompt />
       <WatermarkFooter />
