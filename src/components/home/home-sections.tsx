@@ -415,10 +415,11 @@ export function ProdutoModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-2 backdrop-blur-xl sm:p-4"
+      className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-black/80 p-2 backdrop-blur-xl sm:p-4 md:flex md:items-center md:justify-center"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
+      style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}
     >
       <div
         className="glass-strong relative flex w-full max-w-6xl flex-col rounded-2xl md:max-h-[92vh] md:flex-row md:overflow-hidden"
