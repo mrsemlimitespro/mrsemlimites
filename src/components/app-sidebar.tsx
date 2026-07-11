@@ -47,12 +47,15 @@ const commercialItems: NavItem[] = [
   { title: "Aulas", url: "/aulas", icon: GraduationCap },
 ];
 
-const footerItems: (NavItem | { title: string; action: "extension" | "logout"; icon: IconType })[] =
-  [
-    { title: "Baixar Extensão", action: "extension", icon: Download },
-    { title: "Perfil", url: "/perfil", icon: UserRound },
-    { title: "Sair", action: "logout", icon: LogOut },
-  ];
+type FooterItem = NavItem | { title: string; action: "extension" | "logout"; icon: IconType };
+
+const authedFooterItems: FooterItem[] = [
+  { title: "Baixar Extensão", action: "extension", icon: Download },
+  { title: "Perfil", url: "/perfil", icon: UserRound },
+  { title: "Sair", action: "logout", icon: LogOut },
+];
+
+const anonFooterItems: FooterItem[] = [{ title: "Entrar", url: "/login", icon: LogIn }];
 
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
