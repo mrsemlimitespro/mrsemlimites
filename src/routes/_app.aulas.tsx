@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { GraduationCap, PlayCircle, Search, Sparkles } from "lucide-react";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/aulas")({
   head: () => ({
@@ -8,7 +9,11 @@ export const Route = createFileRoute("/_app/aulas")({
       { name: "description", content: "Aulas e treinamentos do MR Lova." },
     ],
   }),
-  component: AulasPage,
+  component: () => (
+    <RequireAuth>
+      <AulasPage />
+    </RequireAuth>
+  ),
 });
 
 function AulasPage() {
