@@ -216,7 +216,7 @@ function DashboardPage() {
   const showHome = (slug: string) => visibleIn("home", slug);
 
   // Fase 3 — ordem dinâmica das seções da Home
-  const HOME_SECTION_RENDERERS: Record<string, () => JSX.Element> = {
+  const HOME_SECTION_RENDERERS: Record<string, () => React.ReactElement> = {
     carrossel: () => <PromoCarousel key="carrossel" />,
     propagandas: () => <PropagandasSection key="propagandas" posicao="home" />,
     "loja-produtos": () => <ProdutosBannerCarousel key="loja-produtos" />,
