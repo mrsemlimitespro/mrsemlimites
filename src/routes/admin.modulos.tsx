@@ -165,7 +165,7 @@ function ModulosPage() {
         </div>
       ) : (
         <DndContext
-          sensors={useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))}
+          sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={onDragEnd}
         >
