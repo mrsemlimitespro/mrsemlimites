@@ -4,27 +4,31 @@ import {
   Bot,
   Wand2,
   Package,
-  KeyRound,
-  Coins,
-  GraduationCap,
   Puzzle,
-  Tv,
   Sparkles,
   Search,
   ShieldCheck,
   Zap,
   Headphones,
-  RotateCcw,
   Star,
   ChevronDown,
   LayoutDashboard,
   ArrowRight,
+  Rocket,
+  Brain,
+  Megaphone,
+  TrendingUp,
+  Users,
+  Wrench,
+  LayoutTemplate,
+  Workflow,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND_LOGO_URL, BRAND_NAME } from "@/components/brand";
 import { PromoCarousel } from "@/components/promo-carousel";
+
 import {
   PromocoesSection,
   PlanosSection,
@@ -45,16 +49,17 @@ export const Route = createFileRoute("/_app/")({
       {
         name: "description",
         content:
-          "Créditos, licenças, IPTV, agentes IA, prompts, packs e aplicativos com ativação automática 24/7. Compra segura, entrega imediata, suporte no WhatsApp.",
+          "Agentes IA, Prompts, Packs, Extensões, Automações, Templates e Comunidade. Compra segura, entrega após confirmação do pagamento e suporte no WhatsApp.",
       },
       { property: "og:title", content: "MR Sem Limites — Revenda Digital Premium" },
       {
         property: "og:description",
-        content: "Ative clientes em segundos. Créditos, licenças, IPTV, IA e mais.",
+        content: "Agentes IA, Prompts, Packs, Extensões, Automações e mais.",
       },
       { property: "og:type", content: "website" },
     ],
   }),
+
   component: LandingPage,
 });
 
@@ -69,10 +74,11 @@ function LandingPage() {
   const { visibleIn, modules } = useModules();
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-10 pb-24 md:space-y-14 md:pb-32">
+    <div className="mx-auto w-full max-w-[1280px] space-y-10 pb-40 md:space-y-14 md:pb-48">
       <HeroSection authed={!!authed} showDashboard={authed === true} />
       <SearchBar />
       <CategoriasSection />
+      <DestaquesSection />
 
       {/* Seções dinâmicas gerenciadas via /admin/home ------------- */}
       <DynamicHomeSections visibleIn={visibleIn} modules={modules} />
@@ -80,9 +86,11 @@ function LandingPage() {
       <BeneficiosSection />
       <EstatisticasSection />
       <DepoimentosSection />
+      <ComunidadeSection />
       <FaqSection />
       <CtaFinalSection />
       <FooterSection />
+
 
       {/* Atalho de admin/revendedor para o painel */}
       {authed === true && isAdmin && (
@@ -129,9 +137,10 @@ function HeroSection({ authed, showDashboard }: { authed: boolean; showDashboard
           {BRAND_NAME}
         </h1>
         <p className="max-w-2xl px-2 text-sm text-muted-foreground md:text-base">
-          Créditos, licenças, IPTV, agentes de IA, prompts, packs e aplicativos —
-          ativação automática 24/7, suporte no WhatsApp e garantia de 7 dias.
+          Agentes IA, Prompts, Packs, Extensões, Automações, Templates e Comunidade —
+          entrega após a confirmação do pagamento, com suporte humano no WhatsApp.
         </p>
+
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -176,7 +185,7 @@ function SearchBar() {
       <Search className="size-4 shrink-0 text-muted-foreground" />
       <input
         type="search"
-        placeholder="Buscar produtos, planos, aplicativos, agentes..."
+        placeholder="Buscar agentes, prompts, packs, automações..."
         className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         onKeyDown={(e) => {
           if (e.key === "Enter") {
@@ -212,15 +221,20 @@ type Categoria = {
 };
 
 const CATEGORIAS: Categoria[] = [
-  { titulo: "Créditos", descricao: "Ative clientes na hora", icon: Coins, href: "/creditos", color: "var(--brand-orange)" },
-  { titulo: "Licenças", descricao: "Chaves premium", icon: KeyRound, href: "/licencas", color: "var(--brand-violet)" },
-  { titulo: "Packs Premium", descricao: "Bibliotecas exclusivas", icon: Package, href: "/packs", color: "var(--brand-magenta)" },
-  { titulo: "IPTV & Apps", descricao: "Streaming completo", icon: Tv, href: "/packs", color: "var(--brand-blue)" },
   { titulo: "Agentes IA", descricao: "Automação inteligente", icon: Bot, href: "/agents", color: "var(--brand-cyan)" },
-  { titulo: "Prompts IA", descricao: "Modelos prontos", icon: Wand2, href: "/prompts", color: "var(--brand-emerald)" },
-  { titulo: "Aulas", descricao: "Aprenda a revender", icon: GraduationCap, href: "/aulas", color: "var(--brand-pink)" },
+  { titulo: "Prompts", descricao: "Modelos prontos", icon: Wand2, href: "/prompts", color: "var(--brand-emerald)" },
+  { titulo: "Packs", descricao: "Bibliotecas exclusivas", icon: Package, href: "/packs", color: "var(--brand-magenta)" },
   { titulo: "Extensões", descricao: "Ferramentas de apoio", icon: Puzzle, href: "/agents", color: "var(--brand-violet)" },
+  { titulo: "Ferramentas", descricao: "Recursos essenciais", icon: Wrench, href: "/packs", color: "var(--brand-blue)" },
+  { titulo: "Automações", descricao: "Fluxos que vendem", icon: Workflow, href: "/packs", color: "var(--brand-orange)" },
+  { titulo: "Templates", descricao: "Prontos para usar", icon: LayoutTemplate, href: "/packs", color: "var(--brand-pink)" },
+  { titulo: "Comunidade", descricao: "Networking premium", icon: Users, href: "/", color: "var(--brand-violet)" },
+  { titulo: "Inteligência Artificial", descricao: "IA aplicada ao negócio", icon: Brain, href: "/agents", color: "var(--brand-cyan)" },
+  { titulo: "Marketing Digital", descricao: "Conteúdo e tráfego", icon: Megaphone, href: "/packs", color: "var(--brand-magenta)" },
+  { titulo: "Transformação Digital", descricao: "Escale seu negócio", icon: Rocket, href: "/packs", color: "var(--brand-orange)" },
+  { titulo: "Vendas", descricao: "Feche mais clientes", icon: TrendingUp, href: "/packs", color: "var(--brand-emerald)" },
 ];
+
 
 function CategoriasSection() {
   return (
@@ -309,10 +323,11 @@ function DynamicHomeSections({
  * ============================================================= */
 const BENEFICIOS = [
   { icon: ShieldCheck, titulo: "Compra Segura", descricao: "Gateway certificado com criptografia total", color: "var(--brand-emerald)" },
-  { icon: Zap, titulo: "Entrega Automática", descricao: "Ativação em segundos após aprovação", color: "var(--brand-orange)" },
-  { icon: Headphones, titulo: "Suporte 24/7", descricao: "Atendimento humano no WhatsApp", color: "var(--brand-blue)" },
-  { icon: RotateCcw, titulo: "Garantia 7 dias", descricao: "Reembolso 100% se não gostar", color: "var(--brand-magenta)" },
+  { icon: Zap, titulo: "Entrega Após Pagamento", descricao: "Acesso liberado após a confirmação do pagamento", color: "var(--brand-orange)" },
+  { icon: Headphones, titulo: "Suporte no WhatsApp", descricao: "Atendimento humano com nossa equipe", color: "var(--brand-blue)" },
+  { icon: Sparkles, titulo: "Conteúdo Premium", descricao: "Curadoria exclusiva de Agentes, Prompts e Packs", color: "var(--brand-magenta)" },
 ];
+
 
 function BeneficiosSection() {
   return (
@@ -373,10 +388,11 @@ function EstatisticasSection() {
 
   const items = [
     { label: "Clientes ativos", value: stats.clientes.toLocaleString("pt-BR"), color: "var(--brand-violet)" },
-    { label: "Licenças entregues", value: stats.licencas.toLocaleString("pt-BR"), color: "var(--brand-blue)" },
+    { label: "Acessos entregues", value: stats.licencas.toLocaleString("pt-BR"), color: "var(--brand-blue)" },
     { label: "Produtos no catálogo", value: stats.produtos.toLocaleString("pt-BR"), color: "var(--brand-magenta)" },
     { label: "Satisfação", value: `${stats.satisfacao}%`, color: "var(--brand-emerald)" },
   ];
+
 
   return (
     <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -405,7 +421,7 @@ const DEPOIMENTOS = [
   {
     nome: "Carlos M.",
     cargo: "Revendedor há 3 anos",
-    texto: "Ativação instantânea mudou meu negócio. Consegui escalar sem dor de cabeça.",
+    texto: "Os Agentes e Packs da MR Sem Limites me ajudaram a escalar sem dor de cabeça.",
   },
   {
     nome: "Ana L.",
@@ -415,9 +431,10 @@ const DEPOIMENTOS = [
   {
     nome: "Rafael S.",
     cargo: "Top revendedor 2025",
-    texto: "Preços justos, entrega imediata e nunca tive problema com licença. Recomendo demais.",
+    texto: "Prompts, Automações e Templates de qualidade. Curadoria séria, recomendo demais.",
   },
 ];
+
 
 function DepoimentosSection() {
   return (
@@ -450,12 +467,12 @@ function DepoimentosSection() {
  * ============================================================= */
 const FAQ = [
   {
-    q: "Como funciona a ativação?",
-    a: "Após a aprovação do pagamento, os créditos ou licenças são liberados automaticamente no seu painel em segundos.",
+    q: "Como funciona a entrega?",
+    a: "Após a confirmação do pagamento no checkout, o cadastro será processado e o acesso será liberado conforme o plano adquirido. O cliente receberá sua chave de acesso e instruções de utilização após a confirmação do pagamento.",
   },
   {
-    q: "Posso testar antes de comprar?",
-    a: "Sim, oferecemos garantia de 7 dias. Se você não ficar satisfeito, devolvemos 100% do valor pago.",
+    q: "O que a plataforma oferece?",
+    a: "Agentes IA, Prompts, Packs, Extensões, Ferramentas, Automações, Templates e uma comunidade ativa focada em Inteligência Artificial, Marketing Digital, Transformação Digital e Vendas.",
   },
   {
     q: "Quais formas de pagamento vocês aceitam?",
@@ -463,13 +480,14 @@ const FAQ = [
   },
   {
     q: "Tem suporte?",
-    a: "Sim, oferecemos suporte 24/7 via WhatsApp. Nossa equipe está sempre pronta para ajudar.",
+    a: "Sim, oferecemos suporte humano via WhatsApp. Nossa equipe está pronta para tirar dúvidas e orientar no uso da plataforma.",
   },
   {
     q: "Preciso ter conhecimento técnico?",
-    a: "Não. A plataforma foi desenhada para ser simples e intuitiva. Ainda oferecemos aulas gratuitas.",
+    a: "Não. A plataforma foi desenhada para ser simples e intuitiva, com materiais de apoio para você começar rápido.",
   },
 ];
+
 
 function FaqSection() {
   const [open, setOpen] = useState<number | null>(0);
@@ -526,10 +544,10 @@ function CtaFinalSection() {
         <Sparkles className="size-3" /> Pronto para começar?
       </span>
       <h2 className="mt-4 text-2xl font-black tracking-tight md:text-4xl">
-        Comece agora e ative seu primeiro cliente em minutos
+        Comece agora e turbine seu negócio com IA
       </h2>
       <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground md:text-base">
-        Ambiente pronto, pagamento aprovado, licença entregue. Zero fricção.
+        Agentes, Prompts, Packs, Extensões e Automações prontos para acelerar seus resultados.
       </p>
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <Link
@@ -539,12 +557,13 @@ function CtaFinalSection() {
           Adquirir Agora <ArrowRight className="size-4" />
         </Link>
         <Link
-          to="/planos"
+          to="/agents"
           className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-bold text-foreground transition hover:bg-white/10"
         >
-          Ver Planos Premium
+          Ver Agentes IA
         </Link>
       </div>
+
     </section>
   );
 }
@@ -565,10 +584,10 @@ function FooterSection() {
             Catálogo
           </p>
           <ul className="space-y-1 text-xs">
-            <li><Link to="/packs" className="hover:text-foreground">Packs Premium</Link></li>
+            <li><Link to="/packs" className="hover:text-foreground">Packs</Link></li>
             <li><Link to="/agents" className="hover:text-foreground">Agentes IA</Link></li>
-            <li><Link to="/prompts" className="hover:text-foreground">Prompts IA</Link></li>
-            <li><Link to="/creditos" className="hover:text-foreground">Créditos</Link></li>
+            <li><Link to="/prompts" className="hover:text-foreground">Prompts</Link></li>
+            <li><Link to="/agents" className="hover:text-foreground">Extensões</Link></li>
           </ul>
         </div>
         <div>
@@ -587,11 +606,12 @@ function FooterSection() {
           </p>
           <ul className="space-y-1 text-xs">
             <li>✓ Pagamento seguro</li>
-            <li>✓ Garantia 7 dias</li>
-            <li>✓ Suporte 24/7</li>
-            <li>✓ Entrega automática</li>
+            <li>✓ Curadoria premium</li>
+            <li>✓ Suporte no WhatsApp</li>
+            <li>✓ Entrega após confirmação</li>
           </ul>
         </div>
+
       </div>
       <div className="mt-8 border-t border-white/5 pt-4 text-center text-[11px]">
         © {new Date().getFullYear()} {BRAND_NAME}. Todos os direitos reservados.
@@ -599,3 +619,97 @@ function FooterSection() {
     </footer>
   );
 }
+
+/* =============================================================
+ *  DESTAQUES (cards coloridos)
+ * ============================================================= */
+const DESTAQUES: { emoji: string; titulo: string; descricao: string; href: string; color: string }[] = [
+  { emoji: "🚀", titulo: "Transformação Digital", descricao: "Modernize o seu negócio", href: "/packs", color: "var(--brand-orange)" },
+  { emoji: "🤖", titulo: "Agentes IA", descricao: "Automação inteligente", href: "/agents", color: "var(--brand-cyan)" },
+  { emoji: "🧠", titulo: "Prompts Premium", descricao: "Modelos prontos de alto nível", href: "/prompts", color: "var(--brand-emerald)" },
+  { emoji: "📦", titulo: "Packs Exclusivos", descricao: "Bibliotecas curadas", href: "/packs", color: "var(--brand-magenta)" },
+  { emoji: "🧩", titulo: "Extensões", descricao: "Ferramentas de apoio", href: "/agents", color: "var(--brand-violet)" },
+  { emoji: "⚡", titulo: "Automações", descricao: "Fluxos que aceleram vendas", href: "/packs", color: "var(--brand-blue)" },
+];
+
+function DestaquesSection() {
+  return (
+    <section className="space-y-3">
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" /> Destaques da plataforma
+      </h2>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {DESTAQUES.map((d) => (
+          <Link
+            key={d.titulo}
+            to={d.href}
+            className="card-premium card-premium-hover group flex items-center gap-3 rounded-2xl p-5"
+            style={{ ["--tile-color" as never]: d.color }}
+          >
+            <span
+              aria-hidden
+              className="grid size-12 shrink-0 place-items-center rounded-2xl text-2xl"
+              style={{
+                background:
+                  "linear-gradient(135deg, color-mix(in oklab, var(--tile-color) 32%, transparent), color-mix(in oklab, var(--tile-color) 12%, transparent))",
+                boxShadow:
+                  "0 0 0 1px color-mix(in oklab, var(--tile-color) 40%, transparent)",
+              }}
+            >
+              {d.emoji}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">{d.titulo}</p>
+              <p className="line-clamp-1 text-[11px] text-muted-foreground">{d.descricao}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* =============================================================
+ *  COMUNIDADE (informativo, sem CTA clicável)
+ * ============================================================= */
+function ComunidadeSection() {
+  const itens = [
+    "Aprenda com outros membros",
+    "Conteúdos exclusivos",
+    "Novidades frequentes",
+    "Networking premium",
+    "Troca de conhecimento",
+    "Bastidores da plataforma",
+  ];
+  return (
+    <section className="space-y-3">
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" /> Comunidade MR Sem Limites
+      </h2>
+      <div
+        className="glass rounded-2xl p-6 md:p-8"
+        style={{
+          backgroundImage:
+            "linear-gradient(135deg, color-mix(in oklab, var(--brand-violet) 12%, transparent), color-mix(in oklab, var(--brand-blue) 10%, transparent))",
+        }}
+      >
+        <p className="text-base font-semibold md:text-lg">
+          Faça parte da comunidade MR Sem Limites.
+        </p>
+        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+          Um espaço para quem quer evoluir com Inteligência Artificial, Marketing Digital,
+          Transformação Digital e Vendas. Conteúdo, troca de conhecimento e novidades constantes.
+        </p>
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+          {itens.map((t) => (
+            <li key={t} className="flex items-start gap-2 text-xs text-muted-foreground">
+              <Sparkles className="mt-0.5 size-3.5 shrink-0 text-primary" />
+              <span>{t}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
