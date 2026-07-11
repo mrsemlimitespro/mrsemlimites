@@ -818,3 +818,145 @@ export function PropagandasSection({ posicao = "home" }: { posicao?: string }) {
     </section>
   );
 }
+
+/* ============ VÍDEOS ============ */
+type VideoRow = {
+  id: string;
+  titulo: string | null;
+  url: string;
+  thumbnail_url: string | null;
+  descricao: string | null;
+  created_at: string;
+};
+
+export function VideosSection() {
+  const items = useLive<VideoRow>("videos", async () => {
+    const { data } = await supabase
+      .from("videos")
+      .select("id,titulo,url,thumbnail_url,descricao,created_at")
+      .order("created_at", { ascending: false });
+    return (data ?? []) as VideoRow[];
+  });
+
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    if (idx >= items.length) setIdx(0);
+  }, [items.length, idx]);
+
+  if (items.length === 0) {
+    return (
+      <SectionShell title="Vídeos">
+        <EmptyState message="Nenhum vídeo disponível." adminHref="/admin/videos" />
+      </SectionShell>
+    );
+  }
+
+  const active = items[idx % items.length];
+  const isEmbed = /youtube\.com|youtu\.be|vimeo\.com/i.test(active.url);
+  const embedUrl = (() => {
+    if (!isEmbed) return active.url;
+    const m = active.url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+    if (m) return `https://www.youtube.com/embed/${m[1]}?autoplay=1&mute=1&loop=1&playlist=${m[1]}&controls=1&modestbranding=1&playsinline=1`;
+    const vm = active.url.match(/vimeo\.com\/(\d+)/);
+    if (vm) return `https://player.vimeo.com/video/${vm[1]}?autoplay=1&muted=1&loop=1&background=0`;
+    return active.url;
+  })();
+
+  return (
+    <SectionShell title="Vídeos">
+      <div
+        className="glass-strong relative overflow-hidden rounded-2xl"
+        style={{
+          boxShadow:
+            "0 0 0 1px color-mix(in oklab, var(--primary) 25%, transparent), 0 20px 60px -30px color-mix(in oklab, var(--brand-violet) 60%, transparent)",
+        }}
+      >
+        <div className="relative aspect-video w-full bg-black">
+          {isEmbed ? (
+            <iframe
+              key={active.id}
+              src={embedUrl}
+              title={active.titulo || "Vídeo"}
+              className="absolute inset-0 h-full w-full"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <video
+              key={active.id}
+              src={active.url}
+              poster={active.thumbnail_url || undefined}
+              className="absolute inset-0 h-full w-full object-contain"
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls
+            />
+          )}
+        </div>
+
+        {(active.titulo || active.descricao) && (
+          <div className="flex items-start justify-between gap-3 p-4">
+            <div className="min-w-0">
+              {active.titulo && (
+                <h3 className="truncate text-sm font-semibold">{active.titulo}</h3>
+              )}
+              {active.descricao && (
+                <p className="line-clamp-2 text-xs text-muted-foreground">{active.descricao}</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {items.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => setIdx((i) => (i - 1 + items.length) % items.length)}
+              className="absolute left-3 top-[calc(50%-1.5rem)] z-30 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70"
+              aria-label="Anterior"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIdx((i) => (i + 1) % items.length)}
+              className="absolute right-3 top-[calc(50%-1.5rem)] z-30 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70"
+              aria-label="Próximo"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {items.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {items.map((v, i) => (
+            <button
+              key={v.id}
+              type="button"
+              onClick={() => setIdx(i)}
+              className={`relative h-16 w-28 shrink-0 overflow-hidden rounded-lg border transition ${
+                i === idx
+                  ? "border-primary ring-2 ring-primary/40"
+                  : "border-white/10 opacity-70 hover:opacity-100"
+              }`}
+              aria-label={v.titulo || `Vídeo ${i + 1}`}
+            >
+              {v.thumbnail_url ? (
+                <img src={v.thumbnail_url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <div className="grid h-full w-full place-items-center bg-black/60 text-[10px] text-muted-foreground">
+                  Vídeo
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </SectionShell>
+  );
+}
