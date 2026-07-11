@@ -17,6 +17,8 @@ export type SystemModule = {
   mostrar_sidebar: boolean;
   mostrar_home: boolean;
   mostrar_busca: boolean;
+  titulo_home: string | null;
+  subtitulo_home: string | null;
   roles: string[];
   created_at: string;
   updated_at: string;
