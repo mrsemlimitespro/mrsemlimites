@@ -211,7 +211,8 @@ function timeAgo(iso: string) {
 }
 
 function DashboardPage() {
-  const { isActive } = useModules();
+  const { visibleIn } = useModules();
+  const showHome = (slug: string) => visibleIn("home", slug);
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [sales, setSales] = useState<PaymentRow[]>([]);
   const [activity, setActivity] = useState<ActivityRow[]>([]);
