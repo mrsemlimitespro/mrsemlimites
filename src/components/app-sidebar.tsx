@@ -82,6 +82,7 @@ export function AppSidebar() {
   // Antes da checagem terminar, mostramos só os itens públicos para evitar flash.
   const primaryItems: NavItem[] =
     authed === true ? [...publicItems, ...commercialItems] : publicItems;
+  const footerItems: FooterItem[] = authed === true ? authedFooterItems : anonFooterItems;
 
   return (
     <>
