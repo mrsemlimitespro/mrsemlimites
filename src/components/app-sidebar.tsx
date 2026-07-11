@@ -9,6 +9,9 @@ import {
   Download,
   UserRound,
   LogOut,
+  LogIn,
+  Bot,
+  Wand2,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { toast } from "sonner";
@@ -19,6 +22,7 @@ import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BRAND_NAME, BrandMark } from "@/components/brand";
 import { LogoutIncentiveDialog } from "@/components/logout-incentive-dialog";
+import { useIsAuthed } from "@/hooks/useIsAuthed";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -28,8 +32,15 @@ type NavItem = {
   icon: IconType;
 };
 
-const primaryItems: NavItem[] = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+// Público: acessível sem login (Home + Agents + Prompts)
+const publicItems: NavItem[] = [
+  { title: "Início", url: "/", icon: LayoutDashboard },
+  { title: "Agentes", url: "/agents", icon: Bot },
+  { title: "Prompts", url: "/prompts", icon: Wand2 },
+];
+
+// Comercial: requer login
+const commercialItems: NavItem[] = [
   { title: "Licenças", url: "/licencas", icon: KeyRound },
   { title: "Clientes", url: "/clientes", icon: Users },
   { title: "Créditos", url: "/creditos", icon: Coins },
