@@ -619,3 +619,97 @@ function FooterSection() {
     </footer>
   );
 }
+
+/* =============================================================
+ *  DESTAQUES (cards coloridos)
+ * ============================================================= */
+const DESTAQUES: { emoji: string; titulo: string; descricao: string; href: string; color: string }[] = [
+  { emoji: "🚀", titulo: "Transformação Digital", descricao: "Modernize o seu negócio", href: "/packs", color: "var(--brand-orange)" },
+  { emoji: "🤖", titulo: "Agentes IA", descricao: "Automação inteligente", href: "/agents", color: "var(--brand-cyan)" },
+  { emoji: "🧠", titulo: "Prompts Premium", descricao: "Modelos prontos de alto nível", href: "/prompts", color: "var(--brand-emerald)" },
+  { emoji: "📦", titulo: "Packs Exclusivos", descricao: "Bibliotecas curadas", href: "/packs", color: "var(--brand-magenta)" },
+  { emoji: "🧩", titulo: "Extensões", descricao: "Ferramentas de apoio", href: "/agents", color: "var(--brand-violet)" },
+  { emoji: "⚡", titulo: "Automações", descricao: "Fluxos que aceleram vendas", href: "/packs", color: "var(--brand-blue)" },
+];
+
+function DestaquesSection() {
+  return (
+    <section className="space-y-3">
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" /> Destaques da plataforma
+      </h2>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {DESTAQUES.map((d) => (
+          <Link
+            key={d.titulo}
+            to={d.href}
+            className="card-premium card-premium-hover group flex items-center gap-3 rounded-2xl p-5"
+            style={{ ["--tile-color" as never]: d.color }}
+          >
+            <span
+              aria-hidden
+              className="grid size-12 shrink-0 place-items-center rounded-2xl text-2xl"
+              style={{
+                background:
+                  "linear-gradient(135deg, color-mix(in oklab, var(--tile-color) 32%, transparent), color-mix(in oklab, var(--tile-color) 12%, transparent))",
+                boxShadow:
+                  "0 0 0 1px color-mix(in oklab, var(--tile-color) 40%, transparent)",
+              }}
+            >
+              {d.emoji}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">{d.titulo}</p>
+              <p className="line-clamp-1 text-[11px] text-muted-foreground">{d.descricao}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* =============================================================
+ *  COMUNIDADE (informativo, sem CTA clicável)
+ * ============================================================= */
+function ComunidadeSection() {
+  const itens = [
+    "Aprenda com outros membros",
+    "Conteúdos exclusivos",
+    "Novidades frequentes",
+    "Networking premium",
+    "Troca de conhecimento",
+    "Bastidores da plataforma",
+  ];
+  return (
+    <section className="space-y-3">
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" /> Comunidade MR Sem Limites
+      </h2>
+      <div
+        className="glass rounded-2xl p-6 md:p-8"
+        style={{
+          backgroundImage:
+            "linear-gradient(135deg, color-mix(in oklab, var(--brand-violet) 12%, transparent), color-mix(in oklab, var(--brand-blue) 10%, transparent))",
+        }}
+      >
+        <p className="text-base font-semibold md:text-lg">
+          Faça parte da comunidade MR Sem Limites.
+        </p>
+        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+          Um espaço para quem quer evoluir com Inteligência Artificial, Marketing Digital,
+          Transformação Digital e Vendas. Conteúdo, troca de conhecimento e novidades constantes.
+        </p>
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+          {itens.map((t) => (
+            <li key={t} className="flex items-start gap-2 text-xs text-muted-foreground">
+              <Sparkles className="mt-0.5 size-3.5 shrink-0 text-primary" />
+              <span>{t}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
