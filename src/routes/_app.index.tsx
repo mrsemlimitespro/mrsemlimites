@@ -418,7 +418,7 @@ const DEPOIMENTOS = [
   {
     nome: "Carlos M.",
     cargo: "Revendedor há 3 anos",
-    texto: "Ativação instantânea mudou meu negócio. Consegui escalar sem dor de cabeça.",
+    texto: "Os Agentes e Packs da MR Sem Limites me ajudaram a escalar sem dor de cabeça.",
   },
   {
     nome: "Ana L.",
@@ -428,9 +428,10 @@ const DEPOIMENTOS = [
   {
     nome: "Rafael S.",
     cargo: "Top revendedor 2025",
-    texto: "Preços justos, entrega imediata e nunca tive problema com licença. Recomendo demais.",
+    texto: "Prompts, Automações e Templates de qualidade. Curadoria séria, recomendo demais.",
   },
 ];
+
 
 function DepoimentosSection() {
   return (
