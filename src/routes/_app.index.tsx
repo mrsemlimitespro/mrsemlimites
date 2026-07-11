@@ -581,10 +581,10 @@ function FooterSection() {
             Catálogo
           </p>
           <ul className="space-y-1 text-xs">
-            <li><Link to="/packs" className="hover:text-foreground">Packs Premium</Link></li>
+            <li><Link to="/packs" className="hover:text-foreground">Packs</Link></li>
             <li><Link to="/agents" className="hover:text-foreground">Agentes IA</Link></li>
-            <li><Link to="/prompts" className="hover:text-foreground">Prompts IA</Link></li>
-            <li><Link to="/creditos" className="hover:text-foreground">Créditos</Link></li>
+            <li><Link to="/prompts" className="hover:text-foreground">Prompts</Link></li>
+            <li><Link to="/agents" className="hover:text-foreground">Extensões</Link></li>
           </ul>
         </div>
         <div>
@@ -603,11 +603,12 @@ function FooterSection() {
           </p>
           <ul className="space-y-1 text-xs">
             <li>✓ Pagamento seguro</li>
-            <li>✓ Garantia 7 dias</li>
-            <li>✓ Suporte 24/7</li>
-            <li>✓ Entrega automática</li>
+            <li>✓ Curadoria premium</li>
+            <li>✓ Suporte no WhatsApp</li>
+            <li>✓ Entrega após confirmação</li>
           </ul>
         </div>
+
       </div>
       <div className="mt-8 border-t border-white/5 pt-4 text-center text-[11px]">
         © {new Date().getFullYear()} {BRAND_NAME}. Todos os direitos reservados.
