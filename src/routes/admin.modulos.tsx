@@ -96,6 +96,7 @@ function ModulosPage() {
   }, [modules, busca, categoria, statusFilter]);
 
   const ativos = modules.filter((m) => m.ativo).length;
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   function onDragEnd(e: DragEndEvent) {
     const { active, over } = e;
