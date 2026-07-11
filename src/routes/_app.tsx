@@ -55,6 +55,7 @@ function AppLayout() {
       </div>
       <FirePromosButton />
       <WhatsappZapButton />
+      <InstagramFollowButton />
       <InnerPillMenu />
       <MobileFloatingNav />
       <PwaInstallPrompt />
