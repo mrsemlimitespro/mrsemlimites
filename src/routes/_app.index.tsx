@@ -320,10 +320,11 @@ function DynamicHomeSections({
  * ============================================================= */
 const BENEFICIOS = [
   { icon: ShieldCheck, titulo: "Compra Segura", descricao: "Gateway certificado com criptografia total", color: "var(--brand-emerald)" },
-  { icon: Zap, titulo: "Entrega Automática", descricao: "Ativação em segundos após aprovação", color: "var(--brand-orange)" },
-  { icon: Headphones, titulo: "Suporte 24/7", descricao: "Atendimento humano no WhatsApp", color: "var(--brand-blue)" },
-  { icon: RotateCcw, titulo: "Garantia 7 dias", descricao: "Reembolso 100% se não gostar", color: "var(--brand-magenta)" },
+  { icon: Zap, titulo: "Entrega Após Pagamento", descricao: "Acesso liberado após a confirmação do pagamento", color: "var(--brand-orange)" },
+  { icon: Headphones, titulo: "Suporte no WhatsApp", descricao: "Atendimento humano com nossa equipe", color: "var(--brand-blue)" },
+  { icon: Sparkles, titulo: "Conteúdo Premium", descricao: "Curadoria exclusiva de Agentes, Prompts e Packs", color: "var(--brand-magenta)" },
 ];
+
 
 function BeneficiosSection() {
   return (
