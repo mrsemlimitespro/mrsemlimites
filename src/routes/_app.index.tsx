@@ -185,7 +185,7 @@ function SearchBar() {
       <Search className="size-4 shrink-0 text-muted-foreground" />
       <input
         type="search"
-        placeholder="Buscar produtos, planos, aplicativos, agentes..."
+        placeholder="Buscar agentes, prompts, packs, automações..."
         className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         onKeyDown={(e) => {
           if (e.key === "Enter") {
