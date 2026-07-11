@@ -49,16 +49,17 @@ export const Route = createFileRoute("/_app/")({
       {
         name: "description",
         content:
-          "Créditos, licenças, IPTV, agentes IA, prompts, packs e aplicativos com ativação automática 24/7. Compra segura, entrega imediata, suporte no WhatsApp.",
+          "Agentes IA, Prompts, Packs, Extensões, Automações, Templates e Comunidade. Compra segura, entrega após confirmação do pagamento e suporte no WhatsApp.",
       },
       { property: "og:title", content: "MR Sem Limites — Revenda Digital Premium" },
       {
         property: "og:description",
-        content: "Ative clientes em segundos. Créditos, licenças, IPTV, IA e mais.",
+        content: "Agentes IA, Prompts, Packs, Extensões, Automações e mais.",
       },
       { property: "og:type", content: "website" },
     ],
   }),
+
   component: LandingPage,
 });
 
