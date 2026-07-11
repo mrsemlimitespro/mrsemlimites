@@ -1,12 +1,57 @@
 /**
  * Seções da Home consumidas do banco (CMS).
- * Cada seção renderiza SOMENTE se houver dados ativos — se estiver vazia,
- * some da tela sem alterar layout base.
+ * Cada seção permanece SEMPRE visível — quando não há dados, exibe
+ * um Empty State elegante com CTA de cadastro (apenas para admins).
  * Todas usam Supabase realtime para refletir alterações do Admin ao vivo.
  */
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, X, ZoomIn, ZoomOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+
+function EmptyState({
+  message,
+  adminHref,
+  adminLabel = "Cadastrar Agora",
+}: {
+  message: string;
+  adminHref?: string;
+  adminLabel?: string;
+}) {
+  const isAdmin = useIsAdmin();
+  return (
+    <div className="glass flex min-h-[180px] flex-col items-center justify-center gap-3 rounded-2xl p-8 text-center">
+      <p className="text-sm text-muted-foreground">{message}</p>
+      {isAdmin && adminHref && (
+        <a
+          href={adminHref}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:opacity-90"
+        >
+          <Plus className="size-3.5" />
+          {adminLabel}
+        </a>
+      )}
+    </div>
+  );
+}
+
+function SectionShell({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="space-y-3">
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" />
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
 
 const brl = (n: number | null | undefined) =>
   n == null ? "" : Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -103,7 +148,13 @@ export function PromocoesSection() {
     return (data ?? []) as Promo[];
   });
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <SectionShell title="Promoções ativas">
+        <EmptyState message="Nenhuma promoção ativa." adminHref="/admin/promocoes" />
+      </SectionShell>
+    );
+  }
 
   return (
     <section className="space-y-3">
@@ -204,7 +255,13 @@ export function PlanosSection() {
     return (data ?? []) as Plano[];
   });
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <SectionShell title="Planos">
+        <EmptyState message="Nenhum plano cadastrado." adminHref="/admin/planos" />
+      </SectionShell>
+    );
+  }
 
   return (
     <section className="space-y-3">
@@ -314,7 +371,13 @@ export function ProdutosSection() {
 
   const [open, setOpen] = useState<Produto | null>(null);
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <SectionShell title="Produtos">
+        <EmptyState message="Nenhum produto cadastrado." adminHref="/admin/loja-produtos" />
+      </SectionShell>
+    );
+  }
 
   const handleAdquirir = (p: Produto) => {
     if (p.status === "esgotado") return;
@@ -586,7 +649,13 @@ export function ProdutosBannerCarousel() {
     return () => clearInterval(t);
   }, [withImage.length]);
 
-  if (withImage.length === 0) return null;
+  if (withImage.length === 0) {
+    return (
+      <SectionShell title="Banners">
+        <EmptyState message="Nenhum banner cadastrado." adminHref="/admin/loja-produtos" />
+      </SectionShell>
+    );
+  }
   const active = withImage[idx % withImage.length];
   const cover = galleryOf(active)[0];
 
@@ -709,7 +778,13 @@ export function PropagandasSection({ posicao = "home" }: { posicao?: string }) {
   });
 
   const filtered = items.filter((p) => (p.posicao || "home") === posicao);
-  if (filtered.length === 0) return null;
+  if (filtered.length === 0) {
+    return (
+      <SectionShell title="Propagandas">
+        <EmptyState message="Nenhuma propaganda cadastrada." adminHref="/admin/propagandas" />
+      </SectionShell>
+    );
+  }
 
   return (
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -741,5 +816,147 @@ export function PropagandasSection({ posicao = "home" }: { posicao?: string }) {
         );
       })}
     </section>
+  );
+}
+
+/* ============ VÍDEOS ============ */
+type VideoRow = {
+  id: string;
+  titulo: string | null;
+  url: string;
+  thumbnail_url: string | null;
+  descricao: string | null;
+  created_at: string;
+};
+
+export function VideosSection() {
+  const items = useLive<VideoRow>("videos", async () => {
+    const { data } = await supabase
+      .from("videos")
+      .select("id,titulo,url,thumbnail_url,descricao,created_at")
+      .order("created_at", { ascending: false });
+    return (data ?? []) as VideoRow[];
+  });
+
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    if (idx >= items.length) setIdx(0);
+  }, [items.length, idx]);
+
+  if (items.length === 0) {
+    return (
+      <SectionShell title="Vídeos">
+        <EmptyState message="Nenhum vídeo disponível." adminHref="/admin/videos" />
+      </SectionShell>
+    );
+  }
+
+  const active = items[idx % items.length];
+  const isEmbed = /youtube\.com|youtu\.be|vimeo\.com/i.test(active.url);
+  const embedUrl = (() => {
+    if (!isEmbed) return active.url;
+    const m = active.url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+    if (m) return `https://www.youtube.com/embed/${m[1]}?autoplay=1&mute=1&loop=1&playlist=${m[1]}&controls=1&modestbranding=1&playsinline=1`;
+    const vm = active.url.match(/vimeo\.com\/(\d+)/);
+    if (vm) return `https://player.vimeo.com/video/${vm[1]}?autoplay=1&muted=1&loop=1&background=0`;
+    return active.url;
+  })();
+
+  return (
+    <SectionShell title="Vídeos">
+      <div
+        className="glass-strong relative overflow-hidden rounded-2xl"
+        style={{
+          boxShadow:
+            "0 0 0 1px color-mix(in oklab, var(--primary) 25%, transparent), 0 20px 60px -30px color-mix(in oklab, var(--brand-violet) 60%, transparent)",
+        }}
+      >
+        <div className="relative aspect-video w-full bg-black">
+          {isEmbed ? (
+            <iframe
+              key={active.id}
+              src={embedUrl}
+              title={active.titulo || "Vídeo"}
+              className="absolute inset-0 h-full w-full"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <video
+              key={active.id}
+              src={active.url}
+              poster={active.thumbnail_url || undefined}
+              className="absolute inset-0 h-full w-full object-contain"
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls
+            />
+          )}
+        </div>
+
+        {(active.titulo || active.descricao) && (
+          <div className="flex items-start justify-between gap-3 p-4">
+            <div className="min-w-0">
+              {active.titulo && (
+                <h3 className="truncate text-sm font-semibold">{active.titulo}</h3>
+              )}
+              {active.descricao && (
+                <p className="line-clamp-2 text-xs text-muted-foreground">{active.descricao}</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {items.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => setIdx((i) => (i - 1 + items.length) % items.length)}
+              className="absolute left-3 top-[calc(50%-1.5rem)] z-30 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70"
+              aria-label="Anterior"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIdx((i) => (i + 1) % items.length)}
+              className="absolute right-3 top-[calc(50%-1.5rem)] z-30 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70"
+              aria-label="Próximo"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {items.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {items.map((v, i) => (
+            <button
+              key={v.id}
+              type="button"
+              onClick={() => setIdx(i)}
+              className={`relative h-16 w-28 shrink-0 overflow-hidden rounded-lg border transition ${
+                i === idx
+                  ? "border-primary ring-2 ring-primary/40"
+                  : "border-white/10 opacity-70 hover:opacity-100"
+              }`}
+              aria-label={v.titulo || `Vídeo ${i + 1}`}
+            >
+              {v.thumbnail_url ? (
+                <img src={v.thumbnail_url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <div className="grid h-full w-full place-items-center bg-black/60 text-[10px] text-muted-foreground">
+                  Vídeo
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </SectionShell>
   );
 }

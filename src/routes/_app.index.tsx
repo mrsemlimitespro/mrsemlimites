@@ -28,6 +28,7 @@ import {
   ProdutosSection,
   ProdutosBannerCarousel,
   PropagandasSection,
+  VideosSection,
 } from "@/components/home/home-sections";
 import { useModules } from "@/lib/admin/use-modules";
 
@@ -338,7 +339,6 @@ function DashboardPage() {
       {/* Banner premium com produtos */}
       {showHome("loja-produtos") && <ProdutosBannerCarousel />}
 
-
       {/* Promoções ativas */}
       {showHome("promocoes") && <PromocoesSection />}
 
@@ -347,6 +347,10 @@ function DashboardPage() {
 
       {/* Produtos */}
       {showHome("produtos") && <ProdutosSection />}
+
+      {/* Vídeos */}
+      {showHome("videos") && <VideosSection />}
+
 
       {/* Métricas — cabeçalho + 4 KPI cards */}
       <section className="space-y-3">
