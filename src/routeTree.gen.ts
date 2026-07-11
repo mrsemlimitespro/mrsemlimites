@@ -27,6 +27,7 @@ import { Route as AdminPackAutorizacoesRouteImport } from './routes/admin.pack-a
 import { Route as AdminModulosRouteImport } from './routes/admin.modulos'
 import { Route as AdminLojaProdutosRouteImport } from './routes/admin.loja-produtos'
 import { Route as AdminLojaRouteImport } from './routes/admin.loja'
+import { Route as AdminHomeRouteImport } from './routes/admin.home'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
@@ -134,6 +135,11 @@ const AdminLojaProdutosRoute = AdminLojaProdutosRouteImport.update({
 const AdminLojaRoute = AdminLojaRouteImport.update({
   id: '/loja',
   path: '/loja',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHomeRoute = AdminHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/modulos': typeof AdminModulosRoute
@@ -291,6 +298,7 @@ export interface FileRoutesByTo {
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/modulos': typeof AdminModulosRoute
@@ -331,6 +339,7 @@ export interface FileRoutesById {
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/modulos': typeof AdminModulosRoute
@@ -372,6 +381,7 @@ export interface FileRouteTypes {
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/configuracoes'
+    | '/admin/home'
     | '/admin/loja'
     | '/admin/loja-produtos'
     | '/admin/modulos'
@@ -408,6 +418,7 @@ export interface FileRouteTypes {
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/configuracoes'
+    | '/admin/home'
     | '/admin/loja'
     | '/admin/loja-produtos'
     | '/admin/modulos'
@@ -447,6 +458,7 @@ export interface FileRouteTypes {
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/configuracoes'
+    | '/admin/home'
     | '/admin/loja'
     | '/admin/loja-produtos'
     | '/admin/modulos'
@@ -607,6 +619,13 @@ declare module '@tanstack/react-router' {
       path: '/loja'
       fullPath: '/admin/loja'
       preLoaderRoute: typeof AdminLojaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/home': {
+      id: '/admin/home'
+      path: '/home'
+      fullPath: '/admin/home'
+      preLoaderRoute: typeof AdminHomeRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/configuracoes': {
@@ -789,6 +808,7 @@ interface AdminRouteChildren {
   AdminAnimacoesRoute: typeof AdminAnimacoesRoute
   AdminBackupRoute: typeof AdminBackupRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
+  AdminHomeRoute: typeof AdminHomeRoute
   AdminLojaRoute: typeof AdminLojaRoute
   AdminLojaProdutosRoute: typeof AdminLojaProdutosRoute
   AdminModulosRoute: typeof AdminModulosRoute
@@ -807,6 +827,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnimacoesRoute: AdminAnimacoesRoute,
   AdminBackupRoute: AdminBackupRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
+  AdminHomeRoute: AdminHomeRoute,
   AdminLojaRoute: AdminLojaRoute,
   AdminLojaProdutosRoute: AdminLojaProdutosRoute,
   AdminModulosRoute: AdminModulosRoute,
@@ -838,13 +859,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

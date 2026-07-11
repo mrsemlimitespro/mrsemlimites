@@ -2407,6 +2407,8 @@ export type Database = {
           roles: Json
           rota: string | null
           slug: string
+          subtitulo_home: string | null
+          titulo_home: string | null
           updated_at: string
         }
         Insert: {
@@ -2427,6 +2429,8 @@ export type Database = {
           roles?: Json
           rota?: string | null
           slug: string
+          subtitulo_home?: string | null
+          titulo_home?: string | null
           updated_at?: string
         }
         Update: {
@@ -2447,6 +2451,8 @@ export type Database = {
           roles?: Json
           rota?: string | null
           slug?: string
+          subtitulo_home?: string | null
+          titulo_home?: string | null
           updated_at?: string
         }
         Relationships: []

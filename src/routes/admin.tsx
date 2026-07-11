@@ -21,6 +21,7 @@ import {
   Volume2,
   KeySquare,
   Blocks,
+  Home as HomeIcon,
 } from "lucide-react";
 import { useModules } from "@/lib/admin/use-modules";
 
@@ -105,6 +106,7 @@ type SpecialLink = {
 
 const specialLinks: SpecialLink[] = [
   { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true },
+  { key: "home", to: "/admin/home", label: "Home", icon: HomeIcon },
   { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks },
   {
     key: "configuracoes",

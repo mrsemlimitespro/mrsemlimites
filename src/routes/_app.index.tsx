@@ -16,7 +16,7 @@ import {
   Coins,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
-import { useEffect, useState, useCallback, useId } from "react";
+import React, { useEffect, useState, useCallback, useId } from "react";
 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -212,8 +212,41 @@ function timeAgo(iso: string) {
 }
 
 function DashboardPage() {
-  const { visibleIn } = useModules();
+  const { visibleIn, modules } = useModules();
   const showHome = (slug: string) => visibleIn("home", slug);
+
+  // Fase 3 — ordem dinâmica das seções da Home
+  const HOME_SECTION_RENDERERS: Record<string, () => React.ReactElement> = {
+    carrossel: () => <PromoCarousel key="carrossel" />,
+    propagandas: () => <PropagandasSection key="propagandas" posicao="home" />,
+    "loja-produtos": () => <ProdutosBannerCarousel key="loja-produtos" />,
+    promocoes: () => <PromocoesSection key="promocoes" />,
+    planos: () => <PlanosSection key="planos" />,
+    produtos: () => <ProdutosSection key="produtos" />,
+    videos: () => <VideosSection key="videos" />,
+  };
+  const HOME_DEFAULT_ORDER = [
+    "carrossel",
+    "propagandas",
+    "loja-produtos",
+    "promocoes",
+    "planos",
+    "produtos",
+    "videos",
+  ];
+  const homeSections = (() => {
+    const configured = modules
+      .filter((m) => m.mostrar_home && m.ativo && HOME_SECTION_RENDERERS[m.slug])
+      .sort((a, b) => a.ordem - b.ordem)
+      .map((m) => m.slug);
+    // Fallback: sem módulos carregados ainda, usa ordem padrão
+    if (configured.length === 0) return HOME_DEFAULT_ORDER;
+    // Adiciona slugs restantes que ainda não estão em `configured` (novos/legado) usando defaults
+    const missing = HOME_DEFAULT_ORDER.filter(
+      (slug) => !configured.includes(slug) && showHome(slug),
+    );
+    return [...configured, ...missing];
+  })();
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [sales, setSales] = useState<PaymentRow[]>([]);
   const [activity, setActivity] = useState<ActivityRow[]>([]);
@@ -330,26 +363,13 @@ function DashboardPage() {
         </div>
       </section>
 
-      {/* Carrossel promocional infinito */}
-      {showHome("carrossel") && <PromoCarousel />}
+      {/* Seções da Home — ordem e visibilidade controladas em /admin/home */}
+      {homeSections.map((slug) => {
+        const render = HOME_SECTION_RENDERERS[slug];
+        return render ? render() : null;
+      })}
 
-      {/* Propagandas (topo) */}
-      {showHome("propagandas") && <PropagandasSection posicao="home" />}
 
-      {/* Banner premium com produtos */}
-      {showHome("loja-produtos") && <ProdutosBannerCarousel />}
-
-      {/* Promoções ativas */}
-      {showHome("promocoes") && <PromocoesSection />}
-
-      {/* Planos */}
-      {showHome("planos") && <PlanosSection />}
-
-      {/* Produtos */}
-      {showHome("produtos") && <ProdutosSection />}
-
-      {/* Vídeos */}
-      {showHome("videos") && <VideosSection />}
 
 
       {/* Métricas — cabeçalho + 4 KPI cards */}
