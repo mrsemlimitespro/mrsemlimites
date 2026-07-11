@@ -74,7 +74,7 @@ function ModuleCard({ module: m }: { module: SystemModule }) {
 
   return (
     <Link
-      to={to}
+      to={to as never}
       className="glass group relative flex items-center justify-between overflow-hidden rounded-2xl p-5 transition-all hover:-translate-y-0.5"
       style={m.cor ? { boxShadow: `0 0 30px -12px ${m.cor}` } : undefined}
     >
