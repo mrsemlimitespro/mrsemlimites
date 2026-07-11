@@ -37,6 +37,7 @@ import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppPacksRouteImport } from './routes/_app.packs'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
 import { Route as AppClientesRouteImport } from './routes/_app.clientes'
 import { Route as AppAulasRouteImport } from './routes/_app.aulas'
@@ -187,6 +188,11 @@ const AppLicencasRoute = AppLicencasRouteImport.update({
   path: '/licencas',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCreditosRoute = AppCreditosRouteImport.update({
   id: '/creditos',
   path: '/creditos',
@@ -252,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/aulas': typeof AppAulasRoute
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
+  '/dashboard': typeof AppDashboardRoute
   '/licencas': typeof AppLicencasRoute
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
@@ -289,6 +296,7 @@ export interface FileRoutesByTo {
   '/aulas': typeof AppAulasRoute
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
+  '/dashboard': typeof AppDashboardRoute
   '/licencas': typeof AppLicencasRoute
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
@@ -330,6 +338,7 @@ export interface FileRoutesById {
   '/_app/aulas': typeof AppAulasRoute
   '/_app/clientes': typeof AppClientesRoute
   '/_app/creditos': typeof AppCreditosRoute
+  '/_app/dashboard': typeof AppDashboardRoute
   '/_app/licencas': typeof AppLicencasRoute
   '/_app/packs': typeof AppPacksRouteWithChildren
   '/_app/perfil': typeof AppPerfilRoute
@@ -372,6 +381,7 @@ export interface FileRouteTypes {
     | '/aulas'
     | '/clientes'
     | '/creditos'
+    | '/dashboard'
     | '/licencas'
     | '/packs'
     | '/perfil'
@@ -409,6 +419,7 @@ export interface FileRouteTypes {
     | '/aulas'
     | '/clientes'
     | '/creditos'
+    | '/dashboard'
     | '/licencas'
     | '/packs'
     | '/perfil'
@@ -449,6 +460,7 @@ export interface FileRouteTypes {
     | '/_app/aulas'
     | '/_app/clientes'
     | '/_app/creditos'
+    | '/_app/dashboard'
     | '/_app/licencas'
     | '/_app/packs'
     | '/_app/perfil'
@@ -691,6 +703,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLicencasRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/creditos': {
       id: '/_app/creditos'
       path: '/creditos'
@@ -781,6 +800,7 @@ interface AppRouteChildren {
   AppAulasRoute: typeof AppAulasRoute
   AppClientesRoute: typeof AppClientesRoute
   AppCreditosRoute: typeof AppCreditosRoute
+  AppDashboardRoute: typeof AppDashboardRoute
   AppLicencasRoute: typeof AppLicencasRoute
   AppPacksRoute: typeof AppPacksRouteWithChildren
   AppPerfilRoute: typeof AppPerfilRoute
@@ -793,6 +813,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAulasRoute: AppAulasRoute,
   AppClientesRoute: AppClientesRoute,
   AppCreditosRoute: AppCreditosRoute,
+  AppDashboardRoute: AppDashboardRoute,
   AppLicencasRoute: AppLicencasRoute,
   AppPacksRoute: AppPacksRouteWithChildren,
   AppPerfilRoute: AppPerfilRoute,

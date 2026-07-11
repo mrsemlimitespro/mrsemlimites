@@ -41,6 +41,7 @@ const publicItems: NavItem[] = [
 
 // Comercial: requer login
 const commercialItems: NavItem[] = [
+  { title: "Painel", url: "/dashboard", icon: LayoutDashboard },
   { title: "Licenças", url: "/licencas", icon: KeyRound },
   { title: "Clientes", url: "/clientes", icon: Users },
   { title: "Créditos", url: "/creditos", icon: Coins },
