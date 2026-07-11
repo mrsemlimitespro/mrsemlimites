@@ -12,6 +12,7 @@ import { PageBackButton } from "@/components/page-back-button";
 import { NetworkStatusWatcher } from "@/components/network-status-watcher";
 import { PushBootstrapper } from "@/components/push-bootstrapper";
 import { WhatsappZapButton } from "@/components/whatsapp-zap-button";
+import { InstagramFollowButton } from "@/components/instagram-follow-button";
 
 // Decorativo: canvas de partículas só monta em telas médias+ (evita CPU/bateria no mobile).
 const SoftParticles = lazy(() =>
@@ -54,6 +55,7 @@ function AppLayout() {
       </div>
       <FirePromosButton />
       <WhatsappZapButton />
+      <InstagramFollowButton />
       <InnerPillMenu />
       <MobileFloatingNav />
       <PwaInstallPrompt />
