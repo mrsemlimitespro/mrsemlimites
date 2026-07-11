@@ -186,7 +186,7 @@ function AdminShell() {
 
           <nav className="flex-1 space-y-4 overflow-y-auto pr-1">
             <div className="space-y-1">
-              {specialLinks.map((l) => (
+              {visibleSpecialLinks.map((l) => (
                 <SideLink
                   key={l.key}
                   to={l.to}
