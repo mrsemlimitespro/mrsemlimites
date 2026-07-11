@@ -148,7 +148,13 @@ export function PromocoesSection() {
     return (data ?? []) as Promo[];
   });
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <SectionShell title="Promoções ativas">
+        <EmptyState message="Nenhuma promoção ativa." adminHref="/admin/promocoes" />
+      </SectionShell>
+    );
+  }
 
   return (
     <section className="space-y-3">
