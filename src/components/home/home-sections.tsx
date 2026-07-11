@@ -4,7 +4,8 @@
  * some da tela sem alterar layout base.
  * Todas usam Supabase realtime para refletir alterações do Admin ao vivo.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const brl = (n: number | null | undefined) =>
@@ -30,6 +31,45 @@ function useLive<T>(table: string, query: () => Promise<T[]>) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [table]);
   return rows;
+}
+
+/**
+ * ArtImage — exibe a arte por completo, nunca corta.
+ * Blur da mesma imagem preenche o fundo quando a proporção diverge.
+ */
+function ArtImage({
+  src,
+  alt,
+  className,
+  rounded = "",
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  rounded?: string;
+}) {
+  return (
+    <div className={`relative overflow-hidden bg-black ${rounded} ${className ?? ""}`}>
+      <img
+        src={src}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+      />
+      <div aria-hidden className="absolute inset-0 bg-black/30" />
+      <img
+        src={src}
+        alt={alt}
+        className="relative z-10 h-full w-full object-contain"
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+      />
+    </div>
+  );
 }
 
 /* ============ PROMOÇÕES ============ */
@@ -83,14 +123,7 @@ export function PromocoesSection() {
               className="glass group relative flex flex-col overflow-hidden rounded-2xl transition-transform hover:scale-[1.01]"
               style={{ boxShadow: `0 0 0 1px color-mix(in oklab, ${color} 25%, transparent)` }}
             >
-              {img && (
-                <img
-                  src={img}
-                  alt={p.titulo}
-                  className="h-40 w-full object-cover"
-                  draggable={false}
-                />
-              )}
+              {img && <ArtImage src={img} alt={p.titulo} className="aspect-[16/9] w-full" />}
               <div className="flex flex-1 flex-col gap-1 p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -251,17 +284,27 @@ type Produto = {
   categoria: string | null;
   preco: number | null;
   imagem_url: string | null;
+  imagens: string[] | null;
   estoque: number | null;
   status: string | null;
   botao_texto: string | null;
   link: string | null;
 };
 
+function galleryOf(p: Produto): string[] {
+  const arr = [p.imagem_url, ...((p.imagens ?? []) as string[])]
+    .filter((x): x is string => !!x && x.trim().length > 0)
+    .map((x) => x.trim());
+  return Array.from(new Set(arr));
+}
+
 export function ProdutosSection() {
   const items = useLive<Produto>("produtos", async () => {
     const { data } = await supabase
       .from("produtos")
-      .select("id,nome,titulo,descricao,categoria,preco,imagem_url,estoque,status,botao_texto,link")
+      .select(
+        "id,nome,titulo,descricao,categoria,preco,imagem_url,imagens,estoque,status,botao_texto,link",
+      )
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .order("created_at", { ascending: false });
@@ -287,105 +330,351 @@ export function ProdutosSection() {
         <span aria-hidden className="section-title-bar" />
         Produtos
       </h2>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {items.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setOpen(p)}
-            className="glass overflow-hidden rounded-2xl text-left transition hover:ring-1 hover:ring-primary/40"
-          >
-            {p.imagem_url && (
-              <img
-                src={p.imagem_url}
-                alt={p.titulo || p.nome}
-                className="h-40 w-full object-cover"
-                draggable={false}
-              />
-            )}
-            <div className="flex flex-col gap-1 p-4">
-              {p.categoria && (
-                <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                  {p.categoria}
-                </span>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        {items.map((p) => {
+          const gallery = galleryOf(p);
+          const cover = gallery[0];
+          return (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => setOpen(p)}
+              className="glass group flex flex-col overflow-hidden rounded-2xl text-left transition hover:ring-1 hover:ring-primary/40"
+            >
+              {cover ? (
+                <ArtImage
+                  src={cover}
+                  alt={p.titulo || p.nome}
+                  className="aspect-[4/5] w-full sm:aspect-[3/4]"
+                />
+              ) : (
+                <div className="aspect-[3/4] w-full bg-black/60" />
               )}
-              <h3 className="text-sm font-semibold">{p.titulo || p.nome}</h3>
-              {p.descricao && (
-                <p className="line-clamp-2 text-xs text-muted-foreground/90">{p.descricao}</p>
-              )}
-              <div className="mt-2 flex items-end justify-between gap-2">
-                <span className="text-lg font-bold">{brl(p.preco)}</span>
-                {p.status === "esgotado" ? (
-                  <span className="rounded-md bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-400">
-                    ESGOTADO
-                  </span>
-                ) : (
-                  <span className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
-                    Ver detalhes
+              <div className="flex flex-col gap-1 p-4">
+                {p.categoria && (
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                    {p.categoria}
                   </span>
                 )}
+                <h3 className="text-sm font-semibold">{p.titulo || p.nome}</h3>
+                {p.descricao && (
+                  <p className="line-clamp-2 text-xs text-muted-foreground/90">{p.descricao}</p>
+                )}
+                <div className="mt-2 flex items-end justify-between gap-2">
+                  <span className="text-lg font-bold">{brl(p.preco)}</span>
+                  {p.status === "esgotado" ? (
+                    <span className="rounded-md bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-400">
+                      ESGOTADO
+                    </span>
+                  ) : (
+                    <span className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
+                      Ver detalhes
+                    </span>
+                  )}
+                </div>
               </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {open && <ProdutoModal produto={open} onClose={() => setOpen(null)} onBuy={handleAdquirir} />}
+    </section>
+  );
+}
+
+function ProdutoModal({
+  produto,
+  onClose,
+  onBuy,
+}: {
+  produto: Produto;
+  onClose: () => void;
+  onBuy: (p: Produto) => void;
+}) {
+  const gallery = useMemo(() => galleryOf(produto), [produto]);
+  const [idx, setIdx] = useState(0);
+  const [zoom, setZoom] = useState(false);
+  const current = gallery[idx];
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") setIdx((i) => (i + 1) % Math.max(1, gallery.length));
+      if (e.key === "ArrowLeft")
+        setIdx((i) => (i - 1 + Math.max(1, gallery.length)) % Math.max(1, gallery.length));
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [gallery.length, onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-2 backdrop-blur-xl sm:p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="glass-strong relative flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl md:flex-row"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-3 top-3 z-30 grid size-9 place-items-center rounded-full bg-black/60 text-white transition hover:bg-black/80"
+          aria-label="Fechar"
+        >
+          <X className="size-4" />
+        </button>
+
+        {/* Área da imagem */}
+        <div className="relative flex min-h-[40vh] flex-1 flex-col bg-black md:min-h-0">
+          <div
+            className={`relative flex-1 overflow-auto ${zoom ? "cursor-zoom-out" : "cursor-zoom-in"}`}
+            onClick={() => setZoom((z) => !z)}
+          >
+            {current ? (
+              <>
+                <img
+                  src={current}
+                  alt=""
+                  aria-hidden
+                  className="absolute inset-0 h-full w-full scale-110 object-cover opacity-30 blur-2xl"
+                />
+                <div className="relative z-10 flex h-full min-h-[40vh] w-full items-center justify-center p-2 md:min-h-[70vh]">
+                  <img
+                    src={current}
+                    alt={produto.titulo || produto.nome}
+                    className={
+                      zoom
+                        ? "max-w-none object-contain transition-transform"
+                        : "max-h-full max-w-full object-contain transition-transform"
+                    }
+                    style={zoom ? { transform: "scale(2)", transformOrigin: "center" } : undefined}
+                    draggable={false}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="grid h-full min-h-[40vh] place-items-center text-muted-foreground">
+                Sem imagem
+              </div>
+            )}
+
+            {gallery.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIdx((i) => (i - 1 + gallery.length) % gallery.length);
+                    setZoom(false);
+                  }}
+                  className="absolute left-3 top-1/2 z-20 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                  aria-label="Anterior"
+                >
+                  <ChevronLeft className="size-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIdx((i) => (i + 1) % gallery.length);
+                    setZoom(false);
+                  }}
+                  className="absolute right-3 top-1/2 z-20 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                  aria-label="Próxima"
+                >
+                  <ChevronRight className="size-5" />
+                </button>
+              </>
+            )}
+
+            <div className="pointer-events-none absolute bottom-3 right-3 z-20 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-[11px] text-white">
+              {zoom ? <ZoomOut className="size-3.5" /> : <ZoomIn className="size-3.5" />}
+              {zoom ? "Toque para reduzir" : "Toque para ampliar"}
             </div>
-          </button>
-        ))}
+          </div>
+
+          {gallery.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto border-t border-white/10 bg-black/60 p-2">
+              {gallery.map((g, i) => (
+                <button
+                  key={g + i}
+                  type="button"
+                  onClick={() => {
+                    setIdx(i);
+                    setZoom(false);
+                  }}
+                  className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border transition ${
+                    i === idx
+                      ? "border-primary ring-2 ring-primary/40"
+                      : "border-white/10 opacity-70 hover:opacity-100"
+                  }`}
+                  aria-label={`Imagem ${i + 1}`}
+                >
+                  <img src={g} alt="" className="h-full w-full object-cover" draggable={false} />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Painel de informações */}
+        <div className="flex w-full flex-col gap-3 overflow-y-auto p-6 md:w-[380px] md:border-l md:border-white/10">
+          {produto.categoria && (
+            <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              {produto.categoria}
+            </span>
+          )}
+          <h3 className="text-2xl font-bold">{produto.titulo || produto.nome}</h3>
+          {produto.descricao && (
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+              {produto.descricao}
+            </p>
+          )}
+          <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4">
+            <span className="text-2xl font-bold">{brl(produto.preco)}</span>
+            {produto.status === "esgotado" ? (
+              <span className="rounded-md bg-red-500/20 px-3 py-2 text-xs font-bold text-red-400">
+                ESGOTADO
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onBuy(produto)}
+                className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+              >
+                {produto.botao_texto || "Adquirir"}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============ BANNER CARROSSEL DE PRODUTOS (HOME) ============ */
+export function ProdutosBannerCarousel() {
+  const items = useLive<Produto>("produtos", async () => {
+    const { data } = await supabase
+      .from("produtos")
+      .select(
+        "id,nome,titulo,descricao,categoria,preco,imagem_url,imagens,estoque,status,botao_texto,link",
+      )
+      .eq("ativo", true)
+      .order("ordem", { ascending: true })
+      .order("created_at", { ascending: false });
+    return (data ?? []) as Produto[];
+  });
+
+  const withImage = items.filter((p) => galleryOf(p).length > 0);
+  const [idx, setIdx] = useState(0);
+  const [open, setOpen] = useState<Produto | null>(null);
+
+  useEffect(() => {
+    if (withImage.length <= 1) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % withImage.length), 6000);
+    return () => clearInterval(t);
+  }, [withImage.length]);
+
+  if (withImage.length === 0) return null;
+  const active = withImage[idx % withImage.length];
+  const cover = galleryOf(active)[0];
+
+  return (
+    <section className="space-y-3">
+      <div
+        className="glass-strong relative overflow-hidden rounded-2xl"
+        style={{
+          boxShadow:
+            "0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent), 0 20px 80px -30px color-mix(in oklab, var(--brand-magenta) 60%, transparent)",
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setOpen(active)}
+          className="group relative block w-full text-left"
+        >
+          <ArtImage
+            src={cover}
+            alt={active.titulo || active.nome}
+            className="aspect-[21/9] w-full sm:aspect-[21/8]"
+          />
+          <div
+            className="pointer-events-none absolute inset-0 z-20"
+            style={{
+              background:
+                "linear-gradient(180deg, transparent 40%, color-mix(in oklab, black 75%, transparent) 100%)",
+            }}
+          />
+          <div className="absolute inset-x-0 bottom-0 z-30 flex items-end justify-between gap-4 p-4 sm:p-6">
+            <div className="min-w-0">
+              {active.categoria && (
+                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70">
+                  {active.categoria}
+                </span>
+              )}
+              <h3 className="truncate text-xl font-bold text-white sm:text-2xl">
+                {active.titulo || active.nome}
+              </h3>
+              {active.preco != null && (
+                <p className="text-sm font-semibold text-white/85">{brl(active.preco)}</p>
+              )}
+            </div>
+            <span className="hidden shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg sm:inline-block">
+              Ver detalhes
+            </span>
+          </div>
+        </button>
+
+        {withImage.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => setIdx((i) => (i - 1 + withImage.length) % withImage.length)}
+              className="absolute left-3 top-1/2 z-30 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70"
+              aria-label="Anterior"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIdx((i) => (i + 1) % withImage.length)}
+              className="absolute right-3 top-1/2 z-30 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70"
+              aria-label="Próximo"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+            <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 gap-1.5">
+              {withImage.map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === idx ? "w-6 bg-white" : "w-1.5 bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-          onClick={() => setOpen(null)}
-        >
-          <div
-            className="glass-strong relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => setOpen(null)}
-              className="absolute right-3 top-3 z-10 rounded-full bg-black/40 px-2 py-1 text-xs text-white hover:bg-black/60"
-              aria-label="Fechar"
-            >
-              ✕
-            </button>
-            {open.imagem_url && (
-              <img
-                src={open.imagem_url}
-                alt={open.titulo || open.nome}
-                className="h-64 w-full object-cover"
-                draggable={false}
-              />
-            )}
-            <div className="space-y-4 p-6">
-              {open.categoria && (
-                <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                  {open.categoria}
-                </span>
-              )}
-              <h3 className="text-2xl font-bold">{open.titulo || open.nome}</h3>
-              {open.descricao && (
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                  {open.descricao}
-                </p>
-              )}
-              <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                <span className="text-2xl font-bold">{brl(open.preco)}</span>
-                {open.status === "esgotado" ? (
-                  <span className="rounded-md bg-red-500/20 px-3 py-2 text-xs font-bold text-red-400">
-                    ESGOTADO
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleAdquirir(open)}
-                    className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-                  >
-                    {open.botao_texto || "Adquirir"}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        <ProdutoModal
+          produto={open}
+          onClose={() => setOpen(null)}
+          onBuy={(p) => {
+            if (p.link) window.open(p.link, "_blank", "noopener,noreferrer");
+            else window.location.href = `/checkout?produto=${encodeURIComponent(p.id)}`;
+          }}
+        />
       )}
     </section>
   );
@@ -432,12 +721,7 @@ export function PropagandasSection({ posicao = "home" }: { posicao?: string }) {
             className="glass group relative flex overflow-hidden rounded-2xl"
           >
             {img && (
-              <img
-                src={img}
-                alt={p.titulo}
-                className="h-24 w-24 shrink-0 object-cover"
-                draggable={false}
-              />
+              <ArtImage src={img} alt={p.titulo} className="h-28 w-28 shrink-0" rounded="" />
             )}
             <div className="flex flex-1 flex-col justify-center gap-0.5 p-3">
               <h4 className="text-sm font-semibold">{p.titulo}</h4>
