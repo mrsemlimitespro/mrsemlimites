@@ -265,7 +265,7 @@ function DynamicHomeSections({
   visibleIn: (surface: "home", slug: string) => boolean;
   modules: { slug: string; ordem: number; mostrar_home: boolean; ativo: boolean }[];
 }) {
-  const RENDERERS: Record<string, () => JSX.Element> = {
+  const RENDERERS: Record<string, () => React.ReactElement> = {
     carrossel: () => <PromoCarousel key="carrossel" />,
     propagandas: () => <PropagandasSection key="propagandas" posicao="home" />,
     "loja-produtos": () => <ProdutosBannerCarousel key="loja-produtos" />,

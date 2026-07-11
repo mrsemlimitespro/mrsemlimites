@@ -17,6 +17,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as AdminSonsRouteImport } from './routes/admin.sons'
 import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
@@ -86,6 +87,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
 } as any)
 const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
   id: '/usuarios',
@@ -241,7 +247,7 @@ const ApiPublicPremiumCoverSplatRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppRouteWithChildren
+  '/': typeof AppIndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/esqueci-senha': typeof EsqueciSenhaRoute
@@ -281,7 +287,6 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/login': typeof LoginRoute
@@ -311,6 +316,7 @@ export interface FileRoutesByTo {
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
+  '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
@@ -352,6 +358,7 @@ export interface FileRoutesById {
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
+  '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_app/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
@@ -403,7 +410,6 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/mercadopago'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/checkout'
     | '/esqueci-senha'
     | '/login'
@@ -433,6 +439,7 @@ export interface FileRouteTypes {
     | '/admin/seguranca'
     | '/admin/sons'
     | '/admin/usuarios'
+    | '/'
     | '/admin'
     | '/packs/$slug'
     | '/api/public/validar-licenca'
@@ -473,6 +480,7 @@ export interface FileRouteTypes {
     | '/admin/seguranca'
     | '/admin/sons'
     | '/admin/usuarios'
+    | '/_app/'
     | '/admin/'
     | '/_app/packs/$slug'
     | '/api/public/validar-licenca'
@@ -554,6 +562,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
     }
     '/admin/usuarios': {
       id: '/admin/usuarios'
@@ -790,6 +805,7 @@ interface AppRouteChildren {
   AppPacksRoute: typeof AppPacksRouteWithChildren
   AppPerfilRoute: typeof AppPerfilRoute
   AppPromptsRoute: typeof AppPromptsRoute
+  AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -802,6 +818,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPacksRoute: AppPacksRouteWithChildren,
   AppPerfilRoute: AppPerfilRoute,
   AppPromptsRoute: AppPromptsRoute,
+  AppIndexRoute: AppIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
