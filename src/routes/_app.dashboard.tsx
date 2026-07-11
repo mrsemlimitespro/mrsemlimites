@@ -32,7 +32,7 @@ import {
 } from "@/components/home/home-sections";
 import { useModules } from "@/lib/admin/use-modules";
 
-export const Route = createFileRoute("/_app/")({
+export const Route = createFileRoute("/_app/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — MR Lova" },
