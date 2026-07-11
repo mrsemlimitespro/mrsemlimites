@@ -595,11 +595,12 @@ textarea {
   font-size: 0.875rem;
   color: white;
   outline: none;
-  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
-}
-@utility input {
+  transition:
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out;
   &:focus {
     border-color: oklch(0.68 0.2 250);
     box-shadow: 0 0 0 3px color-mix(in oklab, oklch(0.68 0.2 250) 25%, transparent);
   }
 }
+
