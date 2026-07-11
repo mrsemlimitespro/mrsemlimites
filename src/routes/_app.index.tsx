@@ -28,6 +28,7 @@ import {
   ProdutosSection,
   ProdutosBannerCarousel,
   PropagandasSection,
+  VideosSection,
 } from "@/components/home/home-sections";
 import { useModules } from "@/lib/admin/use-modules";
 
