@@ -421,22 +421,22 @@ export function ProdutoModal({
       aria-modal="true"
     >
       <div
-        className="glass-strong relative flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl md:flex-row"
+        className="glass-strong relative flex w-full max-w-6xl flex-col rounded-2xl md:max-h-[92vh] md:flex-row md:overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 z-30 grid size-9 place-items-center rounded-full bg-black/60 text-white transition hover:bg-black/80"
+          className="fixed right-4 top-4 z-30 grid size-9 place-items-center rounded-full bg-black/70 text-white transition hover:bg-black/90 md:absolute md:right-3 md:top-3"
           aria-label="Fechar"
         >
           <X className="size-4" />
         </button>
 
         {/* Área da imagem */}
-        <div className="relative flex min-h-[40vh] flex-1 flex-col bg-black md:min-h-0">
+        <div className="relative flex flex-1 flex-col bg-black md:min-h-0 md:overflow-hidden">
           <div
-            className={`relative flex-1 overflow-auto ${zoom ? "cursor-zoom-out" : "cursor-zoom-in"}`}
+            className={`relative flex-1 md:overflow-auto ${zoom ? "cursor-zoom-out" : "cursor-zoom-in"}`}
             onClick={() => setZoom((z) => !z)}
           >
             {current ? (
@@ -445,16 +445,16 @@ export function ProdutoModal({
                   src={current}
                   alt=""
                   aria-hidden
-                  className="absolute inset-0 h-full w-full scale-110 object-cover opacity-30 blur-2xl"
+                  className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover opacity-30 blur-2xl"
                 />
-                <div className="relative z-10 flex h-full min-h-[40vh] w-full items-center justify-center p-2 md:min-h-[70vh]">
+                <div className="relative z-10 flex w-full items-center justify-center p-2 md:h-full md:min-h-[70vh]">
                   <img
                     src={current}
                     alt={produto.titulo || produto.nome}
                     className={
                       zoom
                         ? "max-w-none object-contain transition-transform"
-                        : "max-h-full max-w-full object-contain transition-transform"
+                        : "h-auto w-full object-contain transition-transform md:max-h-full md:max-w-full"
                     }
                     style={zoom ? { transform: "scale(2)", transformOrigin: "center" } : undefined}
                     draggable={false}
@@ -527,7 +527,7 @@ export function ProdutoModal({
         </div>
 
         {/* Painel de informações */}
-        <div className="flex w-full flex-col gap-3 overflow-y-auto p-6 md:w-[380px] md:border-l md:border-white/10">
+        <div className="flex w-full flex-col gap-3 p-6 md:w-[380px] md:overflow-y-auto md:border-l md:border-white/10">
           {produto.categoria && (
             <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               {produto.categoria}
@@ -539,7 +539,7 @@ export function ProdutoModal({
               {produto.descricao}
             </p>
           )}
-          <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4">
+          <div className="mt-6 flex items-center justify-between gap-3 border-t border-white/10 pb-[env(safe-area-inset-bottom)] pt-4 md:mt-auto md:pb-4">
             <span className="text-2xl font-bold">{brl(produto.preco)}</span>
             {produto.status === "esgotado" ? (
               <span className="rounded-md bg-red-500/20 px-3 py-2 text-xs font-bold text-red-400">
