@@ -1,12 +1,57 @@
 /**
  * Seções da Home consumidas do banco (CMS).
- * Cada seção renderiza SOMENTE se houver dados ativos — se estiver vazia,
- * some da tela sem alterar layout base.
+ * Cada seção permanece SEMPRE visível — quando não há dados, exibe
+ * um Empty State elegante com CTA de cadastro (apenas para admins).
  * Todas usam Supabase realtime para refletir alterações do Admin ao vivo.
  */
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, X, ZoomIn, ZoomOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+
+function EmptyState({
+  message,
+  adminHref,
+  adminLabel = "Cadastrar Agora",
+}: {
+  message: string;
+  adminHref?: string;
+  adminLabel?: string;
+}) {
+  const isAdmin = useIsAdmin();
+  return (
+    <div className="glass flex min-h-[180px] flex-col items-center justify-center gap-3 rounded-2xl p-8 text-center">
+      <p className="text-sm text-muted-foreground">{message}</p>
+      {isAdmin && adminHref && (
+        <a
+          href={adminHref}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:opacity-90"
+        >
+          <Plus className="size-3.5" />
+          {adminLabel}
+        </a>
+      )}
+    </div>
+  );
+}
+
+function SectionShell({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="space-y-3">
+      <h2 className="section-title">
+        <span aria-hidden className="section-title-bar" />
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
 
 const brl = (n: number | null | undefined) =>
   n == null ? "" : Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
