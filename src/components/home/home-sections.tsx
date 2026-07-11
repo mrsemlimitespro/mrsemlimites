@@ -778,7 +778,13 @@ export function PropagandasSection({ posicao = "home" }: { posicao?: string }) {
   });
 
   const filtered = items.filter((p) => (p.posicao || "home") === posicao);
-  if (filtered.length === 0) return null;
+  if (filtered.length === 0) {
+    return (
+      <SectionShell title="Propagandas">
+        <EmptyState message="Nenhuma propaganda cadastrada." adminHref="/admin/propagandas" />
+      </SectionShell>
+    );
+  }
 
   return (
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
