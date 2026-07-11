@@ -541,10 +541,10 @@ function CtaFinalSection() {
         <Sparkles className="size-3" /> Pronto para começar?
       </span>
       <h2 className="mt-4 text-2xl font-black tracking-tight md:text-4xl">
-        Comece agora e ative seu primeiro cliente em minutos
+        Comece agora e turbine seu negócio com IA
       </h2>
       <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground md:text-base">
-        Ambiente pronto, pagamento aprovado, licença entregue. Zero fricção.
+        Agentes, Prompts, Packs, Extensões e Automações prontos para acelerar seus resultados.
       </p>
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <Link
@@ -554,12 +554,13 @@ function CtaFinalSection() {
           Adquirir Agora <ArrowRight className="size-4" />
         </Link>
         <Link
-          to="/planos"
+          to="/agents"
           className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-bold text-foreground transition hover:bg-white/10"
         >
-          Ver Planos Premium
+          Ver Agentes IA
         </Link>
       </div>
+
     </section>
   );
 }
