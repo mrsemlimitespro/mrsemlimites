@@ -255,7 +255,13 @@ export function PlanosSection() {
     return (data ?? []) as Plano[];
   });
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <SectionShell title="Planos">
+        <EmptyState message="Nenhum plano cadastrado." adminHref="/admin/planos" />
+      </SectionShell>
+    );
+  }
 
   return (
     <section className="space-y-3">
