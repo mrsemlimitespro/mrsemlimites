@@ -27,6 +27,7 @@ import { Route as AdminPackAutorizacoesRouteImport } from './routes/admin.pack-a
 import { Route as AdminModulosRouteImport } from './routes/admin.modulos'
 import { Route as AdminLojaProdutosRouteImport } from './routes/admin.loja-produtos'
 import { Route as AdminLojaRouteImport } from './routes/admin.loja'
+import { Route as AdminLicencasDashboardRouteImport } from './routes/admin.licencas-dashboard'
 import { Route as AdminHomeRouteImport } from './routes/admin.home'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
@@ -48,6 +49,12 @@ import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/p
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
 import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/webhooks/cakto'
 import { Route as ApiPublicPremiumCoverSplatRouteImport } from './routes/api/public/premium-cover.$'
+import { Route as ApiPublicLicencaRevogarRouteImport } from './routes/api/public/licenca/revogar'
+import { Route as ApiPublicLicencaResetHwidRouteImport } from './routes/api/public/licenca/reset-hwid'
+import { Route as ApiPublicLicencaRenovarRouteImport } from './routes/api/public/licenca/renovar'
+import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/public/licenca/heartbeat'
+import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
+import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -136,6 +143,11 @@ const AdminLojaProdutosRoute = AdminLojaProdutosRouteImport.update({
 const AdminLojaRoute = AdminLojaRouteImport.update({
   id: '/loja',
   path: '/loja',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicencasDashboardRoute = AdminLicencasDashboardRouteImport.update({
+  id: '/licencas-dashboard',
+  path: '/licencas-dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminHomeRoute = AdminHomeRouteImport.update({
@@ -245,6 +257,39 @@ const ApiPublicPremiumCoverSplatRoute =
     path: '/api/public/premium-cover/$',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicLicencaRevogarRoute = ApiPublicLicencaRevogarRouteImport.update({
+  id: '/api/public/licenca/revogar',
+  path: '/api/public/licenca/revogar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLicencaResetHwidRoute =
+  ApiPublicLicencaResetHwidRouteImport.update({
+    id: '/api/public/licenca/reset-hwid',
+    path: '/api/public/licenca/reset-hwid',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicencaRenovarRoute = ApiPublicLicencaRenovarRouteImport.update({
+  id: '/api/public/licenca/renovar',
+  path: '/api/public/licenca/renovar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLicencaHeartbeatRoute =
+  ApiPublicLicencaHeartbeatRouteImport.update({
+    id: '/api/public/licenca/heartbeat',
+    path: '/api/public/licenca/heartbeat',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicencaConsultaRoute =
+  ApiPublicLicencaConsultaRouteImport.update({
+    id: '/api/public/licenca/consulta',
+    path: '/api/public/licenca/consulta',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicencaConfigRoute = ApiPublicLicencaConfigRouteImport.update({
+  id: '/api/public/licenca/config',
+  path: '/api/public/licenca/config',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -269,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
+  '/admin/licencas-dashboard': typeof AdminLicencasDashboardRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/modulos': typeof AdminModulosRoute
@@ -281,6 +327,12 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
+  '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
+  '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
+  '/api/public/licenca/renovar': typeof ApiPublicLicencaRenovarRoute
+  '/api/public/licenca/reset-hwid': typeof ApiPublicLicencaResetHwidRoute
+  '/api/public/licenca/revogar': typeof ApiPublicLicencaRevogarRoute
   '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
@@ -307,6 +359,7 @@ export interface FileRoutesByTo {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
+  '/admin/licencas-dashboard': typeof AdminLicencasDashboardRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/modulos': typeof AdminModulosRoute
@@ -320,6 +373,12 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
+  '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
+  '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
+  '/api/public/licenca/renovar': typeof ApiPublicLicencaRenovarRoute
+  '/api/public/licenca/reset-hwid': typeof ApiPublicLicencaResetHwidRoute
+  '/api/public/licenca/revogar': typeof ApiPublicLicencaRevogarRoute
   '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
@@ -349,6 +408,7 @@ export interface FileRoutesById {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
+  '/admin/licencas-dashboard': typeof AdminLicencasDashboardRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
   '/admin/modulos': typeof AdminModulosRoute
@@ -362,6 +422,12 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/_app/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
+  '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
+  '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
+  '/api/public/licenca/renovar': typeof ApiPublicLicencaRenovarRoute
+  '/api/public/licenca/reset-hwid': typeof ApiPublicLicencaResetHwidRoute
+  '/api/public/licenca/revogar': typeof ApiPublicLicencaRevogarRoute
   '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
@@ -392,6 +458,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/home'
+    | '/admin/licencas-dashboard'
     | '/admin/loja'
     | '/admin/loja-produtos'
     | '/admin/modulos'
@@ -404,6 +471,12 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/packs/$slug'
     | '/api/public/validar-licenca'
+    | '/api/public/licenca/config'
+    | '/api/public/licenca/consulta'
+    | '/api/public/licenca/heartbeat'
+    | '/api/public/licenca/renovar'
+    | '/api/public/licenca/reset-hwid'
+    | '/api/public/licenca/revogar'
     | '/api/public/premium-cover/$'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
@@ -430,6 +503,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/home'
+    | '/admin/licencas-dashboard'
     | '/admin/loja'
     | '/admin/loja-produtos'
     | '/admin/modulos'
@@ -443,6 +517,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/packs/$slug'
     | '/api/public/validar-licenca'
+    | '/api/public/licenca/config'
+    | '/api/public/licenca/consulta'
+    | '/api/public/licenca/heartbeat'
+    | '/api/public/licenca/renovar'
+    | '/api/public/licenca/reset-hwid'
+    | '/api/public/licenca/revogar'
     | '/api/public/premium-cover/$'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
@@ -471,6 +551,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/home'
+    | '/admin/licencas-dashboard'
     | '/admin/loja'
     | '/admin/loja-produtos'
     | '/admin/modulos'
@@ -484,6 +565,12 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/_app/packs/$slug'
     | '/api/public/validar-licenca'
+    | '/api/public/licenca/config'
+    | '/api/public/licenca/consulta'
+    | '/api/public/licenca/heartbeat'
+    | '/api/public/licenca/renovar'
+    | '/api/public/licenca/reset-hwid'
+    | '/api/public/licenca/revogar'
     | '/api/public/premium-cover/$'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
@@ -499,6 +586,12 @@ export interface RootRouteChildren {
   RegistroRoute: typeof RegistroRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
+  ApiPublicLicencaConfigRoute: typeof ApiPublicLicencaConfigRoute
+  ApiPublicLicencaConsultaRoute: typeof ApiPublicLicencaConsultaRoute
+  ApiPublicLicencaHeartbeatRoute: typeof ApiPublicLicencaHeartbeatRoute
+  ApiPublicLicencaRenovarRoute: typeof ApiPublicLicencaRenovarRoute
+  ApiPublicLicencaResetHwidRoute: typeof ApiPublicLicencaResetHwidRoute
+  ApiPublicLicencaRevogarRoute: typeof ApiPublicLicencaRevogarRoute
   ApiPublicPremiumCoverSplatRoute: typeof ApiPublicPremiumCoverSplatRoute
   ApiPublicWebhooksCaktoRoute: typeof ApiPublicWebhooksCaktoRoute
   ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
@@ -631,6 +724,13 @@ declare module '@tanstack/react-router' {
       path: '/loja'
       fullPath: '/admin/loja'
       preLoaderRoute: typeof AdminLojaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/licencas-dashboard': {
+      id: '/admin/licencas-dashboard'
+      path: '/licencas-dashboard'
+      fullPath: '/admin/licencas-dashboard'
+      preLoaderRoute: typeof AdminLicencasDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/home': {
@@ -780,6 +880,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPremiumCoverSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/licenca/revogar': {
+      id: '/api/public/licenca/revogar'
+      path: '/api/public/licenca/revogar'
+      fullPath: '/api/public/licenca/revogar'
+      preLoaderRoute: typeof ApiPublicLicencaRevogarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/reset-hwid': {
+      id: '/api/public/licenca/reset-hwid'
+      path: '/api/public/licenca/reset-hwid'
+      fullPath: '/api/public/licenca/reset-hwid'
+      preLoaderRoute: typeof ApiPublicLicencaResetHwidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/renovar': {
+      id: '/api/public/licenca/renovar'
+      path: '/api/public/licenca/renovar'
+      fullPath: '/api/public/licenca/renovar'
+      preLoaderRoute: typeof ApiPublicLicencaRenovarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/heartbeat': {
+      id: '/api/public/licenca/heartbeat'
+      path: '/api/public/licenca/heartbeat'
+      fullPath: '/api/public/licenca/heartbeat'
+      preLoaderRoute: typeof ApiPublicLicencaHeartbeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/consulta': {
+      id: '/api/public/licenca/consulta'
+      path: '/api/public/licenca/consulta'
+      fullPath: '/api/public/licenca/consulta'
+      preLoaderRoute: typeof ApiPublicLicencaConsultaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/config': {
+      id: '/api/public/licenca/config'
+      path: '/api/public/licenca/config'
+      fullPath: '/api/public/licenca/config'
+      preLoaderRoute: typeof ApiPublicLicencaConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -830,6 +972,7 @@ interface AdminRouteChildren {
   AdminBackupRoute: typeof AdminBackupRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminHomeRoute: typeof AdminHomeRoute
+  AdminLicencasDashboardRoute: typeof AdminLicencasDashboardRoute
   AdminLojaRoute: typeof AdminLojaRoute
   AdminLojaProdutosRoute: typeof AdminLojaProdutosRoute
   AdminModulosRoute: typeof AdminModulosRoute
@@ -849,6 +992,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBackupRoute: AdminBackupRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminHomeRoute: AdminHomeRoute,
+  AdminLicencasDashboardRoute: AdminLicencasDashboardRoute,
   AdminLojaRoute: AdminLojaRoute,
   AdminLojaProdutosRoute: AdminLojaProdutosRoute,
   AdminModulosRoute: AdminModulosRoute,
@@ -872,6 +1016,12 @@ const rootRouteChildren: RootRouteChildren = {
   RegistroRoute: RegistroRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
+  ApiPublicLicencaConfigRoute: ApiPublicLicencaConfigRoute,
+  ApiPublicLicencaConsultaRoute: ApiPublicLicencaConsultaRoute,
+  ApiPublicLicencaHeartbeatRoute: ApiPublicLicencaHeartbeatRoute,
+  ApiPublicLicencaRenovarRoute: ApiPublicLicencaRenovarRoute,
+  ApiPublicLicencaResetHwidRoute: ApiPublicLicencaResetHwidRoute,
+  ApiPublicLicencaRevogarRoute: ApiPublicLicencaRevogarRoute,
   ApiPublicPremiumCoverSplatRoute: ApiPublicPremiumCoverSplatRoute,
   ApiPublicWebhooksCaktoRoute: ApiPublicWebhooksCaktoRoute,
   ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
@@ -880,13 +1030,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

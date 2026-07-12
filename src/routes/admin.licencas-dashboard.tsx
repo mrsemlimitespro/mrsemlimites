@@ -1,0 +1,117 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Activity, ShieldAlert, ShieldCheck, ShieldX, Smartphone, TrendingUp, KeyRound, RotateCcw } from "lucide-react";
+
+export const Route = createFileRoute("/admin/licencas-dashboard")({
+  component: LicencasDashboard,
+});
+
+type Metrics = {
+  total: number;
+  ativas: number;
+  expiradas: number;
+  bloqueadas: number;
+  dispositivos: number;
+  ativacoesHoje: number;
+  renovacoesHoje: number;
+  resetsPendentes: number;
+};
+
+async function fetchMetrics(): Promise<Metrics> {
+  const [total, ativas, expiradas, bloqueadas, dispositivos, ativacoesHoje, renovacoesHoje, resetsPendentes] =
+    await Promise.all([
+      supabase.from("licencas").select("id", { count: "exact", head: true }),
+      supabase.from("licencas").select("id", { count: "exact", head: true }).eq("status", "ativa"),
+      supabase.from("licencas").select("id", { count: "exact", head: true }).eq("status", "expirada"),
+      supabase
+        .from("licencas")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["bloqueada", "cancelada", "revogada"]),
+      supabase.from("licenca_dispositivos").select("id", { count: "exact", head: true }),
+      supabase
+        .from("licencas_eventos")
+        .select("id", { count: "exact", head: true })
+        .eq("tipo", "ativada")
+        .gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
+      supabase
+        .from("licencas_eventos")
+        .select("id", { count: "exact", head: true })
+        .eq("tipo", "renovada")
+        .gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
+      supabase
+        .from("licencas")
+        .select("id", { count: "exact", head: true })
+        .not("reset_hwid_solicitado_em", "is", null),
+    ]);
+
+  return {
+    total: total.count ?? 0,
+    ativas: ativas.count ?? 0,
+    expiradas: expiradas.count ?? 0,
+    bloqueadas: bloqueadas.count ?? 0,
+    dispositivos: dispositivos.count ?? 0,
+    ativacoesHoje: ativacoesHoje.count ?? 0,
+    renovacoesHoje: renovacoesHoje.count ?? 0,
+    resetsPendentes: resetsPendentes.count ?? 0,
+  };
+}
+
+function LicencasDashboard() {
+  const { data, isLoading } = useQuery({ queryKey: ["licencas-dashboard"], queryFn: fetchMetrics });
+
+  const cards: Array<{ label: string; value: number; icon: React.ComponentType<{ className?: string }>; tone: string }> = [
+    { label: "Total de licenças", value: data?.total ?? 0, icon: KeyRound, tone: "from-violet-500/25 to-blue-500/20" },
+    { label: "Ativas", value: data?.ativas ?? 0, icon: ShieldCheck, tone: "from-emerald-500/25 to-teal-500/15" },
+    { label: "Expiradas", value: data?.expiradas ?? 0, icon: ShieldAlert, tone: "from-amber-500/25 to-orange-500/15" },
+    { label: "Bloqueadas / revogadas", value: data?.bloqueadas ?? 0, icon: ShieldX, tone: "from-rose-500/25 to-red-500/15" },
+    { label: "Dispositivos conectados", value: data?.dispositivos ?? 0, icon: Smartphone, tone: "from-fuchsia-500/25 to-violet-500/15" },
+    { label: "Ativações hoje", value: data?.ativacoesHoje ?? 0, icon: Activity, tone: "from-sky-500/25 to-cyan-500/15" },
+    { label: "Renovações hoje", value: data?.renovacoesHoje ?? 0, icon: TrendingUp, tone: "from-lime-500/25 to-emerald-500/15" },
+    { label: "Resets HWID pendentes", value: data?.resetsPendentes ?? 0, icon: RotateCcw, tone: "from-orange-500/25 to-pink-500/15" },
+  ];
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-6">
+      <header className="space-y-1">
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Licenciamento</div>
+        <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+          <span className="gradient-text-warm">Dashboard de Licenças</span>
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Visão consolidada do servidor de licenças MR LOV 2.2.
+        </p>
+      </header>
+
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        {cards.map((c) => (
+          <div
+            key={c.label}
+            className={`glass rounded-2xl p-5 relative overflow-hidden bg-gradient-to-br ${c.tone}`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">{c.label}</div>
+              <c.icon className="size-4 text-foreground/70" />
+            </div>
+            <div className="mt-3 text-3xl font-semibold tabular-nums">
+              {isLoading ? "…" : c.value.toLocaleString("pt-BR")}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="glass rounded-2xl p-6">
+        <h2 className="text-lg font-semibold mb-2">Endpoints públicos ativos</h2>
+        <ul className="grid gap-1.5 text-sm font-mono text-muted-foreground">
+          <li>POST /api/public/validar-licenca</li>
+          <li>POST /api/public/licenca/heartbeat</li>
+          <li>GET&nbsp;&nbsp;/api/public/licenca/consulta?chave=…</li>
+          <li>POST /api/public/licenca/renovar</li>
+          <li>POST /api/public/licenca/reset-hwid</li>
+          <li>POST /api/public/licenca/revogar</li>
+          <li>GET&nbsp;&nbsp;/api/public/licenca/config</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
