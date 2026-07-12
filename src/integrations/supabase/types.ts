@@ -90,6 +90,7 @@ export type Database = {
       admin_settings: {
         Row: {
           accent_color: string
+          config_extensao: Json
           created_at: string
           extension_filename: string | null
           extension_url: string | null
@@ -108,6 +109,7 @@ export type Database = {
         }
         Insert: {
           accent_color?: string
+          config_extensao?: Json
           created_at?: string
           extension_filename?: string | null
           extension_url?: string | null
@@ -126,6 +128,7 @@ export type Database = {
         }
         Update: {
           accent_color?: string
+          config_extensao?: Json
           created_at?: string
           extension_filename?: string | null
           extension_url?: string | null
@@ -327,6 +330,48 @@ export type Database = {
           uso_count?: number
           versao?: string | null
           visible_mobile?: boolean
+        }
+        Relationships: []
+      }
+      api_keys: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          hash: string
+          id: string
+          last_used_at: string | null
+          metadata: Json
+          nome: string
+          prefixo: string
+          revoked_at: string | null
+          scopes: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          hash: string
+          id?: string
+          last_used_at?: string | null
+          metadata?: Json
+          nome: string
+          prefixo: string
+          revoked_at?: string | null
+          scopes?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          hash?: string
+          id?: string
+          last_used_at?: string | null
+          metadata?: Json
+          nome?: string
+          prefixo?: string
+          revoked_at?: string | null
+          scopes?: string[]
+          updated_at?: string
         }
         Relationships: []
       }
@@ -811,6 +856,13 @@ export type Database = {
             referencedRelation: "licencas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "dispositivos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
+            referencedColumns: ["id"]
+          },
         ]
       }
       estoque: {
@@ -935,6 +987,13 @@ export type Database = {
             referencedRelation: "licencas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "licenca_acessos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
+            referencedColumns: ["id"]
+          },
         ]
       }
       licenca_dispositivos: {
@@ -977,6 +1036,13 @@ export type Database = {
             columns: ["licenca_id"]
             isOneToOne: false
             referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licenca_dispositivos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
             referencedColumns: ["id"]
           },
         ]
@@ -1032,9 +1098,12 @@ export type Database = {
           fornecedor_slug: string | null
           id: string
           max_dispositivos: number
+          metadata: Json
           observacoes_admin: string | null
           plano: string | null
           produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
           revendedor_id: string | null
           status: string
           tipo: string
@@ -1058,9 +1127,12 @@ export type Database = {
           fornecedor_slug?: string | null
           id?: string
           max_dispositivos?: number
+          metadata?: Json
           observacoes_admin?: string | null
           plano?: string | null
           produto_id?: string | null
+          reset_hwid_motivo?: string | null
+          reset_hwid_solicitado_em?: string | null
           revendedor_id?: string | null
           status?: string
           tipo?: string
@@ -1084,9 +1156,12 @@ export type Database = {
           fornecedor_slug?: string | null
           id?: string
           max_dispositivos?: number
+          metadata?: Json
           observacoes_admin?: string | null
           plano?: string | null
           produto_id?: string | null
+          reset_hwid_motivo?: string | null
+          reset_hwid_solicitado_em?: string | null
           revendedor_id?: string | null
           status?: string
           tipo?: string
@@ -1177,6 +1252,13 @@ export type Database = {
             columns: ["licenca_id"]
             isOneToOne: false
             referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licencas_eventos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
             referencedColumns: ["id"]
           },
         ]
@@ -2538,6 +2620,82 @@ export type Database = {
         }
         Relationships: []
       }
+      v_licenca_estado: {
+        Row: {
+          chave: string | null
+          cliente_id: string | null
+          device_id: string | null
+          dispositivos_conectados: number | null
+          email: string | null
+          estado_extensao: string | null
+          expira_em: string | null
+          id: string | null
+          max_dispositivos: number | null
+          revendedor_id: string | null
+          status: string | null
+          tipo: string | null
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
+          ultimo_acesso: string | null
+        }
+        Insert: {
+          chave?: string | null
+          cliente_id?: string | null
+          device_id?: string | null
+          dispositivos_conectados?: never
+          email?: string | null
+          estado_extensao?: never
+          expira_em?: string | null
+          id?: string | null
+          max_dispositivos?: number | null
+          revendedor_id?: string | null
+          status?: string | null
+          tipo?: string | null
+          trial_duracao_minutos?: number | null
+          trial_iniciado_em?: string | null
+          ultimo_acesso?: string | null
+        }
+        Update: {
+          chave?: string | null
+          cliente_id?: string | null
+          device_id?: string | null
+          dispositivos_conectados?: never
+          email?: string | null
+          estado_extensao?: never
+          expira_em?: string | null
+          id?: string | null
+          max_dispositivos?: number | null
+          revendedor_id?: string | null
+          status?: string | null
+          tipo?: string | null
+          trial_duracao_minutos?: number | null
+          trial_iniciado_em?: string | null
+          ultimo_acesso?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licencas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licencas_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licencas_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_revendedor_visao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_revendedor_visao: {
         Row: {
           bloqueado: boolean | null
@@ -2627,9 +2785,12 @@ export type Database = {
           fornecedor_slug: string | null
           id: string
           max_dispositivos: number
+          metadata: Json
           observacoes_admin: string | null
           plano: string | null
           produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
           revendedor_id: string | null
           status: string
           tipo: string
@@ -2671,9 +2832,12 @@ export type Database = {
           fornecedor_slug: string | null
           id: string
           max_dispositivos: number
+          metadata: Json
           observacoes_admin: string | null
           plano: string | null
           produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
           revendedor_id: string | null
           status: string
           tipo: string
@@ -2690,6 +2854,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      consulta_licenca_publica: { Args: { _chave: string }; Returns: Json }
       converter_licenca_em_premium: {
         Args: { _licenca_id: string }
         Returns: {
@@ -2706,9 +2871,12 @@ export type Database = {
           fornecedor_slug: string | null
           id: string
           max_dispositivos: number
+          metadata: Json
           observacoes_admin: string | null
           plano: string | null
           produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
           revendedor_id: string | null
           status: string
           tipo: string
@@ -2765,9 +2933,12 @@ export type Database = {
           fornecedor_slug: string | null
           id: string
           max_dispositivos: number
+          metadata: Json
           observacoes_admin: string | null
           plano: string | null
           produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
           revendedor_id: string | null
           status: string
           tipo: string
@@ -2791,6 +2962,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      heartbeat_licenca: {
+        Args: { _chave: string; _device_id?: string }
+        Returns: Json
+      }
       is_revendedor: { Args: { _uid: string }; Returns: boolean }
       notificar_licencas_expirando: { Args: never; Returns: number }
       pack_client_has_access: {
@@ -2813,9 +2988,12 @@ export type Database = {
           fornecedor_slug: string | null
           id: string
           max_dispositivos: number
+          metadata: Json
           observacoes_admin: string | null
           plano: string | null
           produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
           revendedor_id: string | null
           status: string
           tipo: string
@@ -2848,9 +3026,12 @@ export type Database = {
           fornecedor_slug: string | null
           id: string
           max_dispositivos: number
+          metadata: Json
           observacoes_admin: string | null
           plano: string | null
           produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
           revendedor_id: string | null
           status: string
           tipo: string
@@ -2883,9 +3064,12 @@ export type Database = {
           fornecedor_slug: string | null
           id: string
           max_dispositivos: number
+          metadata: Json
           observacoes_admin: string | null
           plano: string | null
           produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
           revendedor_id: string | null
           status: string
           tipo: string
