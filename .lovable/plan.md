@@ -1,115 +1,97 @@
 
-# Sistema de Módulos Dinâmicos — MR Sem Limites
+# Plano — Servidor de Licenciamento MR LOV 2.2
 
-## Objetivo
+## Situação atual (o que já existe hoje no projeto)
 
-Criar um gerenciador central onde o admin liga/desliga cada módulo do sistema com um clique. Módulos desativados somem da UI (sidebar, home, dashboard, busca) mas **nunca perdem dados**. Nada do design/layout/rotas/cores/animações atuais é alterado — só adicionamos uma camada de visibilidade por cima.
+Antes de criar qualquer coisa nova, é importante você saber que **grande parte do que você pediu JÁ EXISTE** no MR Sem Limites. O servidor "antigo perdido" pode ter sido, na verdade, este próprio backend. Resumo do que já está implantado:
 
----
+**Tabelas já existentes:**
+- `licencas` (24 colunas: chave, status, tipo teste/premium, trial, expira_em, device_id, max_dispositivos, cliente_id, revendedor_id, fornecedor_slug, versao_min, etc.)
+- `licenca_dispositivos` (HWID/multi-device com ip, user_agent, último acesso)
+- `licenca_acessos` (log de cada validação — ok, invalid, blocked, trial_expired, device_limit, outdated, upstream_denied)
+- `licencas_eventos` (auditoria: criada, vinculada, ativada, renovada, cancelada, expirada, reset, acesso)
+- `licenca_produtos`, `clientes`, `planos`, `payment_transactions`, `payment_gateways`, `payment_webhook_logs`, `user_roles` (com `has_role` + enum `app_role`)
 
-## Escopo — o que muda e o que NÃO muda
+**Endpoint público já existente:**
+- `POST /api/public/validar-licenca` — faz tudo: valida chave+email+device, inicia trial na 1ª chamada, expira trial/premium vencidos, controla limite de dispositivos, chama proxy do fornecedor, grava log, retorna `{ ok, valid, premium, tipo, expira_em, expires_in, cliente_id, reason }`.
 
-**NÃO muda:**
-- Identidade visual, tokens, glass, neon, gradientes, animações
-- Nenhuma rota existente, componente existente ou tabela existente
-- Nenhuma funcionalidade — tudo continua funcionando igual quando ativo
+**Funções DB já existentes:** `gerar_licencas`, `atribuir_licenca_cliente`, `renovar_licenca`, `reativar_licenca`, `cancelar_licenca`, `resetar_device_licenca`, `converter_licenca_em_premium`, `expirar_licencas_vencidas`, `expirar_trials_vencidos`, `notificar_licencas_expirando`, `has_role`.
 
-**Muda (adição):**
-- Nova tabela `system_modules` (catálogo + flags de visibilidade + ordem + favorito)
-- Nova rota admin: `/admin/modulos` (🧩 Módulos)
-- Sidebar admin, cards da Home admin, e busca passam a **filtrar** pela tabela
-- Hook `useModules()` centraliza leitura + cache
+**Painel admin já existente:** `/admin/licencas` (via `admin.$resource.tsx`), `/admin/pagamentos`, `/admin/usuarios`, `/admin/pack-autorizacoes`, `/admin/configuracoes`.
 
----
+**Webhooks já existentes:** Cakto, Kiwify, Mercado Pago (`/api/public/webhooks/*`).
 
-## Fase 1 — Banco
+**Segurança:** RLS ativo em todas as tabelas, JWT via Supabase Auth, `has_role` com `user_roles` (padrão seguro), logs em `licenca_acessos` e `audit_logs`.
 
-Migration cria `system_modules`:
+## O que realmente falta (delta a construir)
 
-```
-id uuid pk
-slug text unique         -- ex: "loja", "pagamentos", "creditos"
-nome text
-descricao text
-icone text               -- nome do ícone lucide (string)
-categoria text           -- Administração | Loja | Financeiro | Marketing | IA | Conteúdo | Segurança | Sistema | Uploads | Configurações | Outros
-rota text                -- ex: "/admin/loja"
-ordem int default 0
-cor text                 -- token hex/oklch opcional
-ativo bool default true
-favorito bool default false
-mostrar_dashboard bool default true
-mostrar_sidebar bool default true
-mostrar_home bool default true
-mostrar_busca bool default true
-created_at, updated_at
-```
+Comparando seu pedido com o que existe, o gap é pequeno:
 
-- RLS: SELECT para `authenticated` (todos podem ler o catálogo); INSERT/UPDATE/DELETE apenas para `has_role(auth.uid(),'admin')`.
-- GRANTs padrão (`authenticated`, `service_role`).
-- Seed inline no migration com **todos os módulos existentes hoje**, marcados `ativo=true`:
-  Painel, Configurações Gerais, Personalização, Animações, Sons, Usuários, Loja, Produtos & Galeria, Pagamentos, Ajustar Créditos, Segurança, Autorizações de Packs, Backup + todos os `resources.ts` (Licenças, Clientes, Revendedores, Planos, Promoções, Carrossel, Banners, Propagandas, Imagens, Vídeos, Aulas, Agentes, Prompts, Packs, Notificações, Logs, etc.).
+1. **Endpoints REST adicionais que a extensão pode chamar** (hoje só existe `validar-licenca`):
+   - `POST /api/public/licenca/heartbeat` — ping periódico (grava `ultimo_acesso`, retorna status)
+   - `POST /api/public/licenca/renovar` — renovação a partir da extensão (com token)
+   - `POST /api/public/licenca/reset-hwid` — solicitação de reset (fila; admin aprova)
+   - `POST /api/public/licenca/revogar` — auto-revogação/logout do device
+   - `GET  /api/public/licenca/config` — download de configuração remota da extensão (feature flags, endpoints, versão mínima)
+   - `GET  /api/public/licenca/consulta?chave=...` — consulta pública read-only (status/expira_em)
 
-## Fase 2 — Hook central `useModules()`
+2. **Estados formais VALID/EXPIRED/REVOKED/BLOCKED/DEVICE_MISMATCH/PENDING/TRIAL** — hoje o campo `status` usa `ativa/expirada/cancelada/revogada` + `tipo` `teste/premium`. Vou adicionar uma **view/coluna computada** `estado_extensao` que mapeia os campos internos para os 7 rótulos que a extensão espera, **sem quebrar** o schema atual.
 
-`src/lib/admin/use-modules.ts`:
-- `useQuery(['system_modules'])` busca via `supabase.from('system_modules').select('*').order('favorito desc, ordem asc, nome')`
-- Retorna helpers: `isActive(slug)`, `visibleIn('sidebar'|'home'|'dashboard'|'busca')`, `bySlug(slug)`
-- Cache 5min, invalida ao salvar mudanças
+3. **Dashboard consolidado de licenciamento** (`/admin/licencas-dashboard`): totais, ativas, expiradas, bloqueadas, dispositivos conectados, ativações hoje, renovações do dia — hoje só existe a listagem CRUD.
 
-## Fase 3 — Sidebar e Home admin passam a filtrar
+4. **Tabela `api_keys`** (para chaves de integração/serviço, ex.: extensão em modo signed) — não existe ainda.
 
-**`src/routes/admin.tsx`** (sidebar):
-- `specialLinks` e `resources` continuam existindo como **catálogo default** (fallback quando a tabela ainda não retornou)
-- Antes de renderizar, filtrar por `modules.visibleIn('sidebar')` — item cujo `slug` está inativo simplesmente não é renderizado
-- Ordem/favoritos aplicados quando presentes na tabela
+5. **Tabela `settings` centralizada** — hoje temos `admin_settings` (singleton para senha admin); vou estender para chave→valor genérico usado por `/licenca/config`.
 
-**`src/routes/admin.index.tsx`** (Home / Visão Geral):
-- Grid de cards deixa de ser fixo — mapeia `modules.visibleIn('home')`
-- Grid responsivo: `grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6`
-- Favoritos ⭐ vêm primeiro (já ordenado no query)
+6. **Rate limit por IP/chave** nos endpoints públicos — hoje não há.
 
-Rotas continuam existindo e acessíveis por URL direta — apenas a **descoberta visual** some.
+7. **Mercado Pago recorrente:** o webhook já existe, mas o fluxo "aprovado → cria licença → envia email com a chave" precisa ser completado (hoje aprova pagamento e credita, mas não gera licença automaticamente por plano).
 
-## Fase 4 — Tela `/admin/modulos`
+## O que **NÃO** vou fazer
 
-`src/routes/admin.modulos.tsx`:
-- Header: título + busca em tempo real (nome/categoria/status) + filtro por categoria
-- Grid de cards agrupado por categoria (colapsável)
-- Cada card mostra: ícone, nome, descrição, categoria, status (badge), switch ON/OFF, botão ⭐ favorito, campo ordem, seletor de cor
-- Drag-and-drop com `@dnd-kit` (já instalado) para reordenar — salva `ordem` em batch
-- Toggles individuais para `mostrar_sidebar`, `mostrar_home`, `mostrar_dashboard`, `mostrar_busca` (menu contextual "⋯ Onde exibir")
-- Contador de registros: consulta agregada opcional por slug (lazy, só quando expandido)
-- Toast ao salvar; mutations invalidam `['system_modules']`
+- **Não vou renomear** `licencas` para `licenses`, `clientes` para `users`, etc. Isso quebraria todo o painel, RLS, funções DB, webhooks e a própria extensão que provavelmente já usa os nomes atuais. Vou manter os nomes em PT-BR do projeto e apenas **adicionar** o que falta.
+- **Não vou** recriar tabelas que já existem (`clientes`, `planos`, `licencas`, `licenca_dispositivos`, `payment_transactions`, `licencas_eventos` já cobrem `users/licenses/license_devices/payments/license_logs`).
+- **Não vou** trocar a tecnologia (continua TanStack Start + Lovable Cloud + RLS).
+- **Não vou** tocar em nada da Home, checkout, packs, prompts, agents, PWA — como você já pediu antes.
+- **Não vou** aplicar nada antes de você aprovar este plano.
 
-Adicionar link "Módulos" 🧩 em `specialLinks` do `admin.tsx`.
+## Fase 2 — quando você enviar o ZIP da extensão MR LOV 2.2
 
-## Fase 5 — Busca global (opt-in)
+Ao receber o `.zip/.rar` da extensão, vou:
 
-Se houver componente de command palette / busca admin, respeitar `visibleIn('busca')`. Se ainda não existir, fica preparado — nada a fazer agora.
+1. Extrair e ler `manifest.json`, `background.js`/service worker, `content-scripts`, `popup`, `options`.
+2. Listar **todos** os `fetch(...)`/`XMLHttpRequest`/URLs base encontrados.
+3. Extrair o **shape exato** de request/response que a extensão envia e espera em cada endpoint.
+4. Comparar com o endpoint atual `/api/public/validar-licenca` e com os novos que este plano cria.
+5. Ajustar **apenas o backend** para bater 100% com o contrato da extensão (nomes de campos, códigos de erro, envelope JSON). A extensão não será modificada.
+6. Entregar o **Relatório Final** que você pediu: endpoints identificados, fluxos, % de compatibilidade, checklist, arquivos a alterar (se algum) vs. intactos.
 
-## Fase 6 — Novos módulos futuros
+Somente depois disso, e com sua nova aprovação explícita, aplico o ajuste de compatibilidade.
 
-Convenção documentada em `AGENTS.md`: ao criar um novo módulo admin, adicionar entrada no seed via migration com `ativo=true` por padrão. Não há auto-registro em runtime (mantém previsibilidade).
+## Ordem de execução (após aprovação)
 
----
+1. **Migração 1 — schema delta:** cria `api_keys`, estende `admin_settings` com JSON `config_extensao`, adiciona view `v_licenca_estado` (mapeia para VALID/EXPIRED/REVOKED/BLOCKED/DEVICE_MISMATCH/PENDING/TRIAL), adiciona coluna `reset_hwid_solicitado_em` em `licencas`. Todos os GRANTs + RLS.
+2. **Migração 2 — MP recorrente:** trigger `payment_transactions.status=aprovado + plano_id` → gera licença automaticamente via `gerar_licencas`, vincula ao cliente, dispara notificação.
+3. **Rotas server:** cria os 6 endpoints `/api/public/licenca/*` acima, com verificação de assinatura simples (chave + timestamp), rate-limit em memória por IP.
+4. **UI admin:** cria `/admin/licencas-dashboard` (cards + gráfico), reaproveitando o layout de `admin.index.tsx`.
+5. **Testes de fumaça:** curl em cada endpoint público para conferir shape.
+6. **Aguardar ZIP** para Fase 2 (compatibilidade).
 
-## Detalhes técnicos
+## Detalhes técnicos (para referência)
 
-- **Ícones**: coluna `icone` armazena nome (`"Store"`, `"CreditCard"`…). Componente `<ModuleIcon name={...} />` faz lookup em `lucide-react` com fallback para `Package`.
-- **Permissões por módulo (Admin/Funcionário/Cliente/Revendedor)**: fora do escopo desta entrega — o gate atual continua igual. Adicionar coluna `roles jsonb default '["admin"]'` na tabela agora, mas UI de edição só na fase seguinte (evita quebrar RLS/rotas existentes).
-- **Performance**: `React.memo` nos cards; grid virtualizado só se a lista passar de ~200 (não é o caso hoje).
-- **Compat**: se o `useQuery` falhar/ainda carregando, sidebar/home renderizam o catálogo default completo (fallback = tudo visível). Zero risco de tela em branco.
+- Stack: TanStack Start v1 + React 19 + Tailwind v4 (mantido).
+- Endpoints públicos ficam sob `src/routes/api/public/licenca/*.ts` (bypass de auth do Lovable — cada handler valida assinatura/chave por conta própria).
+- Reset HWID vira **fluxo em duas etapas**: extensão marca `reset_hwid_solicitado_em`; admin aprova em `/admin/licencas` (usa `resetar_device_licenca` existente).
+- Estados exportados via view SQL — zero mudança destrutiva nas colunas atuais.
+- `api_keys`: `id, nome, hash, scopes[], created_by, revoked_at`; hash BCrypt, nunca guarda a chave em claro.
+- Nenhuma exposição do `SUPABASE_SERVICE_ROLE_KEY` para o cliente.
 
----
+## Confirmação que preciso de você
 
-## Entrega em ordem
+Responda:
 
-1. Migration `system_modules` + seed dos módulos atuais
-2. `use-modules.ts` hook
-3. Filtro na sidebar (`admin.tsx`) e na home admin (`admin.index.tsx`) — com fallback seguro
-4. Rota `/admin/modulos` com listagem, switch, favorito, drag-and-drop, busca, filtro categoria
-5. Link "Módulos" 🧩 no menu admin
-6. Nota em `AGENTS.md` sobre cadastrar novos módulos no seed
+1. **Aprovado** → executo os passos 1–5 e aguardo o ZIP.
+2. **Aprovado apenas parcialmente** → me diga quais itens tirar/adiar.
+3. **Envie o ZIP antes** → então eu paro aqui, leio a extensão primeiro, e volto com o plano refinado ao contrato real dela (recomendado se você tem o arquivo em mãos — evita retrabalho).
 
-Nenhum arquivo existente é reescrito — apenas `admin.tsx` e `admin.index.tsx` recebem filtro condicional em cima do array atual.
+Nenhum arquivo do projeto será alterado até sua confirmação.
