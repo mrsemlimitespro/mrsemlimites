@@ -188,6 +188,7 @@ function CountdownCell({
 }
 
 function LicencasPage() {
+  const isAdmin = useIsAdmin();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("todos");
   const [openNova, setOpenNova] = useState(false);
@@ -314,8 +315,18 @@ function LicencasPage() {
           </p>
           <p className="mt-3 inline-flex items-center gap-1.5 text-sm">
             <KeyRound className="size-3.5 text-primary" strokeWidth={2} />
-            <span className="font-semibold text-primary">{available} disponíveis</span>
-            <span className="text-muted-foreground">/ {total} total</span>
+            {isAdmin ? (
+              <>
+                <span className="font-semibold text-primary text-lg leading-none">♾️</span>
+                <span className="font-semibold text-primary">ilimitadas</span>
+                <span className="text-muted-foreground">/ {total} criadas</span>
+              </>
+            ) : (
+              <>
+                <span className="font-semibold text-primary">{available} disponíveis</span>
+                <span className="text-muted-foreground">/ {total} total</span>
+              </>
+            )}
           </p>
         </div>
 
