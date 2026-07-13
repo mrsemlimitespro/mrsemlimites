@@ -20,6 +20,7 @@ import {
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -635,10 +636,15 @@ function NovaLicencaModal({
   onOpenChange: (v: boolean) => void;
   onSaved: () => void;
 }) {
+  const isAdmin = useIsAdmin();
+  const presets = isAdmin
+    ? LICENSE_PRESETS
+    : LICENSE_PRESETS.filter((p) => p.kind === "teste" && p.minutos === 20);
   const [quantidade, setQuantidade] = useState(1);
-  const [presetIdx, setPresetIdx] = useState(0); // default: Teste 20 min
+  const [presetIdx, setPresetIdx] = useState(0);
   const [busy, setBusy] = useState(false);
-  const preset = LICENSE_PRESETS[presetIdx];
+  const preset = presets[presetIdx] ?? presets[0];
+  const maxQtd = isAdmin ? 500 : 1;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -693,7 +699,7 @@ function NovaLicencaModal({
         <form className="space-y-4" onSubmit={submit}>
           <Field label="Tipo / Duração">
             <div className="grid grid-cols-2 gap-2">
-              {LICENSE_PRESETS.map((p, i) => {
+              {presets.map((p, i) => {
                 const active = presetIdx === i;
                 const isTeste = p.kind === "teste";
                 return (
@@ -734,11 +740,19 @@ function NovaLicencaModal({
             <Input
               type="number"
               min={1}
-              max={500}
+              max={maxQtd}
               value={quantidade}
-              onChange={(e) => setQuantidade(parseInt(e.target.value) || 1)}
+              onChange={(e) =>
+                setQuantidade(Math.min(maxQtd, Math.max(1, parseInt(e.target.value) || 1)))
+              }
+              disabled={!isAdmin}
               autoFocus
             />
+            {!isAdmin && (
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Revendedores podem gerar apenas 1 chave de teste de 20 minutos por vez.
+              </p>
+            )}
           </Field>
 
           <DialogFooter className="pt-2">

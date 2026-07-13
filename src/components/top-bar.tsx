@@ -29,7 +29,7 @@ function timeAgo(iso: string) {
   return `há ${d}d`;
 }
 
-const ADMIN_EMAIL_PREFIX = "rogeriocftv.mr";
+import { isAdminEmail } from "@/hooks/useIsAdmin";
 
 export function TopBar() {
   const [adminOpen, setAdminOpen] = useState(false);
@@ -47,10 +47,7 @@ export function TopBar() {
         setIsAdminUser(false);
         return;
       }
-      const email: string = (session.user.email || "").toLowerCase();
-      const emailMatch =
-        email.startsWith(ADMIN_EMAIL_PREFIX + "@") || email.split("@")[0] === ADMIN_EMAIL_PREFIX;
-      if (mounted) setIsAdminUser(emailMatch);
+      if (mounted) setIsAdminUser(isAdminEmail(session.user.email));
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => check(s));
