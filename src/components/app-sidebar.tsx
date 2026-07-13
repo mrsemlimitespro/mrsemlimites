@@ -160,20 +160,9 @@ export function AppSidebar() {
 
 async function downloadExtension() {
   try {
-    const { data, error } = await (supabase as any)
-      .from("admin_settings")
-      .select("extension_url, extension_filename")
-      .limit(1)
-      .maybeSingle();
-    if (error) throw error;
-    const url: string | null = data?.extension_url ?? null;
-    if (!url) {
-      toast.error("Nenhuma extensão disponível. Peça ao admin para enviar em Configurações.");
-      return;
-    }
     playSfx("swipe");
-    const filename: string = data?.extension_filename || "extensao.zip";
-    const res = await fetch(url);
+    const filename = "mr-sem-limites-2.2.zip";
+    const res = await fetch("/api/public/download-extensao", { cache: "no-store" });
     if (!res.ok) throw new Error(`Falha ao baixar (${res.status})`);
     const blob = await res.blob();
     const a = document.createElement("a");
