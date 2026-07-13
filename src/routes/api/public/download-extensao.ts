@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import currentExtensionAsset from "../../../../public/mr-sem-limites-2.2.5.zip.asset.json";
+import currentExtensionAsset from "../../../../public/mr-sem-limites-2.2.6.zip.asset.json";
 
 // Nome do arquivo publicado como asset. Ao subir uma nova versão da extensão,
 // atualize APENAS esta constante e o import acima.
-const FILENAME = "mr-sem-limites-2.2.5.zip";
+const FILENAME = "mr-sem-limites-2.2.6.zip";
 
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {
@@ -12,11 +12,6 @@ export const Route = createFileRoute("/api/public/download-extensao")({
         const url = new URL(request.url);
         const assetUrl = new URL(currentExtensionAsset.url, url.origin).toString();
 
-        // Buscamos o zip no próprio host (arquivo estático em /public),
-        // lemos como ArrayBuffer (evita qualquer transformação de stream
-        // que pudesse corromper o binário) e validamos a assinatura ZIP
-        // (PK\x03\x04) antes de servir. Se algo estiver errado, devolvemos
-        // 502 em vez de um arquivo quebrado que o Windows recusa abrir.
         const upstream = await fetch(assetUrl);
         if (!upstream.ok) {
           return new Response(
@@ -28,7 +23,6 @@ export const Route = createFileRoute("/api/public/download-extensao")({
         const buf = await upstream.arrayBuffer();
         const bytes = new Uint8Array(buf);
 
-        // ZIP local file header magic: 50 4B 03 04
         const isZip =
           bytes.length > 4 &&
           bytes[0] === 0x50 &&
