@@ -56,6 +56,7 @@ import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/publ
 import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
 import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
+import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
 import { Route as ApiPublicExtFunctionsV1InjectConfigRouteImport } from './routes/api/public/ext/functions.v1.inject-config'
 import { Route as ApiPublicExtFunctionsV1GetTemplatesRouteImport } from './routes/api/public/ext/functions.v1.get-templates'
 import { Route as ApiPublicExtFunctionsV1GetSupportInfoRouteImport } from './routes/api/public/ext/functions.v1.get-support-info'
@@ -300,6 +301,12 @@ const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
     path: '/api/public/ext/functions/v1/validate-license-v2',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtFunctionsV1ServeExtensionUiRoute =
+  ApiPublicExtFunctionsV1ServeExtensionUiRouteImport.update({
+    id: '/api/public/ext/functions/v1/serve-extension-ui',
+    path: '/api/public/ext/functions/v1/serve-extension-ui',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtFunctionsV1InjectConfigRoute =
   ApiPublicExtFunctionsV1InjectConfigRouteImport.update({
     id: '/api/public/ext/functions/v1/inject-config',
@@ -368,6 +375,7 @@ export interface FileRoutesByFullPath {
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
+  '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRoutesByTo {
@@ -418,6 +426,7 @@ export interface FileRoutesByTo {
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
+  '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRoutesById {
@@ -471,6 +480,7 @@ export interface FileRoutesById {
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
+  '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRouteTypes {
@@ -524,6 +534,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
+    | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -574,6 +585,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
+    | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
   id:
     | '__root__'
@@ -626,6 +638,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
+    | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesById: FileRoutesById
 }
@@ -651,6 +664,7 @@ export interface RootRouteChildren {
   ApiPublicExtFunctionsV1GetSupportInfoRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   ApiPublicExtFunctionsV1GetTemplatesRoute: typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   ApiPublicExtFunctionsV1InjectConfigRoute: typeof ApiPublicExtFunctionsV1InjectConfigRoute
+  ApiPublicExtFunctionsV1ServeExtensionUiRoute: typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 
@@ -985,6 +999,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/functions/v1/serve-extension-ui': {
+      id: '/api/public/ext/functions/v1/serve-extension-ui'
+      path: '/api/public/ext/functions/v1/serve-extension-ui'
+      fullPath: '/api/public/ext/functions/v1/serve-extension-ui'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1ServeExtensionUiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/inject-config': {
       id: '/api/public/ext/functions/v1/inject-config'
       path: '/api/public/ext/functions/v1/inject-config'
@@ -1116,6 +1137,8 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicExtFunctionsV1GetTemplatesRoute,
   ApiPublicExtFunctionsV1InjectConfigRoute:
     ApiPublicExtFunctionsV1InjectConfigRoute,
+  ApiPublicExtFunctionsV1ServeExtensionUiRoute:
+    ApiPublicExtFunctionsV1ServeExtensionUiRoute,
   ApiPublicExtFunctionsV1ValidateLicenseV2Route:
     ApiPublicExtFunctionsV1ValidateLicenseV2Route,
 }
