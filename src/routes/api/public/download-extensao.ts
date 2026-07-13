@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import currentExtensionAsset from "../../../../public/mr-sem-limites-2.2.3.zip.asset.json";
 
 // Nome do arquivo publicado em /public. Ao subir uma nova versão da extensão,
 // atualize APENAS esta constante e coloque o zip correspondente em /public.
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/api/public/download-extensao")({
     handlers: {
       GET: async ({ request }) => {
         const url = new URL(request.url);
-        const assetUrl = `${url.origin}/${FILENAME}`;
+        const assetUrl = new URL(currentExtensionAsset.url, url.origin).toString();
 
         // Buscamos o zip no próprio host (arquivo estático em /public),
         // lemos como ArrayBuffer (evita qualquer transformação de stream
