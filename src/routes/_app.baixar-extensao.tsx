@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { playSfx } from "@/lib/sfx";
 import latestExtensionAsset from "../../public/mr-sem-limites-2.2.2-runtime-fix.zip.asset.json";
+import previousExtensionAsset from "../../public/mr-sem-limites-2.2.1-windows.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
@@ -50,7 +51,7 @@ const RELEASES: ExtensionRelease[] = [
     version: "2.2.1",
     date: "13/07/2026",
     filename: "mr-sem-limites-2.2.1-windows.zip",
-    downloadPath: latestExtensionAsset.url,
+    downloadPath: previousExtensionAsset.url,
     size: "773 KB",
     changelog: [
       "ZIP recriado em formato compatível com Windows",
