@@ -44,6 +44,7 @@ import { Route as AppClientesRouteImport } from './routes/_app.clientes'
 import { Route as AppAulasRouteImport } from './routes/_app.aulas'
 import { Route as AppAgentsRouteImport } from './routes/_app.agents'
 import { Route as ApiPublicValidarLicencaRouteImport } from './routes/api/public/validar-licenca'
+import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
 import { Route as AppPacksSlugRouteImport } from './routes/_app.packs.$slug'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
@@ -237,6 +238,12 @@ const ApiPublicValidarLicencaRoute = ApiPublicValidarLicencaRouteImport.update({
   path: '/api/public/validar-licenca',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDownloadExtensaoRoute =
+  ApiPublicDownloadExtensaoRouteImport.update({
+    id: '/api/public/download-extensao',
+    path: '/api/public/download-extensao',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AppPacksSlugRoute = AppPacksSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -375,6 +382,7 @@ export interface FileRoutesByFullPath {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/admin/': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
+  '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -428,6 +436,7 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
+  '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -484,6 +493,7 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_app/packs/$slug': typeof AppPacksSlugRoute
+  '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -540,6 +550,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/'
     | '/packs/$slug'
+    | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -593,6 +604,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/packs/$slug'
+    | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -648,6 +660,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/admin/'
     | '/_app/packs/$slug'
+    | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -676,6 +689,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegistroRoute: typeof RegistroRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
   ApiPublicLicencaConfigRoute: typeof ApiPublicLicencaConfigRoute
   ApiPublicLicencaConsultaRoute: typeof ApiPublicLicencaConsultaRoute
@@ -943,6 +957,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicValidarLicencaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/download-extensao': {
+      id: '/api/public/download-extensao'
+      path: '/api/public/download-extensao'
+      fullPath: '/api/public/download-extensao'
+      preLoaderRoute: typeof ApiPublicDownloadExtensaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/packs/$slug': {
       id: '/_app/packs/$slug'
       path: '/$slug'
@@ -1162,6 +1183,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegistroRoute: RegistroRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
   ApiPublicLicencaConfigRoute: ApiPublicLicencaConfigRoute,
   ApiPublicLicencaConsultaRoute: ApiPublicLicencaConsultaRoute,
@@ -1189,13 +1211,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
