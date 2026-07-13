@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const ASSET_URL =
-  "https://mrsemlimites.lovable.app/__l5e/assets-v1/9896b4ea-4480-45a9-9e91-bcdd5c711661/mr-lov-2.2.zip";
-
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {
     handlers: {
-      GET: async () => {
-        const upstream = await fetch(ASSET_URL);
+      GET: async ({ request }) => {
+        const url = new URL(request.url);
+        const target = `${url.origin}/mr-lov-2.2.zip`;
+        const upstream = await fetch(target);
         if (!upstream.ok || !upstream.body) {
           return new Response("Falha ao obter extensão", { status: 502 });
         }
@@ -15,8 +14,8 @@ export const Route = createFileRoute("/api/public/download-extensao")({
           status: 200,
           headers: {
             "Content-Type": "application/zip",
-            "Content-Disposition": 'attachment; filename="mr-lov-2.2.zip"',
-            "Cache-Control": "public, max-age=3600",
+            "Content-Disposition": 'attachment; filename="mr-sem-limites-2.2.zip"',
+            "Cache-Control": "no-store",
           },
         });
       },
