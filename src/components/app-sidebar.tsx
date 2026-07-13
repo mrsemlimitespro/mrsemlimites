@@ -48,10 +48,10 @@ const commercialItems: NavItem[] = [
   { title: "Aulas", url: "/aulas", icon: GraduationCap },
 ];
 
-type FooterItem = NavItem | { title: string; action: "extension" | "logout"; icon: IconType };
+type FooterItem = NavItem | { title: string; action: "logout"; icon: IconType };
 
 const authedFooterItems: FooterItem[] = [
-  { title: "Baixar Extensão", action: "extension", icon: Download },
+  { title: "Baixar Extensão", url: "/baixar-extensao", icon: Download },
   { title: "Perfil", url: "/perfil", icon: UserRound },
   { title: "Sair", action: "logout", icon: LogOut },
 ];
@@ -140,13 +140,7 @@ export function AppSidebar() {
                   }
                   icon={item.icon}
                   variant={isLogout ? "danger" : "muted"}
-                  onClick={
-                    isLogout
-                      ? () => setLogoutOpen(true)
-                      : item.action === "extension"
-                        ? () => void downloadExtension()
-                        : undefined
-                  }
+                  onClick={isLogout ? () => setLogoutOpen(true) : undefined}
                 />
               );
             })}
