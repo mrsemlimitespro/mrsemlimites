@@ -474,7 +474,7 @@ function NovaLicencaModal({
   onSaved: () => void;
 }) {
   const [quantidade, setQuantidade] = useState(1);
-  const [presetIdx, setPresetIdx] = useState(2); // default: Premium 30 dias
+  const [presetIdx, setPresetIdx] = useState(0); // default: Teste 20 min
   const [busy, setBusy] = useState(false);
   const preset = LICENSE_PRESETS[presetIdx];
 
