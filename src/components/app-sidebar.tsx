@@ -140,13 +140,7 @@ export function AppSidebar() {
                   }
                   icon={item.icon}
                   variant={isLogout ? "danger" : "muted"}
-                  onClick={
-                    isLogout
-                      ? () => setLogoutOpen(true)
-                      : item.action === "extension"
-                        ? () => void downloadExtension()
-                        : undefined
-                  }
+                  onClick={isLogout ? () => setLogoutOpen(true) : undefined}
                 />
               );
             })}
