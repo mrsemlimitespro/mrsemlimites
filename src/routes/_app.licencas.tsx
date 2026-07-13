@@ -81,6 +81,7 @@ type LicencaRow = {
   expira_em: string | null;
   ativada_em: string | null;
   duracao_dias: number | null;
+  trial_duracao_minutos: number | null;
   clientes?: { nome: string | null } | null;
 };
 
