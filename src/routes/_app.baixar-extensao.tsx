@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { playSfx } from "@/lib/sfx";
-import currentExtensionAsset from "../../public/mr-sem-limites-2.2.3.zip.asset.json";
+import currentExtensionAsset from "../../public/mr-sem-limites-2.2.4.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
@@ -34,16 +34,16 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.2.3",
+    version: "2.2.4",
     date: "13/07/2026",
-    filename: "mr-sem-limites-2.2.3.zip",
+    filename: "mr-sem-limites-2.2.4.zip",
     downloadPath: currentExtensionAsset.url,
-    size: "773 KB",
+    size: "774 KB",
     latest: true,
     changelog: [
-      "Painel lateral envia mensagens digitando no chat do Lovable e clicando Enviar",
-      "Botões CORRIGIR / REFATORAR / MELHORAR / OTIMIZAR / SEGURANÇA / RESPONSIVO funcionam pelo painel também",
-      "Mesmo fluxo da bolinha verde — precisa da aba do Lovable aberta no projeto",
+      "Painel lateral agora segue exatamente o mesmo caminho da bolinha verde (digita no chat nativo e clica Enviar via content script)",
+      "Envio pelo painel reativa a bolinha automaticamente caso ela tenha sumido",
+      "Interceptor de fetch aplica o fluxo ativo no envio real, igual ao envio manual",
     ],
   },
 ];
