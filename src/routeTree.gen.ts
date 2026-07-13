@@ -41,6 +41,7 @@ import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
 import { Route as AppClientesRouteImport } from './routes/_app.clientes'
+import { Route as AppBaixarExtensaoRouteImport } from './routes/_app.baixar-extensao'
 import { Route as AppAulasRouteImport } from './routes/_app.aulas'
 import { Route as AppAgentsRouteImport } from './routes/_app.agents'
 import { Route as ApiPublicValidarLicencaRouteImport } from './routes/api/public/validar-licenca'
@@ -223,6 +224,11 @@ const AppClientesRoute = AppClientesRouteImport.update({
   path: '/clientes',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBaixarExtensaoRoute = AppBaixarExtensaoRouteImport.update({
+  id: '/baixar-extensao',
+  path: '/baixar-extensao',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAulasRoute = AppAulasRouteImport.update({
   id: '/aulas',
   path: '/aulas',
@@ -357,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/agents': typeof AppAgentsRoute
   '/aulas': typeof AppAulasRoute
+  '/baixar-extensao': typeof AppBaixarExtensaoRoute
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
   '/dashboard': typeof AppDashboardRoute
@@ -410,6 +417,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/agents': typeof AppAgentsRoute
   '/aulas': typeof AppAulasRoute
+  '/baixar-extensao': typeof AppBaixarExtensaoRoute
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
   '/dashboard': typeof AppDashboardRoute
@@ -467,6 +475,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_app/agents': typeof AppAgentsRoute
   '/_app/aulas': typeof AppAulasRoute
+  '/_app/baixar-extensao': typeof AppBaixarExtensaoRoute
   '/_app/clientes': typeof AppClientesRoute
   '/_app/creditos': typeof AppCreditosRoute
   '/_app/dashboard': typeof AppDashboardRoute
@@ -525,6 +534,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/agents'
     | '/aulas'
+    | '/baixar-extensao'
     | '/clientes'
     | '/creditos'
     | '/dashboard'
@@ -578,6 +588,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/agents'
     | '/aulas'
+    | '/baixar-extensao'
     | '/clientes'
     | '/creditos'
     | '/dashboard'
@@ -634,6 +645,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_app/agents'
     | '/_app/aulas'
+    | '/_app/baixar-extensao'
     | '/_app/clientes'
     | '/_app/creditos'
     | '/_app/dashboard'
@@ -936,6 +948,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppClientesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/baixar-extensao': {
+      id: '/_app/baixar-extensao'
+      path: '/baixar-extensao'
+      fullPath: '/baixar-extensao'
+      preLoaderRoute: typeof AppBaixarExtensaoRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/aulas': {
       id: '/_app/aulas'
       path: '/aulas'
@@ -1108,6 +1127,7 @@ const AppPacksRouteWithChildren = AppPacksRoute._addFileChildren(
 interface AppRouteChildren {
   AppAgentsRoute: typeof AppAgentsRoute
   AppAulasRoute: typeof AppAulasRoute
+  AppBaixarExtensaoRoute: typeof AppBaixarExtensaoRoute
   AppClientesRoute: typeof AppClientesRoute
   AppCreditosRoute: typeof AppCreditosRoute
   AppDashboardRoute: typeof AppDashboardRoute
@@ -1121,6 +1141,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAgentsRoute: AppAgentsRoute,
   AppAulasRoute: AppAulasRoute,
+  AppBaixarExtensaoRoute: AppBaixarExtensaoRoute,
   AppClientesRoute: AppClientesRoute,
   AppCreditosRoute: AppCreditosRoute,
   AppDashboardRoute: AppDashboardRoute,
