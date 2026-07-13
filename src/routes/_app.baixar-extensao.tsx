@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { playSfx } from "@/lib/sfx";
-import latestExtensionAsset from "../../public/mr-sem-limites-2.2.1-windows.zip.asset.json";
+import latestExtensionAsset from "../../public/mr-sem-limites-2.2.2-runtime-fix.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
@@ -34,12 +34,24 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
+    version: "2.2.2",
+    date: "13/07/2026",
+    filename: "mr-sem-limites-2.2.2-runtime-fix.zip",
+    downloadPath: latestExtensionAsset.url,
+    size: "773 KB",
+    latest: true,
+    changelog: [
+      "Corrigido erro runtime invalid após troca do nome da extensão",
+      "Mantém a marca MR Sem Limites, logo e visual atual",
+      "ZIP recriado em formato compatível com Windows",
+    ],
+  },
+  {
     version: "2.2.1",
     date: "13/07/2026",
     filename: "mr-sem-limites-2.2.1-windows.zip",
     downloadPath: latestExtensionAsset.url,
     size: "773 KB",
-    latest: true,
     changelog: [
       "ZIP recriado em formato compatível com Windows",
       "Download servido por arquivo novo para evitar cache antigo corrompido",
