@@ -57,6 +57,7 @@ import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/publi
 import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1InjectConfigRouteImport } from './routes/api/public/ext/functions.v1.inject-config'
+import { Route as ApiPublicExtFunctionsV1GetSupportInfoRouteImport } from './routes/api/public/ext/functions.v1.get-support-info'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -304,6 +305,12 @@ const ApiPublicExtFunctionsV1InjectConfigRoute =
     path: '/api/public/ext/functions/v1/inject-config',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtFunctionsV1GetSupportInfoRoute =
+  ApiPublicExtFunctionsV1GetSupportInfoRouteImport.update({
+    id: '/api/public/ext/functions/v1/get-support-info',
+    path: '/api/public/ext/functions/v1/get-support-info',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -351,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
@@ -399,6 +407,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
@@ -450,6 +459,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
@@ -501,6 +511,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
+    | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesByTo: FileRoutesByTo
@@ -549,6 +560,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
+    | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/validate-license-v2'
   id:
@@ -599,6 +611,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
+    | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesById: FileRoutesById
@@ -622,6 +635,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksCaktoRoute: typeof ApiPublicWebhooksCaktoRoute
   ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
+  ApiPublicExtFunctionsV1GetSupportInfoRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   ApiPublicExtFunctionsV1InjectConfigRoute: typeof ApiPublicExtFunctionsV1InjectConfigRoute
   ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
@@ -964,6 +978,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtFunctionsV1InjectConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/functions/v1/get-support-info': {
+      id: '/api/public/ext/functions/v1/get-support-info'
+      path: '/api/public/ext/functions/v1/get-support-info'
+      fullPath: '/api/public/ext/functions/v1/get-support-info'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1068,6 +1089,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksCaktoRoute: ApiPublicWebhooksCaktoRoute,
   ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
+  ApiPublicExtFunctionsV1GetSupportInfoRoute:
+    ApiPublicExtFunctionsV1GetSupportInfoRoute,
   ApiPublicExtFunctionsV1InjectConfigRoute:
     ApiPublicExtFunctionsV1InjectConfigRoute,
   ApiPublicExtFunctionsV1ValidateLicenseV2Route:
