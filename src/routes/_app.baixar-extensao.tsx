@@ -41,6 +41,7 @@ const RELEASES: ExtensionRelease[] = [
     size: "776 KB",
     latest: true,
     changelog: [
+      "Agora o ZIP descompacta em uma única pasta 'MR Sem Limites' — não bagunça mais os arquivos no diretório onde você extrair",
       "Bolinha flutuante virou um quadrado com a logo em destaque (mesmo drag e mesma função de ativar/desativar)",
       "Header do painel com nova logo em destaque também no canto direito, ao lado do Publish",
       "Dashboard da extensão modernizado: 6 cards de ação (Corrigir/Refatorar/Melhorar/Otimizar/Segurança/Responsivo) com ícones coloridos e efeito glass premium",
