@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import latestExtensionAsset from "../../../../public/mr-sem-limites-2.2.1-windows.zip.asset.json";
+import latestExtensionAsset from "../../../../public/mr-sem-limites-2.2.2-runtime-fix.zip.asset.json";
 
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/api/public/download-extensao")({
           status: 200,
           headers: {
             "Content-Type": "application/zip",
-            "Content-Disposition": 'attachment; filename="mr-sem-limites-2.2.1-windows.zip"',
+            "Content-Disposition": 'attachment; filename="mr-sem-limites-2.2.2-runtime-fix.zip"',
             "Cache-Control": "no-store",
           },
         });
