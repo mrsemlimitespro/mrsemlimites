@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { playSfx } from "@/lib/sfx";
-import currentExtensionAsset from "../../public/mr-sem-limites-2.2.6.zip.asset.json";
+import currentExtensionAsset from "../../public/mr-sem-limites-2.2.7.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
