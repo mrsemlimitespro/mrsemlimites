@@ -188,6 +188,7 @@ function CountdownCell({
 }
 
 function LicencasPage() {
+  const isAdmin = useIsAdmin();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("todos");
   const [openNova, setOpenNova] = useState(false);
