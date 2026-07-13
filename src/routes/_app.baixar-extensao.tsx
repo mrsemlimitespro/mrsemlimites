@@ -38,9 +38,10 @@ const RELEASES: ExtensionRelease[] = [
     date: "13/07/2026",
     filename: "mr-sem-limites-2.2.7.zip",
     downloadPath: currentExtensionAsset.url,
-    size: "776 KB",
+    size: "750 KB",
     latest: true,
     changelog: [
+      "Build de produção protegida: JS minificado, mangled, comentários e código morto removidos (terser em modo module para background/lib e script para os demais)",
       "Agora o ZIP descompacta em uma única pasta 'MR Sem Limites' — não bagunça mais os arquivos no diretório onde você extrair",
       "Bolinha flutuante virou um quadrado com a logo em destaque (mesmo drag e mesma função de ativar/desativar)",
       "Header do painel com nova logo em destaque também no canto direito, ao lado do Publish",
