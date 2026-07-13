@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { playSfx } from "@/lib/sfx";
+import latestExtensionAsset from "../../public/mr-sem-limites-2.2.1-windows.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
@@ -33,12 +34,24 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
+    version: "2.2.1",
+    date: "13/07/2026",
+    filename: "mr-sem-limites-2.2.1-windows.zip",
+    downloadPath: latestExtensionAsset.url,
+    size: "773 KB",
+    latest: true,
+    changelog: [
+      "ZIP recriado em formato compatível com Windows",
+      "Download servido por arquivo novo para evitar cache antigo corrompido",
+      "Mantém logo e cores MR Sem Limites",
+    ],
+  },
+  {
     version: "2.2",
     date: "13/07/2026",
     filename: "mr-sem-limites-2.2.zip",
     downloadPath: "/api/public/download-extensao",
     size: "790 KB",
-    latest: true,
     changelog: [
       "Rebrand completo para MR Sem Limites (logo + cores magenta/azul)",
       "Trial automático de 20 minutos por chave",
