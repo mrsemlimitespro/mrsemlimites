@@ -455,8 +455,19 @@ function LicencasPage() {
                     aria-label={`Selecionar ${l.key}`}
                   />
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-[13px] tracking-tight text-foreground">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span
+                    className="font-mono text-[13px] tracking-tight text-foreground truncate cursor-pointer select-all"
+                    style={{ userSelect: "all" }}
+                    onClick={(e) => {
+                      const range = document.createRange();
+                      range.selectNodeContents(e.currentTarget);
+                      const sel = window.getSelection();
+                      sel?.removeAllRanges();
+                      sel?.addRange(range);
+                    }}
+                    title="Clique para selecionar"
+                  >
                     {l.key}
                   </span>
                   <button
@@ -471,7 +482,7 @@ function LicencasPage() {
                     <Copy className="size-3.5" strokeWidth={2} />
                   </button>
                 </div>
-                <div className="text-muted-foreground">{l.client ?? "—"}</div>
+                <div className="text-muted-foreground truncate">{l.client ?? "—"}</div>
                 <div className="truncate text-foreground/85">{l.email}</div>
                 <div>
                   <StatusPill status={l.status} />
@@ -491,10 +502,12 @@ function LicencasPage() {
                     "—"
                   )}
                 </div>
-                <div className="flex items-center gap-1.5 text-foreground/85">
-                  <Hourglass className="size-3.5 text-primary" strokeWidth={2} />
-                  <span className="text-sm">{l.expires}</span>
-                </div>
+                <CountdownCell
+                  expiraEm={l.expiraEm}
+                  duracaoDias={l.duracaoDias}
+                  trialMinutos={l.trialMinutos}
+                />
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
