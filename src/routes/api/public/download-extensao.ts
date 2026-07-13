@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import currentExtensionAsset from "../../../../public/mr-sem-limites-2.2.4.zip.asset.json";
+import currentExtensionAsset from "../../../../public/mr-sem-limites-2.2.5.zip.asset.json";
 
-// Nome do arquivo publicado em /public. Ao subir uma nova versão da extensão,
-// atualize APENAS esta constante e coloque o zip correspondente em /public.
-const FILENAME = "mr-sem-limites-2.2.4.zip";
+// Nome do arquivo publicado como asset. Ao subir uma nova versão da extensão,
+// atualize APENAS esta constante e o import acima.
+const FILENAME = "mr-sem-limites-2.2.5.zip";
 
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { playSfx } from "@/lib/sfx";
-import currentExtensionAsset from "../../public/mr-sem-limites-2.2.4.zip.asset.json";
+import currentExtensionAsset from "../../public/mr-sem-limites-2.2.5.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
@@ -34,16 +34,16 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.2.4",
+    version: "2.2.5",
     date: "13/07/2026",
-    filename: "mr-sem-limites-2.2.4.zip",
+    filename: "mr-sem-limites-2.2.5.zip",
     downloadPath: currentExtensionAsset.url,
-    size: "774 KB",
+    size: "775 KB",
     latest: true,
     changelog: [
-      "Painel lateral agora segue exatamente o mesmo caminho da bolinha verde (digita no chat nativo e clica Enviar via content script)",
-      "Envio pelo painel reativa a bolinha automaticamente caso ela tenha sumido",
-      "Interceptor de fetch aplica o fluxo ativo no envio real, igual ao envio manual",
+      "Anexos agora seguem exatamente o mesmo caminho da bolinha verde: são anexados no input nativo do chat do Lovable via DataTransfer",
+      "Envio pelo painel (texto + anexo, qualquer tamanho) usa o fluxo nativo do Lovable — sem upload paralelo pela API",
+      "Aguarda o botão Enviar habilitar após o anexo carregar antes de disparar",
     ],
   },
 ];
