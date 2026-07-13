@@ -499,6 +499,15 @@ function LicencasPage() {
         onOpenChange={(v) => !v && setRenovarOf(null)}
         onSaved={reload}
       />
+      <BulkRenovarModal
+        open={bulkRenovarOpen}
+        ids={Array.from(selected)}
+        onOpenChange={setBulkRenovarOpen}
+        onDone={() => {
+          setSelected(new Set());
+          reload();
+        }}
+      />
     </div>
   );
 }
