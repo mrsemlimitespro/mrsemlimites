@@ -55,6 +55,7 @@ import { Route as ApiPublicLicencaRenovarRouteImport } from './routes/api/public
 import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/public/licenca/heartbeat'
 import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
 import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
+import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1InjectConfigRouteImport } from './routes/api/public/ext/functions.v1.inject-config'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -291,6 +292,12 @@ const ApiPublicLicencaConfigRoute = ApiPublicLicencaConfigRouteImport.update({
   path: '/api/public/licenca/config',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
+  ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
+    id: '/api/public/ext/functions/v1/validate-license-v2',
+    path: '/api/public/ext/functions/v1/validate-license-v2',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtFunctionsV1InjectConfigRoute =
   ApiPublicExtFunctionsV1InjectConfigRouteImport.update({
     id: '/api/public/ext/functions/v1/inject-config',
@@ -345,6 +352,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
+  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
@@ -392,6 +400,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
+  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -442,6 +451,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
+  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -492,6 +502,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/inject-config'
+    | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/checkout'
@@ -539,6 +550,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/inject-config'
+    | '/api/public/ext/functions/v1/validate-license-v2'
   id:
     | '__root__'
     | '/_app'
@@ -588,6 +600,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/inject-config'
+    | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -610,6 +623,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicExtFunctionsV1InjectConfigRoute: typeof ApiPublicExtFunctionsV1InjectConfigRoute
+  ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 
 declare module '@tanstack/react-router' {
@@ -936,6 +950,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLicencaConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/functions/v1/validate-license-v2': {
+      id: '/api/public/ext/functions/v1/validate-license-v2'
+      path: '/api/public/ext/functions/v1/validate-license-v2'
+      fullPath: '/api/public/ext/functions/v1/validate-license-v2'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/inject-config': {
       id: '/api/public/ext/functions/v1/inject-config'
       path: '/api/public/ext/functions/v1/inject-config'
@@ -1049,6 +1070,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicExtFunctionsV1InjectConfigRoute:
     ApiPublicExtFunctionsV1InjectConfigRoute,
+  ApiPublicExtFunctionsV1ValidateLicenseV2Route:
+    ApiPublicExtFunctionsV1ValidateLicenseV2Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
