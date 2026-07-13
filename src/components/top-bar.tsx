@@ -37,6 +37,7 @@ export function TopBar() {
   const [loading, setLoading] = useState(false);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [isAdminUser, setIsAdminUser] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -45,8 +46,10 @@ export function TopBar() {
       setSignedIn(!!session);
       if (!session?.user) {
         setIsAdminUser(false);
+        setUserEmail(null);
         return;
       }
+      setUserEmail(session.user.email ?? null);
       if (mounted) setIsAdminUser(isAdminEmail(session.user.email));
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
