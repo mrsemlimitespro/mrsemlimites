@@ -34,16 +34,18 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.2.6",
+    version: "2.2.7",
     date: "13/07/2026",
-    filename: "mr-sem-limites-2.2.6.zip",
+    filename: "mr-sem-limites-2.2.7.zip",
     downloadPath: currentExtensionAsset.url,
-    size: "775 KB",
+    size: "776 KB",
     latest: true,
     changelog: [
-      "Anexos agora seguem exatamente o mesmo caminho da bolinha verde: são anexados no input nativo do chat do Lovable via DataTransfer",
-      "Envio pelo painel (texto + anexo, qualquer tamanho) usa o fluxo nativo do Lovable — sem upload paralelo pela API",
-      "Aguarda o botão Enviar habilitar após o anexo carregar antes de disparar",
+      "Bolinha flutuante virou um quadrado com a logo em destaque (mesmo drag e mesma função de ativar/desativar)",
+      "Header do painel com nova logo em destaque também no canto direito, ao lado do Publish",
+      "Dashboard da extensão modernizado: 6 cards de ação (Corrigir/Refatorar/Melhorar/Otimizar/Segurança/Responsivo) com ícones coloridos e efeito glass premium",
+      "Removidas referências visíveis a 'LOV 3' — agora aparece 'MR Sem Limites' em todos os badges e status",
+      "Nada mudou nas funções: envio, anexos, licença, download e Publish continuam iguais",
     ],
   },
 ];
