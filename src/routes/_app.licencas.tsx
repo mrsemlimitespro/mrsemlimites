@@ -990,3 +990,75 @@ function RenovarLicencaModal({
     </Dialog>
   );
 }
+
+function BulkRenovarModal({
+  open,
+  ids,
+  onOpenChange,
+  onDone,
+}: {
+  open: boolean;
+  ids: string[];
+  onOpenChange: (v: boolean) => void;
+  onDone: () => void;
+}) {
+  const [dias, setDias] = useState(30);
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (ids.length === 0) return;
+    setBusy(true);
+    let ok = 0;
+    let fail = 0;
+    for (const id of ids) {
+      const { error } = await (supabase as any).rpc("renovar_licenca", {
+        _licenca_id: id,
+        _dias: dias,
+      });
+      if (error) fail++;
+      else ok++;
+    }
+    setBusy(false);
+    if (ok > 0) toast.success(`${ok} licença(s) renovada(s) por ${dias} dias`);
+    if (fail > 0) toast.error(`${fail} falha(s) ao renovar`);
+    onOpenChange(false);
+    onDone();
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="glass-strong sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Renovar {ids.length} licença(s)</DialogTitle>
+          <DialogDescription>
+            Adiciona os dias informados a todas as licenças selecionadas.
+          </DialogDescription>
+        </DialogHeader>
+        <form className="space-y-4" onSubmit={submit}>
+          <Field label="Dias a adicionar">
+            <Input
+              type="number"
+              min={1}
+              value={dias}
+              onChange={(e) => setDias(parseInt(e.target.value) || 1)}
+              autoFocus
+            />
+          </Field>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={busy || ids.length === 0}
+              className="gradient-primary text-primary-foreground"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : `Renovar ${ids.length}`}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
