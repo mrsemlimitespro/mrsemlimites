@@ -59,7 +59,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         const { data: lic } = await sb
           .from("licencas")
           .select(
-            "id, status, tipo, expira_em, device_id, max_dispositivos, trial_iniciado_em, trial_duracao_minutos, ativada_em",
+            "id, status, tipo, expira_em, device_id, max_dispositivos, trial_iniciado_em, trial_duracao_minutos, ativada_em, duracao_dias",
           )
           .eq("chave", key)
           .maybeSingle();
@@ -79,6 +79,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         }
 
         let expira_em = lic.expira_em;
+        // Primeira ativação: cronômetro só começa quando o cliente ativa na extensão
         if (lic.tipo === "teste" && !lic.trial_iniciado_em) {
           const now = new Date();
           const mins = Number(lic.trial_duracao_minutos ?? 30);
@@ -91,7 +92,19 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
               ativada_em: now.toISOString(),
             })
             .eq("id", lic.id);
+        } else if (lic.tipo === "premium" && !lic.ativada_em && !lic.expira_em) {
+          const now = new Date();
+          const dias = Number(lic.duracao_dias ?? 30);
+          expira_em = new Date(now.getTime() + dias * 86_400_000).toISOString();
+          await sb
+            .from("licencas")
+            .update({
+              expira_em,
+              ativada_em: now.toISOString(),
+            })
+            .eq("id", lic.id);
         }
+
 
         if (expira_em && new Date(expira_em).getTime() < Date.now()) {
           await sb.from("licencas").update({ status: "expirada" }).eq("id", lic.id);
