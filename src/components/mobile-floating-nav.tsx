@@ -12,6 +12,7 @@ import {
   Coins,
   User,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
@@ -36,8 +37,9 @@ type NavItem = {
 const items: NavItem[] = [
   { id: "home", label: "Home", to: "/", icon: Home },
   { id: "agents", label: "Agents", to: "/agents", icon: Bot },
-  { id: "prompts", label: "Prompts", to: "/prompts", icon: MessageSquare },
   { id: "packs", label: "Packs", to: "/packs", icon: Package },
+  { id: "extensao", label: "Extensão", to: "/baixar-extensao", icon: Download },
+  { id: "prompts", label: "Prompts", to: "/prompts", icon: MessageSquare },
   { id: "loja", label: "Loja", to: "/creditos", icon: ShoppingBag },
   { id: "licencas", label: "Licenças", to: "/licencas", icon: KeyRound },
   { id: "clientes", label: "Clientes", to: "/clientes", icon: Users },
