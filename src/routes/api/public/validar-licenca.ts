@@ -124,7 +124,19 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
             });
           }
         } else {
-          // Premium: se tiver expira_em setado, respeita
+          // Premium: se ainda não iniciou (expira_em nulo) → inicia contagem agora usando duracao_dias
+          if (!expira_em) {
+            const now = new Date();
+            const dias = Number(lic.duracao_dias ?? 30);
+            expira_em = new Date(now.getTime() + dias * 86_400_000).toISOString();
+            await sb
+              .from("licencas")
+              .update({
+                expira_em,
+                ativada_em: lic.ativada_em ?? now.toISOString(),
+              })
+              .eq("id", lic.id);
+          }
           if (expira_em && new Date(expira_em).getTime() < Date.now()) {
             await sb.from("licencas").update({ status: "expirada" }).eq("id", lic.id);
             await logAcesso(sb, lic.id, chave, device_id, ip, user_agent, versao, "trial_expired");
