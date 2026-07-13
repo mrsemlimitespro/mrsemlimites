@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { playSfx } from "@/lib/sfx";
-import currentExtensionAsset from "../../public/mr-sem-limites-2.2.3.zip.asset.json";
+import currentExtensionAsset from "../../public/mr-sem-limites-2.2.4.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
@@ -36,7 +36,7 @@ const RELEASES: ExtensionRelease[] = [
   {
     version: "2.2.3",
     date: "13/07/2026",
-    filename: "mr-sem-limites-2.2.3.zip",
+    filename: "mr-sem-limites-2.2.4.zip",
     downloadPath: currentExtensionAsset.url,
     size: "773 KB",
     latest: true,
