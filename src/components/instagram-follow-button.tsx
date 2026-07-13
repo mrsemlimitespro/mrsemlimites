@@ -13,7 +13,7 @@ export function InstagramFollowButton() {
       onClick={() => playSfx("swipe")}
       aria-label="Segue a @linkmrstore no Instagram — descontos exclusivos"
       title="Segue a @linkmrstore e ganha descontos exclusivos na comunidade e nos packs"
-      className="group fixed z-50 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/70 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-pink-300/60 md:px-3.5 md:py-2 md:text-[11px]"
+      className="group fixed z-50 inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/15 bg-black/70 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-pink-300/60 md:px-3 md:py-2 md:text-[11px]"
       style={{
         right: "max(0.75rem, env(safe-area-inset-right))",
         // WhatsApp está em bottom = 5.5rem; este botão fica ~8px acima dele (altura ~2.5rem + 0.5rem gap)
@@ -52,12 +52,12 @@ export function InstagramFollowButton() {
         />
       </span>
 
-      <span className="flex min-w-0 flex-col items-start leading-tight">
-        <span className="truncate bg-gradient-to-r from-pink-200 via-white to-orange-100 bg-clip-text text-transparent">
-          Segue @linkmrstore
+      <span className="flex min-w-0 flex-1 flex-col items-start leading-tight">
+        <span className="w-full truncate bg-gradient-to-r from-pink-200 via-white to-orange-100 bg-clip-text text-transparent">
+          @linkmrstore
         </span>
-        <span className="truncate text-[8px] tracking-[0.28em] text-white/60 md:text-[9px]">
-          Descontos exclusivos
+        <span className="w-full truncate text-[8px] tracking-[0.18em] text-white/60 md:text-[9px]">
+          Descontos
         </span>
       </span>
     </a>
