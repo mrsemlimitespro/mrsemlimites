@@ -246,7 +246,7 @@ function LicencasPage() {
             onClick={() => setOpenTeste(true)}
           >
             <FlaskConical className="size-4" strokeWidth={2} />
-            Chave Teste
+            Vincular a Cliente
           </Button>
           <Button
             className="rounded-full gradient-primary text-primary-foreground shadow-[0_0_24px_-4px_color-mix(in_oklab,var(--primary)_70%,transparent)] hover:opacity-95"
