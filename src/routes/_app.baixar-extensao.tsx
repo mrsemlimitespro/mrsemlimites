@@ -37,7 +37,7 @@ const RELEASES: ExtensionRelease[] = [
     date: "13/07/2026",
     filename: "mr-sem-limites-2.2.zip",
     downloadPath: "/api/public/download-extensao",
-    size: "792 KB",
+    size: "790 KB",
     latest: true,
     changelog: [
       "Rebrand completo para MR Sem Limites (logo + cores magenta/azul)",
