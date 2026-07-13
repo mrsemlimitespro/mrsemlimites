@@ -451,6 +451,18 @@ function StatusPill({ status }: { status: License["status"] }) {
   );
 }
 
+type PresetKind = "teste" | "premium";
+type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number };
+
+const LICENSE_PRESETS: Preset[] = [
+  { label: "Teste 10 min", kind: "teste", minutos: 10 },
+  { label: "Teste 1 dia", kind: "teste", minutos: 60 * 24 },
+  { label: "Premium 30 dias", kind: "premium", dias: 30 },
+  { label: "Premium 60 dias", kind: "premium", dias: 60 },
+  { label: "Premium 90 dias", kind: "premium", dias: 90 },
+  { label: "Premium 1 ano", kind: "premium", dias: 365 },
+];
+
 function NovaLicencaModal({
   open,
   onOpenChange,
@@ -461,22 +473,48 @@ function NovaLicencaModal({
   onSaved: () => void;
 }) {
   const [quantidade, setQuantidade] = useState(1);
-  const [duracao, setDuracao] = useState(30);
+  const [presetIdx, setPresetIdx] = useState(2); // default: Premium 30 dias
   const [busy, setBusy] = useState(false);
+  const preset = LICENSE_PRESETS[presetIdx];
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const { error } = await (supabase as any).rpc("gerar_licencas", {
-      _quantidade: quantidade,
-      _duracao_dias: duracao,
-      _revendedor_id: null,
-    });
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success(`${quantidade} licença(s) geradas`);
-    onSaved();
-    onOpenChange(false);
+    try {
+      // 1) Gera as chaves no estoque
+      const { data: created, error } = await (supabase as any).rpc("gerar_licencas", {
+        _quantidade: quantidade,
+        _duracao_dias: preset.dias ?? 1,
+        _revendedor_id: null,
+      });
+      if (error) throw error;
+
+      // 2) Aplica tipo / trial_duracao_minutos nas chaves recém-criadas
+      const ids = (created ?? []).map((r: any) => r.id).filter(Boolean);
+      if (ids.length > 0) {
+        const patch: Record<string, unknown> = { tipo: preset.kind };
+        if (preset.kind === "teste") {
+          patch.trial_duracao_minutos = preset.minutos ?? 10;
+          patch.duracao_dias = null;
+        } else {
+          patch.trial_duracao_minutos = null;
+          patch.duracao_dias = preset.dias ?? 30;
+        }
+        const { error: upErr } = await (supabase as any)
+          .from("licencas")
+          .update(patch)
+          .in("id", ids);
+        if (upErr) throw upErr;
+      }
+
+      toast.success(`${quantidade} chave(s) ${preset.label} geradas`);
+      onSaved();
+      onOpenChange(false);
+    } catch (err: any) {
+      toast.error(err?.message ?? "Falha ao gerar chaves");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -485,33 +523,59 @@ function NovaLicencaModal({
         <DialogHeader>
           <DialogTitle>Criar Nova Licença</DialogTitle>
           <DialogDescription>
-            Gera chaves únicas no seu estoque. Vincule ao cliente ao cadastrá-lo.
+            Escolha o tempo de validade. O tempo definido aqui aparece direto na extensão do cliente.
           </DialogDescription>
         </DialogHeader>
 
         <form className="space-y-4" onSubmit={submit}>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Quantidade">
-              <Input
-                type="number"
-                min={1}
-                max={500}
-                value={quantidade}
-                onChange={(e) => setQuantidade(parseInt(e.target.value) || 1)}
-                autoFocus
-              />
-            </Field>
-            <Field label="Duração (dias)">
-              <Input
-                type="number"
-                min={1}
-                value={duracao}
-                onChange={(e) => setDuracao(parseInt(e.target.value) || 30)}
-              />
-            </Field>
-          </div>
-          <Field label="Observações">
-            <Textarea placeholder="Notas..." rows={3} />
+          <Field label="Tipo / Duração">
+            <div className="grid grid-cols-2 gap-2">
+              {LICENSE_PRESETS.map((p, i) => {
+                const active = presetIdx === i;
+                const isTeste = p.kind === "teste";
+                return (
+                  <button
+                    type="button"
+                    key={p.label}
+                    onClick={() => setPresetIdx(i)}
+                    className={cn(
+                      "rounded-xl border px-3 py-2.5 text-left text-sm font-medium transition-all",
+                      active
+                        ? isTeste
+                          ? "border-amber-400/70 bg-amber-500/10 text-amber-200 shadow-[0_0_18px_-4px_rgba(251,191,36,0.55)]"
+                          : "border-fuchsia-400/70 bg-fuchsia-500/10 text-fuchsia-200 shadow-[0_0_18px_-4px_rgba(217,70,239,0.55)]"
+                        : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5 hover:text-foreground",
+                    )}
+                  >
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] opacity-70">
+                      {isTeste ? "TESTE" : "PREMIUM"}
+                    </span>
+                    <span className="block text-sm">
+                      {isTeste
+                        ? p.minutos! < 60
+                          ? `${p.minutos} minutos`
+                          : `${Math.round((p.minutos ?? 0) / (60 * 24))} dia${
+                              (p.minutos ?? 0) / (60 * 24) > 1 ? "s" : ""
+                            }`
+                        : p.dias! >= 365
+                          ? "1 ano"
+                          : `${p.dias} dias`}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </Field>
+
+          <Field label="Quantidade">
+            <Input
+              type="number"
+              min={1}
+              max={500}
+              value={quantidade}
+              onChange={(e) => setQuantidade(parseInt(e.target.value) || 1)}
+              autoFocus
+            />
           </Field>
 
           <DialogFooter className="pt-2">
@@ -531,6 +595,7 @@ function NovaLicencaModal({
     </Dialog>
   );
 }
+
 
 function ChaveTesteModal({
   open,
