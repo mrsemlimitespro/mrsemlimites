@@ -699,7 +699,7 @@ function NovaLicencaModal({
         <form className="space-y-4" onSubmit={submit}>
           <Field label="Tipo / Duração">
             <div className="grid grid-cols-2 gap-2">
-              {LICENSE_PRESETS.map((p, i) => {
+              {presets.map((p, i) => {
                 const active = presetIdx === i;
                 const isTeste = p.kind === "teste";
                 return (
