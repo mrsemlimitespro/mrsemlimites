@@ -60,6 +60,7 @@ import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './r
 import { Route as ApiPublicExtFunctionsV1InjectConfigRouteImport } from './routes/api/public/ext/functions.v1.inject-config'
 import { Route as ApiPublicExtFunctionsV1GetTemplatesRouteImport } from './routes/api/public/ext/functions.v1.get-templates'
 import { Route as ApiPublicExtFunctionsV1GetSupportInfoRouteImport } from './routes/api/public/ext/functions.v1.get-support-info'
+import { Route as ApiPublicExtStorageV1ObjectSplatRouteImport } from './routes/api/public/ext/storage.v1.object.$'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -325,6 +326,12 @@ const ApiPublicExtFunctionsV1GetSupportInfoRoute =
     path: '/api/public/ext/functions/v1/get-support-info',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtStorageV1ObjectSplatRoute =
+  ApiPublicExtStorageV1ObjectSplatRouteImport.update({
+    id: '/api/public/ext/storage/v1/object/$',
+    path: '/api/public/ext/storage/v1/object/$',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -377,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
+  '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
@@ -428,6 +436,7 @@ export interface FileRoutesByTo {
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
+  '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -482,6 +491,7 @@ export interface FileRoutesById {
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
+  '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -536,6 +546,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
+    | '/api/public/ext/storage/v1/object/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/checkout'
@@ -587,6 +598,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
+    | '/api/public/ext/storage/v1/object/$'
   id:
     | '__root__'
     | '/_app'
@@ -640,6 +652,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
+    | '/api/public/ext/storage/v1/object/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -666,6 +679,7 @@ export interface RootRouteChildren {
   ApiPublicExtFunctionsV1InjectConfigRoute: typeof ApiPublicExtFunctionsV1InjectConfigRoute
   ApiPublicExtFunctionsV1ServeExtensionUiRoute: typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
+  ApiPublicExtStorageV1ObjectSplatRoute: typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1027,6 +1041,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/storage/v1/object/$': {
+      id: '/api/public/ext/storage/v1/object/$'
+      path: '/api/public/ext/storage/v1/object/$'
+      fullPath: '/api/public/ext/storage/v1/object/$'
+      preLoaderRoute: typeof ApiPublicExtStorageV1ObjectSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1141,6 +1162,7 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicExtFunctionsV1ServeExtensionUiRoute,
   ApiPublicExtFunctionsV1ValidateLicenseV2Route:
     ApiPublicExtFunctionsV1ValidateLicenseV2Route,
+  ApiPublicExtStorageV1ObjectSplatRoute: ApiPublicExtStorageV1ObjectSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
