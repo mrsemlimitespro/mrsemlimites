@@ -636,10 +636,15 @@ function NovaLicencaModal({
   onOpenChange: (v: boolean) => void;
   onSaved: () => void;
 }) {
+  const isAdmin = useIsAdmin();
+  const presets = isAdmin
+    ? LICENSE_PRESETS
+    : LICENSE_PRESETS.filter((p) => p.kind === "teste" && p.minutos === 20);
   const [quantidade, setQuantidade] = useState(1);
-  const [presetIdx, setPresetIdx] = useState(0); // default: Teste 20 min
+  const [presetIdx, setPresetIdx] = useState(0);
   const [busy, setBusy] = useState(false);
-  const preset = LICENSE_PRESETS[presetIdx];
+  const preset = presets[presetIdx] ?? presets[0];
+  const maxQtd = isAdmin ? 500 : 1;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
