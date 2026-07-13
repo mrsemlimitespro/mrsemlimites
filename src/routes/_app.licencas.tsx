@@ -455,6 +455,7 @@ type PresetKind = "teste" | "premium";
 type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number };
 
 const LICENSE_PRESETS: Preset[] = [
+  { label: "Teste 20 min", kind: "teste", minutos: 20 },
   { label: "Teste 10 min", kind: "teste", minutos: 10 },
   { label: "Teste 1 dia", kind: "teste", minutos: 60 * 24 },
   { label: "Premium 30 dias", kind: "premium", dias: 30 },
@@ -473,7 +474,7 @@ function NovaLicencaModal({
   onSaved: () => void;
 }) {
   const [quantidade, setQuantidade] = useState(1);
-  const [presetIdx, setPresetIdx] = useState(2); // default: Premium 30 dias
+  const [presetIdx, setPresetIdx] = useState(0); // default: Teste 20 min
   const [busy, setBusy] = useState(false);
   const preset = LICENSE_PRESETS[presetIdx];
 
