@@ -740,11 +740,19 @@ function NovaLicencaModal({
             <Input
               type="number"
               min={1}
-              max={500}
+              max={maxQtd}
               value={quantidade}
-              onChange={(e) => setQuantidade(parseInt(e.target.value) || 1)}
+              onChange={(e) =>
+                setQuantidade(Math.min(maxQtd, Math.max(1, parseInt(e.target.value) || 1)))
+              }
+              disabled={!isAdmin}
               autoFocus
             />
+            {!isAdmin && (
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Revendedores podem gerar apenas 1 chave de teste de 20 minutos por vez.
+              </p>
+            )}
           </Field>
 
           <DialogFooter className="pt-2">
