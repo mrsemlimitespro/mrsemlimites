@@ -52,12 +52,12 @@ export function InstagramFollowButton() {
         />
       </span>
 
-      <span className="flex min-w-0 flex-col items-start leading-tight">
-        <span className="truncate bg-gradient-to-r from-pink-200 via-white to-orange-100 bg-clip-text text-transparent">
-          Segue @linkmrstore
+      <span className="flex min-w-0 flex-1 flex-col items-start leading-tight">
+        <span className="w-full truncate bg-gradient-to-r from-pink-200 via-white to-orange-100 bg-clip-text text-transparent">
+          @linkmrstore
         </span>
-        <span className="truncate text-[8px] tracking-[0.28em] text-white/60 md:text-[9px]">
-          Descontos exclusivos
+        <span className="w-full truncate text-[8px] tracking-[0.18em] text-white/60 md:text-[9px]">
+          Descontos
         </span>
       </span>
     </a>
