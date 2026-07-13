@@ -155,7 +155,7 @@ export function AppSidebar() {
 async function downloadExtension() {
   try {
     playSfx("swipe");
-    const filename = "mr-sem-limites-2.2.4.zip";
+    const filename = "mr-sem-limites-2.2.5.zip";
     const res = await fetch("/api/public/download-extensao", { cache: "no-store" });
     if (!res.ok) throw new Error(`Falha ao baixar (${res.status})`);
     const blob = await res.blob();
