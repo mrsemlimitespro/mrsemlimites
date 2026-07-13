@@ -15,6 +15,7 @@ import {
   CalendarPlus,
   Ban,
   PlayCircle,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -53,6 +54,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Checkbox } from "@/components/ui/checkbox";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/licencas")({
@@ -142,6 +144,9 @@ function LicencasPage() {
   const [loading, setLoading] = useState(true);
   const [historyOf, setHistoryOf] = useState<LicencaRow | null>(null);
   const [renovarOf, setRenovarOf] = useState<LicencaRow | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkRenovarOpen, setBulkRenovarOpen] = useState(false);
+  const [bulkBusy, setBulkBusy] = useState(false);
 
   async function reload() {
     setLoading(true);
