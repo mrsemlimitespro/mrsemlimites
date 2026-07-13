@@ -54,11 +54,11 @@ export function WhatsappZapButton() {
         />
       </span>
 
-      <span className="flex min-w-0 flex-col items-start leading-tight">
-        <span className="truncate bg-gradient-to-r from-emerald-200 via-white to-emerald-100 bg-clip-text text-transparent">
+      <span className="flex min-w-0 flex-1 flex-col items-start leading-tight">
+        <span className="w-full truncate bg-gradient-to-r from-emerald-200 via-white to-emerald-100 bg-clip-text text-transparent">
           Zap Lovable
         </span>
-        <span className="truncate text-[8px] tracking-[0.28em] text-white/60 md:text-[9px]">
+        <span className="w-full truncate text-[8px] tracking-[0.18em] text-white/60 md:text-[9px]">
           Sem Limites
         </span>
       </span>
