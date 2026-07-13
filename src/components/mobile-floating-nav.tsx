@@ -12,6 +12,7 @@ import {
   Coins,
   User,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
