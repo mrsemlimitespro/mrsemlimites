@@ -93,35 +93,20 @@ type License = {
   email: string;
   status: ViewStatus;
   device: string | null;
-  expires: string;
-  expiresState: "waiting" | "active" | "expired";
+  expiraEm: string | null;
+  ativadaEm: string | null;
+  duracaoDias: number | null;
+  trialMinutos: number | null;
 };
 
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas";
 
-function computeView(row: LicencaRow): License {
+function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }): License {
   const now = Date.now();
   const exp = row.expira_em ? new Date(row.expira_em).getTime() : null;
   let status: ViewStatus = "ativa";
   if (row.status === "revogada") status = "revogada";
   else if (exp !== null && exp < now) status = "expirada";
-
-  let expiresLabel = "—";
-  let expiresState: License["expiresState"] = "waiting";
-  if (!row.cliente_id) {
-    expiresLabel = `${row.duracao_dias ?? 30}d (aguardando)`;
-    expiresState = "waiting";
-  } else if (exp !== null) {
-    const diff = exp - now;
-    if (diff <= 0) {
-      expiresLabel = "expirada";
-      expiresState = "expired";
-    } else {
-      const days = Math.ceil(diff / 86400000);
-      expiresLabel = `${days}d restantes`;
-      expiresState = "active";
-    }
-  }
 
   return {
     id: row.id,
@@ -130,9 +115,74 @@ function computeView(row: LicencaRow): License {
     email: row.email ?? (row.cliente_id ? "" : "estoque"),
     status,
     device: row.device_id,
-    expires: expiresLabel,
-    expiresState,
+    expiraEm: row.expira_em,
+    ativadaEm: row.ativada_em,
+    duracaoDias: row.duracao_dias ?? null,
+    trialMinutos: row.trial_duracao_minutos ?? null,
   };
+}
+
+function formatCountdown(
+  expiraEmIso: string | null,
+  duracaoDias: number | null,
+  trialMinutos: number | null,
+): { label: string; tone: "waiting" | "active" | "expired" } {
+  if (!expiraEmIso) {
+    if (trialMinutos && trialMinutos > 0) {
+      const label =
+        trialMinutos < 60
+          ? `${trialMinutos} min (aguardando)`
+          : trialMinutos < 60 * 24
+            ? `${Math.round(trialMinutos / 60)}h (aguardando)`
+            : `${Math.round(trialMinutos / (60 * 24))}d (aguardando)`;
+      return { label, tone: "waiting" };
+    }
+    return { label: `${duracaoDias ?? 30}d (aguardando)`, tone: "waiting" };
+  }
+  const diff = new Date(expiraEmIso).getTime() - Date.now();
+  if (diff <= 0) return { label: "expirada", tone: "expired" };
+  const totalSec = Math.floor(diff / 1000);
+  const d = Math.floor(totalSec / 86400);
+  const h = Math.floor((totalSec % 86400) / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  let label: string;
+  if (d >= 2) label = `${d} dias restantes`;
+  else if (d >= 1) label = `${d}d ${h}h restantes`;
+  else if (h >= 1) label = `${h}h ${String(m).padStart(2, "0")}m restantes`;
+  else if (m >= 1) label = `${m}m ${String(s).padStart(2, "0")}s restantes`;
+  else label = `${s}s restantes`;
+  return { label, tone: "active" };
+}
+
+function CountdownCell({
+  expiraEm,
+  duracaoDias,
+  trialMinutos,
+}: {
+  expiraEm: string | null;
+  duracaoDias: number | null;
+  trialMinutos: number | null;
+}) {
+  const [, setT] = useState(0);
+  useEffect(() => {
+    if (!expiraEm) return;
+    const id = setInterval(() => setT((n) => n + 1), 1000);
+    return () => clearInterval(id);
+  }, [expiraEm]);
+  const { label, tone } = formatCountdown(expiraEm, duracaoDias, trialMinutos);
+  const color =
+    tone === "expired"
+      ? "text-destructive"
+      : tone === "waiting"
+        ? "text-muted-foreground"
+        : "text-foreground/85";
+  return (
+    <div className={cn("flex items-center gap-1.5 tabular-nums", color)}>
+      <Hourglass className="size-3.5 text-primary" strokeWidth={2} />
+      <span className="text-sm">{label}</span>
+    </div>
+  );
 }
 
 function LicencasPage() {
