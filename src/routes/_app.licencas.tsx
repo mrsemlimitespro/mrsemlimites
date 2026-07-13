@@ -225,6 +225,29 @@ function LicencasPage() {
     reload();
   }
 
+  function toggleOne(id: string, checked: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  async function bulkExcluir() {
+    if (selected.size === 0) return;
+    if (!confirm(`Excluir ${selected.size} licença(s) selecionada(s)? Esta ação não pode ser desfeita.`)) return;
+    setBulkBusy(true);
+    const ids = Array.from(selected);
+    const { error } = await (supabase as any).from("licencas").delete().in("id", ids);
+    setBulkBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`${ids.length} licença(s) excluída(s)`);
+    setSelected(new Set());
+    reload();
+  }
+
+
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
       {/* Header */}
