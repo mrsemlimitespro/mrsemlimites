@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 const ASSET_URL =
-  "https://mrsemlimites.lovable.app/__l5e/assets-v1/7b13cd6c-397e-47a9-8022-5073493966ac/mr-lov-2.2.zip";
+  "https://mrsemlimites.lovable.app/__l5e/assets-v1/4c7330de-0beb-4541-9824-ed60b2e56b04/mr-lov-2.2.zip";
 
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {
