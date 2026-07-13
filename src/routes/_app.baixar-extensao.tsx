@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Download, CheckCircle2, Package } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -90,9 +91,38 @@ function InstallSteps() {
 }
 
 function ReleaseCard({ release }: { release: ExtensionRelease }) {
-  const handleDownloadClick = () => {
-    playSfx("swipe");
-    toast.success(`Download iniciado — ${release.filename}`);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (downloading) return;
+
+    try {
+      setDownloading(true);
+      playSfx("swipe");
+
+      const res = await fetch(release.downloadPath, {
+        cache: "no-store",
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error(`Falha ao baixar (${res.status})`);
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = release.filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+      toast.success(`Download iniciado — ${release.filename}`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao baixar");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -130,14 +160,13 @@ function ReleaseCard({ release }: { release: ExtensionRelease }) {
 
         <div className="shrink-0">
           <Button
-            asChild
+            onClick={handleDownload}
+            disabled={downloading}
             size="lg"
             className="w-full md:w-auto"
           >
-            <a href={release.downloadPath} download={release.filename} onClick={handleDownloadClick}>
-              <Download className="mr-2 size-4" />
-              Baixar
-            </a>
+            <Download className="mr-2 size-4" />
+            {downloading ? "Baixando..." : "Baixar"}
           </Button>
         </div>
       </CardContent>
