@@ -15,6 +15,7 @@ import {
   CalendarPlus,
   Ban,
   PlayCircle,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -53,6 +54,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Checkbox } from "@/components/ui/checkbox";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/licencas")({
@@ -142,6 +144,9 @@ function LicencasPage() {
   const [loading, setLoading] = useState(true);
   const [historyOf, setHistoryOf] = useState<LicencaRow | null>(null);
   const [renovarOf, setRenovarOf] = useState<LicencaRow | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkRenovarOpen, setBulkRenovarOpen] = useState(false);
+  const [bulkBusy, setBulkBusy] = useState(false);
 
   async function reload() {
     setLoading(true);
@@ -220,6 +225,29 @@ function LicencasPage() {
     reload();
   }
 
+  function toggleOne(id: string, checked: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  async function bulkExcluir() {
+    if (selected.size === 0) return;
+    if (!confirm(`Excluir ${selected.size} licença(s) selecionada(s)? Esta ação não pode ser desfeita.`)) return;
+    setBulkBusy(true);
+    const ids = Array.from(selected);
+    const { error } = await (supabase as any).from("licencas").delete().in("id", ids);
+    setBulkBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`${ids.length} licença(s) excluída(s)`);
+    setSelected(new Set());
+    reload();
+  }
+
+
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
       {/* Header */}
@@ -288,9 +316,62 @@ function LicencasPage() {
         </Select>
       </div>
 
+      {/* Bulk action bar */}
+      {selected.size > 0 && (
+        <div className="glass-strong flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/40 px-4 py-3">
+          <span className="text-sm">
+            <span className="font-semibold text-primary">{selected.size}</span>{" "}
+            {selected.size === 1 ? "licença selecionada" : "licenças selecionadas"}
+          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelected(new Set())}
+              className="rounded-full hover:bg-white/5"
+            >
+              Limpar seleção
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setBulkRenovarOpen(true)}
+              disabled={bulkBusy}
+              className="rounded-full gradient-primary text-primary-foreground"
+            >
+              <CalendarPlus className="size-4" strokeWidth={2} />
+              Renovar {selected.size}
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={bulkExcluir}
+              disabled={bulkBusy}
+              className="rounded-full"
+            >
+              {bulkBusy ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" strokeWidth={2} />}
+              Excluir {selected.size}
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       <div className="glass overflow-hidden rounded-2xl">
-        <div className="grid grid-cols-[minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          <div className="flex items-center">
+            <Checkbox
+              checked={filtered.length > 0 && filtered.every((l) => selected.has(l.id))}
+              onCheckedChange={(v) => {
+                setSelected((prev) => {
+                  const next = new Set(prev);
+                  if (v) filtered.forEach((l) => next.add(l.id));
+                  else filtered.forEach((l) => next.delete(l.id));
+                  return next;
+                });
+              }}
+              aria-label="Selecionar todas"
+            />
+          </div>
           <div>Chave</div>
           <div>Cliente</div>
           <div>Email</div>
@@ -299,6 +380,7 @@ function LicencasPage() {
           <div>Expira</div>
           <div />
         </div>
+
 
         {loading ? (
           <div className="flex items-center justify-center px-6 py-14 text-sm text-muted-foreground">
@@ -313,8 +395,15 @@ function LicencasPage() {
             {filtered.map((l) => (
               <li
                 key={l.id}
-                className="grid grid-cols-[minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
+                className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
               >
+                <div className="flex items-center">
+                  <Checkbox
+                    checked={selected.has(l.id)}
+                    onCheckedChange={(v) => toggleOne(l.id, !!v)}
+                    aria-label={`Selecionar ${l.key}`}
+                  />
+                </div>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[13px] tracking-tight text-foreground">
                     {l.key}
@@ -409,6 +498,15 @@ function LicencasPage() {
         licenca={renovarOf}
         onOpenChange={(v) => !v && setRenovarOf(null)}
         onSaved={reload}
+      />
+      <BulkRenovarModal
+        open={bulkRenovarOpen}
+        ids={Array.from(selected)}
+        onOpenChange={setBulkRenovarOpen}
+        onDone={() => {
+          setSelected(new Set());
+          reload();
+        }}
       />
     </div>
   );
@@ -885,6 +983,78 @@ function RenovarLicencaModal({
               className="gradient-primary text-primary-foreground"
             >
               {busy ? <Loader2 className="size-4 animate-spin" /> : "Renovar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function BulkRenovarModal({
+  open,
+  ids,
+  onOpenChange,
+  onDone,
+}: {
+  open: boolean;
+  ids: string[];
+  onOpenChange: (v: boolean) => void;
+  onDone: () => void;
+}) {
+  const [dias, setDias] = useState(30);
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (ids.length === 0) return;
+    setBusy(true);
+    let ok = 0;
+    let fail = 0;
+    for (const id of ids) {
+      const { error } = await (supabase as any).rpc("renovar_licenca", {
+        _licenca_id: id,
+        _dias: dias,
+      });
+      if (error) fail++;
+      else ok++;
+    }
+    setBusy(false);
+    if (ok > 0) toast.success(`${ok} licença(s) renovada(s) por ${dias} dias`);
+    if (fail > 0) toast.error(`${fail} falha(s) ao renovar`);
+    onOpenChange(false);
+    onDone();
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="glass-strong sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Renovar {ids.length} licença(s)</DialogTitle>
+          <DialogDescription>
+            Adiciona os dias informados a todas as licenças selecionadas.
+          </DialogDescription>
+        </DialogHeader>
+        <form className="space-y-4" onSubmit={submit}>
+          <Field label="Dias a adicionar">
+            <Input
+              type="number"
+              min={1}
+              value={dias}
+              onChange={(e) => setDias(parseInt(e.target.value) || 1)}
+              autoFocus
+            />
+          </Field>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={busy || ids.length === 0}
+              className="gradient-primary text-primary-foreground"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : `Renovar ${ids.length}`}
             </Button>
           </DialogFooter>
         </form>
