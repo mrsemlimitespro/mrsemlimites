@@ -316,9 +316,62 @@ function LicencasPage() {
         </Select>
       </div>
 
+      {/* Bulk action bar */}
+      {selected.size > 0 && (
+        <div className="glass-strong flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/40 px-4 py-3">
+          <span className="text-sm">
+            <span className="font-semibold text-primary">{selected.size}</span>{" "}
+            {selected.size === 1 ? "licença selecionada" : "licenças selecionadas"}
+          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelected(new Set())}
+              className="rounded-full hover:bg-white/5"
+            >
+              Limpar seleção
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setBulkRenovarOpen(true)}
+              disabled={bulkBusy}
+              className="rounded-full gradient-primary text-primary-foreground"
+            >
+              <CalendarPlus className="size-4" strokeWidth={2} />
+              Renovar {selected.size}
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={bulkExcluir}
+              disabled={bulkBusy}
+              className="rounded-full"
+            >
+              {bulkBusy ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" strokeWidth={2} />}
+              Excluir {selected.size}
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       <div className="glass overflow-hidden rounded-2xl">
-        <div className="grid grid-cols-[minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          <div className="flex items-center">
+            <Checkbox
+              checked={filtered.length > 0 && filtered.every((l) => selected.has(l.id))}
+              onCheckedChange={(v) => {
+                setSelected((prev) => {
+                  const next = new Set(prev);
+                  if (v) filtered.forEach((l) => next.add(l.id));
+                  else filtered.forEach((l) => next.delete(l.id));
+                  return next;
+                });
+              }}
+              aria-label="Selecionar todas"
+            />
+          </div>
           <div>Chave</div>
           <div>Cliente</div>
           <div>Email</div>
@@ -327,6 +380,7 @@ function LicencasPage() {
           <div>Expira</div>
           <div />
         </div>
+
 
         {loading ? (
           <div className="flex items-center justify-center px-6 py-14 text-sm text-muted-foreground">
