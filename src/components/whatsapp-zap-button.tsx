@@ -13,7 +13,7 @@ export function WhatsappZapButton() {
       rel="noopener noreferrer"
       onClick={() => playSfx("swipe")}
       aria-label="Zap Lovable Sem Limites — falar no WhatsApp"
-      className="group fixed z-50 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/70 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-emerald-300/60 md:px-3.5 md:py-2 md:text-[11px]"
+      className="group fixed z-50 inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/15 bg-black/70 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-emerald-300/60 md:px-3 md:py-2 md:text-[11px]"
       style={{
         right: "max(0.75rem, env(safe-area-inset-right))",
         bottom: "calc(5.5rem + env(safe-area-inset-bottom))",
