@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, Search, Settings, Loader2, CheckCheck } from "lucide-react";
+import { Bell, Search, Settings, Loader2, CheckCheck, LogOut } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 import { BrandMark } from "@/components/brand";
@@ -37,6 +37,7 @@ export function TopBar() {
   const [loading, setLoading] = useState(false);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [isAdminUser, setIsAdminUser] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -45,8 +46,10 @@ export function TopBar() {
       setSignedIn(!!session);
       if (!session?.user) {
         setIsAdminUser(false);
+        setUserEmail(null);
         return;
       }
+      setUserEmail(session.user.email ?? null);
       if (mounted) setIsAdminUser(isAdminEmail(session.user.email));
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
@@ -243,13 +246,38 @@ export function TopBar() {
             Entrar
           </Link>
         ) : (
-          <button
-            type="button"
-            aria-label="Perfil"
-            className="grid size-11 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl active:scale-95 transition-transform"
-          >
-            <BrandMark size={36} glow={false} className="rounded-full" />
-          </button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                aria-label="Perfil"
+                className="grid size-11 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl active:scale-95 transition-transform"
+              >
+                <BrandMark size={36} glow={false} className="rounded-full" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="glass-strong w-64 p-3" sideOffset={10}>
+              <div className="mb-3 px-1">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  Conectado como
+                </p>
+                <p className="mt-0.5 truncate text-sm font-medium" title={userEmail ?? ""}>
+                  {userEmail ?? "—"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  window.location.href = "/";
+                }}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+              >
+                <LogOut className="size-4" strokeWidth={2} />
+                Sair
+              </button>
+            </PopoverContent>
+          </Popover>
         )}
       </div>
 
