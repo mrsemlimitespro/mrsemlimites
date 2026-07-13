@@ -57,6 +57,7 @@ import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/publi
 import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1InjectConfigRouteImport } from './routes/api/public/ext/functions.v1.inject-config'
+import { Route as ApiPublicExtFunctionsV1GetTemplatesRouteImport } from './routes/api/public/ext/functions.v1.get-templates'
 import { Route as ApiPublicExtFunctionsV1GetSupportInfoRouteImport } from './routes/api/public/ext/functions.v1.get-support-info'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -305,6 +306,12 @@ const ApiPublicExtFunctionsV1InjectConfigRoute =
     path: '/api/public/ext/functions/v1/inject-config',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtFunctionsV1GetTemplatesRoute =
+  ApiPublicExtFunctionsV1GetTemplatesRouteImport.update({
+    id: '/api/public/ext/functions/v1/get-templates',
+    path: '/api/public/ext/functions/v1/get-templates',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtFunctionsV1GetSupportInfoRoute =
   ApiPublicExtFunctionsV1GetSupportInfoRouteImport.update({
     id: '/api/public/ext/functions/v1/get-support-info',
@@ -359,6 +366,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
+  '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
@@ -408,6 +416,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
+  '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
@@ -460,6 +469,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
+  '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
@@ -512,6 +522,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/get-support-info'
+    | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesByTo: FileRoutesByTo
@@ -561,6 +572,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/get-support-info'
+    | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/validate-license-v2'
   id:
@@ -612,6 +624,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/get-support-info'
+    | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesById: FileRoutesById
@@ -636,6 +649,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicExtFunctionsV1GetSupportInfoRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
+  ApiPublicExtFunctionsV1GetTemplatesRoute: typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   ApiPublicExtFunctionsV1InjectConfigRoute: typeof ApiPublicExtFunctionsV1InjectConfigRoute
   ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
@@ -978,6 +992,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtFunctionsV1InjectConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/functions/v1/get-templates': {
+      id: '/api/public/ext/functions/v1/get-templates'
+      path: '/api/public/ext/functions/v1/get-templates'
+      fullPath: '/api/public/ext/functions/v1/get-templates'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1GetTemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/get-support-info': {
       id: '/api/public/ext/functions/v1/get-support-info'
       path: '/api/public/ext/functions/v1/get-support-info'
@@ -1091,6 +1112,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicExtFunctionsV1GetSupportInfoRoute:
     ApiPublicExtFunctionsV1GetSupportInfoRoute,
+  ApiPublicExtFunctionsV1GetTemplatesRoute:
+    ApiPublicExtFunctionsV1GetTemplatesRoute,
   ApiPublicExtFunctionsV1InjectConfigRoute:
     ApiPublicExtFunctionsV1InjectConfigRoute,
   ApiPublicExtFunctionsV1ValidateLicenseV2Route:
