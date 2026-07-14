@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_app/quero-ser-revendedor")({
       {
         name: "description",
         content:
-          "Torne-se revendedor oficial MR Sem Limites por uma taxa única de R$ 29,90. Painel exclusivo, gere licenças, crie promoções e ganhe comissão.",
+          "Torne-se revendedor oficial MR Sem Limites por uma taxa única de R$ 29,90. Painel exclusivo, gere licenças ilimitadas, defina seus preços e crie promoções.",
       },
       { property: "og:title", content: "Seja Revendedor — MR Sem Limites" },
       {
