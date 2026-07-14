@@ -246,6 +246,7 @@ export const resources: Resource[] = [
     table: "licenca_produtos",
     icon: Package,
     group: "Clientes",
+    hiddenFromSidebar: true,
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["nome", "slug"],
     fields: [
