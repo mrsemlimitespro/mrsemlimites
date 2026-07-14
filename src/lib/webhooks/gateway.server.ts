@@ -105,6 +105,7 @@ export function normalizeEvent(slug: GatewaySlug, payload: any): NormalizedEvent
     method: pickString(raw.data?.payment_method, raw.payment_method, raw.method),
     clienteNome: pickString(raw.data?.customer?.name, raw.customer?.name),
     clienteEmail: pickString(raw.data?.customer?.email, raw.customer?.email),
+    productRef: pickString(raw.data?.product_id, raw.product_id, raw.data?.offer_id, raw.offer_id),
     raw,
   };
 }
