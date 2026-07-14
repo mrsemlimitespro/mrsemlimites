@@ -1358,6 +1358,92 @@ export type Database = {
         }
         Relationships: []
       }
+      mensagens_campanhas: {
+        Row: {
+          agendada_para: string | null
+          canal: string
+          created_at: string
+          criado_por: string | null
+          destinatarios_previstos: number
+          enviada_em: string | null
+          filtros: Json
+          id: string
+          mensagem: string
+          observacoes: string | null
+          plano_status: string | null
+          produto_id: string | null
+          revendedor_id: string | null
+          status: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          agendada_para?: string | null
+          canal?: string
+          created_at?: string
+          criado_por?: string | null
+          destinatarios_previstos?: number
+          enviada_em?: string | null
+          filtros?: Json
+          id?: string
+          mensagem: string
+          observacoes?: string | null
+          plano_status?: string | null
+          produto_id?: string | null
+          revendedor_id?: string | null
+          status?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          agendada_para?: string | null
+          canal?: string
+          created_at?: string
+          criado_por?: string | null
+          destinatarios_previstos?: number
+          enviada_em?: string | null
+          filtros?: Json
+          id?: string
+          mensagem?: string
+          observacoes?: string | null
+          plano_status?: string | null
+          produto_id?: string | null
+          revendedor_id?: string | null
+          status?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mensagens_campanhas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mensagens_campanhas_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mensagens_campanhas_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
+          },
+          {
+            foreignKeyName: "mensagens_campanhas_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_revendedor_visao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notificacoes: {
         Row: {
           ativo: boolean
