@@ -102,40 +102,49 @@ type SpecialLink = {
   label: string;
   icon: typeof LayoutDashboard;
   exact?: boolean;
+  group?: string;
 };
 
+// Ordem canônica dos grupos no sidebar
+const GROUP_ORDER = [
+  "Dashboard",
+  "Clientes",
+  "Produtos",
+  "Marketing",
+  "Financeiro",
+  "Conteúdo",
+  "Comunicação",
+  "Sistema",
+] as const;
+
 const specialLinks: SpecialLink[] = [
-  { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true },
-  { key: "home", to: "/admin/home", label: "Home", icon: HomeIcon },
-  { key: "licencas-manager", to: "/admin/licencas", label: "Licenças", icon: KeySquare },
-  { key: "licencas-dashboard", to: "/admin/licencas-dashboard", label: "Licenças — Dashboard", icon: ShieldCheck },
-  { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks },
-  {
-    key: "configuracoes",
-    to: "/admin/configuracoes",
-    label: "Configurações Gerais",
-    icon: Settings2,
-  },
-  { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette },
-  { key: "animacoes", to: "/admin/animacoes", label: "Animações", icon: Sparkles },
-  { key: "sons", to: "/admin/sons", label: "Sons", icon: Volume2 },
-  { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle },
-  { key: "loja", to: "/admin/loja", label: "Loja", icon: Store },
-  { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard },
-  {
-    key: "ajustar-creditos",
-    to: "/admin/ajustar-creditos",
-    label: "Ajustar Créditos",
-    icon: Coins,
-  },
-  { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
-  {
-    key: "pack-autorizacoes",
-    to: "/admin/pack-autorizacoes",
-    label: "Autorizações de Packs",
-    icon: KeySquare,
-  },
-  { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup },
+  // Dashboard
+  { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true, group: "Dashboard" },
+  { key: "home", to: "/admin/home", label: "Home", icon: HomeIcon, group: "Dashboard" },
+
+  // Clientes — gestão de licenças unificada
+  { key: "licencas-manager", to: "/admin/licencas", label: "Licenças", icon: KeySquare, group: "Clientes" },
+  { key: "pack-autorizacoes", to: "/admin/pack-autorizacoes", label: "Autorizações de Packs", icon: KeySquare, group: "Clientes" },
+
+  // Produtos
+  { key: "loja", to: "/admin/loja", label: "Loja (vitrine)", icon: Store, group: "Produtos" },
+
+  // Financeiro
+  { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard, group: "Financeiro" },
+  { key: "ajustar-creditos", to: "/admin/ajustar-creditos", label: "Ajustar Créditos", icon: Coins, group: "Financeiro" },
+
+  // Sistema
+  { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks, group: "Sistema" },
+  { key: "configuracoes", to: "/admin/configuracoes", label: "Configurações Gerais", icon: Settings2, group: "Sistema" },
+  { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette, group: "Sistema" },
+  { key: "animacoes", to: "/admin/animacoes", label: "Animações", icon: Sparkles, group: "Sistema" },
+  { key: "sons", to: "/admin/sons", label: "Sons", icon: Volume2, group: "Sistema" },
+  { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle, group: "Sistema" },
+  { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert, group: "Sistema" },
+  { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup, group: "Sistema" },
+
+  // Rota antiga — mantida acessível via /admin/licencas-dashboard mas fora do menu
+  { key: "licencas-dashboard", to: "/admin/licencas-dashboard", label: "Licenças — Dashboard (legado)", icon: ShieldCheck, group: "__hidden" },
 ];
 
 function AdminShell() {
