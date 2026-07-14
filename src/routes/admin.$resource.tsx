@@ -457,13 +457,30 @@ function ResourceFormDialog({
           .eq("id", initial!.id);
         if (error) throw error;
         toast.success("Atualizado");
+        if (resource.table === "revendedores") {
+          console.log("[Revendedores] atualização realizada");
+        }
       } else {
         const { error } = await (supabase as any).from(resource.table).insert(payload);
         if (error) throw error;
         toast.success("Criado");
+        if (resource.table === "revendedores") {
+          console.log("[Revendedores] cadastro realizado");
+        }
       }
-      qc.invalidateQueries({ queryKey: ["admin-list", resource.table] });
-      qc.invalidateQueries({ queryKey: ["admin-count", resource.table] });
+      // Refresh silencioso: invalida lista, contadores e dashboards relacionados.
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["admin-list", resource.table] }),
+        qc.invalidateQueries({ queryKey: ["admin-count", resource.table] }),
+        qc.invalidateQueries({ queryKey: ["admin-count"] }),
+        resource.table === "revendedores"
+          ? qc.invalidateQueries({ queryKey: ["licencas-dashboard"] })
+          : Promise.resolve(),
+      ]);
+      if (resource.table === "revendedores") {
+        console.log("[Revendedores] cache atualizado");
+        console.log("[Revendedores] painel sincronizado");
+      }
       onClose();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Falha ao salvar";
