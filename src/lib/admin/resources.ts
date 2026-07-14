@@ -479,6 +479,7 @@ export const resources: Resource[] = [
         key: "tipo",
         label: "Tipo",
         type: "select",
+        required: true,
         options: [
           { value: "mensal", label: "Mensal" },
           { value: "anual", label: "Anual" },

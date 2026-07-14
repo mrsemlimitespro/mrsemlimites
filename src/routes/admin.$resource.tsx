@@ -606,11 +606,13 @@ function FieldInput({
             <SelectValue placeholder="Selecione…" />
           </SelectTrigger>
           <SelectContent>
-            {field.options.map((o) => (
-              <SelectItem key={o.value} value={o.value}>
-                {o.label}
-              </SelectItem>
-            ))}
+            {field.options
+              .filter((o) => o.value !== "" && o.value !== null && o.value !== undefined)
+              .map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>

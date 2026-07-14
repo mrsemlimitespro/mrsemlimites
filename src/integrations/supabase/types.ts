@@ -1830,7 +1830,7 @@ export type Database = {
           nome: string
           ordem?: number
           preco?: number
-          tipo: string
+          tipo?: string
           updated_at?: string
         }
         Update: {
