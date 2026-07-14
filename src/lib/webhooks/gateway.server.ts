@@ -11,6 +11,7 @@ export type NormalizedEvent = {
   amount: number | null;
   currency: string | null;
   method: string | null;
+  productRef: string | null;
   clienteNome: string | null;
   clienteEmail: string | null;
   raw: unknown;
