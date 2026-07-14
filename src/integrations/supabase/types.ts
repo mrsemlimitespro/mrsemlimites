@@ -106,6 +106,8 @@ export type Database = {
           accent_color: string
           config_extensao: Json
           created_at: string
+          email_enabled: boolean
+          email_from: string | null
           email_link_download: string | null
           email_link_manual: string | null
           email_link_portal: string | null
@@ -138,6 +140,8 @@ export type Database = {
           accent_color?: string
           config_extensao?: Json
           created_at?: string
+          email_enabled?: boolean
+          email_from?: string | null
           email_link_download?: string | null
           email_link_manual?: string | null
           email_link_portal?: string | null
@@ -170,6 +174,8 @@ export type Database = {
           accent_color?: string
           config_extensao?: Json
           created_at?: string
+          email_enabled?: boolean
+          email_from?: string | null
           email_link_download?: string | null
           email_link_manual?: string | null
           email_link_portal?: string | null
