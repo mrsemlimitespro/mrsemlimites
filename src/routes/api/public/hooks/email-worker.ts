@@ -64,24 +64,7 @@ export const Route = createFileRoute("/api/public/hooks/email-worker")({
 
         const rows = (batch ?? []) as QueueRow[];
         if (rows.length === 0) {
-          return Response.json({ ok: true, processed: 0 });
-        }
-
-        if (!provider) {
-          // Sem provider configurado — apenas registra que estamos aguardando config.
-          for (const r of rows) {
-            await admin.from("email_logs").insert({
-              queue_id: r.id,
-              evento: "failed",
-              detalhes: { reason: "no_email_provider_configured" },
-            });
-          }
-          return Response.json({
-            ok: false,
-            processed: 0,
-            skipped: rows.length,
-            reason: "no_email_provider_configured",
-          });
+          return Response.json({ ok: true, processed: 0, provider: provider.name });
         }
 
         const ids = rows.map((r) => r.id);
