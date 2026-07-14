@@ -319,8 +319,8 @@ function ProdutosTab({ email }: { email: string }) {
     <div className="grid gap-3 md:grid-cols-2">
       {rows.map((r: any) => (
         <div key={r.id} className="glass rounded-2xl p-4">
-          <div className="mb-1 font-semibold">{r.produtos?.nome ?? "Produto"}</div>
-          <div className="text-xs text-muted-foreground">{r.produtos?.descricao ?? ""}</div>
+          <div className="mb-1 font-semibold">{r.nome ?? "Produto"}</div>
+          <div className="text-xs text-muted-foreground">{r.descricao ?? ""}</div>
         </div>
       ))}
     </div>
