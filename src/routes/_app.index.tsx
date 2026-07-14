@@ -156,6 +156,18 @@ function HeroSection({ authed, showDashboard }: { authed: boolean; showDashboard
         >
           Ver Ofertas
         </Link>
+        <Link
+          to="/quero-ser-revendedor"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:opacity-90"
+          style={{
+            background:
+              "linear-gradient(135deg, color-mix(in oklab, var(--brand-magenta) 90%, transparent), color-mix(in oklab, var(--brand-orange) 90%, transparent))",
+            boxShadow:
+              "0 0 0 1px color-mix(in oklab, var(--brand-magenta) 55%, transparent), 0 8px 30px -8px color-mix(in oklab, var(--brand-magenta) 60%, transparent)",
+          }}
+        >
+          <Sparkles className="size-4" /> Quero ser Revendedor
+        </Link>
         {showDashboard ? (
           <Link
             to="/dashboard"
