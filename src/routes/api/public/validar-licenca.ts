@@ -51,6 +51,10 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
           null;
         const user_agent = request.headers.get("user-agent")?.slice(0, 400) ?? null;
+        // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
+        // Enquanto ausente, o comportamento é idêntico ao atual. Nenhuma validação usa este campo aqui.
+        const extension_id = body?.extension_id ? String(body.extension_id).slice(0, 80) : null;
+        void extension_id;
 
         if (!chave) return fail(cors, "Licença inválida ou expirada.");
 
