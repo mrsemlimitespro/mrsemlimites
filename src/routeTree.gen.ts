@@ -22,6 +22,7 @@ import { Route as AdminVisualizacaoRouteImport } from './routes/admin.visualizac
 import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as AdminSonsRouteImport } from './routes/admin.sons'
 import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
+import { Route as AdminRevendedoresGestaoRouteImport } from './routes/admin.revendedores-gestao'
 import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
 import { Route as AdminPagamentosRouteImport } from './routes/admin.pagamentos'
 import { Route as AdminPackAutorizacoesRouteImport } from './routes/admin.pack-autorizacoes'
@@ -136,6 +137,11 @@ const AdminSonsRoute = AdminSonsRouteImport.update({
 const AdminSegurancaRoute = AdminSegurancaRouteImport.update({
   id: '/seguranca',
   path: '/seguranca',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRevendedoresGestaoRoute = AdminRevendedoresGestaoRouteImport.update({
+  id: '/revendedores-gestao',
+  path: '/revendedores-gestao',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPersonalizacaoRoute = AdminPersonalizacaoRouteImport.update({
@@ -445,6 +451,7 @@ export interface FileRoutesByFullPath {
   '/admin/pack-autorizacoes': typeof AdminPackAutorizacoesRoute
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
+  '/admin/revendedores-gestao': typeof AdminRevendedoresGestaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -508,6 +515,7 @@ export interface FileRoutesByTo {
   '/admin/pack-autorizacoes': typeof AdminPackAutorizacoesRoute
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
+  '/admin/revendedores-gestao': typeof AdminRevendedoresGestaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -575,6 +583,7 @@ export interface FileRoutesById {
   '/admin/pack-autorizacoes': typeof AdminPackAutorizacoesRoute
   '/admin/pagamentos': typeof AdminPagamentosRoute
   '/admin/personalizacao': typeof AdminPersonalizacaoRoute
+  '/admin/revendedores-gestao': typeof AdminRevendedoresGestaoRoute
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -643,6 +652,7 @@ export interface FileRouteTypes {
     | '/admin/pack-autorizacoes'
     | '/admin/pagamentos'
     | '/admin/personalizacao'
+    | '/admin/revendedores-gestao'
     | '/admin/seguranca'
     | '/admin/sons'
     | '/admin/usuarios'
@@ -706,6 +716,7 @@ export interface FileRouteTypes {
     | '/admin/pack-autorizacoes'
     | '/admin/pagamentos'
     | '/admin/personalizacao'
+    | '/admin/revendedores-gestao'
     | '/admin/seguranca'
     | '/admin/sons'
     | '/admin/usuarios'
@@ -772,6 +783,7 @@ export interface FileRouteTypes {
     | '/admin/pack-autorizacoes'
     | '/admin/pagamentos'
     | '/admin/personalizacao'
+    | '/admin/revendedores-gestao'
     | '/admin/seguranca'
     | '/admin/sons'
     | '/admin/usuarios'
@@ -923,6 +935,13 @@ declare module '@tanstack/react-router' {
       path: '/seguranca'
       fullPath: '/admin/seguranca'
       preLoaderRoute: typeof AdminSegurancaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/revendedores-gestao': {
+      id: '/admin/revendedores-gestao'
+      path: '/revendedores-gestao'
+      fullPath: '/admin/revendedores-gestao'
+      preLoaderRoute: typeof AdminRevendedoresGestaoRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/personalizacao': {
@@ -1362,6 +1381,7 @@ interface AdminRouteChildren {
   AdminPackAutorizacoesRoute: typeof AdminPackAutorizacoesRoute
   AdminPagamentosRoute: typeof AdminPagamentosRoute
   AdminPersonalizacaoRoute: typeof AdminPersonalizacaoRoute
+  AdminRevendedoresGestaoRoute: typeof AdminRevendedoresGestaoRoute
   AdminSegurancaRoute: typeof AdminSegurancaRoute
   AdminSonsRoute: typeof AdminSonsRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
@@ -1386,6 +1406,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPackAutorizacoesRoute: AdminPackAutorizacoesRoute,
   AdminPagamentosRoute: AdminPagamentosRoute,
   AdminPersonalizacaoRoute: AdminPersonalizacaoRoute,
+  AdminRevendedoresGestaoRoute: AdminRevendedoresGestaoRoute,
   AdminSegurancaRoute: AdminSegurancaRoute,
   AdminSonsRoute: AdminSonsRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,
