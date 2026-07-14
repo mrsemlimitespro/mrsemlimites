@@ -52,13 +52,43 @@ export async function handleWebhook(slug: GatewaySlug, request: Request): Promis
 
   const result = await processEvent(event, supabaseAdmin);
 
+  // Auto-provisão de revendedor: Kiwify + aprovado + produto configurado.
+  let provision: { ok: boolean; reason: string } | null = null;
+  if (slug === "kiwify" && event.status === "aprovado") {
+    try {
+      const { data: cfg } = await supabaseAdmin
+        .from("admin_settings")
+        .select("kiwify_produto_revendedor_ref")
+        .limit(1)
+        .maybeSingle();
+      const configuredRef = ((cfg ?? {}) as Record<string, string | null>)
+        .kiwify_produto_revendedor_ref;
+      const matches =
+        !!configuredRef &&
+        !!event.productRef &&
+        configuredRef.trim() === event.productRef.trim();
+      if (matches && event.clienteEmail) {
+        const { provisionRevendedor } = await import("@/lib/revendedores/provision.server");
+        const r = await provisionRevendedor({
+          email: event.clienteEmail,
+          nome: event.clienteNome,
+          amount: event.amount,
+          externalId: event.externalId,
+        });
+        provision = { ok: r.ok, reason: r.reason };
+      }
+    } catch (e: any) {
+      provision = { ok: false, reason: `provision-error:${e?.message ?? e}` };
+    }
+  }
+
   await supabaseAdmin.from("payment_webhook_logs").insert({
     ...baseLog,
     status: result.status,
-    error: result.error,
+    error: provision ? `${result.error ?? ""}${result.error ? "; " : ""}provision:${provision.reason}` : result.error,
   });
 
-  return new Response(JSON.stringify(result), {
+  return new Response(JSON.stringify({ ...result, provision }), {
     status: 200,
     headers: { "content-type": "application/json" },
   });
