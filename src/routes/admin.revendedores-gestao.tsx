@@ -219,6 +219,30 @@ function RevendedoresGestaoPage() {
           />
         </div>
 
+        <div className="mb-3 flex flex-wrap gap-2">
+          {[
+            { k: "todos", label: "Todos" },
+            { k: "ativos", label: "Ativos" },
+            { k: "bloqueados", label: "Bloqueados" },
+            { k: "expirados", label: "Expirados" },
+            { k: "vitalicios", label: "Vitalícios" },
+          ].map((t) => (
+            <button
+              key={t.k}
+              type="button"
+              onClick={() => setFilter(t.k as typeof filter)}
+              className={
+                "rounded-full border px-3 py-1 text-xs " +
+                (filter === t.k
+                  ? "border-primary bg-primary/20 text-foreground"
+                  : "border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10")
+              }
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
         {isLoading ? (
           <div className="flex items-center justify-center py-10 text-muted-foreground">
             <Loader2 className="size-5 animate-spin" />
