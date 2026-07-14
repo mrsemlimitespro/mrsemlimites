@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import {
   ChevronLeft,
   ChevronRight,
+  Eye,
   Loader2,
   Pencil,
   Plus,
@@ -14,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { z } from "zod";
+import { setImpersonation } from "@/lib/impersonation";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -74,6 +76,7 @@ function ResourcePage() {
 
 function ResourceView({ resource }: { resource: Resource }) {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -270,6 +273,38 @@ function ResourceView({ resource }: { resource: Resource }) {
                   ))}
                   <td className="px-4 py-3 text-right">
                     <div className="inline-flex items-center gap-1">
+                      {(resource.table === "revendedores" || resource.table === "clientes") && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            const kind =
+                              resource.table === "revendedores" ? "revendedor" : "cliente";
+                            const returnTo =
+                              typeof window !== "undefined"
+                                ? window.location.pathname + window.location.search
+                                : "/admin";
+                            setImpersonation({
+                              kind,
+                              id: String(row.id),
+                              name: String(
+                                (row as Record<string, unknown>).nome ??
+                                  (row as Record<string, unknown>).name ??
+                                  "—",
+                              ),
+                              email: String((row as Record<string, unknown>).email ?? ""),
+                              returnTo,
+                            });
+                            navigate({ to: kind === "revendedor" ? "/dashboard" : "/" });
+                          }}
+                          aria-label="Visualizar painel"
+                          className="gap-1.5 text-xs"
+                          title="Abrir o painel deste usuário em modo somente leitura"
+                        >
+                          <Eye className="size-3.5" />
+                          <span className="hidden sm:inline">Visualizar Painel</span>
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         variant="ghost"
