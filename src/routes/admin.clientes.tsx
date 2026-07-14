@@ -46,7 +46,8 @@ type Cliente = {
 const brl = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 2 });
 
-function classify(l: Cliente["licencas"][number]) {
+type Licenca = NonNullable<Cliente["licencas"]>[number];
+function classify(l: Licenca) {
   const st = (l.status ?? "").toLowerCase();
   const exp = l.expira_em ? new Date(l.expira_em).getTime() : null;
   if (st === "revogada" || st === "bloqueada") return "bloqueada";
