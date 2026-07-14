@@ -35,9 +35,13 @@ function localHasSession(): boolean | null {
 }
 
 export function useIsAuthed(): boolean | null {
-  const [authed, setAuthed] = useState<boolean | null>(() => localHasSession());
+  // Inicia como `null` para bater com o HTML do SSR (que nunca tem sessão)
+  // e evitar hydration mismatch na sidebar/menu que dependem do estado logado.
+  const [authed, setAuthed] = useState<boolean | null>(null);
   useEffect(() => {
     let alive = true;
+    const local = localHasSession();
+    if (local !== null) setAuthed(local);
     supabase.auth
       .getUser()
       .then(({ data }) => {
