@@ -484,7 +484,8 @@ function NovoRevendedorDialog({
         status: form.status,
         validade_dias,
         vitalicio,
-        enviarMagicLink: form.enviarMagicLink,
+        senha_temporaria: form.senha_temporaria.trim() || null,
+        enviarMagicLink: form.enviarMagicLink && !form.senha_temporaria.trim(),
       } as NovoInput);
       toast.success(
         res.magicLink ? "Revendedor criado — Magic Link enviado" : "Revendedor criado",
