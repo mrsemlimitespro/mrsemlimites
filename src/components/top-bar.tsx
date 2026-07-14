@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Bell, Search, Settings, Loader2, CheckCheck, LogOut } from "lucide-react";
+import { Bell, Settings, Loader2, CheckCheck, LogOut } from "lucide-react";
+import { GlobalSearch } from "@/components/global-search";
 import { Link } from "@tanstack/react-router";
 
 import { BrandMark } from "@/components/brand";
