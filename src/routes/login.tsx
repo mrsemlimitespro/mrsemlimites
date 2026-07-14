@@ -123,19 +123,20 @@ function LoginPage() {
       return;
     }
 
+    // Revendedor → painel de revenda (/). Cliente final → também Home,
+    // mas sem itens de revenda na sidebar (filtrado por useUserRole).
+    // Não bloqueia mais quem não é revendedor: o cadastro público cria clientes.
     const { data: rev } = await supabase
       .from("revendedores")
-      .select("id, plano_expira_em")
+      .select("id")
       .eq("auth_user_id", data.user.id)
       .maybeSingle();
 
-    if (!rev) {
-      await supabase.auth.signOut();
-      setError("Perfil não encontrado. Conclua seu cadastro.");
-      setLoading(false);
-      navigate({ to: "/registro" });
-      return;
-    }
+    console.log(
+      "[Auth] login concluído como",
+      rev ? "revendedor" : "cliente",
+      "— redirecionando para Home",
+    );
 
     // Oferece habilitar biometria após login bem-sucedido (só native, só 1x).
     await offerBiometricEnrollment(email);

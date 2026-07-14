@@ -23,6 +23,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { BRAND_NAME, BrandMark } from "@/components/brand";
 import { LogoutIncentiveDialog } from "@/components/logout-incentive-dialog";
 import { useIsAuthed } from "@/hooks/useIsAuthed";
+import { useUserRole, isPrivilegedRole } from "@/hooks/useUserRole";
 
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -39,8 +40,13 @@ const publicItems: NavItem[] = [
   { title: "Prompts", url: "/prompts", icon: Wand2 },
 ];
 
-// Comercial: requer login
-const commercialItems: NavItem[] = [
+// Cliente final autenticado: acesso ao conteúdo, sem funções de revenda
+const clienteItems: NavItem[] = [
+  { title: "Aulas", url: "/aulas", icon: GraduationCap },
+];
+
+// Revendedor / Admin: painel comercial completo
+const revendedorItems: NavItem[] = [
   { title: "Painel", url: "/dashboard", icon: LayoutDashboard },
   { title: "Licenças", url: "/licencas", icon: KeyRound },
   { title: "Clientes", url: "/clientes", icon: Users },
@@ -65,6 +71,7 @@ export function AppSidebar() {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const authed = useIsAuthed();
+  const role = useUserRole();
 
   useEffect(() => {
     let mounted = true;
@@ -81,8 +88,13 @@ export function AppSidebar() {
   }, []);
 
   // Antes da checagem terminar, mostramos só os itens públicos para evitar flash.
-  const primaryItems: NavItem[] =
-    authed === true ? [...publicItems, ...commercialItems] : publicItems;
+  // Cliente final não enxerga funções de revendedor (Painel/Licenças/Clientes/Créditos).
+  const primaryItems: NavItem[] = (() => {
+    if (authed !== true) return publicItems;
+    if (isPrivilegedRole(role)) return [...publicItems, ...revendedorItems];
+    // cliente ou role ainda carregando: só conteúdo público + Aulas
+    return [...publicItems, ...clienteItems];
+  })();
   const footerItems: FooterItem[] = authed === true ? authedFooterItems : anonFooterItems;
 
   return (
