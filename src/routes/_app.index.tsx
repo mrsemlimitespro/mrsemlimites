@@ -40,6 +40,7 @@ import {
 import { useModules } from "@/lib/admin/use-modules";
 import { useIsAuthed } from "@/hooks/useIsAuthed";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/")({
@@ -71,11 +72,12 @@ type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 function LandingPage() {
   const authed = useIsAuthed();
   const isAdmin = useIsAdmin();
+  const role = useUserRole();
   const { visibleIn, modules } = useModules();
 
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-10 pb-40 md:space-y-14 md:pb-48">
-      <HeroSection authed={!!authed} showDashboard={authed === true} />
+      <HeroSection authed={!!authed} role={role} isAdmin={isAdmin} />
       <SearchBar />
       <CategoriasSection />
       <DestaquesSection />
@@ -109,7 +111,23 @@ function LandingPage() {
 /* =============================================================
  *  HERO
  * ============================================================= */
-function HeroSection({ authed, showDashboard }: { authed: boolean; showDashboard: boolean }) {
+function HeroSection({
+  authed,
+  role,
+  isAdmin,
+}: {
+  authed: boolean;
+  role: import("@/hooks/useUserRole").UserRole;
+  isAdmin: boolean;
+}) {
+  // Rótulo do painel atual — mostrado como chip no topo do hero
+  const panelBadge = (() => {
+    if (isAdmin || role === "admin") return { icon: "⭐", label: "Painel Administrador" };
+    if (role === "revendedor") return { icon: "🏪", label: "Painel Revendedor" };
+    if (authed) return { icon: "👤", label: "Painel Cliente" };
+    return { icon: "🌐", label: "Visitante" };
+  })();
+
   return (
     <section className="relative flex flex-col items-center justify-center gap-5 py-6 text-center md:py-12">
       <div
@@ -131,7 +149,7 @@ function HeroSection({ authed, showDashboard }: { authed: boolean; showDashboard
 
       <div className="flex flex-col items-center gap-3">
         <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-widest text-muted-foreground">
-          <Sparkles className="size-3" /> Plataforma Premium
+          <span aria-hidden>{panelBadge.icon}</span> {panelBadge.label}
         </span>
         <h1 className="gradient-text-warm text-3xl font-black tracking-tight md:text-5xl">
           {BRAND_NAME}
@@ -140,51 +158,88 @@ function HeroSection({ authed, showDashboard }: { authed: boolean; showDashboard
           Agentes IA, Prompts, Packs, Extensões, Automações, Templates e Comunidade —
           entrega após a confirmação do pagamento, com suporte humano no WhatsApp.
         </p>
-
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-        <Link
-          to="/packs"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:opacity-90"
-        >
-          Comprar Agora <ArrowRight className="size-4" />
-        </Link>
-        <Link
-          to="/agents"
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-white/10"
-        >
-          Ver Ofertas
-        </Link>
-        <Link
-          to="/quero-ser-revendedor"
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:opacity-90"
-          style={{
-            background:
-              "linear-gradient(135deg, color-mix(in oklab, var(--brand-magenta) 90%, transparent), color-mix(in oklab, var(--brand-orange) 90%, transparent))",
-            boxShadow:
-              "0 0 0 1px color-mix(in oklab, var(--brand-magenta) 55%, transparent), 0 8px 30px -8px color-mix(in oklab, var(--brand-magenta) 60%, transparent)",
-          }}
-        >
-          <Sparkles className="size-4" /> Quero ser Revendedor
-        </Link>
-        {showDashboard ? (
-          <Link
-            to="/dashboard"
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-white/10"
-          >
-            <LayoutDashboard className="size-4" /> Painel
-          </Link>
-        ) : !authed ? (
-          <Link
-            to="/login"
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-white/10"
-          >
-            Entrar
-          </Link>
-        ) : null}
-      </div>
+      <HeroCtas authed={authed} role={role} isAdmin={isAdmin} />
     </section>
+  );
+}
+
+function HeroCtas({
+  authed,
+  role,
+  isAdmin,
+}: {
+  authed: boolean;
+  role: import("@/hooks/useUserRole").UserRole;
+  isAdmin: boolean;
+}) {
+  const primaryCls =
+    "inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:opacity-90";
+  const outlineCls =
+    "inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-white/10";
+  const warmCls =
+    "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:opacity-90";
+  const warmStyle = {
+    background:
+      "linear-gradient(135deg, color-mix(in oklab, var(--brand-magenta) 90%, transparent), color-mix(in oklab, var(--brand-orange) 90%, transparent))",
+    boxShadow:
+      "0 0 0 1px color-mix(in oklab, var(--brand-magenta) 55%, transparent), 0 8px 30px -8px color-mix(in oklab, var(--brand-magenta) 60%, transparent)",
+  } as const;
+
+  // ADMIN
+  if (isAdmin || role === "admin") {
+    return (
+      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <Link to="/admin" className={warmCls} style={warmStyle}>
+          <LayoutDashboard className="size-4" /> Painel Administrador
+        </Link>
+        <Link to="/dashboard" className={outlineCls}>
+          <LayoutDashboard className="size-4" /> Painel Revendedor
+        </Link>
+      </div>
+    );
+  }
+
+  // REVENDEDOR
+  if (role === "revendedor") {
+    return (
+      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <Link to="/dashboard" className={primaryCls}>
+          <LayoutDashboard className="size-4" /> Painel Revendedor
+        </Link>
+        <Link to="/clientes" className={outlineCls}>Clientes</Link>
+        <Link to="/licencas" className={outlineCls}>Licenças</Link>
+      </div>
+    );
+  }
+
+  // CLIENTE (autenticado, não é admin nem revendedor)
+  if (authed) {
+    return (
+      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <Link to="/packs" className={primaryCls}>
+          Comprar Packs <ArrowRight className="size-4" />
+        </Link>
+        <Link to="/perfil" className={outlineCls}>
+          <LayoutDashboard className="size-4" /> Meu Painel
+        </Link>
+      </div>
+    );
+  }
+
+  // VISITANTE
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+      <Link to="/packs" className={primaryCls}>
+        Comprar Agora <ArrowRight className="size-4" />
+      </Link>
+      <Link to="/agents" className={outlineCls}>Ver Ofertas</Link>
+      <Link to="/quero-ser-revendedor" className={warmCls} style={warmStyle}>
+        <Sparkles className="size-4" /> Quero ser Revendedor
+      </Link>
+      <Link to="/login" className={outlineCls}>Entrar</Link>
+    </div>
   );
 }
 
