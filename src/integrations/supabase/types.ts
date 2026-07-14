@@ -1847,7 +1847,10 @@ export type Database = {
       payment_transactions: {
         Row: {
           aprovado_em: string | null
+          cliente_email: string | null
+          cliente_id: string | null
           cliente_nome: string | null
+          comissao_valor: number | null
           created_at: string
           creditos_liberados: number
           external_id: string | null
@@ -1865,7 +1868,10 @@ export type Database = {
         }
         Insert: {
           aprovado_em?: string | null
+          cliente_email?: string | null
+          cliente_id?: string | null
           cliente_nome?: string | null
+          comissao_valor?: number | null
           created_at?: string
           creditos_liberados?: number
           external_id?: string | null
@@ -1883,7 +1889,10 @@ export type Database = {
         }
         Update: {
           aprovado_em?: string | null
+          cliente_email?: string | null
+          cliente_id?: string | null
           cliente_nome?: string | null
+          comissao_valor?: number | null
           created_at?: string
           creditos_liberados?: number
           external_id?: string | null
@@ -1900,6 +1909,20 @@ export type Database = {
           valor?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "payment_transactions_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["cliente_id"]
+          },
           {
             foreignKeyName: "payment_transactions_pack_id_fkey"
             columns: ["pack_id"]
@@ -1987,6 +2010,7 @@ export type Database = {
           nome: string
           ordem: number
           preco: number
+          produto_id: string | null
           tipo: string
           updated_at: string
         }
@@ -2009,6 +2033,7 @@ export type Database = {
           nome: string
           ordem?: number
           preco?: number
+          produto_id?: string | null
           tipo?: string
           updated_at?: string
         }
@@ -2031,10 +2056,19 @@ export type Database = {
           nome?: string
           ordem?: number
           preco?: number
+          produto_id?: string | null
           tipo?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "planos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "licenca_produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       premium_packs: {
         Row: {
@@ -2563,6 +2597,7 @@ export type Database = {
           auth_user_id: string | null
           bloqueado: boolean
           comissao: number | null
+          comissao_percentual: number | null
           created_at: string
           email: string | null
           id: string
@@ -2579,6 +2614,7 @@ export type Database = {
           auth_user_id?: string | null
           bloqueado?: boolean
           comissao?: number | null
+          comissao_percentual?: number | null
           created_at?: string
           email?: string | null
           id?: string
@@ -2595,6 +2631,7 @@ export type Database = {
           auth_user_id?: string | null
           bloqueado?: boolean
           comissao?: number | null
+          comissao_percentual?: number | null
           created_at?: string
           email?: string | null
           id?: string
@@ -3214,6 +3251,18 @@ export type Database = {
         Returns: Json
       }
       is_revendedor: { Args: { _uid: string }; Returns: boolean }
+      limpar_logs_antigos: { Args: never; Returns: Json }
+      log_audit: {
+        Args: {
+          _acao: string
+          _antes?: Json
+          _depois?: Json
+          _entidade: string
+          _entidade_id: string
+          _metadata?: Json
+        }
+        Returns: undefined
+      }
       notificar_licencas_expirando: { Args: never; Returns: number }
       pack_client_has_access: {
         Args: { _email: string; _pack_id: string }

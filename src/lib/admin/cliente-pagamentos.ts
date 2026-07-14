@@ -15,8 +15,11 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 
-// ⚠️ FALLBACK FLAG — trocar para `true` quando a coluna existir.
-export const USES_CLIENTE_ID = false;
+// ✅ Fase 3: coluna payment_transactions.cliente_id existe e é preenchida
+// automaticamente pelo trigger tg_pagamento_gerar_licenca ao aprovar pagamento.
+// O fallback por nome permanece disponível para pagamentos antigos que ainda
+// não foram vinculados.
+export const USES_CLIENTE_ID = true;
 
 export type ClientePagamento = {
   id: string;
@@ -36,29 +39,38 @@ export type ClienteRef = { id: string; nome: string | null; email: string | null
 const COLUMNS =
   "id, gateway_slug, valor, moeda, status, metodo, created_at, aprovado_em";
 
-/** Pagamentos de UM cliente. */
+/**
+ * Pagamentos de UM cliente. Prefere `cliente_id` (Fase 3) e cai para
+ * `cliente_nome` para pagamentos legados (antes do auto-vínculo).
+ */
 export async function fetchPagamentosByCliente(
   cliente: ClienteRef,
 ): Promise<ClientePagamento[]> {
-  const q = (supabase as any).from("payment_transactions").select(COLUMNS);
+  const results = new Map<string, ClientePagamento>();
 
-  if (USES_CLIENTE_ID) {
-    // Caminho definitivo (a ser ativado quando a coluna existir).
-    const { data, error } = await q
-      .eq("cliente_id", cliente.id)
+  const primary = await (supabase as any)
+    .from("payment_transactions")
+    .select(COLUMNS)
+    .eq("cliente_id", cliente.id)
+    .order("created_at", { ascending: false });
+  for (const r of (primary.data ?? []) as ClientePagamento[]) results.set(r.id, r);
+
+  // fallback legado por nome — só para linhas ainda sem cliente_id
+  const nome = (cliente.nome ?? "").trim();
+  if (nome) {
+    const legacy = await (supabase as any)
+      .from("payment_transactions")
+      .select(COLUMNS)
+      .is("cliente_id", null)
+      .ilike("cliente_nome", nome)
       .order("created_at", { ascending: false });
-    if (error) return [];
-    return (data ?? []) as ClientePagamento[];
+    for (const r of (legacy.data ?? []) as ClientePagamento[])
+      if (!results.has(r.id)) results.set(r.id, r);
   }
 
-  // ⚠️ FALLBACK — remover quando USES_CLIENTE_ID = true.
-  const nome = (cliente.nome ?? "").trim();
-  if (!nome) return [];
-  const { data, error } = await q
-    .ilike("cliente_nome", nome)
-    .order("created_at", { ascending: false });
-  if (error) return [];
-  return (data ?? []) as ClientePagamento[];
+  return Array.from(results.values()).sort((a, b) =>
+    (b.created_at ?? "").localeCompare(a.created_at ?? ""),
+  );
 }
 
 /** Mapa `cliente.id -> total gasto` para uma lista de clientes. */
@@ -66,34 +78,30 @@ export async function fetchGastoMapForClientes(
   clientes: ClienteRef[],
 ): Promise<Record<string, number>> {
   if (clientes.length === 0) return {};
+  const ids = clientes.map((c) => c.id);
+  const map: Record<string, number> = {};
 
-  if (USES_CLIENTE_ID) {
-    const ids = clientes.map((c) => c.id);
-    const { data, error } = await (supabase as any)
-      .from("payment_transactions")
-      .select("cliente_id, valor, status")
-      .in("cliente_id", ids)
-      .in("status", APROVADO);
-    if (error) return {};
-    const map: Record<string, number> = {};
-    for (const r of (data ?? []) as Array<{
-      cliente_id: string;
-      valor: number | null;
-    }>) {
-      map[r.cliente_id] = (map[r.cliente_id] ?? 0) + Number(r.valor ?? 0);
-    }
-    return map;
+  // caminho definitivo — por cliente_id
+  const primary = await (supabase as any)
+    .from("payment_transactions")
+    .select("cliente_id, valor, status")
+    .in("cliente_id", ids)
+    .in("status", APROVADO);
+  for (const r of (primary.data ?? []) as Array<{
+    cliente_id: string;
+    valor: number | null;
+  }>) {
+    map[r.cliente_id] = (map[r.cliente_id] ?? 0) + Number(r.valor ?? 0);
   }
 
-  // ⚠️ FALLBACK — agrega por nome (case-insensitive) e reprojeta para cliente.id.
-  const { data, error } = await (supabase as any)
+  // fallback legado por nome — apenas linhas sem cliente_id
+  const { data: legacy } = await (supabase as any)
     .from("payment_transactions")
     .select("cliente_nome, valor, status")
+    .is("cliente_id", null)
     .in("status", APROVADO);
-  if (error) return {};
-
   const porNome: Record<string, number> = {};
-  for (const r of (data ?? []) as Array<{
+  for (const r of (legacy ?? []) as Array<{
     cliente_nome: string | null;
     valor: number | null;
   }>) {
@@ -101,12 +109,11 @@ export async function fetchGastoMapForClientes(
     if (!k) continue;
     porNome[k] = (porNome[k] ?? 0) + Number(r.valor ?? 0);
   }
-  const out: Record<string, number> = {};
   for (const c of clientes) {
     const k = (c.nome ?? "").trim().toLowerCase();
-    if (k && porNome[k] != null) out[c.id] = porNome[k];
+    if (k && porNome[k] != null) map[c.id] = (map[c.id] ?? 0) + porNome[k];
   }
-  return out;
+  return map;
 }
 
 export function totalAprovado(ps: ClientePagamento[]): number {

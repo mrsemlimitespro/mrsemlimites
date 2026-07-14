@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Activity, ShieldAlert, ShieldCheck, ShieldX, Smartphone, TrendingUp, KeyRound, RotateCcw } from "lucide-react";
 
@@ -59,6 +60,28 @@ async function fetchMetrics(): Promise<Metrics> {
 
 function LicencasDashboard() {
   const { data, isLoading } = useQuery({ queryKey: ["licencas-dashboard"], queryFn: fetchMetrics });
+  const qc = useQueryClient();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Realtime: refetch com debounce quando qualquer licença/pagamento muda.
+  useEffect(() => {
+    const invalidate = () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        qc.invalidateQueries({ queryKey: ["licencas-dashboard"] });
+      }, 400);
+    };
+    const channel = supabase
+      .channel("admin-licencas-dashboard")
+      .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "payment_transactions" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "clientes" }, invalidate)
+      .subscribe();
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      supabase.removeChannel(channel);
+    };
+  }, [qc]);
 
   const cards: Array<{ label: string; value: number; icon: React.ComponentType<{ className?: string }>; tone: string }> = [
     { label: "Total de licenças", value: data?.total ?? 0, icon: KeyRound, tone: "from-violet-500/25 to-blue-500/20" },

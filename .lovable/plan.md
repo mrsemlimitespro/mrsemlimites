@@ -1,55 +1,92 @@
-## Fase 2 — CRM de Clientes + Licenças
+## Fase 3 — Automação completa (plano cirúrgico)
 
-Objetivo: evoluir apenas a área administrativa de clientes/licenças, sem tocar checkout, extensão, SDK, prompts, agents, packs, loja, design system ou banco existente (novas colunas só se estritamente necessário — pergunto antes).
+### Auditoria: o que JÁ está automatizado no banco
 
-### Escopo (o que muda)
+Antes de propor mudanças, mapeei o estado atual. Muita coisa da Fase 3 já roda:
 
-Somente:
-- `src/routes/admin.clientes.tsx` (busca + filtros)
-- `src/routes/admin.clientes.$id.tsx` (refatorado em abas)
-- Novos componentes em `src/components/admin/cliente/`
-- Nova camada `src/lib/admin/cliente-detail.ts` (queries agregadas + exportação)
+| Requisito Fase 3 | Estado atual |
+|---|---|
+| Aprovar pagamento → creditar plano | ✅ `trg_pagamento_status_after` → `approve_pagamento` |
+| Aprovar pagamento → gerar licença | ✅ `trg_pagamento_gerar_licenca` (mas **não vincula cliente**) |
+| Aprovar pagamento → notificar | ✅ `trg_pagamento_notify` |
+| Eventos de licença (criada/ativada/renovada/etc.) | ✅ `trg_licencas_evento` |
+| Transição teste → premium | ✅ `trg_licenca_tipo_transicao` |
+| Consumo de crédito ao criar cliente | ✅ `trg_cliente_consume_credit` |
+| Auto-cadastro de cliente no signup | ✅ `tg_auth_user_to_cliente` |
+| Anti-abuso do teste grátis (1 por email) | ✅ dentro de `atribuir_licenca_cliente` |
+| Trial só inicia na ativação | ✅ `expirar_trials_vencidos` + `validar_licenca` |
+| RPCs: cancelar/reativar/renovar/converter premium/resetar device | ✅ existem |
+| Expirar licenças vencidas | ✅ `expirar_licencas_vencidas` (função pronta, **sem cron**) |
+| Expirar trials vencidos | ✅ `expirar_trials_vencidos` (função pronta, **sem cron**) |
+| Notificar expirando (7d/1d) | ✅ `notificar_licencas_expirando` (função pronta, **sem cron**) |
 
-### Página do Cliente — reorganização em abas
+### O que falta (gaps reais)
 
-Cabeçalho e resumo superior já existem — mantidos e completados com:
-- Foto placeholder (avatar), Nome, Email, Telefone, Empresa, CPF, Revendedor, Cadastro, Último acesso, Última compra, Valor gasto.
-- Grade de status: Total, Ativas, Em teste, Aguardando, Bloqueadas, Expiradas.
+#### A. Pagamento aprovado não fecha o ciclo cliente ↔ licença ↔ produto
+`trg_pagamento_gerar_licenca` hoje só cria a linha em `licencas` com `revendedor_id`. Não localiza/cria `cliente`, não preenche `licencas.cliente_id`/`email`, não escreve em `licenca_produtos`. Resultado: a Fase 2 (CRM) só enxerga a compra via fallback por nome.
 
-Sistema de abas (`Tabs` shadcn) substituindo a lista única atual:
+**Correção (migration única):** estender a função do trigger para:
+1. Se `payment_transactions` tiver dado do comprador (`cliente_nome`/`cliente_email` — colunas já existem), fazer `upsert` em `clientes` por email.
+2. Vincular `licencas.cliente_id` + `email`.
+3. Se `plano.produto_id` existir, inserir em `licenca_produtos`. **Só adiciono coluna** `planos.produto_id` (nullable) se hoje não houver relação — pergunta 1 abaixo.
+4. Emitir notificação `revendedor` ("Nova venda") e `cliente` ("Licença criada").
 
-1. **Licenças** — tabela com bolinha de status colorida (verde/azul/amarelo/vermelho/cinza), dias/tempo restante, produto, chave, criação, ativação, expiração, dispositivo, SO, versão e IP do último acesso (colunas de device usam `licenca_dispositivos` / `licenca_acessos` existentes; campos ausentes exibem "—"). Seleção múltipla + ações em lote existentes + **Mover para outro cliente** (dialog com busca de clientes) e **Excluir** (com confirmação, respeitando RLS admin).
-2. **Compras** — pedido, produto, valor, gateway, status, data, forma de pagamento. Reaproveita `fetchPagamentosByCliente` (camada única já pronta).
-3. **Produtos** — produtos derivados das licenças do cliente (agrupado por `licenca_produtos`).
-4. **Downloads** — arquivo, data, IP, dispositivo, versão (via `pack_download_logs`).
-5. **Histórico** — timeline consolidada: compras + eventos de licença + downloads.
-6. **Observações** — bloco de anotações internas (apenas admin). Grava em `clientes.observacoes` (já existe).
-7. **Logs** — `licencas_eventos` do cliente (criação, ativação, teste, renovação, bloqueio, desbloqueio, expiração, acesso, download). Somente leitura — nenhum trigger/RPC novo.
+Nada muda no schema de `licencas`, `clientes`, `payment_transactions` ou `licenca_produtos`. Só a função do trigger é reescrita.
 
-### Página Admin > Clientes — busca e filtros
+#### B. Nenhum job agendado — expirações e avisos dependem de ação manual
 
-- Busca ampliada: nome, email, telefone, empresa, CPF, chave de licença, id de pedido, revendedor. Implementada client-side sobre os dados já carregados + fallback server para chave/pedido quando houver termo longo.
-- Barra de filtros (chips): Ativos, Teste, Expirados, Bloqueados, Sem ativação, Com compras, Sem compras.
-- Exportação da lista atual em **CSV**, **Excel (.xlsx via SheetJS)** e **PDF (via jsPDF + autotable)**. Deps adicionadas: `xlsx`, `jspdf`, `jspdf-autotable`.
+Criar 4 cron jobs via `pg_cron` chamando as funções existentes (todas SECURITY DEFINER):
 
-### Ações em licença (já parciais)
+```
+*/10 * * * *   SELECT public.expirar_trials_vencidos();
+0    * * * *   SELECT public.expirar_licencas_vencidas();
+0    9 * * *   SELECT public.notificar_licencas_expirando();
+0    3 * * *   -- limpeza de logs voláteis (payment_webhook_logs > 90d, licencas_eventos.tipo='acesso' > 60d)
+```
 
-Manter as existentes (bloquear/desbloquear/renovar/alterar validade/exportar/enviar novamente) e adicionar:
-- **Mover para outro cliente** — `UPDATE licencas SET cliente_id=? WHERE id IN (...)` via client admin (RLS já permite admin).
-- **Excluir** — soft-delete via `status='cancelada'` (não removemos linhas para preservar histórico). Caso o usuário queira remoção física, confirmo antes.
+Zero endpoint HTTP — chamadas SQL puras, mais barato e sem exposição pública. Isso resolve os itens 3, 6, 7 e 9 do briefing (regras de validade, dashboard vivo, notificações e jobs) sem nova infra.
 
-### Compatibilidade
+#### C. Central de licenças no frontend (TS) — parcialmente feito na Fase 2
 
-- Nada de checkout/SDK/extensão/APIs públicas/webhooks/migrations/prompts/agents/packs/loja.
-- Nenhuma coluna nova no banco. "Enviar novamente ao cliente" continua como toast (placeholder) já que não há transporte de email configurado nesta fase — se quiser, ligo a um fluxo futuro.
-- Design system atual preservado (`glass`, tokens, gradientes).
-- Zero mudança em rotas existentes; a página do cliente continua em `/admin/clientes/$id`.
+Já temos `src/lib/admin/cliente-pagamentos.ts` (pagamentos) e as ações em lote em `admin.clientes.$id.tsx` chamando RPCs. Falta consolidar num único módulo `src/lib/admin/licencas-service.ts` que exponha:
 
-### Pontos que preciso confirmar antes de codar
+```
+gerar / renovar / bloquear / desbloquear / cancelar / expirar
+mover(clienteId) / duplicar / transferir(revendedorId)
+listarAcessos / listarDispositivos / listarEventos
+```
 
-1. **Excluir licença**: soft (status=cancelada) ou hard delete físico? Recomendo soft.
-2. **Exportação Excel/PDF**: OK adicionar `xlsx` + `jspdf` + `jspdf-autotable` como dependências? (~150 KB gzip somados, lazy-loaded no clique.)
-3. **"Enviar novamente ao cliente"**: mantém como placeholder (toast) ou você quer que eu conecte já a um endpoint de email? Se sim, qual (Resend, SMTP, etc.)?
-4. **Campos device/SO/versão/IP nas licenças**: hoje a licença tem `device_id` texto e `ultimo_acesso`; SO/versão/IP moram em `licenca_acessos`/`licenca_dispositivos` (JOIN). Confirma que posso ler dessas tabelas via SELECT (sem alterar RLS)?
+Todos são wrappers finos sobre RPCs já existentes (`gerar_licencas`, `renovar_licenca`, `cancelar_licenca`, `reativar_licenca`, `resetar_device_licenca`, `converter_licenca_em_premium`) + updates diretos (RLS admin já permite) para mover/duplicar. As telas `admin.licencas.tsx`, `admin.clientes.$id.tsx` e `admin.licencas-dashboard.tsx` passam a consumir esse módulo — sem alterar comportamento visível, só remove duplicação. Nenhuma tela nova.
 
-Ao final entrego: lista de arquivos alterados/criados, rotas (nenhuma nova rota; apenas conteúdo das existentes), campos usados (todos já existentes), e confirmação de que nada fora do admin de clientes/licenças foi tocado.
+#### D. Dashboard em tempo real
+
+`admin.licencas-dashboard.tsx` já lê agregados. Adicionar canal Supabase Realtime único no dashboard (`postgres_changes` em `licencas`, `payment_transactions`, `clientes`) chamando `refetch` com debounce. Requer `ALTER PUBLICATION supabase_realtime ADD TABLE ...` para essas 3 tabelas.
+
+#### E. Auditoria consistente
+
+Tabela `audit_logs` (13 colunas, 2 policies) já existe mas não é gravada pelas RPCs. Adicionar helper `public.log_audit(_action, _entity, _entity_id, _before, _after)` e chamá-lo dentro das RPCs de escrita (`cancelar_licenca`, `reativar_licenca`, `renovar_licenca`, `resetar_device_licenca`, `converter_licenca_em_premium`). IP/user-agent virão via `metadata` quando a chamada for por server function (não passa hoje via RPC — aceitável).
+
+### O que NÃO vou tocar
+
+Checkout, SDK da extensão, APIs públicas (`/api/public/**`), webhooks (`cakto/kiwify/mercadopago`), prompts, agents, packs, loja, design system, tema, rotas existentes, sistema atual de chaves (`gerar_chave_licenca`).
+
+### Entrega
+
+**Migrations (2):**
+- `M1`: reescrever `tg_pagamento_gerar_licenca` (upsert cliente + vincular + licenca_produtos + notificação dupla) + criar `log_audit` + adicionar chamadas de auditoria nas 5 RPCs de escrita + `ALTER PUBLICATION supabase_realtime` para 3 tabelas.
+- `M2` (via **insert tool**, não migration): 4 `cron.schedule(...)` — não vai em migration porque contém URL/agenda específica do projeto.
+
+**Arquivos novos:**
+- `src/lib/admin/licencas-service.ts` — central única de licenças.
+
+**Arquivos alterados:**
+- `src/routes/admin.licencas.tsx`, `admin.clientes.$id.tsx`, `admin.licencas-dashboard.tsx` — passam a chamar o serviço central + subscribe realtime no dashboard.
+
+**Nada novo de rota, tela, componente visual ou dependência.**
+
+### Perguntas antes de codar
+
+1. **`planos.produto_id`**: hoje não vejo relação plano↔produto. Posso **adicionar essa coluna nullable** em `planos` para o trigger conseguir preencher `licenca_produtos` no auto-fluxo? (Se preferir não mexer no schema, pulo o item 3 do bloco A — licença é criada, produto fica vazio até vínculo manual.)
+2. **Comissão do revendedor**: o briefing pede "comissão" no painel do revendedor. Não existe campo hoje (`revendedores` não tem `comissao_percentual`, `payment_transactions` não tem `comissao_valor`). Adiciono ou deixo fora desta fase?
+3. **Limpeza de logs**: OK apagar `payment_webhook_logs > 90 dias` e `licencas_eventos` do tipo `acesso` > 60 dias no cron diário? (Histórico "importante" — criada/ativada/renovada/cancelada/expirada — nunca é apagado.)
+4. **Realtime**: OK habilitar realtime em `licencas`, `payment_transactions`, `clientes`? (Custo pequeno; sem isso o "dashboard em tempo real" fica em polling.)
