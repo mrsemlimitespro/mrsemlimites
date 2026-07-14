@@ -100,17 +100,12 @@ function QueroSerRevendedorPage() {
           Seja Revendedor {BRAND_NAME}
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground md:text-base">
-          Ative seu painel de revenda por uma <strong className="text-foreground">taxa única de R$ 29,90</strong>.
+          Ative seu painel de revenda por uma <strong className="text-foreground">taxa única de R$ {valorFmt}</strong>.
           Sem mensalidade. Sem renovação. Comece a faturar hoje mesmo.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            to="/checkout"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg transition hover:opacity-90"
-          >
-            Ativar por R$ 29,90 <ArrowRight className="size-4" />
-          </Link>
+          <CtaButton label={`Ativar por R$ ${valorFmt}`} />
           <a
             href="#vantagens"
             className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-bold text-foreground transition hover:bg-white/10"
