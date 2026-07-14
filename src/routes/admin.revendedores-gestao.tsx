@@ -353,6 +353,25 @@ function RevendedoresGestaoPage() {
                         >
                           <Send className="size-3.5" />
                         </IconAction>
+                        <IconAction
+                          title="Redefinir senha (envia email)"
+                          onClick={() => resetMut.mutate(r.id)}
+                        >
+                          <RotateCcw className="size-3.5" />
+                        </IconAction>
+                        <IconAction
+                          title="Excluir revendedor"
+                          onClick={() => {
+                            if (
+                              confirm(
+                                `Excluir revendedor ${r.nome}? Esta ação é reversível pelo suporte.`,
+                              )
+                            )
+                              deleteMut.mutate(r.id);
+                          }}
+                        >
+                          <Trash2 className="size-3.5" />
+                        </IconAction>
                         <a
                           className="rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-[11px] hover:bg-white/10"
                           href={`/admin/clientes?revendedor_id=${r.id}`}
