@@ -83,7 +83,7 @@ const KPIS: KpiCfg[] = [
     label: "Revendedores",
     icon: Store,
     color: "var(--brand-blue)",
-    to: "/admin/revendedores",
+    to: "/admin/revendedores-gestao",
     compute: async () => ({ value: await countTable("revendedores") }),
   },
   {
@@ -370,7 +370,7 @@ function AdminControlCenter() {
             title="Últimos revendedores"
             icon={Store}
             items={revendedores.data}
-            to="/admin/revendedores"
+            to="/admin/revendedores-gestao"
             render={(c) => ({
               primary: c.nome || c.email || "—",
               secondary: c.email,
