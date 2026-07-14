@@ -176,23 +176,8 @@ export function TopBar() {
       )}
 
 
-      <div className="flex min-w-0 flex-1 justify-center">
-        <label className="relative flex h-10 w-full max-w-[560px] items-center rounded-full border border-border/70 bg-surface/60 pl-9 pr-3 backdrop-blur-xl transition-colors focus-within:border-primary/50 md:h-12 md:pl-11 md:pr-14">
-          <Search
-            className="absolute left-3 size-4 text-muted-foreground md:left-4"
-            strokeWidth={2}
-            aria-hidden
-          />
-          <input
-            type="search"
-            placeholder="Buscar..."
-            className="h-full w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/70"
-          />
-          <kbd className="absolute right-3 hidden items-center gap-1 rounded-md border border-border/60 bg-white/5 px-2 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline-flex">
-            ⌘ K
-          </kbd>
-        </label>
-      </div>
+      <GlobalSearch />
+
 
       <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
         <Popover>
