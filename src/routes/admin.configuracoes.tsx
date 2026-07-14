@@ -68,6 +68,13 @@ function ConfiguracoesPage() {
           notification_active: !!values.notification_active,
           extension_url: values.extension_url || null,
           extension_filename: values.extension_filename || null,
+          link_comunidade: (values as any).link_comunidade || null,
+          email_link_portal: (values as any).email_link_portal || null,
+          email_link_suporte: (values as any).email_link_suporte || null,
+          email_link_manual: (values as any).email_link_manual || null,
+          email_link_download: (values as any).email_link_download || null,
+          email_remetente_nome: (values as any).email_remetente_nome || null,
+          painel_revendedor_valor: (values as any).painel_revendedor_valor ?? 29.90,
         })
         .eq("id", data.id);
       if (error) throw error;
@@ -164,6 +171,74 @@ function ConfiguracoesPage() {
           rows={2}
           placeholder="Mensagem que aparecerá para os usuários…"
         />
+      </section>
+
+      <section className="glass space-y-4 rounded-2xl p-6">
+        <div>
+          <div className="text-sm font-semibold">Comunidade & Portal</div>
+          <div className="text-xs text-muted-foreground">
+            Links enviados por email após a compra e usados no rodapé de mensagens.
+          </div>
+        </div>
+        <div>
+          <Label>Link da comunidade (grupo)</Label>
+          <Input
+            value={(values as any).link_comunidade ?? ""}
+            onChange={(e) => setValues((v) => ({ ...(v as any), link_comunidade: e.target.value }))}
+            placeholder="https://chat.whatsapp.com/... ou https://t.me/..."
+          />
+        </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          <div>
+            <Label>Link do painel</Label>
+            <Input
+              value={(values as any).email_link_portal ?? ""}
+              onChange={(e) => setValues((v) => ({ ...(v as any), email_link_portal: e.target.value }))}
+              placeholder="https://mrsemlimites.lovable.app/revendedor"
+            />
+          </div>
+          <div>
+            <Label>Link de suporte</Label>
+            <Input
+              value={(values as any).email_link_suporte ?? ""}
+              onChange={(e) => setValues((v) => ({ ...(v as any), email_link_suporte: e.target.value }))}
+              placeholder="https://wa.me/..."
+            />
+          </div>
+          <div>
+            <Label>Link do manual</Label>
+            <Input
+              value={(values as any).email_link_manual ?? ""}
+              onChange={(e) => setValues((v) => ({ ...(v as any), email_link_manual: e.target.value }))}
+            />
+          </div>
+          <div>
+            <Label>Link de download</Label>
+            <Input
+              value={(values as any).email_link_download ?? ""}
+              onChange={(e) => setValues((v) => ({ ...(v as any), email_link_download: e.target.value }))}
+            />
+          </div>
+          <div>
+            <Label>Nome do remetente</Label>
+            <Input
+              value={(values as any).email_remetente_nome ?? ""}
+              onChange={(e) => setValues((v) => ({ ...(v as any), email_remetente_nome: e.target.value }))}
+              placeholder="MR Sem Limites"
+            />
+          </div>
+          <div>
+            <Label>Valor do Painel Revendedor (R$)</Label>
+            <Input
+              type="number"
+              step="0.01"
+              value={(values as any).painel_revendedor_valor ?? 29.9}
+              onChange={(e) =>
+                setValues((v) => ({ ...(v as any), painel_revendedor_valor: Number(e.target.value) }))
+              }
+            />
+          </div>
+        </div>
       </section>
 
       <div className="flex justify-end">

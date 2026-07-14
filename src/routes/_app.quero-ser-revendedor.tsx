@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_app/quero-ser-revendedor")({
       {
         name: "description",
         content:
-          "Torne-se revendedor oficial MR Sem Limites por uma taxa única de R$ 29,90. Painel exclusivo, gere licenças, crie promoções e ganhe comissão.",
+          "Torne-se revendedor oficial MR Sem Limites por uma taxa única de R$ 29,90. Painel exclusivo, gere licenças ilimitadas, defina seus preços e crie promoções.",
       },
       { property: "og:title", content: "Seja Revendedor — MR Sem Limites" },
       {
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_app/quero-ser-revendedor")({
 const VANTAGENS = [
   { icon: Wallet, titulo: "Venda suas próprias licenças", descricao: "Gere chaves ilimitadas e defina seus preços." },
   { icon: Megaphone, titulo: "Crie promoções e cupons", descricao: "Rode campanhas próprias para sua base de clientes." },
-  { icon: LineChart, titulo: "Ganhe comissão real", descricao: "Comissões recorrentes sobre suas vendas." },
+  { icon: LineChart, titulo: "Você define seus preços", descricao: "Compre acesso ao painel e revenda pelo valor que quiser — 100% do lucro é seu." },
   { icon: ShieldCheck, titulo: "Painel exclusivo", descricao: "Dashboard completo separado da área pública." },
   { icon: Users, titulo: "Comunidade privada", descricao: "Grupo restrito só para revendedores oficiais." },
   { icon: Headphones, titulo: "Suporte prioritário", descricao: "Atendimento humano direto no WhatsApp." },
@@ -38,7 +38,7 @@ const INCLUSO = [
   "Cadastro e gestão de clientes",
   "Criação de promoções e cupons",
   "Restauração de dispositivos",
-  "Relatórios de vendas e comissão",
+  "Relatórios de vendas e desempenho",
   "Acesso à comunidade exclusiva",
   "Sem mensalidade — pagamento único",
 ];
