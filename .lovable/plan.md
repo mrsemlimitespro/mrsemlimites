@@ -1,92 +1,84 @@
-## Fase 3 — Automação completa (plano cirúrgico)
+# Fase 4 — Comunicação + Revendas + Portal do Cliente
 
-### Auditoria: o que JÁ está automatizado no banco
+Escopo grande. Divido em blocos independentes que não tocam SDK, checkout, APIs públicas, prompts/agents/packs/loja, tema, layout ou rotas existentes. Só **adiciono** rotas novas, tabelas novas (todas nullable/opt-in) e um serviço central de email.
 
-Antes de propor mudanças, mapeei o estado atual. Muita coisa da Fase 3 já roda:
+## 1. Provider de email (Resend + arquitetura plugável)
 
-| Requisito Fase 3 | Estado atual |
-|---|---|
-| Aprovar pagamento → creditar plano | ✅ `trg_pagamento_status_after` → `approve_pagamento` |
-| Aprovar pagamento → gerar licença | ✅ `trg_pagamento_gerar_licenca` (mas **não vincula cliente**) |
-| Aprovar pagamento → notificar | ✅ `trg_pagamento_notify` |
-| Eventos de licença (criada/ativada/renovada/etc.) | ✅ `trg_licencas_evento` |
-| Transição teste → premium | ✅ `trg_licenca_tipo_transicao` |
-| Consumo de crédito ao criar cliente | ✅ `trg_cliente_consume_credit` |
-| Auto-cadastro de cliente no signup | ✅ `tg_auth_user_to_cliente` |
-| Anti-abuso do teste grátis (1 por email) | ✅ dentro de `atribuir_licenca_cliente` |
-| Trial só inicia na ativação | ✅ `expirar_trials_vencidos` + `validar_licenca` |
-| RPCs: cancelar/reativar/renovar/converter premium/resetar device | ✅ existem |
-| Expirar licenças vencidas | ✅ `expirar_licencas_vencidas` (função pronta, **sem cron**) |
-| Expirar trials vencidos | ✅ `expirar_trials_vencidos` (função pronta, **sem cron**) |
-| Notificar expirando (7d/1d) | ✅ `notificar_licencas_expirando` (função pronta, **sem cron**) |
+Novo módulo `src/lib/email/` com interface `EmailProvider`:
+- `resend.ts` (padrão, via connector Resend ou secret `RESEND_API_KEY`)
+- stubs vazios para `smtp.ts`, `sendgrid.ts`, `ses.ts`, `mailgun.ts` (contrato pronto, implementação futura)
+- `index.ts` seleciona provider via `EMAIL_PROVIDER` env (default `resend`)
 
-### O que falta (gaps reais)
+Configuração: peço ao usuário aprovar Resend via `standard_connectors--connect` OU salvar `RESEND_API_KEY` via `add_secret`. Enquanto não configurado, envios ficam em fila com status `pending_config` — não quebra nada.
 
-#### A. Pagamento aprovado não fecha o ciclo cliente ↔ licença ↔ produto
-`trg_pagamento_gerar_licenca` hoje só cria a linha em `licencas` com `revendedor_id`. Não localiza/cria `cliente`, não preenche `licencas.cliente_id`/`email`, não escreve em `licenca_produtos`. Resultado: a Fase 2 (CRM) só enxerga a compra via fallback por nome.
+## 2. Tabelas novas (migração única)
 
-**Correção (migration única):** estender a função do trigger para:
-1. Se `payment_transactions` tiver dado do comprador (`cliente_nome`/`cliente_email` — colunas já existem), fazer `upsert` em `clientes` por email.
-2. Vincular `licencas.cliente_id` + `email`.
-3. Se `plano.produto_id` existir, inserir em `licenca_produtos`. **Só adiciono coluna** `planos.produto_id` (nullable) se hoje não houver relação — pergunta 1 abaixo.
-4. Emitir notificação `revendedor` ("Nova venda") e `cliente` ("Licença criada").
+Todas nullable, todas com GRANT + RLS:
 
-Nada muda no schema de `licencas`, `clientes`, `payment_transactions` ou `licenca_produtos`. Só a função do trigger é reescrita.
+- `email_templates` — id, chave (unique: `licenca_criada`, `licenca_renovada`, `licenca_reenviada`, `licenca_premium`, `licenca_reativada`, `licenca_movida`, `compra_aprovada`, `pagamento_recusado`, `expiracao_7d`, `expiracao_1d`, `promocao`), assunto, html, texto, variaveis jsonb, ativo, updated_at. Seed com 11 templates padrão em português.
+- `email_queue` — id, template_chave, destinatario, assunto, html, variables, status (`pending|sending|sent|failed`), attempts, last_error, scheduled_for, sent_at, cliente_id, licenca_id, revendedor_id, metadata.
+- `email_logs` — id, queue_id, evento (`queued|sent|failed|bounced|opened|clicked`), detalhes jsonb, created_at.
+- `comissoes` — id, revendedor_id, payment_id, licenca_id, cliente_id, valor, percentual, status (`pendente|pago|cancelado`), pago_em, created_at.
 
-#### B. Nenhum job agendado — expirações e avisos dependem de ação manual
+Trigger `tg_licenca_email` em `licencas` (AFTER INSERT/UPDATE): enfileira email do template certo conforme transição (criada/renovada/reativada/premium/movida).
 
-Criar 4 cron jobs via `pg_cron` chamando as funções existentes (todas SECURITY DEFINER):
+Trigger `tg_pagamento_comissao` em `payment_transactions` (após aprovado): calcula comissão via `revendedores.comissao_percentual` e insere em `comissoes`.
 
-```
-*/10 * * * *   SELECT public.expirar_trials_vencidos();
-0    * * * *   SELECT public.expirar_licencas_vencidas();
-0    9 * * *   SELECT public.notificar_licencas_expirando();
-0    3 * * *   -- limpeza de logs voláteis (payment_webhook_logs > 90d, licencas_eventos.tipo='acesso' > 60d)
-```
+RPC `enfileirar_email(_template, _destinatario, _variables, _licenca_id?, _cliente_id?)`.
+RPC `reenviar_licenca(_licenca_id)` — recarrega variáveis e enfileira `licenca_reenviada`, grava audit.
 
-Zero endpoint HTTP — chamadas SQL puras, mais barato e sem exposição pública. Isso resolve os itens 3, 6, 7 e 9 do briefing (regras de validade, dashboard vivo, notificações e jobs) sem nova infra.
+## 3. Worker de envio
 
-#### C. Central de licenças no frontend (TS) — parcialmente feito na Fase 2
+Rota nova `src/routes/api/public/hooks/email-worker.ts` (POST):
+- verifica header `apikey` = anon key
+- pega até 20 emails `pending`, marca `sending`, renderiza template com variáveis, chama provider, marca `sent` ou incrementa `attempts` (máx 5 com backoff exponencial via `scheduled_for`).
+- registra em `email_logs`.
 
-Já temos `src/lib/admin/cliente-pagamentos.ts` (pagamentos) e as ações em lote em `admin.clientes.$id.tsx` chamando RPCs. Falta consolidar num único módulo `src/lib/admin/licencas-service.ts` que exponha:
+Cron `pg_cron` a cada 1 min chamando esse endpoint (via `supabase--insert`).
 
-```
-gerar / renovar / bloquear / desbloquear / cancelar / expirar
-mover(clienteId) / duplicar / transferir(revendedorId)
-listarAcessos / listarDispositivos / listarEventos
-```
+## 4. Portal do Cliente (`/minha-conta`)
 
-Todos são wrappers finos sobre RPCs já existentes (`gerar_licencas`, `renovar_licenca`, `cancelar_licenca`, `reativar_licenca`, `resetar_device_licenca`, `converter_licenca_em_premium`) + updates diretos (RLS admin já permite) para mover/duplicar. As telas `admin.licencas.tsx`, `admin.clientes.$id.tsx` e `admin.licencas-dashboard.tsx` passam a consumir esse módulo — sem alterar comportamento visível, só remove duplicação. Nenhuma tela nova.
+Nova rota `src/routes/_app.minha-conta.tsx` (com sub-tabs, sem tocar navegação existente — acesso via link direto e card no perfil).
 
-#### D. Dashboard em tempo real
+Abas:
+- **Licenças** — lista licenças do cliente logado (via `cliente_id` = email do user), com Copiar / Baixar (txt) / Renovar (abre checkout) / Detalhes / Suporte / dias restantes / último acesso / dispositivo.
+- **Produtos** — produtos vinculados via `licenca_produtos` + acessos de packs/prompts/agents (leitura das tabelas existentes, sem alterá-las).
+- **Downloads** — extensão + manuais + assets ligados aos produtos.
+- **Pedidos** — `payment_transactions` do cliente.
+- **Histórico** — `licencas_eventos` + `email_logs` do cliente.
+- **Notificações** — `notificacoes` com destino user.
 
-`admin.licencas-dashboard.tsx` já lê agregados. Adicionar canal Supabase Realtime único no dashboard (`postgres_changes` em `licencas`, `payment_transactions`, `clientes`) chamando `refetch` com debounce. Requer `ALTER PUBLICATION supabase_realtime ADD TABLE ...` para essas 3 tabelas.
+Design usa tokens existentes (`.glass`, `.icon-tile`, gradientes). Zero mudança de tema.
 
-#### E. Auditoria consistente
+## 5. Dashboard do Revendedor
 
-Tabela `audit_logs` (13 colunas, 2 policies) já existe mas não é gravada pelas RPCs. Adicionar helper `public.log_audit(_action, _entity, _entity_id, _before, _after)` e chamá-lo dentro das RPCs de escrita (`cancelar_licenca`, `reativar_licenca`, `renovar_licenca`, `resetar_device_licenca`, `converter_licenca_em_premium`). IP/user-agent virão via `metadata` quando a chamada for por server function (não passa hoje via RPC — aceitável).
+Nova rota `src/routes/_app.revendedor.tsx` (só role revendedor): clientes, licenças ativas, vendas do mês, comissões (pago/pendente), receita, pendências, últimas 10 vendas, últimos 10 clientes. Só leitura via RPCs novas `revendedor_dashboard()` e `revendedor_comissoes()`.
 
-### O que NÃO vou tocar
+## 6. Admin — Comunicação
 
-Checkout, SDK da extensão, APIs públicas (`/api/public/**`), webhooks (`cakto/kiwify/mercadopago`), prompts, agents, packs, loja, design system, tema, rotas existentes, sistema atual de chaves (`gerar_chave_licenca`).
+Nova rota `src/routes/admin.comunicacao.tsx`: fila, enviados, falhas (com botão reenviar), editor de templates (tabela `email_templates`), logs. Reusa componentes admin existentes.
 
-### Entrega
+Botão "Reenviar licença" nas telas de licença admin (`admin.licencas.tsx`, `admin.clientes.$id.tsx`) chama a RPC `reenviar_licenca`.
 
-**Migrations (2):**
-- `M1`: reescrever `tg_pagamento_gerar_licenca` (upsert cliente + vincular + licenca_produtos + notificação dupla) + criar `log_audit` + adicionar chamadas de auditoria nas 5 RPCs de escrita + `ALTER PUBLICATION supabase_realtime` para 3 tabelas.
-- `M2` (via **insert tool**, não migration): 4 `cron.schedule(...)` — não vai em migration porque contém URL/agenda específica do projeto.
+## 7. Segurança / performance
 
-**Arquivos novos:**
-- `src/lib/admin/licencas-service.ts` — central única de licenças.
+- Templates renderizam apenas: nome, produto, chave da licença (últimos 4 chars mascaráveis? — mantenho chave completa pois é o próprio ativo do cliente), validade, status, link download, link extensão, link suporte. Nunca secrets, tokens, service role, device_id completo.
+- Fila desacoplada; retry com backoff; sem bloquear triggers de licença (só `INSERT` na fila).
+- Provider chamado apenas do worker server-side.
 
-**Arquivos alterados:**
-- `src/routes/admin.licencas.tsx`, `admin.clientes.$id.tsx`, `admin.licencas-dashboard.tsx` — passam a chamar o serviço central + subscribe realtime no dashboard.
+## 8. Não muda
 
-**Nada novo de rota, tela, componente visual ou dependência.**
+- Nenhum arquivo em `src/routes/api/public/ext/`, `src/routes/api/public/licenca/`, `src/routes/api/public/webhooks/`.
+- Nenhum arquivo do SDK (`extension-sdk/`).
+- Checkout, prompts, agents, packs, loja intactos.
+- `src/styles.css`, `tailwind`, tema — intactos.
+- Navegação (`app-sidebar.tsx`) — só adiciono link "Minha Conta" no menu do cliente autenticado (item novo, sem remover nada). Se preferir, deixo só acessível via `/perfil`.
 
-### Perguntas antes de codar
+## Perguntas antes de codar
 
-1. **`planos.produto_id`**: hoje não vejo relação plano↔produto. Posso **adicionar essa coluna nullable** em `planos` para o trigger conseguir preencher `licenca_produtos` no auto-fluxo? (Se preferir não mexer no schema, pulo o item 3 do bloco A — licença é criada, produto fica vazio até vínculo manual.)
-2. **Comissão do revendedor**: o briefing pede "comissão" no painel do revendedor. Não existe campo hoje (`revendedores` não tem `comissao_percentual`, `payment_transactions` não tem `comissao_valor`). Adiciono ou deixo fora desta fase?
-3. **Limpeza de logs**: OK apagar `payment_webhook_logs > 90 dias` e `licencas_eventos` do tipo `acesso` > 60 dias no cron diário? (Histórico "importante" — criada/ativada/renovada/cancelada/expirada — nunca é apagado.)
-4. **Realtime**: OK habilitar realtime em `licencas`, `payment_transactions`, `clientes`? (Custo pequeno; sem isso o "dashboard em tempo real" fica em polling.)
+1. **Provider de email** — posso usar Resend via connector Lovable (recomendado) ou você prefere que eu peça `RESEND_API_KEY` direto?
+2. **Comissão padrão** — quando `revendedores.comissao_percentual` for null, uso quantos %? (sugiro 30%)
+3. **"Minha Conta" na sidebar** — adiciono um ícone no rail lateral para clientes, ou deixo só via `/perfil`? (Você disse "não alterar navegação existente" — interpreto como não remover/reordenar; adicionar 1 item de cliente é OK?)
+4. **Templates iniciais** — OK eu escrever os 11 em português com identidade MR Lova, ou você quer fornecer o copy?
+
+Depois das respostas eu executo tudo em uma única leva (migração + arquivos).
