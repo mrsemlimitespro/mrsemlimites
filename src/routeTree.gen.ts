@@ -32,6 +32,7 @@ import { Route as AdminLicencasDashboardRouteImport } from './routes/admin.licen
 import { Route as AdminLicencasRouteImport } from './routes/admin.licencas'
 import { Route as AdminHomeRouteImport } from './routes/admin.home'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
+import { Route as AdminComunicacaoRouteImport } from './routes/admin.comunicacao'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
@@ -185,6 +186,11 @@ const AdminHomeRoute = AdminHomeRouteImport.update({
 const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComunicacaoRoute = AdminComunicacaoRouteImport.update({
+  id: '/comunicacao',
+  path: '/comunicacao',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminClientesRoute = AdminClientesRouteImport.update({
@@ -428,6 +434,7 @@ export interface FileRoutesByFullPath {
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
+  '/admin/comunicacao': typeof AdminComunicacaoRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -490,6 +497,7 @@ export interface FileRoutesByTo {
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
+  '/admin/comunicacao': typeof AdminComunicacaoRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -556,6 +564,7 @@ export interface FileRoutesById {
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
+  '/admin/comunicacao': typeof AdminComunicacaoRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -623,6 +632,7 @@ export interface FileRouteTypes {
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/clientes'
+    | '/admin/comunicacao'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -685,6 +695,7 @@ export interface FileRouteTypes {
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/clientes'
+    | '/admin/comunicacao'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -750,6 +761,7 @@ export interface FileRouteTypes {
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/clientes'
+    | '/admin/comunicacao'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -981,6 +993,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracoes'
       fullPath: '/admin/configuracoes'
       preLoaderRoute: typeof AdminConfiguracoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/comunicacao': {
+      id: '/admin/comunicacao'
+      path: '/comunicacao'
+      fullPath: '/admin/comunicacao'
+      preLoaderRoute: typeof AdminComunicacaoRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/clientes': {
@@ -1332,6 +1351,7 @@ interface AdminRouteChildren {
   AdminAnimacoesRoute: typeof AdminAnimacoesRoute
   AdminBackupRoute: typeof AdminBackupRoute
   AdminClientesRoute: typeof AdminClientesRouteWithChildren
+  AdminComunicacaoRoute: typeof AdminComunicacaoRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminHomeRoute: typeof AdminHomeRoute
   AdminLicencasRoute: typeof AdminLicencasRoute
@@ -1355,6 +1375,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnimacoesRoute: AdminAnimacoesRoute,
   AdminBackupRoute: AdminBackupRoute,
   AdminClientesRoute: AdminClientesRouteWithChildren,
+  AdminComunicacaoRoute: AdminComunicacaoRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminHomeRoute: AdminHomeRoute,
   AdminLicencasRoute: AdminLicencasRoute,
