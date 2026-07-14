@@ -277,28 +277,33 @@ function ResourceView({ resource }: { resource: Resource }) {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => {
+                          onClick={async () => {
                             const kind =
                               resource.table === "revendedores" ? "revendedor" : "cliente";
                             const returnTo =
                               typeof window !== "undefined"
                                 ? window.location.pathname + window.location.search
                                 : "/admin";
-                            setImpersonation({
-                              kind,
-                              id: String(row.id),
-                              name: String(
-                                (row as Record<string, unknown>).nome ??
-                                  (row as Record<string, unknown>).name ??
-                                  "—",
-                              ),
-                              email: String((row as Record<string, unknown>).email ?? ""),
-                              returnTo,
-                            });
+                            const { data: userData } = await supabase.auth.getUser();
+                            setImpersonation(
+                              {
+                                kind,
+                                id: String(row.id),
+                                name: String(
+                                  (row as Record<string, unknown>).nome ??
+                                    (row as Record<string, unknown>).name ??
+                                    "—",
+                                ),
+                                email: String((row as Record<string, unknown>).email ?? ""),
+                                returnTo,
+                              },
+                              { adminEmail: userData.user?.email ?? null },
+                            );
                             navigate({ to: kind === "revendedor" ? "/dashboard" : "/" });
                           }}
                           aria-label="Visualizar painel"
                           className="gap-1.5 text-xs"
+                          data-impersonation-safe="1"
                           title="Abrir o painel deste usuário em modo somente leitura"
                         >
                           <Eye className="size-3.5" />
