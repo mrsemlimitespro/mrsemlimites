@@ -381,3 +381,51 @@ function IconBadge({
     </button>
   );
 }
+
+/**
+ * PanelChip — indicador permanente no Header do painel atual do usuário.
+ */
+function PanelChip({
+  authed,
+  role,
+  isAdminUser,
+}: {
+  authed: boolean | null;
+  role: ReturnType<typeof useUserRole>;
+  isAdminUser: boolean;
+}) {
+  const cfg = (() => {
+    if (isAdminUser || role === "admin")
+      return { emoji: "⭐", label: "Painel Administrador", glow: "var(--brand-orange)" };
+    if (role === "revendedor")
+      return { emoji: "🏪", label: "Painel Revendedor", glow: "var(--brand-blue)" };
+    if (authed === true && role === "cliente")
+      return { emoji: "👤", label: "Painel Cliente", glow: "var(--brand-emerald)" };
+    if (authed === false) return { emoji: "🌐", label: "Visitante", glow: "oklch(0.75 0.02 260)" };
+    return null; // loading
+  })();
+
+  if (!cfg) return null;
+
+  return (
+    <TooltipProvider delayDuration={150}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            aria-label={cfg.label}
+            className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-surface/60 px-2.5 text-xs font-semibold backdrop-blur-xl md:h-11 md:px-3 md:text-sm"
+            style={{
+              boxShadow: `0 0 0 1px color-mix(in oklab, ${cfg.glow} 40%, transparent), 0 0 18px -4px color-mix(in oklab, ${cfg.glow} 55%, transparent)`,
+            }}
+          >
+            <span aria-hidden className="text-base leading-none md:text-lg">
+              {cfg.emoji}
+            </span>
+            <span className="hidden sm:inline">{cfg.label}</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">{cfg.label}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
