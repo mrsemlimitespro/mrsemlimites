@@ -16,6 +16,7 @@ import {
 
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { fetchGastoMapForClientes } from "@/lib/admin/cliente-pagamentos";
 
 export const Route = createFileRoute("/admin/clientes")({
   head: () => ({
