@@ -143,7 +143,7 @@ function AdminClientesPage() {
               const t = l.created_at;
               if (t && (!ultimaCompra || new Date(t) > new Date(ultimaCompra))) ultimaCompra = t;
             }
-            const gasto = gastoByNome[(c.nome ?? "").trim().toLowerCase()] ?? null;
+            const gasto = gastoById[c.id] ?? null;
             return (
               <ClienteCard
                 key={c.id}
