@@ -104,7 +104,6 @@ export type Database = {
       admin_settings: {
         Row: {
           accent_color: string
-          comissao_padrao_percentual: number | null
           config_extensao: Json
           created_at: string
           email_link_download: string | null
@@ -119,9 +118,12 @@ export type Database = {
           favicon_url: string | null
           footer_text: string | null
           id: string
+          link_comunidade: string | null
           logo_url: string | null
           notification_active: boolean
           notification_message: string | null
+          painel_revendedor_produto_id: string | null
+          painel_revendedor_valor: number | null
           password_hash: string | null
           primary_color: string
           singleton: boolean
@@ -131,7 +133,6 @@ export type Database = {
         }
         Insert: {
           accent_color?: string
-          comissao_padrao_percentual?: number | null
           config_extensao?: Json
           created_at?: string
           email_link_download?: string | null
@@ -146,9 +147,12 @@ export type Database = {
           favicon_url?: string | null
           footer_text?: string | null
           id?: string
+          link_comunidade?: string | null
           logo_url?: string | null
           notification_active?: boolean
           notification_message?: string | null
+          painel_revendedor_produto_id?: string | null
+          painel_revendedor_valor?: number | null
           password_hash?: string | null
           primary_color?: string
           singleton?: boolean
@@ -158,7 +162,6 @@ export type Database = {
         }
         Update: {
           accent_color?: string
-          comissao_padrao_percentual?: number | null
           config_extensao?: Json
           created_at?: string
           email_link_download?: string | null
@@ -173,9 +176,12 @@ export type Database = {
           favicon_url?: string | null
           footer_text?: string | null
           id?: string
+          link_comunidade?: string | null
           logo_url?: string | null
           notification_active?: boolean
           notification_message?: string | null
+          painel_revendedor_produto_id?: string | null
+          painel_revendedor_valor?: number | null
           password_hash?: string | null
           primary_color?: string
           singleton?: boolean
@@ -183,7 +189,15 @@ export type Database = {
           updated_at?: string
           welcome_text?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "admin_settings_painel_revendedor_produto_id_fkey"
+            columns: ["painel_revendedor_produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ai_agents: {
         Row: {
@@ -714,54 +728,6 @@ export type Database = {
           },
         ]
       }
-      comissoes: {
-        Row: {
-          cliente_id: string | null
-          created_at: string
-          id: string
-          licenca_id: string | null
-          metadata: Json
-          pago_em: string | null
-          payment_id: string | null
-          percentual: number
-          revendedor_id: string
-          status: string
-          updated_at: string
-          valor: number
-          valor_base: number
-        }
-        Insert: {
-          cliente_id?: string | null
-          created_at?: string
-          id?: string
-          licenca_id?: string | null
-          metadata?: Json
-          pago_em?: string | null
-          payment_id?: string | null
-          percentual?: number
-          revendedor_id: string
-          status?: string
-          updated_at?: string
-          valor?: number
-          valor_base?: number
-        }
-        Update: {
-          cliente_id?: string | null
-          created_at?: string
-          id?: string
-          licenca_id?: string | null
-          metadata?: Json
-          pago_em?: string | null
-          payment_id?: string | null
-          percentual?: number
-          revendedor_id?: string
-          status?: string
-          updated_at?: string
-          valor?: number
-          valor_base?: number
-        }
-        Relationships: []
-      }
       creditos_movimentos: {
         Row: {
           created_at: string
@@ -1163,6 +1129,101 @@ export type Database = {
             foreignKeyName: "estoque_produto_id_fkey"
             columns: ["produto_id"]
             isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      extensao_configs: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          dias_adicionais: number | null
+          dias_padrao: number | null
+          dias_premium: number | null
+          dias_promocionais: number | null
+          id: string
+          imagem: string | null
+          link_download: string | null
+          link_drive: string | null
+          link_manual: string | null
+          link_rar: string | null
+          link_zip: string | null
+          metadata: Json | null
+          minutos_teste: number | null
+          msg_ativacao: string | null
+          msg_atualizacao: string | null
+          msg_bloqueio: string | null
+          msg_expiracao: string | null
+          nome: string
+          ordem: number | null
+          produto_id: string | null
+          status: string
+          updated_at: string
+          url_atualizacao: string | null
+          versao: string | null
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          dias_adicionais?: number | null
+          dias_padrao?: number | null
+          dias_premium?: number | null
+          dias_promocionais?: number | null
+          id?: string
+          imagem?: string | null
+          link_download?: string | null
+          link_drive?: string | null
+          link_manual?: string | null
+          link_rar?: string | null
+          link_zip?: string | null
+          metadata?: Json | null
+          minutos_teste?: number | null
+          msg_ativacao?: string | null
+          msg_atualizacao?: string | null
+          msg_bloqueio?: string | null
+          msg_expiracao?: string | null
+          nome: string
+          ordem?: number | null
+          produto_id?: string | null
+          status?: string
+          updated_at?: string
+          url_atualizacao?: string | null
+          versao?: string | null
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          dias_adicionais?: number | null
+          dias_padrao?: number | null
+          dias_premium?: number | null
+          dias_promocionais?: number | null
+          id?: string
+          imagem?: string | null
+          link_download?: string | null
+          link_drive?: string | null
+          link_manual?: string | null
+          link_rar?: string | null
+          link_zip?: string | null
+          metadata?: Json | null
+          minutos_teste?: number | null
+          msg_ativacao?: string | null
+          msg_atualizacao?: string | null
+          msg_bloqueio?: string | null
+          msg_expiracao?: string | null
+          nome?: string
+          ordem?: number | null
+          produto_id?: string | null
+          status?: string
+          updated_at?: string
+          url_atualizacao?: string | null
+          versao?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "extensao_configs_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: true
             referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
@@ -2065,7 +2126,6 @@ export type Database = {
           cliente_email: string | null
           cliente_id: string | null
           cliente_nome: string | null
-          comissao_valor: number | null
           created_at: string
           creditos_liberados: number
           external_id: string | null
@@ -2086,7 +2146,6 @@ export type Database = {
           cliente_email?: string | null
           cliente_id?: string | null
           cliente_nome?: string | null
-          comissao_valor?: number | null
           created_at?: string
           creditos_liberados?: number
           external_id?: string | null
@@ -2107,7 +2166,6 @@ export type Database = {
           cliente_email?: string | null
           cliente_id?: string | null
           cliente_nome?: string | null
-          comissao_valor?: number | null
           created_at?: string
           creditos_liberados?: number
           external_id?: string | null
@@ -2812,7 +2870,6 @@ export type Database = {
           auth_user_id: string | null
           bloqueado: boolean
           comissao: number | null
-          comissao_percentual: number | null
           created_at: string
           email: string | null
           id: string
@@ -2829,7 +2886,6 @@ export type Database = {
           auth_user_id?: string | null
           bloqueado?: boolean
           comissao?: number | null
-          comissao_percentual?: number | null
           created_at?: string
           email?: string | null
           id?: string
@@ -2846,7 +2902,6 @@ export type Database = {
           auth_user_id?: string | null
           bloqueado?: boolean
           comissao?: number | null
-          comissao_percentual?: number | null
           created_at?: string
           email?: string | null
           id?: string
@@ -3494,6 +3549,10 @@ export type Database = {
       pack_client_has_access: {
         Args: { _email: string; _pack_id: string }
         Returns: boolean
+      }
+      provisionar_revendedor_por_pagamento: {
+        Args: { _payment_id: string }
+        Returns: string
       }
       reativar_licenca: {
         Args: { _licenca_id: string }
