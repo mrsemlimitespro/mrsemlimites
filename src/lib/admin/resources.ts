@@ -331,7 +331,7 @@ export const resources: Resource[] = [
       { key: "nome", label: "Nome", type: "text", required: true },
       { key: "email", label: "E-mail", type: "text" },
       { key: "telefone", label: "Telefone", type: "text" },
-      { key: "comissao", label: "Comissão (%)", type: "number", step: 0.5 },
+      
       {
         key: "status",
         label: "Status",
