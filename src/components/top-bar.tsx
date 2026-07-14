@@ -38,6 +38,8 @@ export function TopBar() {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [isRevendedor, setIsRevendedor] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -47,10 +49,31 @@ export function TopBar() {
       if (!session?.user) {
         setIsAdminUser(false);
         setUserEmail(null);
+        setFirstName(null);
+        setIsRevendedor(false);
         return;
       }
       setUserEmail(session.user.email ?? null);
       if (mounted) setIsAdminUser(isAdminEmail(session.user.email));
+      // Busca nome do revendedor para saudação personalizada.
+      try {
+        const { data: rev } = await (supabase as any)
+          .from("revendedores")
+          .select("nome")
+          .eq("auth_user_id", session.user.id)
+          .maybeSingle();
+        if (!mounted) return;
+        const nome = (rev?.nome ?? session.user.user_metadata?.nome ?? "").trim();
+        if (nome) {
+          setFirstName(nome.split(/\s+/)[0]);
+          setIsRevendedor(!!rev?.nome);
+        } else {
+          setFirstName(null);
+          setIsRevendedor(false);
+        }
+      } catch {
+        setFirstName(null);
+      }
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => check(s));
@@ -112,6 +135,27 @@ export function TopBar() {
     <header className="sticky top-2 z-30 mx-auto flex w-full max-w-[1400px] items-center gap-2 px-3 md:top-4 md:gap-3 md:px-6">
       {/* Spacer for the floating rail on md+ */}
       <div className="hidden md:block md:w-16 shrink-0" aria-hidden />
+
+      {signedIn && firstName && (
+        <div
+          className="hidden min-w-0 shrink-0 truncate text-sm font-medium text-foreground/90 md:block"
+          title={isRevendedor ? `Revendedor ${firstName}` : firstName}
+        >
+          {isRevendedor ? (
+            <>
+              Olá,{" "}
+              <span className="gradient-text-warm font-semibold">
+                Revendedor {firstName}
+              </span>
+            </>
+          ) : (
+            <>
+              Bem-vindo, <span className="font-semibold">{firstName}</span>
+            </>
+          )}
+        </div>
+      )}
+
 
       <div className="flex min-w-0 flex-1 justify-center">
         <label className="relative flex h-10 w-full max-w-[560px] items-center rounded-full border border-border/70 bg-surface/60 pl-9 pr-3 backdrop-blur-xl transition-colors focus-within:border-primary/50 md:h-12 md:pl-11 md:pr-14">

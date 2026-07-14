@@ -1,4 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandLockup } from "@/components/brand";
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const router = useRouter();
+  const qc = useQueryClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
@@ -110,6 +113,11 @@ function LoginPage() {
       _user_id: data.user.id,
       _role: "admin",
     });
+
+    // Revalida cache global antes de navegar (perfil, role, promoções, clientes, permissões).
+    await Promise.all([qc.invalidateQueries(), router.invalidate()]);
+    console.log("[Revendedores] painel sincronizado após login");
+
     if (isAdmin) {
       navigate({ to: "/admin" });
       return;
@@ -134,6 +142,7 @@ function LoginPage() {
 
     navigate({ to: "/" });
   }
+
 
   return (
     <AuthShell>

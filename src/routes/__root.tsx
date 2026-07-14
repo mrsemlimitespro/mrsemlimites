@@ -144,12 +144,40 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
 
   useEffect(() => {
     // Inicializa plugins nativos (splash, status bar, back button) quando
     // rodando dentro do Capacitor. No navegador web/PWA é no-op.
     void import("@/lib/native-init").then((m) => m.initNativePlatform());
   }, []);
+
+  useEffect(() => {
+    // Revalida cache global e router quando a sessão muda (login, logout, refresh).
+    let mounted = true;
+    let unsub: (() => void) | undefined;
+    void import("@/integrations/supabase/client").then(({ supabase }) => {
+      if (!mounted) return;
+      const { data } = supabase.auth.onAuthStateChange((event) => {
+        if (
+          event !== "SIGNED_IN" &&
+          event !== "SIGNED_OUT" &&
+          event !== "USER_UPDATED"
+        )
+          return;
+        console.log("[Auth] estado alterado:", event, "— sincronizando painel");
+        void router.invalidate();
+        if (event !== "SIGNED_OUT") {
+          void queryClient.invalidateQueries();
+        }
+      });
+      unsub = () => data.subscription.unsubscribe();
+    });
+    return () => {
+      mounted = false;
+      unsub?.();
+    };
+  }, [queryClient, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
