@@ -120,10 +120,21 @@ function ResourceView({ resource }: { resource: Resource }) {
       const { error } = await (supabase as any).from(resource.table).delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Excluído");
-      qc.invalidateQueries({ queryKey: ["admin-list", resource.table] });
-      qc.invalidateQueries({ queryKey: ["admin-count", resource.table] });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["admin-list", resource.table] }),
+        qc.invalidateQueries({ queryKey: ["admin-count", resource.table] }),
+        qc.invalidateQueries({ queryKey: ["admin-count"] }),
+        resource.table === "revendedores"
+          ? qc.invalidateQueries({ queryKey: ["licencas-dashboard"] })
+          : Promise.resolve(),
+      ]);
+      if (resource.table === "revendedores") {
+        console.log("[Revendedores] exclusão realizada");
+        console.log("[Revendedores] cache atualizado");
+        console.log("[Revendedores] painel sincronizado");
+      }
       setConfirmDelete(null);
     },
     onError: (err: Error) => toast.error(err.message),
