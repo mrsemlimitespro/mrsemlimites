@@ -324,6 +324,7 @@ function LicencasAdmin() {
                     onRenovar={() => setRenovTarget(l)}
                     onCancelar={() => cancelar.mutate(l.id)}
                     onReativar={() => reativar.mutate(l.id)}
+                    onReenviar={() => reenviar.mutate(l.id)}
                   />
                 ))}
               </tbody>
