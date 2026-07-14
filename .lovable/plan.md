@@ -1,97 +1,109 @@
 
-# Plano — Servidor de Licenciamento MR LOV 2.2
+# Reestruturação Enterprise — MR Sem Limites
 
-## Situação atual (o que já existe hoje no projeto)
+Escopo: profissionalizar o **painel administrativo** e a **hierarquia Master → Revendedor → Cliente**, sem alterar extensão, SDK, APIs da extensão, sistema de licenciamento em produção, nem checkout Kiwify.
 
-Antes de criar qualquer coisa nova, é importante você saber que **grande parte do que você pediu JÁ EXISTE** no MR Sem Limites. O servidor "antigo perdido" pode ter sido, na verdade, este próprio backend. Resumo do que já está implantado:
+Tamanho real do trabalho: ~15–25 arquivos por fase, várias migrations, várias telas novas. Vou executar **por fases**, e ao final de cada fase paro para você validar antes da próxima.
 
-**Tabelas já existentes:**
-- `licencas` (24 colunas: chave, status, tipo teste/premium, trial, expira_em, device_id, max_dispositivos, cliente_id, revendedor_id, fornecedor_slug, versao_min, etc.)
-- `licenca_dispositivos` (HWID/multi-device com ip, user_agent, último acesso)
-- `licenca_acessos` (log de cada validação — ok, invalid, blocked, trial_expired, device_limit, outdated, upstream_denied)
-- `licencas_eventos` (auditoria: criada, vinculada, ativada, renovada, cancelada, expirada, reset, acesso)
-- `licenca_produtos`, `clientes`, `planos`, `payment_transactions`, `payment_gateways`, `payment_webhook_logs`, `user_roles` (com `has_role` + enum `app_role`)
+---
 
-**Endpoint público já existente:**
-- `POST /api/public/validar-licenca` — faz tudo: valida chave+email+device, inicia trial na 1ª chamada, expira trial/premium vencidos, controla limite de dispositivos, chama proxy do fornecedor, grava log, retorna `{ ok, valid, premium, tipo, expira_em, expires_in, cliente_id, reason }`.
+## Fase 0 — Auditoria (só leitura, sem código)
 
-**Funções DB já existentes:** `gerar_licencas`, `atribuir_licenca_cliente`, `renovar_licenca`, `reativar_licenca`, `cancelar_licenca`, `resetar_device_licenca`, `converter_licenca_em_premium`, `expirar_licencas_vencidas`, `expirar_trials_vencidos`, `notificar_licencas_expirando`, `has_role`.
+Antes de mexer, vou mapear e te entregar um relatório com:
 
-**Painel admin já existente:** `/admin/licencas` (via `admin.$resource.tsx`), `/admin/pagamentos`, `/admin/usuarios`, `/admin/pack-autorizacoes`, `/admin/configuracoes`.
+- Abas do admin que existem hoje (`admin.*.tsx`)
+- Quais têm CRUD real vs quais são só UI
+- Botões sem handler / sem função
+- Cards com número mockado ou sem query
+- Relatórios/gráficos que puxam dado real vs falso
+- Tabelas do banco que já suportam a hierarquia e o que falta
 
-**Webhooks já existentes:** Cakto, Kiwify, Mercado Pago (`/api/public/webhooks/*`).
+Entregável: `.lovable/auditoria-admin.md` com lista item-a-item + severidade.
 
-**Segurança:** RLS ativo em todas as tabelas, JWT via Supabase Auth, `has_role` com `user_roles` (padrão seguro), logs em `licenca_acessos` e `audit_logs`.
+**Nada é alterado nesta fase.** Você aprova o que entra em cada fase seguinte.
 
-## O que realmente falta (delta a construir)
+---
 
-Comparando seu pedido com o que existe, o gap é pequeno:
+## Fase 1 — Hierarquia (base de tudo)
 
-1. **Endpoints REST adicionais que a extensão pode chamar** (hoje só existe `validar-licenca`):
-   - `POST /api/public/licenca/heartbeat` — ping periódico (grava `ultimo_acesso`, retorna status)
-   - `POST /api/public/licenca/renovar` — renovação a partir da extensão (com token)
-   - `POST /api/public/licenca/reset-hwid` — solicitação de reset (fila; admin aprova)
-   - `POST /api/public/licenca/revogar` — auto-revogação/logout do device
-   - `GET  /api/public/licenca/config` — download de configuração remota da extensão (feature flags, endpoints, versão mínima)
-   - `GET  /api/public/licenca/consulta?chave=...` — consulta pública read-only (status/expira_em)
+Sem isso, nenhuma outra fase funciona.
 
-2. **Estados formais VALID/EXPIRED/REVOKED/BLOCKED/DEVICE_MISMATCH/PENDING/TRIAL** — hoje o campo `status` usa `ativa/expirada/cancelada/revogada` + `tipo` `teste/premium`. Vou adicionar uma **view/coluna computada** `estado_extensao` que mapeia os campos internos para os 7 rótulos que a extensão espera, **sem quebrar** o schema atual.
+**Banco (migration):**
+- Garantir `revendedores.auth_user_id` como pivô da hierarquia (já existe).
+- `clientes.revendedor_id` obrigatório em novos cadastros (já existe coluna; reforçar trigger).
+- View `v_hierarquia` (master vê tudo; revendedor vê só seus clientes/licenças/vendas).
+- RLS revisada nas tabelas: `clientes`, `licencas`, `payment_transactions`, `promocoes`, `notificacoes` — revendedor só enxerga o próprio escopo; master (has_role admin) vê tudo. Já está quase todo assim; vou fechar os buracos que a auditoria apontar.
 
-3. **Dashboard consolidado de licenciamento** (`/admin/licencas-dashboard`): totais, ativas, expiradas, bloqueadas, dispositivos conectados, ativações hoje, renovações do dia — hoje só existe a listagem CRUD.
+**Front:**
+- Nada novo aqui. Só garantir que as telas do revendedor (`/clientes`, `/licencas`, `/creditos`) filtram por `current_revendedor_id()` (já filtram via RLS).
 
-4. **Tabela `api_keys`** (para chaves de integração/serviço, ex.: extensão em modo signed) — não existe ainda.
+---
 
-5. **Tabela `settings` centralizada** — hoje temos `admin_settings` (singleton para senha admin); vou estender para chave→valor genérico usado por `/licenca/config`.
+## Fase 2 — Admin: limpar o que é falso
 
-6. **Rate limit por IP/chave** nos endpoints públicos — hoje não há.
+Para cada aba do admin listada na Fase 0:
 
-7. **Mercado Pago recorrente:** o webhook já existe, mas o fluxo "aprovado → cria licença → envia email com a chave" precisa ser completado (hoje aprova pagamento e credita, mas não gera licença automaticamente por plano).
+- Aba sem uso → remover do menu (mantendo rota se algo importa).
+- Botão sem handler → implementar ou remover.
+- Card com número fixo → conectar em query real (`supabase.from(...).select("id",{count:"exact",head:true})`).
+- CRUD incompleto → completar via `admin.$resource.tsx` (mecanismo genérico já existente em `src/lib/admin/resources.ts`).
 
-## O que **NÃO** vou fazer
+Sem inventar dados. Se não há dado real, o card mostra "—" e explica.
 
-- **Não vou renomear** `licencas` para `licenses`, `clientes` para `users`, etc. Isso quebraria todo o painel, RLS, funções DB, webhooks e a própria extensão que provavelmente já usa os nomes atuais. Vou manter os nomes em PT-BR do projeto e apenas **adicionar** o que falta.
-- **Não vou** recriar tabelas que já existem (`clientes`, `planos`, `licencas`, `licenca_dispositivos`, `payment_transactions`, `licencas_eventos` já cobrem `users/licenses/license_devices/payments/license_logs`).
-- **Não vou** trocar a tecnologia (continua TanStack Start + Lovable Cloud + RLS).
-- **Não vou** tocar em nada da Home, checkout, packs, prompts, agents, PWA — como você já pediu antes.
-- **Não vou** aplicar nada antes de você aprovar este plano.
+---
 
-## Fase 2 — quando você enviar o ZIP da extensão MR LOV 2.2
+## Fase 3 — Clientes & Cadastro automático
 
-Ao receber o `.zip/.rar` da extensão, vou:
+- Trigger `tg_auth_user_to_cliente` (já existe) — verificar se está vinculando ao revendedor certo quando o signup vem de link de revendedor. Se não, adicionar `raw_user_meta_data->>'revendedor_id'` no insert.
+- Form de cliente no admin com todos os campos exigidos: nome, email, telefone, whatsapp, CPF (opcional), empresa (opcional), revendedor_id, status. Colunas que faltarem entram por migration.
+- Tela "Clientes" do admin: filtro por revendedor, produto, status, última compra.
 
-1. Extrair e ler `manifest.json`, `background.js`/service worker, `content-scripts`, `popup`, `options`.
-2. Listar **todos** os `fetch(...)`/`XMLHttpRequest`/URLs base encontrados.
-3. Extrair o **shape exato** de request/response que a extensão envia e espera em cada endpoint.
-4. Comparar com o endpoint atual `/api/public/validar-licenca` e com os novos que este plano cria.
-5. Ajustar **apenas o backend** para bater 100% com o contrato da extensão (nomes de campos, códigos de erro, envelope JSON). A extensão não será modificada.
-6. Entregar o **Relatório Final** que você pediu: endpoints identificados, fluxos, % de compatibilidade, checklist, arquivos a alterar (se algum) vs. intactos.
+---
 
-Somente depois disso, e com sua nova aprovação explícita, aplico o ajuste de compatibilidade.
+## Fase 4 — Licenças (organização, sem tocar validação)
 
-## Ordem de execução (após aprovação)
+Só UI + views. **Não altero** `validar_licenca`, `heartbeat_licenca`, endpoints `/api/public/licenca/*`, nem SDK.
 
-1. **Migração 1 — schema delta:** cria `api_keys`, estende `admin_settings` com JSON `config_extensao`, adiciona view `v_licenca_estado` (mapeia para VALID/EXPIRED/REVOKED/BLOCKED/DEVICE_MISMATCH/PENDING/TRIAL), adiciona coluna `reset_hwid_solicitado_em` em `licencas`. Todos os GRANTs + RLS.
-2. **Migração 2 — MP recorrente:** trigger `payment_transactions.status=aprovado + plano_id` → gera licença automaticamente via `gerar_licencas`, vincula ao cliente, dispara notificação.
-3. **Rotas server:** cria os 6 endpoints `/api/public/licenca/*` acima, com verificação de assinatura simples (chave + timestamp), rate-limit em memória por IP.
-4. **UI admin:** cria `/admin/licencas-dashboard` (cards + gráfico), reaproveitando o layout de `admin.index.tsx`.
-5. **Testes de fumaça:** curl em cada endpoint público para conferir shape.
-6. **Aguardar ZIP** para Fase 2 (compatibilidade).
+- Abas no `/admin/licencas`: Teste · Premium · Expiradas · Canceladas · Bloqueadas · Todas.
+- Coluna "Nível": Master / Revenda / Cliente (derivada de `revendedor_id` + `cliente_id`).
+- Botão **Restaurar Dispositivo**: chama RPC `resetar_device_licenca` (já existe) + grava evento em `licencas_eventos` com motivo (novo campo `metadata.motivo`, sem alterar schema base).
+- Histórico do reset: já cai em `licencas_eventos` via trigger.
 
-## Detalhes técnicos (para referência)
+---
 
-- Stack: TanStack Start v1 + React 19 + Tailwind v4 (mantido).
-- Endpoints públicos ficam sob `src/routes/api/public/licenca/*.ts` (bypass de auth do Lovable — cada handler valida assinatura/chave por conta própria).
-- Reset HWID vira **fluxo em duas etapas**: extensão marca `reset_hwid_solicitado_em`; admin aprova em `/admin/licencas` (usa `resetar_device_licenca` existente).
-- Estados exportados via view SQL — zero mudança destrutiva nas colunas atuais.
-- `api_keys`: `id, nome, hash, scopes[], created_by, revoked_at`; hash BCrypt, nunca guarda a chave em claro.
-- Nenhuma exposição do `SUPABASE_SERVICE_ROLE_KEY` para o cliente.
+## Fase 5 — Revendedor: promoções, cupons, campanhas
 
-## Confirmação que preciso de você
+Tabela `promocoes` já existe. Vou:
 
-Responda:
+- Garantir RLS: revendedor CRUD só nas próprias; master vê todas.
+- CRUD no painel do revendedor (`/promocoes` — rota nova sob `_app`).
+- Renderizar promoções ativas do revendedor no dashboard do cliente daquele revendedor.
+- Cupons: coluna `codigo` + `desconto_percent`/`desconto_valor` (adicionar por migration se não houver).
 
-1. **Aprovado** → executo os passos 1–5 e aguardo o ZIP.
-2. **Aprovado apenas parcialmente** → me diga quais itens tirar/adiar.
-3. **Envie o ZIP antes** → então eu paro aqui, leio a extensão primeiro, e volto com o plano refinado ao contrato real dela (recomendado se você tem o arquivo em mãos — evita retrabalho).
+---
 
-Nenhum arquivo do projeto será alterado até sua confirmação.
+## Fase 6 — Central de Comunicação (estrutura, sem enviar ainda)
+
+- Tabela `mensagens_campanhas` (destinatário: todos/revendedores/clientes/individual; filtros: produto/plano/status/última compra; status: rascunho/agendada/enviada).
+- Tela admin `/admin/comunicacao` com composer + preview de audiência (contagem real via query).
+- **Envio real de WhatsApp fica desativado** — botão "Enviar" grava a campanha como `pronta_para_envio`. Integração com API oficial entra numa fase futura quando você tiver as credenciais.
+
+---
+
+## Fase 7 — Dashboard & Relatórios reais
+
+Substituir números fixos por queries reais em: clientes, revendedores, produtos, licenças (por status), receita (soma de `payment_transactions` aprovados), downloads (`pack_download_logs`), ativações (`licencas_eventos.tipo='ativada'`), promoções ativas, conversão (aprovados/total), novos cadastros (7/30 dias), dispositivos (`licenca_dispositivos`).
+
+---
+
+## Regras que valem em todas as fases
+
+- Não toco em: `extension-sdk/**`, `src/routes/api/public/ext/**`, `src/routes/api/public/licenca/**`, `src/routes/api/public/validar-licenca.ts`, `src/routes/api/public/webhooks/**`, `src/routes/checkout.tsx`, `supabase/config.toml`, arquivos auto-gerados do Supabase.
+- Nenhum dado mockado. Se não há dado, mostra estado vazio.
+- Cada fase termina com build passando e uma verificação rápida no preview.
+
+---
+
+## Como quero conduzir
+
+Se você aprovar este plano, começo pela **Fase 0 (auditoria, só leitura)** e te devolvo o relatório antes de mexer em qualquer arquivo. Aí você me diz quais itens quer priorizar nas Fases 1–7 (ou se quer todas em ordem).
