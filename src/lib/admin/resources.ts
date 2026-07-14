@@ -1164,6 +1164,76 @@ export const resources: Resource[] = [
       { key: "created_at", label: "Criado", format: "date" },
     ],
   },
+  {
+    key: "comunicacao",
+    label: "Central de Comunicação",
+    singular: "Campanha",
+    table: "mensagens_campanhas",
+    icon: Megaphone,
+    group: "Marketing",
+    orderBy: { column: "created_at", ascending: false },
+    searchColumns: ["titulo", "mensagem"],
+    fields: [
+      { key: "titulo", label: "Título interno", type: "text", required: true },
+      { key: "mensagem", label: "Mensagem", type: "textarea", required: true, helperText: "Suporta {nome}, {email}, {chave} — substituição no envio futuro." },
+      {
+        key: "canal",
+        label: "Canal",
+        type: "select",
+        required: true,
+        options: [
+          { value: "whatsapp", label: "WhatsApp" },
+          { value: "email", label: "E-mail" },
+          { value: "notificacao", label: "Notificação no app" },
+        ],
+      },
+      {
+        key: "status",
+        label: "Status",
+        type: "select",
+        options: [
+          { value: "rascunho", label: "Rascunho" },
+          { value: "pronta_para_envio", label: "Pronta para envio" },
+          { value: "enviada", label: "Enviada" },
+          { value: "cancelada", label: "Cancelada" },
+        ],
+      },
+      {
+        key: "revendedor_id",
+        label: "Filtrar por revendedor",
+        type: "select_from_table",
+        fromTable: { table: "revendedores", labelKey: "nome" },
+      },
+      {
+        key: "produto_id",
+        label: "Filtrar por produto",
+        type: "select_from_table",
+        fromTable: { table: "produtos", labelKey: "nome" },
+      },
+      {
+        key: "plano_status",
+        label: "Filtrar por status do plano",
+        type: "select",
+        options: [
+          { value: "ativo", label: "Ativos" },
+          { value: "expirado", label: "Expirados" },
+          { value: "teste", label: "Em teste" },
+          { value: "cancelado", label: "Cancelados" },
+        ],
+      },
+      { key: "destinatarios_previstos", label: "Destinatários previstos", type: "number" },
+      { key: "agendada_para", label: "Agendar para", type: "datetime" },
+      { key: "observacoes", label: "Observações internas", type: "textarea" },
+    ],
+    listColumns: [
+      { key: "titulo", label: "Título" },
+      { key: "canal", label: "Canal" },
+      { key: "status", label: "Status" },
+      { key: "destinatarios_previstos", label: "Destinatários", format: "number" },
+      { key: "agendada_para", label: "Agendada", format: "date" },
+      { key: "created_at", label: "Criada", format: "date" },
+    ],
+  },
 ];
 
 export { Store };
