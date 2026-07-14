@@ -362,12 +362,14 @@ function LicencaRow({
   onRenovar,
   onCancelar,
   onReativar,
+  onReenviar,
 }: {
   l: Licenca;
   onReset: () => void;
   onRenovar: () => void;
   onCancelar: () => void;
   onReativar: () => void;
+  onReenviar: () => void;
 }) {
   const nivel = derivarNivel(l);
   const encerrada = l.status === "expirada" || l.status === "cancelada" || l.status === "bloqueada" || l.status === "revogada";
