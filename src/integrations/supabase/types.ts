@@ -105,6 +105,7 @@ export type Database = {
         Row: {
           accent_color: string
           config_extensao: Json
+          config_extensao_por_produto: Json
           created_at: string
           email_enabled: boolean
           email_from: string | null
@@ -139,6 +140,7 @@ export type Database = {
         Insert: {
           accent_color?: string
           config_extensao?: Json
+          config_extensao_por_produto?: Json
           created_at?: string
           email_enabled?: boolean
           email_from?: string | null
@@ -173,6 +175,7 @@ export type Database = {
         Update: {
           accent_color?: string
           config_extensao?: Json
+          config_extensao_por_produto?: Json
           created_at?: string
           email_enabled?: boolean
           email_from?: string | null
@@ -1082,6 +1085,7 @@ export type Database = {
           html: string
           id: string
           nome: string
+          produto_id: string | null
           texto: string | null
           updated_at: string
           variaveis: Json
@@ -1094,6 +1098,7 @@ export type Database = {
           html: string
           id?: string
           nome: string
+          produto_id?: string | null
           texto?: string | null
           updated_at?: string
           variaveis?: Json
@@ -1106,11 +1111,20 @@ export type Database = {
           html?: string
           id?: string
           nome?: string
+          produto_id?: string | null
           texto?: string | null
           updated_at?: string
           variaveis?: Json
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "email_templates_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       estoque: {
         Row: {
@@ -2524,6 +2538,7 @@ export type Database = {
           nome: string
           ordem: number
           preco: number
+          slug: string | null
           status: string
           titulo: string | null
           updated_at: string
@@ -2542,6 +2557,7 @@ export type Database = {
           nome: string
           ordem?: number
           preco?: number
+          slug?: string | null
           status?: string
           titulo?: string | null
           updated_at?: string
@@ -2560,6 +2576,7 @@ export type Database = {
           nome?: string
           ordem?: number
           preco?: number
+          slug?: string | null
           status?: string
           titulo?: string | null
           updated_at?: string
