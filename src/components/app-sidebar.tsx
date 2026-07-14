@@ -262,3 +262,51 @@ function RailAction({
     </Tooltip>
   );
 }
+
+/**
+ * PanelBadge — chip circular no topo do rail lateral indicando o painel atual
+ * (Admin / Revendedor / Cliente / Visitante). Só visual, sem alterar rotas.
+ */
+function PanelBadge({
+  authed,
+  role,
+}: {
+  authed: boolean | null;
+  role: ReturnType<typeof useUserRole>;
+}) {
+  const cfg = (() => {
+    if (authed !== true) return { emoji: "🌐", label: "Visitante", glow: "oklch(0.75 0.02 260)" };
+    if (role === "admin")
+      return { emoji: "⭐", label: "Administrador", glow: "var(--brand-orange)" };
+    if (role === "revendedor")
+      return { emoji: "🏪", label: "Revendedor", glow: "var(--brand-blue)" };
+    if (role === "cliente")
+      return { emoji: "👤", label: "Cliente", glow: "var(--brand-emerald)" };
+    return { emoji: "•", label: "Carregando…", glow: "oklch(0.6 0 0)" };
+  })();
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
+          aria-label={`Painel atual: ${cfg.label}`}
+          className="mb-1 grid size-9 place-items-center rounded-full text-lg leading-none"
+          style={{
+            background: `color-mix(in oklab, ${cfg.glow} 25%, oklch(0 0 0 / 40%))`,
+            boxShadow: `0 0 0 1px color-mix(in oklab, ${cfg.glow} 55%, transparent), 0 0 18px -2px color-mix(in oklab, ${cfg.glow} 65%, transparent)`,
+          }}
+        >
+          <span aria-hidden>{cfg.emoji}</span>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side="right" sideOffset={12}>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+            Painel atual
+          </span>
+          <span className="font-semibold">{cfg.label}</span>
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
