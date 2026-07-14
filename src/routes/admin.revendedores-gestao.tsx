@@ -25,6 +25,8 @@ import {
   Users as UsersIcon,
   KeyRound,
   X,
+  RotateCcw,
+  Trash2,
 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +39,8 @@ import {
   setRevendedorBloqueio,
   setRevendedorValidade,
   resendMagicLinkRevendedor,
+  resetRevendedorPassword,
+  deleteRevendedor,
 } from "@/lib/revendedores/admin.functions";
 
 export const Route = createFileRoute("/admin/revendedores-gestao")({
