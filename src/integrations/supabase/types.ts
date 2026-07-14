@@ -72,11 +72,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "access_logs_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["cliente_id"]
+          },
+          {
             foreignKeyName: "access_logs_revendedor_id_fkey"
             columns: ["revendedor_id"]
             isOneToOne: false
             referencedRelation: "revendedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "access_logs_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
           },
           {
             foreignKeyName: "access_logs_revendedor_id_fkey"
@@ -602,8 +616,10 @@ export type Database = {
       }
       clientes: {
         Row: {
+          cpf: string | null
           created_at: string
           email: string | null
+          empresa: string | null
           expira_em: string | null
           id: string
           nome: string
@@ -614,10 +630,13 @@ export type Database = {
           telefone: string | null
           ultimo_acesso: string | null
           updated_at: string
+          whatsapp: string | null
         }
         Insert: {
+          cpf?: string | null
           created_at?: string
           email?: string | null
+          empresa?: string | null
           expira_em?: string | null
           id?: string
           nome: string
@@ -628,10 +647,13 @@ export type Database = {
           telefone?: string | null
           ultimo_acesso?: string | null
           updated_at?: string
+          whatsapp?: string | null
         }
         Update: {
+          cpf?: string | null
           created_at?: string
           email?: string | null
+          empresa?: string | null
           expira_em?: string | null
           id?: string
           nome?: string
@@ -642,6 +664,7 @@ export type Database = {
           telefone?: string | null
           ultimo_acesso?: string | null
           updated_at?: string
+          whatsapp?: string | null
         }
         Relationships: [
           {
@@ -650,6 +673,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "revendedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
           },
           {
             foreignKeyName: "clientes_revendedor_id_fkey"
@@ -698,6 +728,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "revendedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creditos_movimentos_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
           },
           {
             foreignKeyName: "creditos_movimentos_revendedor_id_fkey"
@@ -848,6 +885,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "clientes"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispositivos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["cliente_id"]
           },
           {
             foreignKeyName: "dispositivos_licenca_id_fkey"
@@ -1180,6 +1224,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "licencas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["cliente_id"]
+          },
+          {
             foreignKeyName: "licencas_produto_id_fkey"
             columns: ["produto_id"]
             isOneToOne: false
@@ -1192,6 +1243,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "revendedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licencas_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
           },
           {
             foreignKeyName: "licencas_revendedor_id_fkey"
@@ -1246,6 +1304,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "clientes"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licencas_eventos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["cliente_id"]
           },
           {
             foreignKeyName: "licencas_eventos_licenca_id_fkey"
@@ -1346,6 +1411,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "revendedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notificacoes_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
           },
           {
             foreignKeyName: "notificacoes_revendedor_id_fkey"
@@ -1470,6 +1542,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pack_authorizations_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["cliente_id"]
+          },
+          {
             foreignKeyName: "pack_authorizations_pack_id_fkey"
             columns: ["pack_id"]
             isOneToOne: false
@@ -1482,6 +1561,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "revendedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_authorizations_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
           },
           {
             foreignKeyName: "pack_authorizations_revendedor_id_fkey"
@@ -1748,6 +1834,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "revendedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
           },
           {
             foreignKeyName: "payment_transactions_revendedor_id_fkey"
@@ -2064,9 +2157,11 @@ export type Database = {
           banner_desktop_url: string | null
           banner_mobile_url: string | null
           botao_texto: string | null
+          codigo_cupom: string | null
           cor: string | null
           created_at: string
           desconto_percentual: number | null
+          desconto_valor: number | null
           descricao: string | null
           destaque: boolean
           fim: string | null
@@ -2080,18 +2175,23 @@ export type Database = {
           plano_id: string | null
           preco_antigo: number | null
           preco_atual: number | null
+          revendedor_id: string | null
           subtitulo: string | null
           titulo: string
           updated_at: string
+          uso_maximo: number | null
+          usos_atuais: number
         }
         Insert: {
           ativo?: boolean
           banner_desktop_url?: string | null
           banner_mobile_url?: string | null
           botao_texto?: string | null
+          codigo_cupom?: string | null
           cor?: string | null
           created_at?: string
           desconto_percentual?: number | null
+          desconto_valor?: number | null
           descricao?: string | null
           destaque?: boolean
           fim?: string | null
@@ -2105,18 +2205,23 @@ export type Database = {
           plano_id?: string | null
           preco_antigo?: number | null
           preco_atual?: number | null
+          revendedor_id?: string | null
           subtitulo?: string | null
           titulo: string
           updated_at?: string
+          uso_maximo?: number | null
+          usos_atuais?: number
         }
         Update: {
           ativo?: boolean
           banner_desktop_url?: string | null
           banner_mobile_url?: string | null
           botao_texto?: string | null
+          codigo_cupom?: string | null
           cor?: string | null
           created_at?: string
           desconto_percentual?: number | null
+          desconto_valor?: number | null
           descricao?: string | null
           destaque?: boolean
           fim?: string | null
@@ -2130,9 +2235,12 @@ export type Database = {
           plano_id?: string | null
           preco_antigo?: number | null
           preco_atual?: number | null
+          revendedor_id?: string | null
           subtitulo?: string | null
           titulo?: string
           updated_at?: string
+          uso_maximo?: number | null
+          usos_atuais?: number
         }
         Relationships: [
           {
@@ -2147,6 +2255,27 @@ export type Database = {
             columns: ["plano_id"]
             isOneToOne: false
             referencedRelation: "planos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promocoes_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "revendedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promocoes_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
+          },
+          {
+            foreignKeyName: "promocoes_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_revendedor_visao"
             referencedColumns: ["id"]
           },
         ]
@@ -2620,6 +2749,24 @@ export type Database = {
         }
         Relationships: []
       }
+      v_hierarquia_clientes: {
+        Row: {
+          cliente_criado_em: string | null
+          cliente_email: string | null
+          cliente_id: string | null
+          cliente_nome: string | null
+          cliente_status: string | null
+          cpf: string | null
+          empresa: string | null
+          revendedor_email: string | null
+          revendedor_id: string | null
+          revendedor_nome: string | null
+          telefone: string | null
+          ultimo_acesso: string | null
+          whatsapp: string | null
+        }
+        Relationships: []
+      }
       v_licenca_estado: {
         Row: {
           chave: string | null
@@ -2681,11 +2828,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "licencas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["cliente_id"]
+          },
+          {
             foreignKeyName: "licencas_revendedor_id_fkey"
             columns: ["revendedor_id"]
             isOneToOne: false
             referencedRelation: "revendedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licencas_revendedor_id_fkey"
+            columns: ["revendedor_id"]
+            isOneToOne: false
+            referencedRelation: "v_hierarquia_clientes"
+            referencedColumns: ["revendedor_id"]
           },
           {
             foreignKeyName: "licencas_revendedor_id_fkey"
