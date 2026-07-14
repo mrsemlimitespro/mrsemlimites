@@ -620,6 +620,22 @@ function NovoRevendedorDialog({
             />
           </div>
 
+          <div className="md:col-span-2">
+            <Label>Senha temporária (opcional)</Label>
+            <Input
+              type="text"
+              value={form.senha_temporaria}
+              onChange={(e) =>
+                setForm({ ...form, senha_temporaria: e.target.value })
+              }
+              placeholder="Mínimo 6 caracteres — o revendedor terá que trocá-la no primeiro acesso"
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Se informada, o email conterá login + senha temporária. Se em
+              branco, será enviado Magic Link.
+            </p>
+          </div>
+
           <label className="md:col-span-2 flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
             <input
               type="checkbox"
