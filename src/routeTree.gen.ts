@@ -28,6 +28,7 @@ import { Route as AdminModulosRouteImport } from './routes/admin.modulos'
 import { Route as AdminLojaProdutosRouteImport } from './routes/admin.loja-produtos'
 import { Route as AdminLojaRouteImport } from './routes/admin.loja'
 import { Route as AdminLicencasDashboardRouteImport } from './routes/admin.licencas-dashboard'
+import { Route as AdminLicencasRouteImport } from './routes/admin.licencas'
 import { Route as AdminHomeRouteImport } from './routes/admin.home'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
@@ -157,6 +158,11 @@ const AdminLojaRoute = AdminLojaRouteImport.update({
 const AdminLicencasDashboardRoute = AdminLicencasDashboardRouteImport.update({
   id: '/licencas-dashboard',
   path: '/licencas-dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicencasRoute = AdminLicencasRouteImport.update({
+  id: '/licencas',
+  path: '/licencas',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminHomeRoute = AdminHomeRouteImport.update({
@@ -377,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
+  '/admin/licencas': typeof AdminLicencasRoute
   '/admin/licencas-dashboard': typeof AdminLicencasDashboardRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
@@ -431,6 +438,7 @@ export interface FileRoutesByTo {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
+  '/admin/licencas': typeof AdminLicencasRoute
   '/admin/licencas-dashboard': typeof AdminLicencasDashboardRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
@@ -489,6 +497,7 @@ export interface FileRoutesById {
   '/admin/backup': typeof AdminBackupRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
+  '/admin/licencas': typeof AdminLicencasRoute
   '/admin/licencas-dashboard': typeof AdminLicencasDashboardRoute
   '/admin/loja': typeof AdminLojaRoute
   '/admin/loja-produtos': typeof AdminLojaProdutosRoute
@@ -548,6 +557,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/home'
+    | '/admin/licencas'
     | '/admin/licencas-dashboard'
     | '/admin/loja'
     | '/admin/loja-produtos'
@@ -602,6 +612,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/home'
+    | '/admin/licencas'
     | '/admin/licencas-dashboard'
     | '/admin/loja'
     | '/admin/loja-produtos'
@@ -659,6 +670,7 @@ export interface FileRouteTypes {
     | '/admin/backup'
     | '/admin/configuracoes'
     | '/admin/home'
+    | '/admin/licencas'
     | '/admin/licencas-dashboard'
     | '/admin/loja'
     | '/admin/loja-produtos'
@@ -855,6 +867,13 @@ declare module '@tanstack/react-router' {
       path: '/licencas-dashboard'
       fullPath: '/admin/licencas-dashboard'
       preLoaderRoute: typeof AdminLicencasDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/licencas': {
+      id: '/admin/licencas'
+      path: '/licencas'
+      fullPath: '/admin/licencas'
+      preLoaderRoute: typeof AdminLicencasRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/home': {
@@ -1161,6 +1180,7 @@ interface AdminRouteChildren {
   AdminBackupRoute: typeof AdminBackupRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminHomeRoute: typeof AdminHomeRoute
+  AdminLicencasRoute: typeof AdminLicencasRoute
   AdminLicencasDashboardRoute: typeof AdminLicencasDashboardRoute
   AdminLojaRoute: typeof AdminLojaRoute
   AdminLojaProdutosRoute: typeof AdminLojaProdutosRoute
@@ -1181,6 +1201,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBackupRoute: AdminBackupRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminHomeRoute: AdminHomeRoute,
+  AdminLicencasRoute: AdminLicencasRoute,
   AdminLicencasDashboardRoute: AdminLicencasDashboardRoute,
   AdminLojaRoute: AdminLojaRoute,
   AdminLojaProdutosRoute: AdminLojaProdutosRoute,
