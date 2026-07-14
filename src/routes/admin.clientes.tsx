@@ -16,6 +16,7 @@ import {
 
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { fetchGastoMapForClientes } from "@/lib/admin/cliente-pagamentos";
 
 export const Route = createFileRoute("/admin/clientes")({
   head: () => ({
@@ -75,26 +76,16 @@ function AdminClientesPage() {
     staleTime: 30_000,
   });
 
-  // Preload aggregated "valor gasto" via payment_transactions matched by cliente_nome.
-  // Relationship cliente_id não existe em payment_transactions atualmente; usamos
-  // cliente_nome como fallback. Quando o relacionamento formal existir, esta query
-  // pode ser trocada sem alterar o card.
-  const { data: gastoByNome = {} } = useQuery({
-    queryKey: ["admin", "clientes", "valor-gasto"],
-    queryFn: async (): Promise<Record<string, number>> => {
-      const { data, error } = await (supabase as any)
-        .from("payment_transactions")
-        .select("cliente_nome, valor, status")
-        .in("status", ["approved", "pago", "paid", "aprovado"]);
-      if (error) return {};
-      const map: Record<string, number> = {};
-      for (const r of (data ?? []) as Array<{ cliente_nome: string | null; valor: number | null }>) {
-        const k = (r.cliente_nome ?? "").trim().toLowerCase();
-        if (!k) continue;
-        map[k] = (map[k] ?? 0) + Number(r.valor ?? 0);
-      }
-      return map;
-    },
+  // "Valor gasto" via camada única (src/lib/admin/cliente-pagamentos.ts).
+  // A troca de FALLBACK por cliente_id acontece 100% naquele arquivo — este
+  // componente não muda quando a coluna passar a existir.
+  const { data: gastoById = {} } = useQuery({
+    queryKey: ["admin", "clientes", "valor-gasto", clientes.length],
+    enabled: clientes.length > 0,
+    queryFn: () =>
+      fetchGastoMapForClientes(
+        clientes.map((c) => ({ id: c.id, nome: c.nome, email: c.email })),
+      ),
     staleTime: 60_000,
   });
 
@@ -152,7 +143,7 @@ function AdminClientesPage() {
               const t = l.created_at;
               if (t && (!ultimaCompra || new Date(t) > new Date(ultimaCompra))) ultimaCompra = t;
             }
-            const gasto = gastoByNome[(c.nome ?? "").trim().toLowerCase()] ?? null;
+            const gasto = gastoById[c.id] ?? null;
             return (
               <ClienteCard
                 key={c.id}
