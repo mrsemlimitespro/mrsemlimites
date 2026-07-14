@@ -6,6 +6,10 @@ import { BrandMark } from "@/components/brand";
 import { AdminPasswordDialog } from "@/components/admin-password-gate";
 import { supabase } from "@/integrations/supabase/client";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useIsAuthed } from "@/hooks/useIsAuthed";
+import { useImpersonation } from "@/hooks/useImpersonation";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Notif = {
   id: string;
@@ -131,10 +135,25 @@ export function TopBar() {
     reload();
   }
 
+  const impersonation = useImpersonation();
+  const authed = useIsAuthed();
+  const role = useUserRole();
+
   return (
-    <header className="sticky top-2 z-30 mx-auto flex w-full max-w-[1400px] items-center gap-2 px-3 md:top-4 md:gap-3 md:px-6">
+    <header
+      className="sticky z-30 mx-auto flex w-full max-w-[1400px] items-center gap-2 px-3 md:gap-3 md:px-6"
+      style={{
+        top: impersonation
+          ? "calc(var(--impersonation-h, 96px) + 0.5rem)"
+          : undefined,
+        // Fallback padrão: sticky top-2 (0.5rem) desktop e top-2 mobile
+        ...(impersonation ? {} : { top: "0.5rem" }),
+      }}
+    >
       {/* Spacer for the floating rail on md+ */}
       <div className="hidden md:block md:w-16 shrink-0" aria-hidden />
+
+      <PanelChip authed={authed} role={role} isAdminUser={isAdminUser} />
 
       {signedIn && firstName && (
         <div
@@ -360,5 +379,53 @@ function IconBadge({
         />
       )}
     </button>
+  );
+}
+
+/**
+ * PanelChip — indicador permanente no Header do painel atual do usuário.
+ */
+function PanelChip({
+  authed,
+  role,
+  isAdminUser,
+}: {
+  authed: boolean | null;
+  role: ReturnType<typeof useUserRole>;
+  isAdminUser: boolean;
+}) {
+  const cfg = (() => {
+    if (isAdminUser || role === "admin")
+      return { emoji: "⭐", label: "Painel Administrador", glow: "var(--brand-orange)" };
+    if (role === "revendedor")
+      return { emoji: "🏪", label: "Painel Revendedor", glow: "var(--brand-blue)" };
+    if (authed === true && role === "cliente")
+      return { emoji: "👤", label: "Painel Cliente", glow: "var(--brand-emerald)" };
+    if (authed === false) return { emoji: "🌐", label: "Visitante", glow: "oklch(0.75 0.02 260)" };
+    return null; // loading
+  })();
+
+  if (!cfg) return null;
+
+  return (
+    <TooltipProvider delayDuration={150}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            aria-label={cfg.label}
+            className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-surface/60 px-2.5 text-xs font-semibold backdrop-blur-xl md:h-11 md:px-3 md:text-sm"
+            style={{
+              boxShadow: `0 0 0 1px color-mix(in oklab, ${cfg.glow} 40%, transparent), 0 0 18px -4px color-mix(in oklab, ${cfg.glow} 55%, transparent)`,
+            }}
+          >
+            <span aria-hidden className="text-base leading-none md:text-lg">
+              {cfg.emoji}
+            </span>
+            <span className="hidden sm:inline">{cfg.label}</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">{cfg.label}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

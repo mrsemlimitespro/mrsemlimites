@@ -18,6 +18,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AdminVisualizacaoRouteImport } from './routes/admin.visualizacao'
 import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as AdminSonsRouteImport } from './routes/admin.sons'
 import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
@@ -110,6 +111,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AdminVisualizacaoRoute = AdminVisualizacaoRouteImport.update({
+  id: '/visualizacao',
+  path: '/visualizacao',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
   id: '/usuarios',
@@ -401,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
+  '/admin/visualizacao': typeof AdminVisualizacaoRoute
   '/admin/': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
@@ -457,6 +464,7 @@ export interface FileRoutesByTo {
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
+  '/admin/visualizacao': typeof AdminVisualizacaoRoute
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
@@ -517,6 +525,7 @@ export interface FileRoutesById {
   '/admin/seguranca': typeof AdminSegurancaRoute
   '/admin/sons': typeof AdminSonsRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
+  '/admin/visualizacao': typeof AdminVisualizacaoRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_app/packs/$slug': typeof AppPacksSlugRoute
@@ -578,6 +587,7 @@ export interface FileRouteTypes {
     | '/admin/seguranca'
     | '/admin/sons'
     | '/admin/usuarios'
+    | '/admin/visualizacao'
     | '/admin/'
     | '/packs/$slug'
     | '/api/public/download-extensao'
@@ -634,6 +644,7 @@ export interface FileRouteTypes {
     | '/admin/seguranca'
     | '/admin/sons'
     | '/admin/usuarios'
+    | '/admin/visualizacao'
     | '/'
     | '/admin'
     | '/packs/$slug'
@@ -693,6 +704,7 @@ export interface FileRouteTypes {
     | '/admin/seguranca'
     | '/admin/sons'
     | '/admin/usuarios'
+    | '/admin/visualizacao'
     | '/_app/'
     | '/admin/'
     | '/_app/packs/$slug'
@@ -810,6 +822,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/admin/visualizacao': {
+      id: '/admin/visualizacao'
+      path: '/visualizacao'
+      fullPath: '/admin/visualizacao'
+      preLoaderRoute: typeof AdminVisualizacaoRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/usuarios': {
       id: '/admin/usuarios'
@@ -1212,6 +1231,7 @@ interface AdminRouteChildren {
   AdminSegurancaRoute: typeof AdminSegurancaRoute
   AdminSonsRoute: typeof AdminSonsRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
+  AdminVisualizacaoRoute: typeof AdminVisualizacaoRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -1233,6 +1253,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSegurancaRoute: AdminSegurancaRoute,
   AdminSonsRoute: AdminSonsRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,
+  AdminVisualizacaoRoute: AdminVisualizacaoRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
