@@ -15,8 +15,11 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 
-// ⚠️ FALLBACK FLAG — trocar para `true` quando a coluna existir.
-export const USES_CLIENTE_ID = false;
+// ✅ Fase 3: coluna payment_transactions.cliente_id existe e é preenchida
+// automaticamente pelo trigger tg_pagamento_gerar_licenca ao aprovar pagamento.
+// O fallback por nome permanece disponível para pagamentos antigos que ainda
+// não foram vinculados.
+export const USES_CLIENTE_ID = true;
 
 export type ClientePagamento = {
   id: string;
