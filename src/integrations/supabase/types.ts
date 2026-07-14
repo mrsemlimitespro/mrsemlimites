@@ -104,8 +104,16 @@ export type Database = {
       admin_settings: {
         Row: {
           accent_color: string
+          comissao_padrao_percentual: number | null
           config_extensao: Json
           created_at: string
+          email_link_download: string | null
+          email_link_manual: string | null
+          email_link_portal: string | null
+          email_link_suporte: string | null
+          email_provider: string | null
+          email_remetente_endereco: string | null
+          email_remetente_nome: string | null
           extension_filename: string | null
           extension_url: string | null
           favicon_url: string | null
@@ -123,8 +131,16 @@ export type Database = {
         }
         Insert: {
           accent_color?: string
+          comissao_padrao_percentual?: number | null
           config_extensao?: Json
           created_at?: string
+          email_link_download?: string | null
+          email_link_manual?: string | null
+          email_link_portal?: string | null
+          email_link_suporte?: string | null
+          email_provider?: string | null
+          email_remetente_endereco?: string | null
+          email_remetente_nome?: string | null
           extension_filename?: string | null
           extension_url?: string | null
           favicon_url?: string | null
@@ -142,8 +158,16 @@ export type Database = {
         }
         Update: {
           accent_color?: string
+          comissao_padrao_percentual?: number | null
           config_extensao?: Json
           created_at?: string
+          email_link_download?: string | null
+          email_link_manual?: string | null
+          email_link_portal?: string | null
+          email_link_suporte?: string | null
+          email_provider?: string | null
+          email_remetente_endereco?: string | null
+          email_remetente_nome?: string | null
           extension_filename?: string | null
           extension_url?: string | null
           favicon_url?: string | null
@@ -690,6 +714,54 @@ export type Database = {
           },
         ]
       }
+      comissoes: {
+        Row: {
+          cliente_id: string | null
+          created_at: string
+          id: string
+          licenca_id: string | null
+          metadata: Json
+          pago_em: string | null
+          payment_id: string | null
+          percentual: number
+          revendedor_id: string
+          status: string
+          updated_at: string
+          valor: number
+          valor_base: number
+        }
+        Insert: {
+          cliente_id?: string | null
+          created_at?: string
+          id?: string
+          licenca_id?: string | null
+          metadata?: Json
+          pago_em?: string | null
+          payment_id?: string | null
+          percentual?: number
+          revendedor_id: string
+          status?: string
+          updated_at?: string
+          valor?: number
+          valor_base?: number
+        }
+        Update: {
+          cliente_id?: string | null
+          created_at?: string
+          id?: string
+          licenca_id?: string | null
+          metadata?: Json
+          pago_em?: string | null
+          payment_id?: string | null
+          percentual?: number
+          revendedor_id?: string
+          status?: string
+          updated_at?: string
+          valor?: number
+          valor_base?: number
+        }
+        Relationships: []
+      }
       creditos_movimentos: {
         Row: {
           created_at: string
@@ -908,6 +980,149 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      email_logs: {
+        Row: {
+          created_at: string
+          detalhes: Json
+          evento: string
+          id: string
+          queue_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detalhes?: Json
+          evento: string
+          id?: string
+          queue_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detalhes?: Json
+          evento?: string
+          id?: string
+          queue_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_logs_queue_id_fkey"
+            columns: ["queue_id"]
+            isOneToOne: false
+            referencedRelation: "email_queue"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_queue: {
+        Row: {
+          assunto: string
+          attempts: number
+          cliente_id: string | null
+          created_at: string
+          destinatario: string
+          destinatario_nome: string | null
+          html: string
+          id: string
+          last_error: string | null
+          licenca_id: string | null
+          max_attempts: number
+          metadata: Json
+          provider_message_id: string | null
+          revendedor_id: string | null
+          scheduled_for: string
+          sent_at: string | null
+          status: string
+          template_chave: string | null
+          texto: string | null
+          updated_at: string
+          variables: Json
+        }
+        Insert: {
+          assunto: string
+          attempts?: number
+          cliente_id?: string | null
+          created_at?: string
+          destinatario: string
+          destinatario_nome?: string | null
+          html: string
+          id?: string
+          last_error?: string | null
+          licenca_id?: string | null
+          max_attempts?: number
+          metadata?: Json
+          provider_message_id?: string | null
+          revendedor_id?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string
+          template_chave?: string | null
+          texto?: string | null
+          updated_at?: string
+          variables?: Json
+        }
+        Update: {
+          assunto?: string
+          attempts?: number
+          cliente_id?: string | null
+          created_at?: string
+          destinatario?: string
+          destinatario_nome?: string | null
+          html?: string
+          id?: string
+          last_error?: string | null
+          licenca_id?: string | null
+          max_attempts?: number
+          metadata?: Json
+          provider_message_id?: string | null
+          revendedor_id?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string
+          template_chave?: string | null
+          texto?: string | null
+          updated_at?: string
+          variables?: Json
+        }
+        Relationships: []
+      }
+      email_templates: {
+        Row: {
+          assunto: string
+          ativo: boolean
+          chave: string
+          created_at: string
+          html: string
+          id: string
+          nome: string
+          texto: string | null
+          updated_at: string
+          variaveis: Json
+        }
+        Insert: {
+          assunto: string
+          ativo?: boolean
+          chave: string
+          created_at?: string
+          html: string
+          id?: string
+          nome: string
+          texto?: string | null
+          updated_at?: string
+          variaveis?: Json
+        }
+        Update: {
+          assunto?: string
+          ativo?: boolean
+          chave?: string
+          created_at?: string
+          html?: string
+          id?: string
+          nome?: string
+          texto?: string | null
+          updated_at?: string
+          variaveis?: Json
+        }
+        Relationships: []
       }
       estoque: {
         Row: {
@@ -3194,6 +3409,18 @@ export type Database = {
         Returns: string
       }
       current_revendedor_id: { Args: never; Returns: string }
+      enfileirar_email: {
+        Args: {
+          _cliente_id?: string
+          _destinatario: string
+          _destinatario_nome?: string
+          _licenca_id?: string
+          _revendedor_id?: string
+          _template_chave: string
+          _variables?: Json
+        }
+        Returns: string
+      }
       expirar_licencas_vencidas: { Args: never; Returns: number }
       expirar_trials_vencidos: { Args: never; Returns: number }
       gerar_chave_licenca: { Args: never; Returns: string }
@@ -3306,6 +3533,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      reenviar_licenca: { Args: { _licenca_id: string }; Returns: string }
       renovar_licenca: {
         Args: { _dias: number; _licenca_id: string }
         Returns: {
@@ -3382,6 +3610,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      revendedor_dashboard: { Args: never; Returns: Json }
       set_admin_password: {
         Args: { _current_password?: string; _new_password: string }
         Returns: boolean

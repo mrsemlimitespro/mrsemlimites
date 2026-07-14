@@ -15,6 +15,7 @@ import {
   Copy,
   Pencil,
   RefreshCw,
+  Send,
 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -214,6 +215,15 @@ function LicencasAdmin() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const reenviar = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await (supabase as any).rpc("reenviar_licenca", { _licenca_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => toast.success("Email de licença enfileirado."),
+    onError: (e: Error) => toast.error(e.message || "Falha ao reenviar"),
+  });
+
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
@@ -314,6 +324,7 @@ function LicencasAdmin() {
                     onRenovar={() => setRenovTarget(l)}
                     onCancelar={() => cancelar.mutate(l.id)}
                     onReativar={() => reativar.mutate(l.id)}
+                    onReenviar={() => reenviar.mutate(l.id)}
                   />
                 ))}
               </tbody>
@@ -351,12 +362,14 @@ function LicencaRow({
   onRenovar,
   onCancelar,
   onReativar,
+  onReenviar,
 }: {
   l: Licenca;
   onReset: () => void;
   onRenovar: () => void;
   onCancelar: () => void;
   onReativar: () => void;
+  onReenviar: () => void;
 }) {
   const nivel = derivarNivel(l);
   const encerrada = l.status === "expirada" || l.status === "cancelada" || l.status === "bloqueada" || l.status === "revogada";
@@ -403,6 +416,9 @@ function LicencaRow({
       </td>
       <td className="px-4 py-3">
         <div className="flex justify-end gap-1">
+          <Button size="sm" variant="ghost" onClick={onReenviar} title="Reenviar licença por email">
+            <Send className="size-4 text-sky-400" />
+          </Button>
           {l.device_id && (
             <Button size="sm" variant="ghost" onClick={onReset} title="Restaurar dispositivo">
               <RotateCcw className="size-4" />

@@ -32,15 +32,18 @@ import { Route as AdminLicencasDashboardRouteImport } from './routes/admin.licen
 import { Route as AdminLicencasRouteImport } from './routes/admin.licencas'
 import { Route as AdminHomeRouteImport } from './routes/admin.home'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
+import { Route as AdminComunicacaoRouteImport } from './routes/admin.comunicacao'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
 import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
+import { Route as AppRevendedorRouteImport } from './routes/_app.revendedor'
 import { Route as AppQueroSerRevendedorRouteImport } from './routes/_app.quero-ser-revendedor'
 import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppPacksRouteImport } from './routes/_app.packs'
+import { Route as AppMinhaContaRouteImport } from './routes/_app.minha-conta'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
@@ -62,6 +65,7 @@ import { Route as ApiPublicLicencaRenovarRouteImport } from './routes/api/public
 import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/public/licenca/heartbeat'
 import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
 import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
+import { Route as ApiPublicHooksEmailWorkerRouteImport } from './routes/api/public/hooks/email-worker'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
 import { Route as ApiPublicExtFunctionsV1Lov4RouteImport } from './routes/api/public/ext/functions.v1.lov4'
@@ -184,6 +188,11 @@ const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
   path: '/configuracoes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminComunicacaoRoute = AdminComunicacaoRouteImport.update({
+  id: '/comunicacao',
+  path: '/comunicacao',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminClientesRoute = AdminClientesRouteImport.update({
   id: '/clientes',
   path: '/clientes',
@@ -209,6 +218,11 @@ const AdminResourceRoute = AdminResourceRouteImport.update({
   path: '/$resource',
   getParentRoute: () => AdminRoute,
 } as any)
+const AppRevendedorRoute = AppRevendedorRouteImport.update({
+  id: '/revendedor',
+  path: '/revendedor',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppQueroSerRevendedorRoute = AppQueroSerRevendedorRouteImport.update({
   id: '/quero-ser-revendedor',
   path: '/quero-ser-revendedor',
@@ -227,6 +241,11 @@ const AppPerfilRoute = AppPerfilRouteImport.update({
 const AppPacksRoute = AppPacksRouteImport.update({
   id: '/packs',
   path: '/packs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMinhaContaRoute = AppMinhaContaRouteImport.update({
+  id: '/minha-conta',
+  path: '/minha-conta',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLicencasRoute = AppLicencasRouteImport.update({
@@ -340,6 +359,12 @@ const ApiPublicLicencaConfigRoute = ApiPublicLicencaConfigRouteImport.update({
   path: '/api/public/licenca/config',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksEmailWorkerRoute =
+  ApiPublicHooksEmailWorkerRouteImport.update({
+    id: '/api/public/hooks/email-worker',
+    path: '/api/public/hooks/email-worker',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
   ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
     id: '/api/public/ext/functions/v1/validate-license-v2',
@@ -398,15 +423,18 @@ export interface FileRoutesByFullPath {
   '/creditos': typeof AppCreditosRoute
   '/dashboard': typeof AppDashboardRoute
   '/licencas': typeof AppLicencasRoute
+  '/minha-conta': typeof AppMinhaContaRoute
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
   '/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
+  '/admin/comunicacao': typeof AdminComunicacaoRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -426,6 +454,7 @@ export interface FileRoutesByFullPath {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
   '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
@@ -457,15 +486,18 @@ export interface FileRoutesByTo {
   '/creditos': typeof AppCreditosRoute
   '/dashboard': typeof AppDashboardRoute
   '/licencas': typeof AppLicencasRoute
+  '/minha-conta': typeof AppMinhaContaRoute
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
   '/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
+  '/admin/comunicacao': typeof AdminComunicacaoRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -486,6 +518,7 @@ export interface FileRoutesByTo {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
   '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
@@ -520,15 +553,18 @@ export interface FileRoutesById {
   '/_app/creditos': typeof AppCreditosRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/licencas': typeof AppLicencasRoute
+  '/_app/minha-conta': typeof AppMinhaContaRoute
   '/_app/packs': typeof AppPacksRouteWithChildren
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/prompts': typeof AppPromptsRoute
   '/_app/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/_app/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
+  '/admin/comunicacao': typeof AdminComunicacaoRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -549,6 +585,7 @@ export interface FileRoutesById {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
   '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
@@ -584,15 +621,18 @@ export interface FileRouteTypes {
     | '/creditos'
     | '/dashboard'
     | '/licencas'
+    | '/minha-conta'
     | '/packs'
     | '/perfil'
     | '/prompts'
     | '/quero-ser-revendedor'
+    | '/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/clientes'
+    | '/admin/comunicacao'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -612,6 +652,7 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
     | '/api/public/licenca/heartbeat'
@@ -643,15 +684,18 @@ export interface FileRouteTypes {
     | '/creditos'
     | '/dashboard'
     | '/licencas'
+    | '/minha-conta'
     | '/packs'
     | '/perfil'
     | '/prompts'
     | '/quero-ser-revendedor'
+    | '/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/clientes'
+    | '/admin/comunicacao'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -672,6 +716,7 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
     | '/api/public/licenca/heartbeat'
@@ -705,15 +750,18 @@ export interface FileRouteTypes {
     | '/_app/creditos'
     | '/_app/dashboard'
     | '/_app/licencas'
+    | '/_app/minha-conta'
     | '/_app/packs'
     | '/_app/perfil'
     | '/_app/prompts'
     | '/_app/quero-ser-revendedor'
+    | '/_app/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
     | '/admin/backup'
     | '/admin/clientes'
+    | '/admin/comunicacao'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -734,6 +782,7 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
     | '/api/public/licenca/heartbeat'
@@ -763,6 +812,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
+  ApiPublicHooksEmailWorkerRoute: typeof ApiPublicHooksEmailWorkerRoute
   ApiPublicLicencaConfigRoute: typeof ApiPublicLicencaConfigRoute
   ApiPublicLicencaConsultaRoute: typeof ApiPublicLicencaConsultaRoute
   ApiPublicLicencaHeartbeatRoute: typeof ApiPublicLicencaHeartbeatRoute
@@ -945,6 +995,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminConfiguracoesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/comunicacao': {
+      id: '/admin/comunicacao'
+      path: '/comunicacao'
+      fullPath: '/admin/comunicacao'
+      preLoaderRoute: typeof AdminComunicacaoRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/clientes': {
       id: '/admin/clientes'
       path: '/clientes'
@@ -980,6 +1037,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResourceRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_app/revendedor': {
+      id: '/_app/revendedor'
+      path: '/revendedor'
+      fullPath: '/revendedor'
+      preLoaderRoute: typeof AppRevendedorRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/quero-ser-revendedor': {
       id: '/_app/quero-ser-revendedor'
       path: '/quero-ser-revendedor'
@@ -1006,6 +1070,13 @@ declare module '@tanstack/react-router' {
       path: '/packs'
       fullPath: '/packs'
       preLoaderRoute: typeof AppPacksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/minha-conta': {
+      id: '/_app/minha-conta'
+      path: '/minha-conta'
+      fullPath: '/minha-conta'
+      preLoaderRoute: typeof AppMinhaContaRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/licencas': {
@@ -1155,6 +1226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLicencaConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/email-worker': {
+      id: '/api/public/hooks/email-worker'
+      path: '/api/public/hooks/email-worker'
+      fullPath: '/api/public/hooks/email-worker'
+      preLoaderRoute: typeof ApiPublicHooksEmailWorkerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/validate-license-v2': {
       id: '/api/public/ext/functions/v1/validate-license-v2'
       path: '/api/public/ext/functions/v1/validate-license-v2'
@@ -1227,10 +1305,12 @@ interface AppRouteChildren {
   AppCreditosRoute: typeof AppCreditosRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppLicencasRoute: typeof AppLicencasRoute
+  AppMinhaContaRoute: typeof AppMinhaContaRoute
   AppPacksRoute: typeof AppPacksRouteWithChildren
   AppPerfilRoute: typeof AppPerfilRoute
   AppPromptsRoute: typeof AppPromptsRoute
   AppQueroSerRevendedorRoute: typeof AppQueroSerRevendedorRoute
+  AppRevendedorRoute: typeof AppRevendedorRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
@@ -1242,10 +1322,12 @@ const AppRouteChildren: AppRouteChildren = {
   AppCreditosRoute: AppCreditosRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppLicencasRoute: AppLicencasRoute,
+  AppMinhaContaRoute: AppMinhaContaRoute,
   AppPacksRoute: AppPacksRouteWithChildren,
   AppPerfilRoute: AppPerfilRoute,
   AppPromptsRoute: AppPromptsRoute,
   AppQueroSerRevendedorRoute: AppQueroSerRevendedorRoute,
+  AppRevendedorRoute: AppRevendedorRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
@@ -1269,6 +1351,7 @@ interface AdminRouteChildren {
   AdminAnimacoesRoute: typeof AdminAnimacoesRoute
   AdminBackupRoute: typeof AdminBackupRoute
   AdminClientesRoute: typeof AdminClientesRouteWithChildren
+  AdminComunicacaoRoute: typeof AdminComunicacaoRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminHomeRoute: typeof AdminHomeRoute
   AdminLicencasRoute: typeof AdminLicencasRoute
@@ -1292,6 +1375,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnimacoesRoute: AdminAnimacoesRoute,
   AdminBackupRoute: AdminBackupRoute,
   AdminClientesRoute: AdminClientesRouteWithChildren,
+  AdminComunicacaoRoute: AdminComunicacaoRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminHomeRoute: AdminHomeRoute,
   AdminLicencasRoute: AdminLicencasRoute,
@@ -1321,6 +1405,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
+  ApiPublicHooksEmailWorkerRoute: ApiPublicHooksEmailWorkerRoute,
   ApiPublicLicencaConfigRoute: ApiPublicLicencaConfigRoute,
   ApiPublicLicencaConsultaRoute: ApiPublicLicencaConsultaRoute,
   ApiPublicLicencaHeartbeatRoute: ApiPublicLicencaHeartbeatRoute,
@@ -1347,13 +1432,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
