@@ -61,6 +61,7 @@ export type Resource = {
   orderBy?: { column: string; ascending: boolean };
   searchColumns?: string[];
   group?: string;
+  hiddenFromSidebar?: boolean;
 };
 
 const statusOptions = [
