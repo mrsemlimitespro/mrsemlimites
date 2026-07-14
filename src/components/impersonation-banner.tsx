@@ -78,5 +78,6 @@ export function ImpersonationBanner() {
         </button>
       </div>
     </div>
+    </>
   );
 }
