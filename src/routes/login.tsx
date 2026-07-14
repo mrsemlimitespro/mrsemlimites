@@ -113,6 +113,11 @@ function LoginPage() {
       _user_id: data.user.id,
       _role: "admin",
     });
+
+    // Revalida cache global antes de navegar (perfil, role, promoções, clientes, permissões).
+    await Promise.all([qc.invalidateQueries(), router.invalidate()]);
+    console.log("[Revendedores] painel sincronizado após login");
+
     if (isAdmin) {
       navigate({ to: "/admin" });
       return;
@@ -137,6 +142,7 @@ function LoginPage() {
 
     navigate({ to: "/" });
   }
+
 
   return (
     <AuthShell>
