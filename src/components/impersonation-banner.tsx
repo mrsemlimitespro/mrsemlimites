@@ -22,6 +22,9 @@ export function ImpersonationBanner() {
   const kindLabel = state.kind === "revendedor" ? "Painel do Revendedor" : "Painel do Cliente";
 
   return (
+    <>
+      {/* Spacer: empurra o conteúdo para baixo enquanto a barra fixa estiver visível */}
+      <div aria-hidden className="h-14 w-full md:h-12" />
     <div
       role="status"
       aria-live="polite"
