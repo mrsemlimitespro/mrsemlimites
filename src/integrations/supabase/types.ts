@@ -2885,9 +2885,10 @@ export type Database = {
         Row: {
           auth_user_id: string | null
           bloqueado: boolean
-          comissao: number | null
+          cpf_cnpj: string | null
           created_at: string
           email: string | null
+          empresa: string | null
           id: string
           nome: string
           observacoes: string | null
@@ -2897,13 +2898,15 @@ export type Database = {
           status: string
           telefone: string | null
           updated_at: string
+          whatsapp: string | null
         }
         Insert: {
           auth_user_id?: string | null
           bloqueado?: boolean
-          comissao?: number | null
+          cpf_cnpj?: string | null
           created_at?: string
           email?: string | null
+          empresa?: string | null
           id?: string
           nome: string
           observacoes?: string | null
@@ -2913,13 +2916,15 @@ export type Database = {
           status?: string
           telefone?: string | null
           updated_at?: string
+          whatsapp?: string | null
         }
         Update: {
           auth_user_id?: string | null
           bloqueado?: boolean
-          comissao?: number | null
+          cpf_cnpj?: string | null
           created_at?: string
           email?: string | null
+          empresa?: string | null
           id?: string
           nome?: string
           observacoes?: string | null
@@ -2929,6 +2934,7 @@ export type Database = {
           status?: string
           telefone?: string | null
           updated_at?: string
+          whatsapp?: string | null
         }
         Relationships: [
           {
