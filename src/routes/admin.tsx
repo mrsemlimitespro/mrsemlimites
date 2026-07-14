@@ -121,6 +121,7 @@ const specialLinks: SpecialLink[] = [
   // Dashboard
   { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true, group: "Dashboard" },
   { key: "home", to: "/admin/home", label: "Home", icon: HomeIcon, group: "Dashboard" },
+  { key: "visualizacao", to: "/admin/visualizacao", label: "Visualização", icon: ShieldCheck, group: "Dashboard" },
 
   // Clientes — gestão de licenças unificada
   { key: "licencas-manager", to: "/admin/licencas", label: "Licenças", icon: KeySquare, group: "Clientes" },
