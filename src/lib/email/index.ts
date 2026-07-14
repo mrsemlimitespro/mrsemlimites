@@ -1,29 +1,39 @@
 import type { EmailProvider } from "./types";
+import { makeMockEmailProvider } from "./mock";
 import { makeResendProvider } from "./resend";
 
 /**
- * Seleciona o provider de email ativo com base em process.env.EMAIL_PROVIDER
- * (default "resend"). Stubs futuros para smtp/sendgrid/ses/mailgun podem ser
- * plugados aqui sem alterar chamadores.
+ * Seleciona o provider de email ativo.
  *
- * Retorna null quando nenhum provider está configurado — worker deixa emails
- * na fila com status pending sem falhar a aplicação.
+ * Ordem de decisão:
+ *   1. process.env.EMAIL_PROVIDER define explicitamente o adapter
+ *      (`resend`, `mock`, `smtp`, `sendgrid`, `ses`, `mailgun`).
+ *   2. Se não definido, cai no MockEmailProvider — permite que todo o fluxo
+ *      (fila, triggers, logs, portal, admin) funcione sem credenciais reais.
+ *
+ * Adicionar um provider novo é isolado: implementar o contrato
+ * `EmailProvider` num arquivo próprio e ligá-lo aqui. Nenhuma outra parte
+ * do sistema precisa mudar (Adapter Pattern).
  */
-export function getEmailProvider(): EmailProvider | null {
-  const kind = (process.env.EMAIL_PROVIDER || "resend").toLowerCase();
+export function getEmailProvider(): EmailProvider {
+  const kind = (process.env.EMAIL_PROVIDER || "mock").toLowerCase();
+
   switch (kind) {
     case "resend": {
       const key = process.env.RESEND_API_KEY;
-      if (!key) return null;
+      if (!key) return makeMockEmailProvider();
       return makeResendProvider(key);
     }
-    // Placeholders — implementar quando necessário.
+    // Placeholders — plugar quando o cliente fornecer as credenciais.
     case "smtp":
     case "sendgrid":
     case "ses":
     case "mailgun":
+      return makeMockEmailProvider();
+
+    case "mock":
     default:
-      return null;
+      return makeMockEmailProvider();
   }
 }
 
