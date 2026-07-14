@@ -108,7 +108,7 @@ export const resources: Resource[] = [
     singular: "Licença",
     table: "licencas",
     icon: KeyRound,
-    group: "Clientes",
+    group: "Usuários",
     hiddenFromSidebar: true,
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["chave", "plano", "email"],
@@ -245,7 +245,7 @@ export const resources: Resource[] = [
     singular: "Produto",
     table: "licenca_produtos",
     icon: Package,
-    group: "Clientes",
+    group: "Usuários",
     hiddenFromSidebar: true,
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["nome", "slug"],
@@ -281,7 +281,7 @@ export const resources: Resource[] = [
     singular: "Cliente",
     table: "clientes",
     icon: Users,
-    group: "Clientes",
+    group: "Usuários",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["nome", "email", "telefone", "whatsapp", "cpf", "empresa"],
     fields: [
@@ -324,7 +324,7 @@ export const resources: Resource[] = [
     singular: "Revendedor",
     table: "revendedores",
     icon: UserCog,
-    group: "Clientes",
+    group: "Usuários",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["nome", "email", "telefone"],
     fields: [
@@ -357,7 +357,7 @@ export const resources: Resource[] = [
     singular: "Produto",
     table: "produtos",
     icon: Package,
-    group: "Produtos",
+    group: "Comercial",
     orderBy: { column: "ordem", ascending: true },
     searchColumns: ["nome", "titulo", "categoria"],
     fields: [
@@ -399,7 +399,7 @@ export const resources: Resource[] = [
     singular: "Item de estoque",
     table: "estoque",
     icon: Boxes,
-    group: "Produtos",
+    group: "Comercial",
     orderBy: { column: "item", ascending: true },
     searchColumns: ["item"],
     fields: [
@@ -437,7 +437,7 @@ export const resources: Resource[] = [
     singular: "Pacote de créditos",
     table: "creditos_packs",
     icon: Coins,
-    group: "Financeiro",
+    group: "Comercial",
     orderBy: { column: "quantidade", ascending: true },
     searchColumns: ["nome"],
     fields: [
@@ -485,7 +485,7 @@ export const resources: Resource[] = [
     singular: "Plano",
     table: "planos",
     icon: Sparkles,
-    group: "Financeiro",
+    group: "Comercial",
     orderBy: { column: "preco", ascending: true },
     searchColumns: ["nome"],
     fields: [
@@ -559,7 +559,7 @@ export const resources: Resource[] = [
     singular: "Promoção",
     table: "promocoes",
     icon: Percent,
-    group: "Marketing",
+    group: "Comercial",
     orderBy: { column: "ordem", ascending: true },
     searchColumns: ["titulo", "codigo_cupom"],
     fields: [
@@ -622,7 +622,7 @@ export const resources: Resource[] = [
     singular: "Slide",
     table: "carrossel_slides",
     icon: LayoutGrid,
-    group: "Marketing",
+    group: "Comercial",
     orderBy: { column: "ordem", ascending: true },
     searchColumns: ["titulo"],
     fields: [
@@ -659,7 +659,7 @@ export const resources: Resource[] = [
     singular: "Banner",
     table: "banners",
     icon: LayoutGrid,
-    group: "Marketing",
+    group: "Comercial",
     orderBy: { column: "ordem", ascending: true },
     searchColumns: ["titulo"],
     fields: [
@@ -693,7 +693,7 @@ export const resources: Resource[] = [
     singular: "Propaganda",
     table: "propagandas",
     icon: Megaphone,
-    group: "Marketing",
+    group: "Comercial",
     orderBy: { column: "ordem", ascending: true },
     searchColumns: ["titulo"],
     fields: [
@@ -842,7 +842,7 @@ export const resources: Resource[] = [
     singular: "Notificação",
     table: "notificacoes",
     icon: Bell,
-    group: "Comunicação",
+    group: "Sistema",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["titulo"],
     fields: [
@@ -887,7 +887,7 @@ export const resources: Resource[] = [
     singular: "Agente",
     table: "ai_agents",
     icon: Sparkles,
-    group: "Produtos",
+    group: "Comercial",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["titulo", "categoria"],
     fields: [
@@ -970,7 +970,7 @@ export const resources: Resource[] = [
     singular: "Prompt",
     table: "ai_prompts",
     icon: Sparkles,
-    group: "Produtos",
+    group: "Comercial",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["titulo", "categoria"],
     fields: [
@@ -1052,7 +1052,7 @@ export const resources: Resource[] = [
     singular: "Pack",
     table: "premium_packs",
     icon: Package,
-    group: "Produtos",
+    group: "Comercial",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["nome", "slug"],
     fields: [
@@ -1173,7 +1173,7 @@ export const resources: Resource[] = [
     singular: "Campanha",
     table: "mensagens_campanhas",
     icon: Megaphone,
-    group: "Comunicação",
+    group: "Sistema",
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["titulo", "mensagem"],
     fields: [
