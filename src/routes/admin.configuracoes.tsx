@@ -68,6 +68,13 @@ function ConfiguracoesPage() {
           notification_active: !!values.notification_active,
           extension_url: values.extension_url || null,
           extension_filename: values.extension_filename || null,
+          link_comunidade: (values as any).link_comunidade || null,
+          email_link_portal: (values as any).email_link_portal || null,
+          email_link_suporte: (values as any).email_link_suporte || null,
+          email_link_manual: (values as any).email_link_manual || null,
+          email_link_download: (values as any).email_link_download || null,
+          email_remetente_nome: (values as any).email_remetente_nome || null,
+          painel_revendedor_valor: (values as any).painel_revendedor_valor ?? 29.90,
         })
         .eq("id", data.id);
       if (error) throw error;
