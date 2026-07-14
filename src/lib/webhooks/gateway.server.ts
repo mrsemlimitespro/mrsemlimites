@@ -11,6 +11,7 @@ export type NormalizedEvent = {
   amount: number | null;
   currency: string | null;
   method: string | null;
+  productRef: string | null;
   clienteNome: string | null;
   clienteEmail: string | null;
   raw: unknown;
@@ -60,6 +61,7 @@ export function normalizeEvent(slug: GatewaySlug, payload: any): NormalizedEvent
       method: pickString(data.payment_method_id, raw.payment_method_id),
       clienteNome: pickString(data.payer?.name, raw.payer?.name),
       clienteEmail: pickString(data.payer?.email, raw.payer?.email),
+      productRef: pickString(raw.metadata?.product_id, data.metadata?.product_id, raw.product_id),
       raw,
     };
   }
@@ -77,6 +79,15 @@ export function normalizeEvent(slug: GatewaySlug, payload: any): NormalizedEvent
       method: pickString(raw.payment_method, raw.method),
       clienteNome: pickString(raw.Customer?.full_name, raw.customer?.name, raw.customer_name),
       clienteEmail: pickString(raw.Customer?.email, raw.customer?.email, raw.customer_email),
+      productRef: pickString(
+        raw.Product?.product_id,
+        raw.Product?.id,
+        raw.product_id,
+        raw.product?.id,
+        raw.product?.product_id,
+        raw.plan?.id,
+        raw.subscription?.plan?.id,
+      ),
       raw,
     };
   }
@@ -94,6 +105,7 @@ export function normalizeEvent(slug: GatewaySlug, payload: any): NormalizedEvent
     method: pickString(raw.data?.payment_method, raw.payment_method, raw.method),
     clienteNome: pickString(raw.data?.customer?.name, raw.customer?.name),
     clienteEmail: pickString(raw.data?.customer?.email, raw.customer?.email),
+    productRef: pickString(raw.data?.product_id, raw.product_id, raw.data?.offer_id, raw.offer_id),
     raw,
   };
 }

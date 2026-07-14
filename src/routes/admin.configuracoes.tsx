@@ -75,6 +75,8 @@ function ConfiguracoesPage() {
           email_link_download: (values as any).email_link_download || null,
           email_remetente_nome: (values as any).email_remetente_nome || null,
           painel_revendedor_valor: (values as any).painel_revendedor_valor ?? 29.90,
+          kiwify_checkout_url_revendedor: (values as any).kiwify_checkout_url_revendedor || null,
+          kiwify_produto_revendedor_ref: (values as any).kiwify_produto_revendedor_ref || null,
         })
         .eq("id", data.id);
       if (error) throw error;
@@ -237,6 +239,32 @@ function ConfiguracoesPage() {
                 setValues((v) => ({ ...(v as any), painel_revendedor_valor: Number(e.target.value) }))
               }
             />
+          </div>
+          <div className="md:col-span-2">
+            <Label>URL do checkout Kiwify (Painel Revendedor)</Label>
+            <Input
+              value={(values as any).kiwify_checkout_url_revendedor ?? ""}
+              onChange={(e) =>
+                setValues((v) => ({ ...(v as any), kiwify_checkout_url_revendedor: e.target.value }))
+              }
+              placeholder="https://pay.kiwify.com.br/xxxxxxx"
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Botão "Seja Revendedor" abre esta URL. Após aprovação, o webhook Kiwify libera o painel automaticamente.
+            </p>
+          </div>
+          <div className="md:col-span-2">
+            <Label>ID do produto Kiwify (Painel Revendedor)</Label>
+            <Input
+              value={(values as any).kiwify_produto_revendedor_ref ?? ""}
+              onChange={(e) =>
+                setValues((v) => ({ ...(v as any), kiwify_produto_revendedor_ref: e.target.value }))
+              }
+              placeholder="Ex.: 8a1b2c3d-...."
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Identificador do produto na Kiwify. O webhook só provisiona revendedor quando o produto pago corresponde a este ID.
+            </p>
           </div>
         </div>
       </section>

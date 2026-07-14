@@ -118,6 +118,8 @@ export type Database = {
           favicon_url: string | null
           footer_text: string | null
           id: string
+          kiwify_checkout_url_revendedor: string | null
+          kiwify_produto_revendedor_ref: string | null
           link_comunidade: string | null
           logo_url: string | null
           notification_active: boolean
@@ -148,6 +150,8 @@ export type Database = {
           favicon_url?: string | null
           footer_text?: string | null
           id?: string
+          kiwify_checkout_url_revendedor?: string | null
+          kiwify_produto_revendedor_ref?: string | null
           link_comunidade?: string | null
           logo_url?: string | null
           notification_active?: boolean
@@ -178,6 +182,8 @@ export type Database = {
           favicon_url?: string | null
           footer_text?: string | null
           id?: string
+          kiwify_checkout_url_revendedor?: string | null
+          kiwify_produto_revendedor_ref?: string | null
           link_comunidade?: string | null
           logo_url?: string | null
           notification_active?: boolean
