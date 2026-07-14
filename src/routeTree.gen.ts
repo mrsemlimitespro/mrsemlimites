@@ -32,6 +32,7 @@ import { Route as AdminLicencasDashboardRouteImport } from './routes/admin.licen
 import { Route as AdminLicencasRouteImport } from './routes/admin.licencas'
 import { Route as AdminHomeRouteImport } from './routes/admin.home'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
+import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
 import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
@@ -49,6 +50,7 @@ import { Route as AppAulasRouteImport } from './routes/_app.aulas'
 import { Route as AppAgentsRouteImport } from './routes/_app.agents'
 import { Route as ApiPublicValidarLicencaRouteImport } from './routes/api/public/validar-licenca'
 import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
+import { Route as AdminClientesIdRouteImport } from './routes/admin.clientes.$id'
 import { Route as AppPacksSlugRouteImport } from './routes/_app.packs.$slug'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
@@ -182,6 +184,11 @@ const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
   path: '/configuracoes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminClientesRoute = AdminClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBackupRoute = AdminBackupRouteImport.update({
   id: '/backup',
   path: '/backup',
@@ -268,6 +275,11 @@ const ApiPublicDownloadExtensaoRoute =
     path: '/api/public/download-extensao',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminClientesIdRoute = AdminClientesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminClientesRoute,
+} as any)
 const AppPacksSlugRoute = AppPacksSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -394,6 +406,7 @@ export interface FileRoutesByFullPath {
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
+  '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -410,6 +423,7 @@ export interface FileRoutesByFullPath {
   '/admin/visualizacao': typeof AdminVisualizacaoRoute
   '/admin/': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
+  '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
@@ -451,6 +465,7 @@ export interface FileRoutesByTo {
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
+  '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -468,6 +483,7 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/admin': typeof AdminIndexRoute
   '/packs/$slug': typeof AppPacksSlugRoute
+  '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
@@ -512,6 +528,7 @@ export interface FileRoutesById {
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
   '/admin/backup': typeof AdminBackupRoute
+  '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/licencas': typeof AdminLicencasRoute
@@ -529,6 +546,7 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_app/packs/$slug': typeof AppPacksSlugRoute
+  '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
@@ -574,6 +592,7 @@ export interface FileRouteTypes {
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
     | '/admin/backup'
+    | '/admin/clientes'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -590,6 +609,7 @@ export interface FileRouteTypes {
     | '/admin/visualizacao'
     | '/admin/'
     | '/packs/$slug'
+    | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/licenca/config'
@@ -631,6 +651,7 @@ export interface FileRouteTypes {
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
     | '/admin/backup'
+    | '/admin/clientes'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -648,6 +669,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/packs/$slug'
+    | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/licenca/config'
@@ -691,6 +713,7 @@ export interface FileRouteTypes {
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
     | '/admin/backup'
+    | '/admin/clientes'
     | '/admin/configuracoes'
     | '/admin/home'
     | '/admin/licencas'
@@ -708,6 +731,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/admin/'
     | '/_app/packs/$slug'
+    | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/licenca/config'
@@ -921,6 +945,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminConfiguracoesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/clientes': {
+      id: '/admin/clientes'
+      path: '/clientes'
+      fullPath: '/admin/clientes'
+      preLoaderRoute: typeof AdminClientesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/backup': {
       id: '/admin/backup'
       path: '/backup'
@@ -1039,6 +1070,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/download-extensao'
       preLoaderRoute: typeof ApiPublicDownloadExtensaoRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/clientes/$id': {
+      id: '/admin/clientes/$id'
+      path: '/$id'
+      fullPath: '/admin/clientes/$id'
+      preLoaderRoute: typeof AdminClientesIdRouteImport
+      parentRoute: typeof AdminClientesRoute
     }
     '/_app/packs/$slug': {
       id: '/_app/packs/$slug'
@@ -1213,11 +1251,24 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AdminClientesRouteChildren {
+  AdminClientesIdRoute: typeof AdminClientesIdRoute
+}
+
+const AdminClientesRouteChildren: AdminClientesRouteChildren = {
+  AdminClientesIdRoute: AdminClientesIdRoute,
+}
+
+const AdminClientesRouteWithChildren = AdminClientesRoute._addFileChildren(
+  AdminClientesRouteChildren,
+)
+
 interface AdminRouteChildren {
   AdminResourceRoute: typeof AdminResourceRoute
   AdminAjustarCreditosRoute: typeof AdminAjustarCreditosRoute
   AdminAnimacoesRoute: typeof AdminAnimacoesRoute
   AdminBackupRoute: typeof AdminBackupRoute
+  AdminClientesRoute: typeof AdminClientesRouteWithChildren
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminHomeRoute: typeof AdminHomeRoute
   AdminLicencasRoute: typeof AdminLicencasRoute
@@ -1240,6 +1291,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAjustarCreditosRoute: AdminAjustarCreditosRoute,
   AdminAnimacoesRoute: AdminAnimacoesRoute,
   AdminBackupRoute: AdminBackupRoute,
+  AdminClientesRoute: AdminClientesRouteWithChildren,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminHomeRoute: AdminHomeRoute,
   AdminLicencasRoute: AdminLicencasRoute,
