@@ -36,6 +36,10 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         const key = String(body?.license_key ?? "").trim();
         const hwid = body?.hwid ? String(body.hwid).trim() : null;
         const deviceInfo = body?.device_info ?? null;
+        // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
+        // Sem alterar validação nem retorno. Se ausente, comportamento 100% idêntico.
+        const extension_id = body?.extension_id ? String(body.extension_id).slice(0, 80) : null;
+        void extension_id;
 
         if (!key) {
           return new Response(

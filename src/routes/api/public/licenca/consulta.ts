@@ -15,6 +15,10 @@ export const Route = createFileRoute("/api/public/licenca/consulta")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const chave = (url.searchParams.get("chave") ?? "").trim();
+        // FASE 2 (multi-extensão): leitura opcional de `extension_id` (query param). Reservado para uso futuro.
+        // Não é passado à RPC `consulta_licenca_publica`; comportamento inalterado se ausente.
+        const extension_id = (url.searchParams.get("extension_id") ?? "").slice(0, 80) || null;
+        void extension_id;
         if (!chave) {
           return new Response(JSON.stringify({ ok: false, error: "missing_chave" }), {
             status: 200,
