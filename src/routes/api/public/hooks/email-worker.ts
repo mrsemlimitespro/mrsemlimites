@@ -40,18 +40,33 @@ export const Route = createFileRoute("/api/public/hooks/email-worker")({
           { auth: { persistSession: false, autoRefreshToken: false } },
         );
 
-        const provider = getEmailProvider();
-
-        // Config de remetente (uma linha em admin_settings)
+        // Config: flag EMAIL_ENABLED + remetente. Enquanto EMAIL_ENABLED=false
+        // (padrão), o provider real é substituído pelo DisabledEmailProvider,
+        // que apenas registra um log — nenhum email real é enviado.
+        // Basta ligar a flag (e configurar EMAIL_FROM no admin) quando o
+        // domínio for verificado no Resend; nenhuma outra parte muda.
         const { data: cfg } = await admin
           .from("admin_settings")
-          .select("email_remetente_nome,email_remetente_endereco")
+          .select(
+            "email_enabled,email_from,email_remetente_nome,email_remetente_endereco",
+          )
           .limit(1)
           .maybeSingle();
+
+        const emailEnabled = ((cfg as any)?.email_enabled ?? false) === true;
+        const provider = getEmailProvider({ enabled: emailEnabled });
+
+        // Remetente: prioriza EMAIL_FROM (definido quando o domínio estiver
+        // pronto). Cai para env var e depois para o par nome/endereço legado.
+        const envFrom = process.env.EMAIL_FROM;
+        const dbFrom = (cfg as any)?.email_from as string | null | undefined;
         const fromName = (cfg as any)?.email_remetente_nome || "MR sem Limites";
         const fromAddr =
           (cfg as any)?.email_remetente_endereco || "contato@mrsemlimites.com";
-        const from = `${fromName} <${fromAddr}>`;
+        const from =
+          (dbFrom && dbFrom.trim()) ||
+          (envFrom && envFrom.trim()) ||
+          `${fromName} <${fromAddr}>`;
 
         // Marca lote como "sending" atomicamente-ish
         const { data: batch } = await admin

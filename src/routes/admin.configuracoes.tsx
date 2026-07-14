@@ -74,6 +74,8 @@ function ConfiguracoesPage() {
           email_link_manual: (values as any).email_link_manual || null,
           email_link_download: (values as any).email_link_download || null,
           email_remetente_nome: (values as any).email_remetente_nome || null,
+          email_enabled: !!(values as any).email_enabled,
+          email_from: (values as any).email_from || null,
           painel_revendedor_valor: (values as any).painel_revendedor_valor ?? 29.90,
           kiwify_checkout_url_revendedor: (values as any).kiwify_checkout_url_revendedor || null,
           kiwify_produto_revendedor_ref: (values as any).kiwify_produto_revendedor_ref || null,
@@ -227,6 +229,29 @@ function ConfiguracoesPage() {
               value={(values as any).email_remetente_nome ?? ""}
               onChange={(e) => setValues((v) => ({ ...(v as any), email_remetente_nome: e.target.value }))}
               placeholder="MR Sem Limites"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <Label>Remetente (EMAIL_FROM)</Label>
+            <Input
+              value={(values as any).email_from ?? ""}
+              onChange={(e) => setValues((v) => ({ ...(v as any), email_from: e.target.value }))}
+              placeholder='MR Sem Limites <no-reply@seudominio.com>'
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Preencha somente após verificar o domínio no Resend. Enquanto vazio, o sistema usa o remetente padrão.
+            </p>
+          </div>
+          <div className="md:col-span-2 flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-3">
+            <div>
+              <Label className="text-sm">Envio de e-mails ativo</Label>
+              <p className="text-[11px] text-muted-foreground">
+                Enquanto desligado, nenhum e-mail real é enviado — apenas logs são registrados. Ative depois de configurar o domínio no Resend.
+              </p>
+            </div>
+            <Switch
+              checked={!!(values as any).email_enabled}
+              onCheckedChange={(v) => setValues((s) => ({ ...(s as any), email_enabled: v }))}
             />
           </div>
           <div>
