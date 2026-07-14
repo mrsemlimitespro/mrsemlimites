@@ -37,6 +37,7 @@ import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
 import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
+import { Route as AppRevendedorRouteImport } from './routes/_app.revendedor'
 import { Route as AppQueroSerRevendedorRouteImport } from './routes/_app.quero-ser-revendedor'
 import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
@@ -210,6 +211,11 @@ const AdminResourceRoute = AdminResourceRouteImport.update({
   id: '/$resource',
   path: '/$resource',
   getParentRoute: () => AdminRoute,
+} as any)
+const AppRevendedorRoute = AppRevendedorRouteImport.update({
+  id: '/revendedor',
+  path: '/revendedor',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppQueroSerRevendedorRoute = AppQueroSerRevendedorRouteImport.update({
   id: '/quero-ser-revendedor',
@@ -416,6 +422,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
   '/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -477,6 +484,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
   '/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -542,6 +550,7 @@ export interface FileRoutesById {
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/prompts': typeof AppPromptsRoute
   '/_app/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/_app/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -608,6 +617,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/prompts'
     | '/quero-ser-revendedor'
+    | '/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -669,6 +679,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/prompts'
     | '/quero-ser-revendedor'
+    | '/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -733,6 +744,7 @@ export interface FileRouteTypes {
     | '/_app/perfil'
     | '/_app/prompts'
     | '/_app/quero-ser-revendedor'
+    | '/_app/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -1006,6 +1018,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResourceRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_app/revendedor': {
+      id: '/_app/revendedor'
+      path: '/revendedor'
+      fullPath: '/revendedor'
+      preLoaderRoute: typeof AppRevendedorRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/quero-ser-revendedor': {
       id: '/_app/quero-ser-revendedor'
       path: '/quero-ser-revendedor'
@@ -1272,6 +1291,7 @@ interface AppRouteChildren {
   AppPerfilRoute: typeof AppPerfilRoute
   AppPromptsRoute: typeof AppPromptsRoute
   AppQueroSerRevendedorRoute: typeof AppQueroSerRevendedorRoute
+  AppRevendedorRoute: typeof AppRevendedorRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
@@ -1288,6 +1308,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPerfilRoute: AppPerfilRoute,
   AppPromptsRoute: AppPromptsRoute,
   AppQueroSerRevendedorRoute: AppQueroSerRevendedorRoute,
+  AppRevendedorRoute: AppRevendedorRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
