@@ -26,7 +26,7 @@ export function ImpersonationBanner() {
       role="status"
       aria-live="polite"
       className={cn(
-        "sticky top-0 z-40 w-full border-b border-amber-400/30",
+        "fixed inset-x-0 top-0 z-50 w-full border-b border-amber-400/30",
         "backdrop-blur-xl",
       )}
       style={{
