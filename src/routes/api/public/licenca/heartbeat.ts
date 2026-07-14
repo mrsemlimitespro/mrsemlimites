@@ -21,6 +21,10 @@ export const Route = createFileRoute("/api/public/licenca/heartbeat")({
         }
         const chave = String(body?.chave ?? "").trim();
         const device_id = body?.device_id ? String(body.device_id).trim() : null;
+        // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
+        // Não passado à RPC `heartbeat_licenca`; comportamento inalterado.
+        const extension_id = body?.extension_id ? String(body.extension_id).slice(0, 80) : null;
+        void extension_id;
 
         if (!chave) {
           return new Response(
