@@ -38,7 +38,7 @@ const INCLUSO = [
   "Cadastro e gestão de clientes",
   "Criação de promoções e cupons",
   "Restauração de dispositivos",
-  "Relatórios de vendas e comissão",
+  "Relatórios de vendas e desempenho",
   "Acesso à comunidade exclusiva",
   "Sem mensalidade — pagamento único",
 ];
