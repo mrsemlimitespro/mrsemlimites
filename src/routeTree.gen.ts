@@ -41,6 +41,7 @@ import { Route as AppQueroSerRevendedorRouteImport } from './routes/_app.quero-s
 import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppPacksRouteImport } from './routes/_app.packs'
+import { Route as AppMinhaContaRouteImport } from './routes/_app.minha-conta'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
@@ -230,6 +231,11 @@ const AppPacksRoute = AppPacksRouteImport.update({
   path: '/packs',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMinhaContaRoute = AppMinhaContaRouteImport.update({
+  id: '/minha-conta',
+  path: '/minha-conta',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppLicencasRoute = AppLicencasRouteImport.update({
   id: '/licencas',
   path: '/licencas',
@@ -405,6 +411,7 @@ export interface FileRoutesByFullPath {
   '/creditos': typeof AppCreditosRoute
   '/dashboard': typeof AppDashboardRoute
   '/licencas': typeof AppLicencasRoute
+  '/minha-conta': typeof AppMinhaContaRoute
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
@@ -465,6 +472,7 @@ export interface FileRoutesByTo {
   '/creditos': typeof AppCreditosRoute
   '/dashboard': typeof AppDashboardRoute
   '/licencas': typeof AppLicencasRoute
+  '/minha-conta': typeof AppMinhaContaRoute
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
@@ -529,6 +537,7 @@ export interface FileRoutesById {
   '/_app/creditos': typeof AppCreditosRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/licencas': typeof AppLicencasRoute
+  '/_app/minha-conta': typeof AppMinhaContaRoute
   '/_app/packs': typeof AppPacksRouteWithChildren
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/prompts': typeof AppPromptsRoute
@@ -594,6 +603,7 @@ export interface FileRouteTypes {
     | '/creditos'
     | '/dashboard'
     | '/licencas'
+    | '/minha-conta'
     | '/packs'
     | '/perfil'
     | '/prompts'
@@ -654,6 +664,7 @@ export interface FileRouteTypes {
     | '/creditos'
     | '/dashboard'
     | '/licencas'
+    | '/minha-conta'
     | '/packs'
     | '/perfil'
     | '/prompts'
@@ -717,6 +728,7 @@ export interface FileRouteTypes {
     | '/_app/creditos'
     | '/_app/dashboard'
     | '/_app/licencas'
+    | '/_app/minha-conta'
     | '/_app/packs'
     | '/_app/perfil'
     | '/_app/prompts'
@@ -1022,6 +1034,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPacksRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/minha-conta': {
+      id: '/_app/minha-conta'
+      path: '/minha-conta'
+      fullPath: '/minha-conta'
+      preLoaderRoute: typeof AppMinhaContaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/licencas': {
       id: '/_app/licencas'
       path: '/licencas'
@@ -1248,6 +1267,7 @@ interface AppRouteChildren {
   AppCreditosRoute: typeof AppCreditosRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppLicencasRoute: typeof AppLicencasRoute
+  AppMinhaContaRoute: typeof AppMinhaContaRoute
   AppPacksRoute: typeof AppPacksRouteWithChildren
   AppPerfilRoute: typeof AppPerfilRoute
   AppPromptsRoute: typeof AppPromptsRoute
@@ -1263,6 +1283,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCreditosRoute: AppCreditosRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppLicencasRoute: AppLicencasRoute,
+  AppMinhaContaRoute: AppMinhaContaRoute,
   AppPacksRoute: AppPacksRouteWithChildren,
   AppPerfilRoute: AppPerfilRoute,
   AppPromptsRoute: AppPromptsRoute,
