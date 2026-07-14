@@ -253,6 +253,7 @@ function ConfiguracoesPage() {
               checked={!!(values as any).email_enabled}
               onCheckedChange={(v) => setValues((s) => ({ ...(s as any), email_enabled: v }))}
             />
+          </div>
           <div>
             <Label>Valor do Painel Revendedor (R$)</Label>
             <Input
