@@ -292,20 +292,22 @@ function ProdutosTab({ email }: { email: string }) {
 
   useEffect(() => {
     (async () => {
-      // pega cliente
-      const { data: cli } = await supabase
-        .from("clientes")
-        .select("id")
-        .eq("email", email.toLowerCase())
-        .maybeSingle();
-      if (!cli?.id) {
+      // deriva produtos dos produto_id das licenças do usuário
+      const { data: lics } = await supabase
+        .from("licencas")
+        .select("produto_id")
+        .eq("email", email.toLowerCase());
+      const ids = Array.from(
+        new Set((lics ?? []).map((x: any) => x.produto_id).filter(Boolean)),
+      ) as string[];
+      if (ids.length === 0) {
         setRows([]);
         return;
       }
       const { data } = await supabase
-        .from("licenca_produtos")
-        .select("id,produto_id,produtos(nome,descricao)")
-        .eq("cliente_id", cli.id);
+        .from("produtos")
+        .select("id,nome,descricao")
+        .in("id", ids);
       setRows(data ?? []);
     })();
   }, [email]);
