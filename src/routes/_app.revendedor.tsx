@@ -1,14 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  Users,
-  KeyRound,
-  DollarSign,
-  TrendingUp,
-  Wallet,
-  AlertCircle,
-  Loader2,
-  Coins,
+  Users, KeyRound, DollarSign, TrendingUp, AlertCircle,
+  Loader2, Coins, FlaskConical, Ban, CalendarClock,
 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -29,11 +23,12 @@ type DashKPI = {
   clientes: number;
   licencas_total: number;
   licencas_ativas: number;
+  licencas_teste: number;
+  licencas_bloqueadas: number;
+  licencas_vencendo: number;
   vendas_mes: number;
   receita_mes: number;
   receita_total: number;
-  comissao_pendente: number;
-  comissao_paga: number;
   saldo_creditos: number;
   pendencias: number;
 };
@@ -42,7 +37,7 @@ function RevendedorDashboard() {
   const [kpi, setKpi] = useState<DashKPI | null>(null);
   const [vendas, setVendas] = useState<any[]>([]);
   const [clientes, setClientes] = useState<any[]>([]);
-  const [comissoes, setComissoes] = useState<any[]>([]);
+  const [acessos, setAcessos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,7 +45,7 @@ function RevendedorDashboard() {
       const { data } = await (supabase as any).rpc("revendedor_dashboard");
       setKpi(data as DashKPI);
 
-      const [{ data: v }, { data: c }, { data: co }] = await Promise.all([
+      const [{ data: v }, { data: c }, { data: a }] = await Promise.all([
         supabase
           .from("payment_transactions")
           .select("id,valor,status,metodo,cliente_email,cliente_nome,created_at")
@@ -61,15 +56,16 @@ function RevendedorDashboard() {
           .select("id,nome,email,created_at,status")
           .order("created_at", { ascending: false })
           .limit(10),
-        (supabase as any)
-          .from("comissoes")
-          .select("id,valor,percentual,status,created_at,payment_id")
-          .order("created_at", { ascending: false })
-          .limit(20),
+        supabase
+          .from("licencas")
+          .select("id,chave,email,ultimo_acesso,status,tipo")
+          .not("ultimo_acesso", "is", null)
+          .order("ultimo_acesso", { ascending: false })
+          .limit(10),
       ]);
       setVendas(v ?? []);
       setClientes(c ?? []);
-      setComissoes(co ?? []);
+      setAcessos(a ?? []);
       setLoading(false);
     })();
   }, []);
@@ -87,7 +83,11 @@ function RevendedorDashboard() {
       <div className="glass mx-auto max-w-md rounded-2xl p-8 text-center">
         <h1 className="text-xl font-semibold">Área do revendedor</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Sua conta ainda não é revendedora. Fale com o administrador.
+          Sua conta ainda não é revendedora.{" "}
+          <Link to="/quero-ser-revendedor" className="gradient-text underline">
+            Torne-se revendedor
+          </Link>
+          .
         </p>
       </div>
     );
@@ -107,6 +107,9 @@ function RevendedorDashboard() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Kpi label="Clientes" value={kpi.clientes} icon={Users} />
         <Kpi label="Licenças ativas" value={kpi.licencas_ativas} icon={KeyRound} />
+        <Kpi label="Em teste" value={kpi.licencas_teste} icon={FlaskConical} />
+        <Kpi label="Bloqueadas" value={kpi.licencas_bloqueadas} icon={Ban} />
+        <Kpi label="Vencendo (7d)" value={kpi.licencas_vencendo} icon={CalendarClock} />
         <Kpi
           label="Vendas do mês"
           value={kpi.vendas_mes}
@@ -119,16 +122,6 @@ function RevendedorDashboard() {
           icon={DollarSign}
         />
         <Kpi label="Créditos" value={kpi.saldo_creditos} icon={Coins} />
-        <Kpi
-          label="Comissão pendente"
-          value={`R$ ${money(kpi.comissao_pendente)}`}
-          icon={Wallet}
-        />
-        <Kpi
-          label="Comissão paga"
-          value={`R$ ${money(kpi.comissao_paga)}`}
-          icon={Wallet}
-        />
         <Kpi label="Pendências" value={kpi.pendencias} icon={AlertCircle} />
       </div>
 
@@ -186,47 +179,23 @@ function RevendedorDashboard() {
         </Card>
       </section>
 
-      <Card title="Histórico de comissões">
-        {comissoes.length === 0 ? (
-          <Empty msg="Sem comissões registradas ainda." />
+      <Card title="Últimos acessos">
+        {acessos.length === 0 ? (
+          <Empty msg="Sem acessos recentes." />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-                <tr className="border-b border-white/5">
-                  <th className="px-2 py-2">Data</th>
-                  <th className="px-2 py-2">Valor</th>
-                  <th className="px-2 py-2">%</th>
-                  <th className="px-2 py-2">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comissoes.map((c) => (
-                  <tr key={c.id} className="border-b border-white/5 last:border-b-0">
-                    <td className="px-2 py-2 text-xs">
-                      {new Date(c.created_at).toLocaleDateString("pt-BR")}
-                    </td>
-                    <td className="px-2 py-2 font-medium">R$ {money(c.valor)}</td>
-                    <td className="px-2 py-2 text-xs">{Number(c.percentual).toFixed(0)}%</td>
-                    <td className="px-2 py-2">
-                      <span
-                        className={cn(
-                          "rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider",
-                          c.status === "pago"
-                            ? "bg-emerald-500/15 text-emerald-300"
-                            : c.status === "pendente"
-                              ? "bg-amber-500/15 text-amber-300"
-                              : "bg-rose-500/15 text-rose-300",
-                        )}
-                      >
-                        {c.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ul className="divide-y divide-white/5">
+            {acessos.map((a) => (
+              <li key={a.id} className="flex items-center justify-between py-2 text-sm">
+                <div>
+                  <div className="font-mono text-xs">{a.chave}</div>
+                  <div className="text-[10px] text-muted-foreground">{a.email}</div>
+                </div>
+                <div className="text-[10px] text-muted-foreground">
+                  {a.ultimo_acesso ? new Date(a.ultimo_acesso).toLocaleString("pt-BR") : "—"}
+                </div>
+              </li>
+            ))}
+          </ul>
         )}
       </Card>
     </div>
