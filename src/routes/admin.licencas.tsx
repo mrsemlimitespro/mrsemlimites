@@ -215,6 +215,15 @@ function LicencasAdmin() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const reenviar = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await (supabase as any).rpc("reenviar_licenca", { _licenca_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => toast.success("Email de licença enfileirado."),
+    onError: (e: Error) => toast.error(e.message || "Falha ao reenviar"),
+  });
+
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
