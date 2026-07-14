@@ -151,10 +151,10 @@ function ClienteDetailPage() {
           <button
             onClick={() => {
               setImpersonation({
-                role: "cliente",
-                userId: cliente.id,
-                nome: cliente.nome,
-                email: cliente.email,
+                kind: "cliente",
+                id: cliente.id,
+                name: cliente.nome ?? "—",
+                email: cliente.email ?? "—",
                 returnTo: window.location.pathname,
               });
               navigate({ to: "/dashboard" });
