@@ -164,16 +164,11 @@ function QueroSerRevendedorPage() {
       {/* CTA final */}
       <section className="glass flex flex-col items-center gap-4 rounded-3xl p-8 text-center md:p-12">
         <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Taxa única</p>
-        <p className="gradient-text-warm text-5xl font-black md:text-6xl">R$ 29,90</p>
+        <p className="gradient-text-warm text-5xl font-black md:text-6xl">R$ {valorFmt}</p>
         <p className="max-w-md text-sm text-muted-foreground">
           Um único pagamento libera o painel de revendedor para sempre. Sem assinatura, sem cobrança recorrente.
         </p>
-        <Link
-          to="/checkout"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-sm font-bold text-primary-foreground shadow-lg transition hover:opacity-90"
-        >
-          Quero ser Revendedor agora <ArrowRight className="size-4" />
-        </Link>
+        <CtaButton label="Quero ser Revendedor agora" />
         <p className="text-[11px] text-muted-foreground">
           Já tem conta?{" "}
           <Link to="/login" className="text-foreground underline">Entrar</Link>
