@@ -77,7 +77,6 @@ function ResourcePage() {
 function ResourceView({ resource }: { resource: Resource }) {
   const qc = useQueryClient();
   const navigate = useNavigate();
-  const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(0);
