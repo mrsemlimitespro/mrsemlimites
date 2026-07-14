@@ -46,8 +46,44 @@ const INCLUSO = [
 ];
 
 function QueroSerRevendedorPage() {
+  const { data: cfg } = useQuery({
+    queryKey: ["revendedor-checkout-url"],
+    queryFn: async () => {
+      const { data } = await (supabase as any)
+        .from("admin_settings")
+        .select("kiwify_checkout_url_revendedor,painel_revendedor_valor")
+        .limit(1)
+        .maybeSingle();
+      return data as { kiwify_checkout_url_revendedor: string | null; painel_revendedor_valor: number | null } | null;
+    },
+    staleTime: 60_000,
+  });
+  const kiwifyUrl = cfg?.kiwify_checkout_url_revendedor?.trim() || "";
+  const valor = cfg?.painel_revendedor_valor ?? 29.9;
+  const valorFmt = valor.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const CtaButton = ({ label }: { label: string }) =>
+    kiwifyUrl ? (
+      <a
+        href={kiwifyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg transition hover:opacity-90"
+      >
+        {label} <ArrowRight className="size-4" />
+      </a>
+    ) : (
+      <Link
+        to="/checkout"
+        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg transition hover:opacity-90"
+      >
+        {label} <ArrowRight className="size-4" />
+      </Link>
+    );
+
   return (
     <div className="mx-auto w-full max-w-[1080px] space-y-10 pb-24">
+
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl p-8 text-center md:p-14"
         style={{
