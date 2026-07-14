@@ -240,6 +240,32 @@ function ConfiguracoesPage() {
               }
             />
           </div>
+          <div className="md:col-span-2">
+            <Label>URL do checkout Kiwify (Painel Revendedor)</Label>
+            <Input
+              value={(values as any).kiwify_checkout_url_revendedor ?? ""}
+              onChange={(e) =>
+                setValues((v) => ({ ...(v as any), kiwify_checkout_url_revendedor: e.target.value }))
+              }
+              placeholder="https://pay.kiwify.com.br/xxxxxxx"
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Botão "Seja Revendedor" abre esta URL. Após aprovação, o webhook Kiwify libera o painel automaticamente.
+            </p>
+          </div>
+          <div className="md:col-span-2">
+            <Label>ID do produto Kiwify (Painel Revendedor)</Label>
+            <Input
+              value={(values as any).kiwify_produto_revendedor_ref ?? ""}
+              onChange={(e) =>
+                setValues((v) => ({ ...(v as any), kiwify_produto_revendedor_ref: e.target.value }))
+              }
+              placeholder="Ex.: 8a1b2c3d-...."
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Identificador do produto na Kiwify. O webhook só provisiona revendedor quando o produto pago corresponde a este ID.
+            </p>
+          </div>
         </div>
       </section>
 
