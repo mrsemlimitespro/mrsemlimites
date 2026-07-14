@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Check, Sparkles, Users, Wallet, ShieldCheck, Megaphone, LineChart, Headphones } from "lucide-react";
 
 import { BRAND_NAME } from "@/components/brand";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_app/quero-ser-revendedor")({
   head: () => ({
