@@ -88,12 +88,17 @@ function fmtDate(d: string | null) {
 function RevendedoresGestaoPage() {
   const qc = useQueryClient();
   const [q, setQ] = useState("");
+  const [filter, setFilter] = useState<
+    "todos" | "ativos" | "bloqueados" | "expirados" | "vitalicios"
+  >("todos");
   const [dlgOpen, setDlgOpen] = useState(false);
 
   const createFn = useServerFn(createRevendedorManual);
   const blockFn = useServerFn(setRevendedorBloqueio);
   const validadeFn = useServerFn(setRevendedorValidade);
   const magicFn = useServerFn(resendMagicLinkRevendedor);
+  const resetFn = useServerFn(resetRevendedorPassword);
+  const deleteFn = useServerFn(deleteRevendedor);
 
   const { data: rows, isLoading } = useQuery({
     queryKey: ["admin-revendedores-gestao"],
@@ -101,8 +106,9 @@ function RevendedoresGestaoPage() {
       const { data, error } = await (supabase as any)
         .from("revendedores")
         .select(
-          "id,nome,email,telefone,whatsapp,empresa,cpf_cnpj,status,bloqueado,plano_expira_em,saldo_creditos,created_at",
+          "id,nome,email,telefone,whatsapp,empresa,cpf_cnpj,status,bloqueado,plano_expira_em,saldo_creditos,created_at,deleted_at",
         )
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(500);
       if (error) throw error;
@@ -111,7 +117,23 @@ function RevendedoresGestaoPage() {
   });
 
   const filtered = useMemo(() => {
-    const list = rows ?? [];
+    const now = Date.now();
+    const list = (rows ?? []).filter((r) => {
+      switch (filter) {
+        case "ativos":
+          return !r.bloqueado &&
+            (!r.plano_expira_em || new Date(r.plano_expira_em).getTime() > now);
+        case "bloqueados":
+          return r.bloqueado;
+        case "expirados":
+          return r.plano_expira_em &&
+            new Date(r.plano_expira_em).getTime() <= now;
+        case "vitalicios":
+          return !r.plano_expira_em;
+        default:
+          return true;
+      }
+    });
     if (!q.trim()) return list;
     const s = q.toLowerCase();
     return list.filter((r) =>
@@ -119,7 +141,7 @@ function RevendedoresGestaoPage() {
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(s)),
     );
-  }, [rows, q]);
+  }, [rows, q, filter]);
 
   const blockMut = useMutation({
     mutationFn: (v: { id: string; bloqueado: boolean }) => blockFn({ data: v }),
@@ -146,6 +168,24 @@ function RevendedoresGestaoPage() {
   const magicMut = useMutation({
     mutationFn: (id: string) => magicFn({ data: { id } }),
     onSuccess: () => toast.success("Magic Link reenviado (email enfileirado)"),
+    onError: (e: any) => toast.error(e?.message ?? "Falha"),
+  });
+
+  const resetMut = useMutation({
+    mutationFn: (id: string) => resetFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Link de redefinição enviado por email");
+      qc.invalidateQueries({ queryKey: ["admin-revendedores-gestao"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Falha"),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: (id: string) => deleteFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Revendedor excluído");
+      qc.invalidateQueries({ queryKey: ["admin-revendedores-gestao"] });
+    },
     onError: (e: any) => toast.error(e?.message ?? "Falha"),
   });
 
