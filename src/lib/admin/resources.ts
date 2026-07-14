@@ -246,6 +246,7 @@ export const resources: Resource[] = [
     table: "licenca_produtos",
     icon: Package,
     group: "Clientes",
+    hiddenFromSidebar: true,
     orderBy: { column: "created_at", ascending: false },
     searchColumns: ["nome", "slug"],
     fields: [
@@ -737,7 +738,7 @@ export const resources: Resource[] = [
   },
   {
     key: "aulas",
-    label: "Aulas",
+    label: "Biblioteca",
     singular: "Aula",
     table: "aulas",
     icon: GraduationCap,
