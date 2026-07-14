@@ -9,7 +9,7 @@ export const Route = createFileRoute("/registro")({
   head: () => ({
     meta: [
       { title: "Criar conta — MR sem limites" },
-      { name: "description", content: "Crie sua conta de revendedor." },
+      { name: "description", content: "Crie sua conta gratuita e acesse Prompts, Agents e Packs premium." },
     ],
   }),
   component: RegistroPage,
@@ -79,29 +79,12 @@ function RegistroPage() {
       }
     }
 
-    const { error: rpcErr } = await supabase.rpc("create_revendedor_profile", {
-      _nome: nome,
-      _telefone: telefone,
-    });
-    if (rpcErr) {
-      setError(rpcErr.message);
-      setLoading(false);
-      return;
-    }
-
-    // Se já possui plano ativo, entra direto. Senão, checkout.
-    const { data: u } = await supabase.auth.getUser();
-    if (u.user) {
-      const { data: rev } = await supabase
-        .from("revendedores")
-        .select("plano_expira_em")
-        .eq("auth_user_id", u.user.id)
-        .maybeSingle();
-      const ativo = rev?.plano_expira_em && new Date(rev.plano_expira_em) > new Date();
-      navigate({ to: ativo ? "/" : "/checkout" });
-      return;
-    }
-    navigate({ to: "/checkout" });
+    // Cadastro público cria CLIENTE FINAL.
+    // O registro em `clientes` é criado automaticamente pelo trigger
+    // `tg_auth_user_to_cliente` no auth.users. Nenhum perfil de revendedor
+    // é criado aqui — o upgrade para revendedor é feito em /quero-ser-revendedor.
+    console.log("[Auth] cadastro criado como cliente — redirecionando para Home");
+    navigate({ to: "/" });
   }
 
   return (

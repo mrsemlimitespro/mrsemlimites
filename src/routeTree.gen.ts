@@ -35,6 +35,7 @@ import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
 import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
+import { Route as AppQueroSerRevendedorRouteImport } from './routes/_app.quero-ser-revendedor'
 import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppPacksRouteImport } from './routes/_app.packs'
@@ -194,6 +195,11 @@ const AdminResourceRoute = AdminResourceRouteImport.update({
   id: '/$resource',
   path: '/$resource',
   getParentRoute: () => AdminRoute,
+} as any)
+const AppQueroSerRevendedorRoute = AppQueroSerRevendedorRouteImport.update({
+  id: '/quero-ser-revendedor',
+  path: '/quero-ser-revendedor',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppPromptsRoute = AppPromptsRouteImport.update({
   id: '/prompts',
@@ -377,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
+  '/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -432,6 +439,7 @@ export interface FileRoutesByTo {
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
+  '/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -491,6 +499,7 @@ export interface FileRoutesById {
   '/_app/packs': typeof AppPacksRouteWithChildren
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/prompts': typeof AppPromptsRoute
+  '/_app/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
@@ -551,6 +560,7 @@ export interface FileRouteTypes {
     | '/packs'
     | '/perfil'
     | '/prompts'
+    | '/quero-ser-revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -606,6 +616,7 @@ export interface FileRouteTypes {
     | '/packs'
     | '/perfil'
     | '/prompts'
+    | '/quero-ser-revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -664,6 +675,7 @@ export interface FileRouteTypes {
     | '/_app/packs'
     | '/_app/perfil'
     | '/_app/prompts'
+    | '/_app/quero-ser-revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
@@ -918,6 +930,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResourceRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_app/quero-ser-revendedor': {
+      id: '/_app/quero-ser-revendedor'
+      path: '/quero-ser-revendedor'
+      fullPath: '/quero-ser-revendedor'
+      preLoaderRoute: typeof AppQueroSerRevendedorRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/prompts': {
       id: '/_app/prompts'
       path: '/prompts'
@@ -1154,6 +1173,7 @@ interface AppRouteChildren {
   AppPacksRoute: typeof AppPacksRouteWithChildren
   AppPerfilRoute: typeof AppPerfilRoute
   AppPromptsRoute: typeof AppPromptsRoute
+  AppQueroSerRevendedorRoute: typeof AppQueroSerRevendedorRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
@@ -1168,6 +1188,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPacksRoute: AppPacksRouteWithChildren,
   AppPerfilRoute: AppPerfilRoute,
   AppPromptsRoute: AppPromptsRoute,
+  AppQueroSerRevendedorRoute: AppQueroSerRevendedorRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
@@ -1253,13 +1274,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
