@@ -122,6 +122,7 @@ export type Database = {
           logo_url: string | null
           notification_active: boolean
           notification_message: string | null
+          painel_revendedor_plano_id: string | null
           painel_revendedor_produto_id: string | null
           painel_revendedor_valor: number | null
           password_hash: string | null
@@ -151,6 +152,7 @@ export type Database = {
           logo_url?: string | null
           notification_active?: boolean
           notification_message?: string | null
+          painel_revendedor_plano_id?: string | null
           painel_revendedor_produto_id?: string | null
           painel_revendedor_valor?: number | null
           password_hash?: string | null
@@ -180,6 +182,7 @@ export type Database = {
           logo_url?: string | null
           notification_active?: boolean
           notification_message?: string | null
+          painel_revendedor_plano_id?: string | null
           painel_revendedor_produto_id?: string | null
           painel_revendedor_valor?: number | null
           password_hash?: string | null
@@ -190,6 +193,13 @@ export type Database = {
           welcome_text?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "admin_settings_painel_revendedor_plano_id_fkey"
+            columns: ["painel_revendedor_plano_id"]
+            isOneToOne: false
+            referencedRelation: "planos"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "admin_settings_painel_revendedor_produto_id_fkey"
             columns: ["painel_revendedor_produto_id"]
