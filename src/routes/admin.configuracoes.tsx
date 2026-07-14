@@ -75,6 +75,8 @@ function ConfiguracoesPage() {
           email_link_download: (values as any).email_link_download || null,
           email_remetente_nome: (values as any).email_remetente_nome || null,
           painel_revendedor_valor: (values as any).painel_revendedor_valor ?? 29.90,
+          kiwify_checkout_url_revendedor: (values as any).kiwify_checkout_url_revendedor || null,
+          kiwify_produto_revendedor_ref: (values as any).kiwify_produto_revendedor_ref || null,
         })
         .eq("id", data.id);
       if (error) throw error;
