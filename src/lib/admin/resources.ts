@@ -347,7 +347,7 @@ export const resources: Resource[] = [
     listColumns: [
       { key: "nome", label: "Nome" },
       { key: "email", label: "E-mail" },
-      { key: "comissao", label: "Comissão %", format: "number" },
+      
       { key: "status", label: "Status" },
     ],
   },
