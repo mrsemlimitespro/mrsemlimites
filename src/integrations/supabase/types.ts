@@ -2887,9 +2887,11 @@ export type Database = {
           bloqueado: boolean
           cpf_cnpj: string | null
           created_at: string
+          deleted_at: string | null
           email: string | null
           empresa: string | null
           id: string
+          must_change_password: boolean
           nome: string
           observacoes: string | null
           plano_expira_em: string | null
@@ -2897,6 +2899,7 @@ export type Database = {
           saldo_creditos: number
           status: string
           telefone: string | null
+          temp_password_sent_at: string | null
           updated_at: string
           whatsapp: string | null
         }
@@ -2905,9 +2908,11 @@ export type Database = {
           bloqueado?: boolean
           cpf_cnpj?: string | null
           created_at?: string
+          deleted_at?: string | null
           email?: string | null
           empresa?: string | null
           id?: string
+          must_change_password?: boolean
           nome: string
           observacoes?: string | null
           plano_expira_em?: string | null
@@ -2915,6 +2920,7 @@ export type Database = {
           saldo_creditos?: number
           status?: string
           telefone?: string | null
+          temp_password_sent_at?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -2923,9 +2929,11 @@ export type Database = {
           bloqueado?: boolean
           cpf_cnpj?: string | null
           created_at?: string
+          deleted_at?: string | null
           email?: string | null
           empresa?: string | null
           id?: string
+          must_change_password?: boolean
           nome?: string
           observacoes?: string | null
           plano_expira_em?: string | null
@@ -2933,6 +2941,7 @@ export type Database = {
           saldo_creditos?: number
           status?: string
           telefone?: string | null
+          temp_password_sent_at?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
