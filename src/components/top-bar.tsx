@@ -38,6 +38,8 @@ export function TopBar() {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [isRevendedor, setIsRevendedor] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -47,10 +49,31 @@ export function TopBar() {
       if (!session?.user) {
         setIsAdminUser(false);
         setUserEmail(null);
+        setFirstName(null);
+        setIsRevendedor(false);
         return;
       }
       setUserEmail(session.user.email ?? null);
       if (mounted) setIsAdminUser(isAdminEmail(session.user.email));
+      // Busca nome do revendedor para saudação personalizada.
+      try {
+        const { data: rev } = await (supabase as any)
+          .from("revendedores")
+          .select("nome")
+          .eq("auth_user_id", session.user.id)
+          .maybeSingle();
+        if (!mounted) return;
+        const nome = (rev?.nome ?? session.user.user_metadata?.nome ?? "").trim();
+        if (nome) {
+          setFirstName(nome.split(/\s+/)[0]);
+          setIsRevendedor(!!rev?.nome);
+        } else {
+          setFirstName(null);
+          setIsRevendedor(false);
+        }
+      } catch {
+        setFirstName(null);
+      }
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => check(s));
