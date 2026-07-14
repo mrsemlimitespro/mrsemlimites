@@ -40,6 +40,7 @@ import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
 import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
 import { Route as AppRevendedorRouteImport } from './routes/_app.revendedor'
+import { Route as AppRedefinirSenhaRouteImport } from './routes/_app.redefinir-senha'
 import { Route as AppQueroSerRevendedorRouteImport } from './routes/_app.quero-ser-revendedor'
 import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
@@ -227,6 +228,11 @@ const AdminResourceRoute = AdminResourceRouteImport.update({
 const AppRevendedorRoute = AppRevendedorRouteImport.update({
   id: '/revendedor',
   path: '/revendedor',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRedefinirSenhaRoute = AppRedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
   getParentRoute: () => AppRoute,
 } as any)
 const AppQueroSerRevendedorRoute = AppQueroSerRevendedorRouteImport.update({
@@ -434,6 +440,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
   '/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/redefinir-senha': typeof AppRedefinirSenhaRoute
   '/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
@@ -498,6 +505,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof AppPerfilRoute
   '/prompts': typeof AppPromptsRoute
   '/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/redefinir-senha': typeof AppRedefinirSenhaRoute
   '/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
@@ -566,6 +574,7 @@ export interface FileRoutesById {
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/prompts': typeof AppPromptsRoute
   '/_app/quero-ser-revendedor': typeof AppQueroSerRevendedorRoute
+  '/_app/redefinir-senha': typeof AppRedefinirSenhaRoute
   '/_app/revendedor': typeof AppRevendedorRoute
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
@@ -635,6 +644,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/prompts'
     | '/quero-ser-revendedor'
+    | '/redefinir-senha'
     | '/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
@@ -699,6 +709,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/prompts'
     | '/quero-ser-revendedor'
+    | '/redefinir-senha'
     | '/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
@@ -766,6 +777,7 @@ export interface FileRouteTypes {
     | '/_app/perfil'
     | '/_app/prompts'
     | '/_app/quero-ser-revendedor'
+    | '/_app/redefinir-senha'
     | '/_app/revendedor'
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
@@ -1063,6 +1075,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRevendedorRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/redefinir-senha': {
+      id: '/_app/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof AppRedefinirSenhaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/quero-ser-revendedor': {
       id: '/_app/quero-ser-revendedor'
       path: '/quero-ser-revendedor'
@@ -1329,6 +1348,7 @@ interface AppRouteChildren {
   AppPerfilRoute: typeof AppPerfilRoute
   AppPromptsRoute: typeof AppPromptsRoute
   AppQueroSerRevendedorRoute: typeof AppQueroSerRevendedorRoute
+  AppRedefinirSenhaRoute: typeof AppRedefinirSenhaRoute
   AppRevendedorRoute: typeof AppRevendedorRoute
   AppIndexRoute: typeof AppIndexRoute
 }
@@ -1346,6 +1366,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPerfilRoute: AppPerfilRoute,
   AppPromptsRoute: AppPromptsRoute,
   AppQueroSerRevendedorRoute: AppQueroSerRevendedorRoute,
+  AppRedefinirSenhaRoute: AppRedefinirSenhaRoute,
   AppRevendedorRoute: AppRevendedorRoute,
   AppIndexRoute: AppIndexRoute,
 }

@@ -14,6 +14,7 @@ import { PushBootstrapper } from "@/components/push-bootstrapper";
 import { WhatsappZapButton } from "@/components/whatsapp-zap-button";
 import { InstagramFollowButton } from "@/components/instagram-follow-button";
 import { ImpersonationBanner } from "@/components/impersonation-banner";
+import { MustChangePasswordGuard } from "@/components/must-change-password-guard";
 
 // Decorativo: canvas de partículas só monta em telas médias+ (evita CPU/bateria no mobile).
 const SoftParticles = lazy(() =>
@@ -35,6 +36,7 @@ function AppLayout() {
       </div>
       <AppSidebar />
       <ImpersonationBanner />
+      <MustChangePasswordGuard />
       <div
         className="relative z-10 flex min-h-screen flex-col pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(0.5rem+env(safe-area-inset-top))] md:pl-[calc(5rem+env(safe-area-inset-left))] md:pt-[calc(1rem+env(safe-area-inset-top))]"
       >

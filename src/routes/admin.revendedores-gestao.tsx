@@ -25,6 +25,8 @@ import {
   Users as UsersIcon,
   KeyRound,
   X,
+  RotateCcw,
+  Trash2,
 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +39,8 @@ import {
   setRevendedorBloqueio,
   setRevendedorValidade,
   resendMagicLinkRevendedor,
+  resetRevendedorPassword,
+  deleteRevendedor,
 } from "@/lib/revendedores/admin.functions";
 
 export const Route = createFileRoute("/admin/revendedores-gestao")({
@@ -84,12 +88,17 @@ function fmtDate(d: string | null) {
 function RevendedoresGestaoPage() {
   const qc = useQueryClient();
   const [q, setQ] = useState("");
+  const [filter, setFilter] = useState<
+    "todos" | "ativos" | "bloqueados" | "expirados" | "vitalicios"
+  >("todos");
   const [dlgOpen, setDlgOpen] = useState(false);
 
   const createFn = useServerFn(createRevendedorManual);
   const blockFn = useServerFn(setRevendedorBloqueio);
   const validadeFn = useServerFn(setRevendedorValidade);
   const magicFn = useServerFn(resendMagicLinkRevendedor);
+  const resetFn = useServerFn(resetRevendedorPassword);
+  const deleteFn = useServerFn(deleteRevendedor);
 
   const { data: rows, isLoading } = useQuery({
     queryKey: ["admin-revendedores-gestao"],
@@ -97,8 +106,9 @@ function RevendedoresGestaoPage() {
       const { data, error } = await (supabase as any)
         .from("revendedores")
         .select(
-          "id,nome,email,telefone,whatsapp,empresa,cpf_cnpj,status,bloqueado,plano_expira_em,saldo_creditos,created_at",
+          "id,nome,email,telefone,whatsapp,empresa,cpf_cnpj,status,bloqueado,plano_expira_em,saldo_creditos,created_at,deleted_at",
         )
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(500);
       if (error) throw error;
@@ -107,7 +117,23 @@ function RevendedoresGestaoPage() {
   });
 
   const filtered = useMemo(() => {
-    const list = rows ?? [];
+    const now = Date.now();
+    const list = (rows ?? []).filter((r) => {
+      switch (filter) {
+        case "ativos":
+          return !r.bloqueado &&
+            (!r.plano_expira_em || new Date(r.plano_expira_em).getTime() > now);
+        case "bloqueados":
+          return r.bloqueado;
+        case "expirados":
+          return r.plano_expira_em &&
+            new Date(r.plano_expira_em).getTime() <= now;
+        case "vitalicios":
+          return !r.plano_expira_em;
+        default:
+          return true;
+      }
+    });
     if (!q.trim()) return list;
     const s = q.toLowerCase();
     return list.filter((r) =>
@@ -115,7 +141,7 @@ function RevendedoresGestaoPage() {
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(s)),
     );
-  }, [rows, q]);
+  }, [rows, q, filter]);
 
   const blockMut = useMutation({
     mutationFn: (v: { id: string; bloqueado: boolean }) => blockFn({ data: v }),
@@ -142,6 +168,24 @@ function RevendedoresGestaoPage() {
   const magicMut = useMutation({
     mutationFn: (id: string) => magicFn({ data: { id } }),
     onSuccess: () => toast.success("Magic Link reenviado (email enfileirado)"),
+    onError: (e: any) => toast.error(e?.message ?? "Falha"),
+  });
+
+  const resetMut = useMutation({
+    mutationFn: (id: string) => resetFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Link de redefinição enviado por email");
+      qc.invalidateQueries({ queryKey: ["admin-revendedores-gestao"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Falha"),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: (id: string) => deleteFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Revendedor excluído");
+      qc.invalidateQueries({ queryKey: ["admin-revendedores-gestao"] });
+    },
     onError: (e: any) => toast.error(e?.message ?? "Falha"),
   });
 
@@ -173,6 +217,30 @@ function RevendedoresGestaoPage() {
             placeholder="Buscar por nome, email, WhatsApp, empresa, status…"
             className="pl-9"
           />
+        </div>
+
+        <div className="mb-3 flex flex-wrap gap-2">
+          {[
+            { k: "todos", label: "Todos" },
+            { k: "ativos", label: "Ativos" },
+            { k: "bloqueados", label: "Bloqueados" },
+            { k: "expirados", label: "Expirados" },
+            { k: "vitalicios", label: "Vitalícios" },
+          ].map((t) => (
+            <button
+              key={t.k}
+              type="button"
+              onClick={() => setFilter(t.k as typeof filter)}
+              className={
+                "rounded-full border px-3 py-1 text-xs " +
+                (filter === t.k
+                  ? "border-primary bg-primary/20 text-foreground"
+                  : "border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10")
+              }
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
 
         {isLoading ? (
@@ -285,6 +353,25 @@ function RevendedoresGestaoPage() {
                         >
                           <Send className="size-3.5" />
                         </IconAction>
+                        <IconAction
+                          title="Redefinir senha (envia email)"
+                          onClick={() => resetMut.mutate(r.id)}
+                        >
+                          <RotateCcw className="size-3.5" />
+                        </IconAction>
+                        <IconAction
+                          title="Excluir revendedor"
+                          onClick={() => {
+                            if (
+                              confirm(
+                                `Excluir revendedor ${r.nome}? Esta ação é reversível pelo suporte.`,
+                              )
+                            )
+                              deleteMut.mutate(r.id);
+                          }}
+                        >
+                          <Trash2 className="size-3.5" />
+                        </IconAction>
                         <a
                           className="rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-[11px] hover:bg-white/10"
                           href={`/admin/clientes?revendedor_id=${r.id}`}
@@ -368,6 +455,7 @@ function NovoRevendedorDialog({
     status: "ativo" as "ativo" | "pendente" | "inativo",
     validade: "365" as string, // 30/60/90/180/365/vitalicio/custom
     validadeCustom: 30,
+    senha_temporaria: "",
     enviarMagicLink: true,
   });
   const [busy, setBusy] = useState(false);
@@ -396,7 +484,8 @@ function NovoRevendedorDialog({
         status: form.status,
         validade_dias,
         vitalicio,
-        enviarMagicLink: form.enviarMagicLink,
+        senha_temporaria: form.senha_temporaria.trim() || null,
+        enviarMagicLink: form.enviarMagicLink && !form.senha_temporaria.trim(),
       } as NovoInput);
       toast.success(
         res.magicLink ? "Revendedor criado — Magic Link enviado" : "Revendedor criado",
@@ -529,6 +618,22 @@ function NovoRevendedorDialog({
               value={form.observacoes}
               onChange={(e) => setForm({ ...form, observacoes: e.target.value })}
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <Label>Senha temporária (opcional)</Label>
+            <Input
+              type="text"
+              value={form.senha_temporaria}
+              onChange={(e) =>
+                setForm({ ...form, senha_temporaria: e.target.value })
+              }
+              placeholder="Mínimo 6 caracteres — o revendedor terá que trocá-la no primeiro acesso"
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Se informada, o email conterá login + senha temporária. Se em
+              branco, será enviado Magic Link.
+            </p>
           </div>
 
           <label className="md:col-span-2 flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
