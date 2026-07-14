@@ -455,6 +455,7 @@ function NovoRevendedorDialog({
     status: "ativo" as "ativo" | "pendente" | "inativo",
     validade: "365" as string, // 30/60/90/180/365/vitalicio/custom
     validadeCustom: 30,
+    senha_temporaria: "",
     enviarMagicLink: true,
   });
   const [busy, setBusy] = useState(false);
