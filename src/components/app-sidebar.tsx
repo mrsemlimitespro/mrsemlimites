@@ -120,6 +120,8 @@ export function AppSidebar() {
             <BrandMark size={38} />
           </Link>
 
+          <PanelBadge authed={authed} role={role} />
+
           <div className="mb-1 h-px w-6 bg-border/70" aria-hidden />
 
           <nav className="flex flex-col gap-1.5">
