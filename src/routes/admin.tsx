@@ -102,40 +102,49 @@ type SpecialLink = {
   label: string;
   icon: typeof LayoutDashboard;
   exact?: boolean;
+  group?: string;
 };
 
+// Ordem canônica dos grupos no sidebar
+const GROUP_ORDER = [
+  "Dashboard",
+  "Clientes",
+  "Produtos",
+  "Marketing",
+  "Financeiro",
+  "Conteúdo",
+  "Comunicação",
+  "Sistema",
+] as const;
+
 const specialLinks: SpecialLink[] = [
-  { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true },
-  { key: "home", to: "/admin/home", label: "Home", icon: HomeIcon },
-  { key: "licencas-manager", to: "/admin/licencas", label: "Licenças", icon: KeySquare },
-  { key: "licencas-dashboard", to: "/admin/licencas-dashboard", label: "Licenças — Dashboard", icon: ShieldCheck },
-  { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks },
-  {
-    key: "configuracoes",
-    to: "/admin/configuracoes",
-    label: "Configurações Gerais",
-    icon: Settings2,
-  },
-  { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette },
-  { key: "animacoes", to: "/admin/animacoes", label: "Animações", icon: Sparkles },
-  { key: "sons", to: "/admin/sons", label: "Sons", icon: Volume2 },
-  { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle },
-  { key: "loja", to: "/admin/loja", label: "Loja", icon: Store },
-  { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard },
-  {
-    key: "ajustar-creditos",
-    to: "/admin/ajustar-creditos",
-    label: "Ajustar Créditos",
-    icon: Coins,
-  },
-  { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert },
-  {
-    key: "pack-autorizacoes",
-    to: "/admin/pack-autorizacoes",
-    label: "Autorizações de Packs",
-    icon: KeySquare,
-  },
-  { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup },
+  // Dashboard
+  { key: "dashboard", to: "/admin", label: "Painel", icon: LayoutDashboard, exact: true, group: "Dashboard" },
+  { key: "home", to: "/admin/home", label: "Home", icon: HomeIcon, group: "Dashboard" },
+
+  // Clientes — gestão de licenças unificada
+  { key: "licencas-manager", to: "/admin/licencas", label: "Licenças", icon: KeySquare, group: "Clientes" },
+  { key: "pack-autorizacoes", to: "/admin/pack-autorizacoes", label: "Autorizações de Packs", icon: KeySquare, group: "Clientes" },
+
+  // Produtos
+  { key: "loja", to: "/admin/loja", label: "Loja (vitrine)", icon: Store, group: "Produtos" },
+
+  // Financeiro
+  { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard, group: "Financeiro" },
+  { key: "ajustar-creditos", to: "/admin/ajustar-creditos", label: "Ajustar Créditos", icon: Coins, group: "Financeiro" },
+
+  // Sistema
+  { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks, group: "Sistema" },
+  { key: "configuracoes", to: "/admin/configuracoes", label: "Configurações Gerais", icon: Settings2, group: "Sistema" },
+  { key: "personalizacao", to: "/admin/personalizacao", label: "Personalização", icon: Palette, group: "Sistema" },
+  { key: "animacoes", to: "/admin/animacoes", label: "Animações", icon: Sparkles, group: "Sistema" },
+  { key: "sons", to: "/admin/sons", label: "Sons", icon: Volume2, group: "Sistema" },
+  { key: "usuarios", to: "/admin/usuarios", label: "Usuários", icon: UserCircle, group: "Sistema" },
+  { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert, group: "Sistema" },
+  { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup, group: "Sistema" },
+
+  // Rota antiga — mantida acessível via /admin/licencas-dashboard mas fora do menu
+  { key: "licencas-dashboard", to: "/admin/licencas-dashboard", label: "Licenças — Dashboard (legado)", icon: ShieldCheck, group: "__hidden" },
 ];
 
 function AdminShell() {
@@ -167,14 +176,27 @@ function AdminShell() {
 
   const { visibleIn } = useModules();
 
-  const visibleSpecialLinks = specialLinks.filter((l) => visibleIn("sidebar", l.key));
-  const visibleResources = resources.filter((r) => visibleIn("sidebar", r.key));
+  const visibleSpecialLinks = specialLinks.filter(
+    (l) => l.group !== "__hidden" && visibleIn("sidebar", l.key),
+  );
+  const visibleResources = resources.filter(
+    (r) => !r.hiddenFromSidebar && visibleIn("sidebar", r.key),
+  );
 
-  const grouped = visibleResources.reduce<Record<string, typeof resources>>((acc, r) => {
-    const g = r.group ?? "Outros";
-    (acc[g] ||= []).push(r);
-    return acc;
-  }, {});
+  type MenuEntry =
+    | { kind: "special"; link: SpecialLink }
+    | { kind: "resource"; res: (typeof resources)[number] };
+
+  const grouped = new Map<string, MenuEntry[]>();
+  for (const g of GROUP_ORDER) grouped.set(g, []);
+  for (const l of visibleSpecialLinks) {
+    const g = l.group ?? "Sistema";
+    (grouped.get(g) ?? grouped.set(g, []).get(g)!).push({ kind: "special", link: l });
+  }
+  for (const r of visibleResources) {
+    const g = r.group ?? "Sistema";
+    (grouped.get(g) ?? grouped.set(g, []).get(g)!).push({ kind: "resource", res: r });
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -189,42 +211,40 @@ function AdminShell() {
           </div>
 
           <nav className="flex-1 space-y-4 overflow-y-auto pr-1">
-            <div className="space-y-1">
-              {visibleSpecialLinks.map((l) => (
-                <SideLink
-                  key={l.key}
-                  to={l.to}
-                  icon={<l.icon className="size-4" />}
-                  exact={l.exact}
-                >
-                  {l.label}
-                </SideLink>
+            {Array.from(grouped.entries())
+              .filter(([, items]) => items.length > 0)
+              .map(([group, items]) => (
+                <div key={group}>
+                  <div className="mb-1 px-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+                    {group}
+                  </div>
+                  <div className="space-y-1">
+                    {items.map((entry) =>
+                      entry.kind === "special" ? (
+                        <SideLink
+                          key={"s:" + entry.link.key}
+                          to={entry.link.to}
+                          icon={<entry.link.icon className="size-4" />}
+                          exact={entry.link.exact}
+                        >
+                          {entry.link.label}
+                        </SideLink>
+                      ) : (
+                        <SideLink
+                          key={"r:" + entry.res.key}
+                          to="/admin/$resource"
+                          params={{ resource: entry.res.key }}
+                          icon={<entry.res.icon className="size-4" />}
+                        >
+                          {entry.res.label}
+                        </SideLink>
+                      ),
+                    )}
+                  </div>
+                </div>
               ))}
-            </div>
-
-            {Object.entries(grouped).map(([group, items]) => (
-              <div key={group}>
-                <div className="mb-1 px-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
-                  {group}
-                </div>
-                <div className="space-y-1">
-                  {items.map((r) => {
-                    const Icon = r.icon;
-                    return (
-                      <SideLink
-                        key={r.key}
-                        to="/admin/$resource"
-                        params={{ resource: r.key }}
-                        icon={<Icon className="size-4" />}
-                      >
-                        {r.label}
-                      </SideLink>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
           </nav>
+
 
           <div className="mt-6 space-y-2 rounded-xl border border-white/5 bg-white/[0.02] p-3">
             <div className="truncate text-xs text-muted-foreground">Sessão</div>
