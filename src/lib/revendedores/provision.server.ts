@@ -141,6 +141,24 @@ export async function provisionRevendedor(input: ProvisionInput): Promise<Provis
     linkSuporte,
   });
 
+  // Evita reenviar welcome se já existir um na fila para esse revendedor
+  const { data: existingWelcome } = await supabaseAdmin
+    .from("email_queue")
+    .select("id")
+    .eq("template_chave", "revendedor.boas-vindas")
+    .eq("destinatario", email)
+    .in("status", ["pending", "sending", "sent"])
+    .limit(1);
+  if (existingWelcome && existingWelcome.length > 0) {
+    return {
+      ok: true,
+      reason: "already-provisioned",
+      revendedorId: revendedorId ?? undefined,
+      magicLink,
+      emailQueued: false,
+    };
+  }
+
   const { error: qErr } = await supabaseAdmin.from("email_queue").insert({
     destinatario: email,
     destinatario_nome: nome,
