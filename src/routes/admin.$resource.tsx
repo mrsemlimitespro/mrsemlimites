@@ -258,14 +258,16 @@ function ResourceView({ resource }: { resource: Resource }) {
                     </td>
                   ))}
                   <td className="px-4 py-3 text-right">
-                    <div className="inline-flex gap-1">
+                    <div className="inline-flex items-center gap-1">
                       <Button
-                        size="icon"
+                        size="sm"
                         variant="ghost"
                         onClick={() => setEditing(row)}
                         aria-label="Editar"
+                        className="gap-1.5 text-xs"
                       >
-                        <Pencil className="size-4" />
+                        <Pencil className="size-3.5" />
+                        <span className="hidden sm:inline">Editar</span>
                       </Button>
                       <Button
                         size="icon"
