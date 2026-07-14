@@ -738,7 +738,7 @@ export const resources: Resource[] = [
   },
   {
     key: "aulas",
-    label: "Aulas",
+    label: "Biblioteca",
     singular: "Aula",
     table: "aulas",
     icon: GraduationCap,
