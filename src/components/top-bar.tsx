@@ -6,6 +6,10 @@ import { BrandMark } from "@/components/brand";
 import { AdminPasswordDialog } from "@/components/admin-password-gate";
 import { supabase } from "@/integrations/supabase/client";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useIsAuthed } from "@/hooks/useIsAuthed";
+import { useImpersonation } from "@/hooks/useImpersonation";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Notif = {
   id: string;
@@ -131,10 +135,25 @@ export function TopBar() {
     reload();
   }
 
+  const impersonation = useImpersonation();
+  const authed = useIsAuthed();
+  const role = useUserRole();
+
   return (
-    <header className="sticky top-2 z-30 mx-auto flex w-full max-w-[1400px] items-center gap-2 px-3 md:top-4 md:gap-3 md:px-6">
+    <header
+      className="sticky z-30 mx-auto flex w-full max-w-[1400px] items-center gap-2 px-3 md:gap-3 md:px-6"
+      style={{
+        top: impersonation
+          ? "calc(var(--impersonation-h, 96px) + 0.5rem)"
+          : undefined,
+        // Fallback padrão: sticky top-2 (0.5rem) desktop e top-2 mobile
+        ...(impersonation ? {} : { top: "0.5rem" }),
+      }}
+    >
       {/* Spacer for the floating rail on md+ */}
       <div className="hidden md:block md:w-16 shrink-0" aria-hidden />
+
+      <PanelChip authed={authed} role={role} isAdminUser={isAdminUser} />
 
       {signedIn && firstName && (
         <div
