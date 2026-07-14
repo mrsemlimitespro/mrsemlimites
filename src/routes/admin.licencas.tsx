@@ -416,6 +416,9 @@ function LicencaRow({
       </td>
       <td className="px-4 py-3">
         <div className="flex justify-end gap-1">
+          <Button size="sm" variant="ghost" onClick={onReenviar} title="Reenviar licença por email">
+            <Send className="size-4 text-sky-400" />
+          </Button>
           {l.device_id && (
             <Button size="sm" variant="ghost" onClick={onReset} title="Restaurar dispositivo">
               <RotateCcw className="size-4" />
