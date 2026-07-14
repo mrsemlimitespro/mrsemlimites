@@ -2,11 +2,8 @@
  * Impersonation (modo visualização do Admin).
  *
  * Somente client-side. NÃO altera sessão. NÃO altera role. NÃO grava nada.
- * Guardamos no sessionStorage o "alvo" que o admin está visualizando —
- * a UI decide quais botões/ações desabilitar quando `active === true`.
- *
- * Este módulo é puramente frontend / UX. Nenhuma API do backend é chamada,
- * nenhum token é alterado, e o admin permanece logado como admin.
+ * O admin continua logado como admin — apenas mudamos a UI para "espiar"
+ * o painel de um revendedor/cliente em modo somente leitura.
  */
 
 export type ImpersonationTargetKind = "revendedor" | "cliente";
@@ -23,9 +20,17 @@ export type ImpersonationState = {
 
 const KEY = "mr:impersonation:v1";
 const EVENT = "mr:impersonation:changed";
+const HTML_CLASS = "mr-impersonating";
 
 function isBrowser() {
   return typeof window !== "undefined";
+}
+
+function syncHtmlFlag(state: ImpersonationState | null) {
+  if (!isBrowser()) return;
+  const html = document.documentElement;
+  if (state) html.classList.add(HTML_CLASS);
+  else html.classList.remove(HTML_CLASS);
 }
 
 export function getImpersonation(): ImpersonationState | null {
@@ -41,16 +46,28 @@ export function getImpersonation(): ImpersonationState | null {
   }
 }
 
-export function setImpersonation(state: Omit<ImpersonationState, "startedAt">) {
+export function setImpersonation(
+  state: Omit<ImpersonationState, "startedAt">,
+  logContext?: { adminEmail?: string | null },
+) {
   if (!isBrowser()) return;
   const full: ImpersonationState = { ...state, startedAt: Date.now() };
   window.sessionStorage.setItem(KEY, JSON.stringify(full));
+  syncHtmlFlag(full);
+  // Log INTERNO — apenas console. Sem escrever no banco.
+  const admin = logContext?.adminEmail ?? "admin";
+  const label = full.kind === "revendedor" ? "Revendedor" : "Cliente";
+  // eslint-disable-next-line no-console
+  console.info(
+    `[impersonation] ${admin} visualizou painel do ${label} ${full.name || full.id} (${full.email || "sem email"})`,
+  );
   window.dispatchEvent(new CustomEvent(EVENT));
 }
 
 export function clearImpersonation() {
   if (!isBrowser()) return;
   window.sessionStorage.removeItem(KEY);
+  syncHtmlFlag(null);
   window.dispatchEvent(new CustomEvent(EVENT));
 }
 
@@ -63,4 +80,9 @@ export function subscribeImpersonation(cb: () => void): () => void {
     window.removeEventListener(EVENT, handler);
     window.removeEventListener("storage", handler);
   };
+}
+
+// Sincroniza a flag no <html> ao carregar (após F5 mantendo sessionStorage).
+if (isBrowser()) {
+  syncHtmlFlag(getImpersonation());
 }
