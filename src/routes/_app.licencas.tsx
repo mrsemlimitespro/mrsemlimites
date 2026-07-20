@@ -585,7 +585,7 @@ function LicencasPage() {
             {filtered.map((l) => (
               <li
                 key={l.id}
-                className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
+                className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_auto] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
               >
                 <div className="flex items-center">
                   <Checkbox
