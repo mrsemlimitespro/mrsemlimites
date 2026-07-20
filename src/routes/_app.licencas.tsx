@@ -895,13 +895,20 @@ function NovaLicencaModal({
                       {isTeste
                         ? p.minutos! < 60
                           ? `${p.minutos} minutos`
-                          : `${Math.round((p.minutos ?? 0) / (60 * 24))} dia${
-                              (p.minutos ?? 0) / (60 * 24) > 1 ? "s" : ""
-                            }`
-                        : p.dias! >= 365
-                          ? "1 ano"
-                          : `${p.dias} dias`}
+                          : p.minutos === 60
+                            ? "1 hora"
+                            : `${Math.round((p.minutos ?? 0) / (60 * 24))} dia${
+                                (p.minutos ?? 0) / (60 * 24) > 1 ? "s" : ""
+                              }`
+                        : (p.dias ?? 0) === 0 && p.minutos
+                          ? p.minutos === 60
+                            ? "1 hora"
+                            : `${p.minutos} minutos`
+                          : p.dias! >= 365
+                            ? "1 ano"
+                            : `${p.dias} dias`}
                     </span>
+
                   </button>
                 );
               })}
