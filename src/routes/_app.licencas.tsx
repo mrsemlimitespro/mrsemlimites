@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Copy,
   ClipboardPaste,
@@ -16,12 +16,18 @@ import {
   Ban,
   PlayCircle,
   Trash2,
+  Send,
+  MessageCircle,
+  Mail,
 } from "lucide-react";
+
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -83,6 +89,7 @@ type LicencaRow = {
   ativada_em: string | null;
   duracao_dias: number | null;
   trial_duracao_minutos: number | null;
+  tipo: string | null;
   clientes?: { nome: string | null } | null;
 };
 
@@ -99,9 +106,33 @@ type License = {
   ativadaEm: string | null;
   duracaoDias: number | null;
   trialMinutos: number | null;
+  tipo: string | null;
 };
 
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas";
+
+/** Sub-abas por duração. */
+type Bucket = "teste" | "1h" | "7d" | "30d" | "1ano" | "outros";
+
+const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
+  { id: "teste", label: "Teste", sub: "1 hora" },
+  { id: "1h", label: "1 hora", sub: "premium" },
+  { id: "7d", label: "7 dias", sub: "premium" },
+  { id: "30d", label: "30 dias", sub: "premium" },
+  { id: "1ano", label: "1 ano", sub: "premium" },
+];
+
+function bucketOfRow(row: LicencaRow): Bucket {
+  if ((row.tipo ?? "").toLowerCase() === "teste") return "teste";
+  const dias = row.duracao_dias ?? null;
+  if (dias === 7) return "7d";
+  if (dias === 30) return "30d";
+  if (dias === 365) return "1ano";
+  if ((dias === null || dias === 0) && row.trial_duracao_minutos === 60) return "1h";
+  return "outros";
+}
+
+
 
 function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }): License {
   const now = Date.now();
@@ -121,7 +152,9 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
     ativadaEm: row.ativada_em,
     duracaoDias: row.duracao_dias ?? null,
     trialMinutos: row.trial_duracao_minutos ?? null,
+    tipo: row.tipo ?? null,
   };
+
 }
 
 function formatCountdown(
@@ -189,10 +222,14 @@ function CountdownCell({
 
 function LicencasPage() {
   const isAdmin = useIsAdmin();
+  const role = useUserRole();
+  const canTeste = role === "revendedor" || role === "admin";
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("todos");
+  const [bucket, setBucket] = useState<Bucket>("teste");
   const [openNova, setOpenNova] = useState(false);
   const [openTeste, setOpenTeste] = useState(false);
+  const [openEnviarTeste, setOpenEnviarTeste] = useState(false);
   const [rows, setRows] = useState<LicencaRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [historyOf, setHistoryOf] = useState<LicencaRow | null>(null);
@@ -206,7 +243,7 @@ function LicencasPage() {
     const { data, error } = await (supabase as any)
       .from("licencas")
       .select(
-        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, clientes(nome)",
+        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, clientes(nome)",
       )
       .order("created_at", { ascending: false });
     if (error) {
@@ -231,6 +268,23 @@ function LicencasPage() {
 
   const licenses = rows.map(computeView);
 
+  // Contagem por bucket (útil pra badge nas abas)
+  const bucketOfId = useMemo(() => {
+    const m = new Map<string, Bucket>();
+    rows.forEach((r) => m.set(r.id, bucketOfRow(r)));
+    return m;
+  }, [rows]);
+
+  const bucketCounts = useMemo(() => {
+    const c: Record<string, number> = { teste: 0, "1h": 0, "7d": 0, "30d": 0, "1ano": 0, outros: 0 };
+    bucketOfId.forEach((b) => {
+      c[b] = (c[b] ?? 0) + 1;
+    });
+    return c;
+  }, [bucketOfId]);
+
+  const hasOutros = bucketCounts.outros > 0;
+
   const filtered = licenses.filter((l) => {
     const q = query.trim().toLowerCase();
     const matchQ =
@@ -243,7 +297,8 @@ function LicencasPage() {
       (filter === "ativas" && l.status === "ativa") ||
       (filter === "expiradas" && l.status === "expirada") ||
       (filter === "revogadas" && l.status === "revogada");
-    return matchQ && matchF;
+    const matchB = bucketOfId.get(l.id) === bucket;
+    return matchQ && matchF && matchB;
   });
 
   const available = licenses.filter((l) => l.status === "ativa" && !l.client).length;
@@ -255,6 +310,7 @@ function LicencasPage() {
     });
     if (error) return toast.error(error.message);
     toast.success("Dispositivo liberado");
+
     reload();
   }
 
@@ -300,6 +356,16 @@ function LicencasPage() {
     reload();
   }
 
+  async function excluirUma(id: string) {
+    if (!confirm("Excluir esta licença? Esta ação não pode ser desfeita.")) return;
+    const { error } = await (supabase as any).from("licencas").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Licença excluída");
+    reload();
+  }
+
+
+
 
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
@@ -331,6 +397,17 @@ function LicencasPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {canTeste && (
+            <Button
+              variant="ghost"
+              className="rounded-full border border-amber-400/40 bg-amber-500/10 px-4 text-amber-200 backdrop-blur-xl hover:bg-amber-500/20"
+              onClick={() => setOpenEnviarTeste(true)}
+              title="Criar e enviar licença teste (1 hora) para o cliente"
+            >
+              <Send className="size-4" strokeWidth={2} />
+              Licença Teste
+            </Button>
+          )}
           <Button
             variant="ghost"
             className="rounded-full border border-border/70 bg-surface/50 px-4 backdrop-blur-xl hover:bg-white/5"
@@ -349,6 +426,55 @@ function LicencasPage() {
         </div>
       </header>
 
+      {/* Sub-abas por duração */}
+      <div className="glass flex flex-wrap items-center gap-1.5 rounded-full p-1.5">
+        {BUCKETS.map((b) => {
+          const active = bucket === b.id;
+          const count = bucketCounts[b.id] ?? 0;
+          return (
+            <button
+              key={b.id}
+              type="button"
+              onClick={() => setBucket(b.id)}
+              className={cn(
+                "group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
+                active
+                  ? "gradient-primary text-primary-foreground shadow-[0_0_18px_-4px_color-mix(in_oklab,var(--primary)_65%,transparent)]"
+                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+              )}
+            >
+              <span>{b.label}</span>
+              <span
+                className={cn(
+                  "rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
+                  active ? "bg-white/20 text-white" : "bg-white/[0.06] text-muted-foreground",
+                )}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+        {hasOutros && (
+          <button
+            type="button"
+            onClick={() => setBucket("outros")}
+            className={cn(
+              "group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
+              bucket === "outros"
+                ? "gradient-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+            )}
+            title="Licenças legadas com durações diferentes das padrões"
+          >
+            <span>Outros</span>
+            <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
+              {bucketCounts.outros}
+            </span>
+          </button>
+        )}
+      </div>
+
       {/* Search + filter */}
       <div className="flex flex-col gap-3 md:flex-row">
         <label className="glass relative flex h-12 flex-1 items-center rounded-2xl pl-11 pr-4">
@@ -362,6 +488,7 @@ function LicencasPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar por chave, email ou cliente..."
+
             className="h-full w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/70"
           />
         </label>
@@ -420,7 +547,7 @@ function LicencasPage() {
 
       {/* Table */}
       <div className="glass overflow-hidden rounded-2xl">
-        <div className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <div className="flex items-center">
             <Checkbox
               checked={filtered.length > 0 && filtered.every((l) => selected.has(l.id))}
@@ -441,7 +568,7 @@ function LicencasPage() {
           <div>Status</div>
           <div>Device</div>
           <div>Expira</div>
-          <div />
+          <div className="text-right pr-1">Ações</div>
         </div>
 
 
@@ -458,7 +585,7 @@ function LicencasPage() {
             {filtered.map((l) => (
               <li
                 key={l.id}
-                className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
+                className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_auto] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
               >
                 <div className="flex items-center">
                   <Checkbox
@@ -520,47 +647,76 @@ function LicencasPage() {
                   trialMinutos={l.trialMinutos}
                 />
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="Mais opções"
-                      className="justify-self-end rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
-                    >
-                      <MoreHorizontal className="size-4" strokeWidth={2} />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="glass-strong">
-                    <DropdownMenuItem
-                      onClick={() => setHistoryOf(rows.find((r) => r.id === l.id) ?? null)}
-                    >
-                      <History className="size-4" /> Histórico
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => setRenovarOf(rows.find((r) => r.id === l.id) ?? null)}
-                    >
-                      <CalendarPlus className="size-4" /> Renovar
-                    </DropdownMenuItem>
-                    {l.device ? (
-                      <DropdownMenuItem onClick={() => resetDevice(l.id)}>
-                        <RotateCcw className="size-4" /> Resetar dispositivo
-                      </DropdownMenuItem>
-                    ) : null}
-                    <DropdownMenuSeparator />
-                    {l.status === "revogada" ? (
-                      <DropdownMenuItem onClick={() => reativar(l.id)}>
-                        <PlayCircle className="size-4" /> Reativar
-                      </DropdownMenuItem>
-                    ) : (
-                      <DropdownMenuItem
-                        className="text-destructive focus:text-destructive"
-                        onClick={() => cancelar(l.id)}
+                {/* Ações rápidas: Reset • Copiar • Excluir */}
+                <div className="flex items-center justify-end gap-1">
+                  <button
+                    type="button"
+                    aria-label="Resetar dispositivo"
+                    title="Resetar dispositivo"
+                    onClick={() => resetDevice(l.id)}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                  >
+                    <RotateCcw className="size-4" strokeWidth={2} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Copiar chave"
+                    title="Copiar chave"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(l.key);
+                      toast.success("Chave copiada");
+                    }}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                  >
+                    <Copy className="size-4" strokeWidth={2} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Excluir licença"
+                    title="Excluir licença"
+                    onClick={() => excluirUma(l.id)}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive/15 hover:text-destructive"
+                  >
+                    <Trash2 className="size-4" strokeWidth={2} />
+                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Mais opções"
+                        className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
                       >
-                        <Ban className="size-4" /> Cancelar
+                        <MoreHorizontal className="size-4" strokeWidth={2} />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="glass-strong">
+                      <DropdownMenuItem
+                        onClick={() => setHistoryOf(rows.find((r) => r.id === l.id) ?? null)}
+                      >
+                        <History className="size-4" /> Histórico
                       </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      <DropdownMenuItem
+                        onClick={() => setRenovarOf(rows.find((r) => r.id === l.id) ?? null)}
+                      >
+                        <CalendarPlus className="size-4" /> Renovar
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      {l.status === "revogada" ? (
+                        <DropdownMenuItem onClick={() => reativar(l.id)}>
+                          <PlayCircle className="size-4" /> Reativar
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => cancelar(l.id)}
+                        >
+                          <Ban className="size-4" /> Cancelar
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
               </li>
             ))}
           </ul>
@@ -569,6 +725,12 @@ function LicencasPage() {
 
       <NovaLicencaModal open={openNova} onOpenChange={setOpenNova} onSaved={reload} />
       <ChaveTesteModal open={openTeste} onOpenChange={setOpenTeste} onSaved={reload} />
+      <EnviarTesteModal
+        open={openEnviarTeste}
+        onOpenChange={setOpenEnviarTeste}
+        onSaved={reload}
+      />
+
       <HistoricoLicencaSheet licenca={historyOf} onOpenChange={(v) => !v && setHistoryOf(null)} />
       <RenovarLicencaModal
         licenca={renovarOf}
@@ -629,14 +791,13 @@ type PresetKind = "teste" | "premium";
 type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number };
 
 const LICENSE_PRESETS: Preset[] = [
-  { label: "Teste 20 min", kind: "teste", minutos: 20 },
-  { label: "Teste 10 min", kind: "teste", minutos: 10 },
-  { label: "Teste 1 dia", kind: "teste", minutos: 60 * 24 },
+  { label: "Teste 1 hora", kind: "teste", minutos: 60 },
+  { label: "Premium 1 hora", kind: "premium", dias: 0, minutos: 60 },
+  { label: "Premium 7 dias", kind: "premium", dias: 7 },
   { label: "Premium 30 dias", kind: "premium", dias: 30 },
-  { label: "Premium 60 dias", kind: "premium", dias: 60 },
-  { label: "Premium 90 dias", kind: "premium", dias: 90 },
   { label: "Premium 1 ano", kind: "premium", dias: 365 },
 ];
+
 
 function NovaLicencaModal({
   open,
@@ -650,7 +811,8 @@ function NovaLicencaModal({
   const isAdmin = useIsAdmin();
   const presets = isAdmin
     ? LICENSE_PRESETS
-    : LICENSE_PRESETS.filter((p) => p.kind === "teste" && p.minutos === 20);
+    : LICENSE_PRESETS.filter((p) => p.kind === "teste" && p.minutos === 60);
+
   const [quantidade, setQuantidade] = useState(1);
   const [presetIdx, setPresetIdx] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -674,7 +836,11 @@ function NovaLicencaModal({
       if (ids.length > 0) {
         const patch: Record<string, unknown> = { tipo: preset.kind };
         if (preset.kind === "teste") {
-          patch.trial_duracao_minutos = preset.minutos ?? 10;
+          patch.trial_duracao_minutos = preset.minutos ?? 60;
+          patch.duracao_dias = null;
+        } else if ((preset.dias ?? 0) === 0 && preset.minutos) {
+          // Premium curto (ex.: 1 hora) → armazena minutos em trial_duracao_minutos
+          patch.trial_duracao_minutos = preset.minutos;
           patch.duracao_dias = null;
         } else {
           patch.trial_duracao_minutos = null;
@@ -686,6 +852,7 @@ function NovaLicencaModal({
           .in("id", ids);
         if (upErr) throw upErr;
       }
+
 
       toast.success(`${quantidade} chave(s) ${preset.label} geradas`);
       onSaved();
@@ -734,13 +901,20 @@ function NovaLicencaModal({
                       {isTeste
                         ? p.minutos! < 60
                           ? `${p.minutos} minutos`
-                          : `${Math.round((p.minutos ?? 0) / (60 * 24))} dia${
-                              (p.minutos ?? 0) / (60 * 24) > 1 ? "s" : ""
-                            }`
-                        : p.dias! >= 365
-                          ? "1 ano"
-                          : `${p.dias} dias`}
+                          : p.minutos === 60
+                            ? "1 hora"
+                            : `${Math.round((p.minutos ?? 0) / (60 * 24))} dia${
+                                (p.minutos ?? 0) / (60 * 24) > 1 ? "s" : ""
+                              }`
+                        : (p.dias ?? 0) === 0 && p.minutos
+                          ? p.minutos === 60
+                            ? "1 hora"
+                            : `${p.minutos} minutos`
+                          : p.dias! >= 365
+                            ? "1 ano"
+                            : `${p.dias} dias`}
                     </span>
+
                   </button>
                 );
               })}
@@ -1147,6 +1321,222 @@ function BulkRenovarModal({
             </Button>
           </DialogFooter>
         </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/**
+ * Modal “Licença Teste” — cria uma licença de 1 hora, vincula a um cliente
+ * final por e-mail e permite disparar mensagem por WhatsApp / e-mail com
+ * texto editável. Limite de 2 testes por e-mail de cliente.
+ */
+function EnviarTesteModal({
+  open,
+  onOpenChange,
+  onSaved,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  onSaved: () => void;
+}) {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [chaveGerada, setChaveGerada] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      setNome("");
+      setEmail("");
+      setWhatsapp("");
+      setMsg("");
+      setChaveGerada(null);
+    }
+  }, [open]);
+
+  const defaultMsg = (chave: string) =>
+    `Olá${nome ? `, ${nome}` : ""}! 👋\n\nSua licença de teste (1 hora) para o MR Sem Limites está pronta:\n\n🔑 Chave: ${chave}\n📧 E-mail: ${email}\n\nApós ativar, ela expira em 60 minutos. Aproveite!`;
+
+  async function gerarEEnviar() {
+    const em = email.trim().toLowerCase();
+    if (!em || !em.includes("@")) {
+      toast.error("Informe um e-mail válido do cliente.");
+      return;
+    }
+    setBusy(true);
+    try {
+      // Limite anti-abuso: máx 2 testes por e-mail
+      const { count, error: cErr } = await (supabase as any)
+        .from("licencas")
+        .select("id", { count: "exact", head: true })
+        .eq("tipo", "teste")
+        .ilike("email", em);
+      if (cErr) throw cErr;
+      if ((count ?? 0) >= 2) {
+        throw new Error(
+          "Este cliente já utilizou o limite de 2 licenças teste. Ofereça uma licença Premium.",
+        );
+      }
+
+      // 1) Gera 1 chave (fica com duração_dias default; ajustamos abaixo)
+      const { data: created, error } = await (supabase as any).rpc("gerar_licencas", {
+        _quantidade: 1,
+        _duracao_dias: 1,
+        _revendedor_id: null,
+      });
+      if (error) throw error;
+      const novaId = created?.[0]?.id as string | undefined;
+      const novaChave = created?.[0]?.chave as string | undefined;
+      if (!novaId || !novaChave) throw new Error("Falha ao gerar chave.");
+
+      // 2) Marca como teste 1h
+      const { error: upErr } = await (supabase as any)
+        .from("licencas")
+        .update({
+          tipo: "teste",
+          trial_duracao_minutos: 60,
+          duracao_dias: null,
+          email: em,
+        })
+        .eq("id", novaId);
+      if (upErr) throw upErr;
+
+      setChaveGerada(novaChave);
+      setMsg((prev) => (prev.trim() ? prev : defaultMsg(novaChave)));
+      toast.success("Licença teste criada.");
+      onSaved();
+    } catch (err: any) {
+      toast.error(err?.message ?? "Falha ao gerar licença teste.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function abrirWhatsApp() {
+    const digits = whatsapp.replace(/\D/g, "");
+    if (!digits) {
+      toast.error("Informe o WhatsApp do cliente (com DDD).");
+      return;
+    }
+    const url = `https://wa.me/${digits}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function abrirEmail() {
+    if (!email.trim()) {
+      toast.error("Informe o e-mail do cliente.");
+      return;
+    }
+    const subject = "Sua licença de teste — MR Sem Limites";
+    const url = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(msg)}`;
+    window.location.href = url;
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="glass-strong sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Enviar Licença Teste (1 hora)</DialogTitle>
+          <DialogDescription>
+            Gera uma licença de teste vinculada ao e-mail do cliente e prepara o envio por WhatsApp
+            ou e-mail. Limite de 2 testes por cliente.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-3">
+          <Field label="Nome do cliente (opcional)">
+            <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex.: João" />
+          </Field>
+          <Field label="E-mail do cliente">
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="cliente@email.com"
+              disabled={!!chaveGerada}
+            />
+          </Field>
+          <Field label="WhatsApp (com DDD)">
+            <Input
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              placeholder="Ex.: 11999998888"
+            />
+          </Field>
+
+          {!chaveGerada ? (
+            <Button
+              type="button"
+              onClick={gerarEEnviar}
+              disabled={busy}
+              className="w-full gradient-primary text-primary-foreground"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : "Gerar chave de teste"}
+            </Button>
+          ) : (
+            <>
+              <div className="rounded-xl border border-amber-400/40 bg-amber-500/10 p-3 text-sm">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-300">
+                  Chave gerada
+                </div>
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <span className="font-mono text-amber-100">{chaveGerada}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(chaveGerada);
+                      toast.success("Chave copiada");
+                    }}
+                    className="rounded-md p-1 text-amber-200 hover:bg-white/5"
+                    aria-label="Copiar chave"
+                  >
+                    <Copy className="size-4" />
+                  </button>
+                </div>
+              </div>
+
+              <Field label="Mensagem (editável)">
+                <textarea
+                  value={msg}
+                  onChange={(e) => setMsg(e.target.value)}
+                  rows={6}
+                  className="w-full rounded-xl border border-border/60 bg-surface/40 p-3 text-sm outline-none focus:border-primary/60"
+                />
+              </Field>
+
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  onClick={abrirWhatsApp}
+                  className="rounded-full bg-emerald-500/90 text-white hover:bg-emerald-500"
+                >
+                  <MessageCircle className="size-4" strokeWidth={2} />
+                  WhatsApp
+                </Button>
+                <Button
+                  type="button"
+                  onClick={abrirEmail}
+                  variant="ghost"
+                  className="rounded-full border border-border/70 bg-surface/40"
+                >
+                  <Mail className="size-4" strokeWidth={2} />
+                  E-mail
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+
+        <DialogFooter className="pt-2">
+          <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+            Fechar
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
