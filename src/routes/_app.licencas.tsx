@@ -647,47 +647,76 @@ function LicencasPage() {
                   trialMinutos={l.trialMinutos}
                 />
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="Mais opções"
-                      className="justify-self-end rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
-                    >
-                      <MoreHorizontal className="size-4" strokeWidth={2} />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="glass-strong">
-                    <DropdownMenuItem
-                      onClick={() => setHistoryOf(rows.find((r) => r.id === l.id) ?? null)}
-                    >
-                      <History className="size-4" /> Histórico
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => setRenovarOf(rows.find((r) => r.id === l.id) ?? null)}
-                    >
-                      <CalendarPlus className="size-4" /> Renovar
-                    </DropdownMenuItem>
-                    {l.device ? (
-                      <DropdownMenuItem onClick={() => resetDevice(l.id)}>
-                        <RotateCcw className="size-4" /> Resetar dispositivo
-                      </DropdownMenuItem>
-                    ) : null}
-                    <DropdownMenuSeparator />
-                    {l.status === "revogada" ? (
-                      <DropdownMenuItem onClick={() => reativar(l.id)}>
-                        <PlayCircle className="size-4" /> Reativar
-                      </DropdownMenuItem>
-                    ) : (
-                      <DropdownMenuItem
-                        className="text-destructive focus:text-destructive"
-                        onClick={() => cancelar(l.id)}
+                {/* Ações rápidas: Reset • Copiar • Excluir */}
+                <div className="flex items-center justify-end gap-1">
+                  <button
+                    type="button"
+                    aria-label="Resetar dispositivo"
+                    title="Resetar dispositivo"
+                    onClick={() => resetDevice(l.id)}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                  >
+                    <RotateCcw className="size-4" strokeWidth={2} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Copiar chave"
+                    title="Copiar chave"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(l.key);
+                      toast.success("Chave copiada");
+                    }}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                  >
+                    <Copy className="size-4" strokeWidth={2} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Excluir licença"
+                    title="Excluir licença"
+                    onClick={() => excluirUma(l.id)}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive/15 hover:text-destructive"
+                  >
+                    <Trash2 className="size-4" strokeWidth={2} />
+                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Mais opções"
+                        className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
                       >
-                        <Ban className="size-4" /> Cancelar
+                        <MoreHorizontal className="size-4" strokeWidth={2} />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="glass-strong">
+                      <DropdownMenuItem
+                        onClick={() => setHistoryOf(rows.find((r) => r.id === l.id) ?? null)}
+                      >
+                        <History className="size-4" /> Histórico
                       </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      <DropdownMenuItem
+                        onClick={() => setRenovarOf(rows.find((r) => r.id === l.id) ?? null)}
+                      >
+                        <CalendarPlus className="size-4" /> Renovar
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      {l.status === "revogada" ? (
+                        <DropdownMenuItem onClick={() => reativar(l.id)}>
+                          <PlayCircle className="size-4" /> Reativar
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => cancelar(l.id)}
+                        >
+                          <Ban className="size-4" /> Cancelar
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
               </li>
             ))}
           </ul>
