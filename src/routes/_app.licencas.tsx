@@ -222,10 +222,14 @@ function CountdownCell({
 
 function LicencasPage() {
   const isAdmin = useIsAdmin();
+  const role = useUserRole();
+  const canTeste = role === "revendedor" || role === "admin";
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("todos");
+  const [bucket, setBucket] = useState<Bucket>("teste");
   const [openNova, setOpenNova] = useState(false);
   const [openTeste, setOpenTeste] = useState(false);
+  const [openEnviarTeste, setOpenEnviarTeste] = useState(false);
   const [rows, setRows] = useState<LicencaRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [historyOf, setHistoryOf] = useState<LicencaRow | null>(null);
@@ -239,7 +243,7 @@ function LicencasPage() {
     const { data, error } = await (supabase as any)
       .from("licencas")
       .select(
-        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, clientes(nome)",
+        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, clientes(nome)",
       )
       .order("created_at", { ascending: false });
     if (error) {
@@ -264,6 +268,23 @@ function LicencasPage() {
 
   const licenses = rows.map(computeView);
 
+  // Contagem por bucket (útil pra badge nas abas)
+  const bucketOfId = useMemo(() => {
+    const m = new Map<string, Bucket>();
+    rows.forEach((r) => m.set(r.id, bucketOfRow(r)));
+    return m;
+  }, [rows]);
+
+  const bucketCounts = useMemo(() => {
+    const c: Record<string, number> = { teste: 0, "1h": 0, "7d": 0, "30d": 0, "1ano": 0, outros: 0 };
+    bucketOfId.forEach((b) => {
+      c[b] = (c[b] ?? 0) + 1;
+    });
+    return c;
+  }, [bucketOfId]);
+
+  const hasOutros = bucketCounts.outros > 0;
+
   const filtered = licenses.filter((l) => {
     const q = query.trim().toLowerCase();
     const matchQ =
@@ -276,7 +297,8 @@ function LicencasPage() {
       (filter === "ativas" && l.status === "ativa") ||
       (filter === "expiradas" && l.status === "expirada") ||
       (filter === "revogadas" && l.status === "revogada");
-    return matchQ && matchF;
+    const matchB = bucketOfId.get(l.id) === bucket;
+    return matchQ && matchF && matchB;
   });
 
   const available = licenses.filter((l) => l.status === "ativa" && !l.client).length;
@@ -288,6 +310,7 @@ function LicencasPage() {
     });
     if (error) return toast.error(error.message);
     toast.success("Dispositivo liberado");
+
     reload();
   }
 
