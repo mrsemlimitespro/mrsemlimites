@@ -152,7 +152,9 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
     ativadaEm: row.ativada_em,
     duracaoDias: row.duracao_dias ?? null,
     trialMinutos: row.trial_duracao_minutos ?? null,
+    tipo: row.tipo ?? null,
   };
+
 }
 
 function formatCountdown(
