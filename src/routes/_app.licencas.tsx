@@ -805,7 +805,8 @@ function NovaLicencaModal({
   const isAdmin = useIsAdmin();
   const presets = isAdmin
     ? LICENSE_PRESETS
-    : LICENSE_PRESETS.filter((p) => p.kind === "teste" && p.minutos === 20);
+    : LICENSE_PRESETS.filter((p) => p.kind === "teste" && p.minutos === 60);
+
   const [quantidade, setQuantidade] = useState(1);
   const [presetIdx, setPresetIdx] = useState(0);
   const [busy, setBusy] = useState(false);
