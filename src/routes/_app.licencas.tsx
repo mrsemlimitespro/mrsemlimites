@@ -568,7 +568,7 @@ function LicencasPage() {
           <div>Status</div>
           <div>Device</div>
           <div>Expira</div>
-          <div />
+          <div className="text-right pr-1">Ações</div>
         </div>
 
 
