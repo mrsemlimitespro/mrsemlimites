@@ -830,7 +830,11 @@ function NovaLicencaModal({
       if (ids.length > 0) {
         const patch: Record<string, unknown> = { tipo: preset.kind };
         if (preset.kind === "teste") {
-          patch.trial_duracao_minutos = preset.minutos ?? 10;
+          patch.trial_duracao_minutos = preset.minutos ?? 60;
+          patch.duracao_dias = null;
+        } else if ((preset.dias ?? 0) === 0 && preset.minutos) {
+          // Premium curto (ex.: 1 hora) → armazena minutos em trial_duracao_minutos
+          patch.trial_duracao_minutos = preset.minutos;
           patch.duracao_dias = null;
         } else {
           patch.trial_duracao_minutos = null;
@@ -842,6 +846,7 @@ function NovaLicencaModal({
           .in("id", ids);
         if (upErr) throw upErr;
       }
+
 
       toast.success(`${quantidade} chave(s) ${preset.label} geradas`);
       onSaved();
