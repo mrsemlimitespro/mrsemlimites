@@ -89,6 +89,7 @@ type LicencaRow = {
   ativada_em: string | null;
   duracao_dias: number | null;
   trial_duracao_minutos: number | null;
+  tipo: string | null;
   clientes?: { nome: string | null } | null;
 };
 
@@ -105,9 +106,33 @@ type License = {
   ativadaEm: string | null;
   duracaoDias: number | null;
   trialMinutos: number | null;
+  tipo: string | null;
 };
 
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas";
+
+/** Sub-abas por duração. */
+type Bucket = "teste" | "1h" | "7d" | "30d" | "1ano" | "outros";
+
+const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
+  { id: "teste", label: "Teste", sub: "1 hora" },
+  { id: "1h", label: "1 hora", sub: "premium" },
+  { id: "7d", label: "7 dias", sub: "premium" },
+  { id: "30d", label: "30 dias", sub: "premium" },
+  { id: "1ano", label: "1 ano", sub: "premium" },
+];
+
+function bucketOfRow(row: LicencaRow): Bucket {
+  if ((row.tipo ?? "").toLowerCase() === "teste") return "teste";
+  const dias = row.duracao_dias ?? null;
+  if (dias === 7) return "7d";
+  if (dias === 30) return "30d";
+  if (dias === 365) return "1ano";
+  if ((dias === null || dias === 0) && row.trial_duracao_minutos === 60) return "1h";
+  return "outros";
+}
+
+
 
 function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }): License {
   const now = Date.now();
