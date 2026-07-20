@@ -356,6 +356,16 @@ function LicencasPage() {
     reload();
   }
 
+  async function excluirUma(id: string) {
+    if (!confirm("Excluir esta licença? Esta ação não pode ser desfeita.")) return;
+    const { error } = await (supabase as any).from("licencas").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Licença excluída");
+    reload();
+  }
+
+
+
 
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6">
