@@ -339,6 +339,47 @@
     background: color-mix(in oklab, var(--primary) 45%, transparent);
     color: var(--foreground);
   }
+
+  /* Interações táteis mais suaves em toda interface */
+  button, [role="button"], a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Shimmer utility para skeletons e loading states */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Fade-in suave para conteúdo que aparece */
+@keyframes content-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@utility content-in {
+  animation: content-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Hover lift sutil para cards interativos */
+@utility hover-lift {
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+  &:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--brand-magenta) 30%, var(--border));
+    box-shadow: var(--shadow-elevated), 0 0 32px -12px color-mix(in oklab, var(--brand-magenta) 50%, transparent);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* Press feedback para elementos clicáveis */
+@utility press-feedback {
+  transition: transform var(--transition-fast);
+  &:active {
+    transform: scale(0.97);
+  }
 }
 
 /* Section title com barra de acento gradiente à esquerda */
