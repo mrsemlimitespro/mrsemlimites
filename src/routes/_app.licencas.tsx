@@ -725,6 +725,12 @@ function LicencasPage() {
 
       <NovaLicencaModal open={openNova} onOpenChange={setOpenNova} onSaved={reload} />
       <ChaveTesteModal open={openTeste} onOpenChange={setOpenTeste} onSaved={reload} />
+      <EnviarTesteModal
+        open={openEnviarTeste}
+        onOpenChange={setOpenEnviarTeste}
+        onSaved={reload}
+      />
+
       <HistoricoLicencaSheet licenca={historyOf} onOpenChange={(v) => !v && setHistoryOf(null)} />
       <RenovarLicencaModal
         licenca={renovarOf}
