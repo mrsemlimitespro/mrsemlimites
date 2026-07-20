@@ -547,7 +547,7 @@ function LicencasPage() {
 
       {/* Table */}
       <div className="glass overflow-hidden rounded-2xl">
-        <div className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_40px] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <div className="flex items-center">
             <Checkbox
               checked={filtered.length > 0 && filtered.every((l) => selected.has(l.id))}
