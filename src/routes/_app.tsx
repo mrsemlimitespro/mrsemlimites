@@ -52,7 +52,10 @@ function AppLayout() {
           <div className="mb-3 md:mb-4">
             <PageBackButton />
           </div>
-          <Outlet />
+          <div key={typeof window !== "undefined" ? window.location.pathname : "ssr"} className="content-in">
+            <Outlet />
+          </div>
+
         </main>
         <NetworkStatusWatcher />
         <PushBootstrapper />

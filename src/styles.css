@@ -344,7 +344,28 @@
   button, [role="button"], a {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Focus-visible unificado — anel gradiente sutil para acessibilidade */
+  :focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--background),
+      0 0 0 4px color-mix(in oklab, var(--brand-magenta) 65%, transparent);
+    border-radius: calc(var(--radius) - 4px);
+    transition: box-shadow var(--transition-fast);
+  }
+
+  /* Respeita usuários com preferência de movimento reduzido */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
+
 
 /* Shimmer utility para skeletons e loading states */
 @keyframes shimmer {
