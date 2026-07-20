@@ -1325,3 +1325,219 @@ function BulkRenovarModal({
     </Dialog>
   );
 }
+
+/**
+ * Modal “Licença Teste” — cria uma licença de 1 hora, vincula a um cliente
+ * final por e-mail e permite disparar mensagem por WhatsApp / e-mail com
+ * texto editável. Limite de 2 testes por e-mail de cliente.
+ */
+function EnviarTesteModal({
+  open,
+  onOpenChange,
+  onSaved,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  onSaved: () => void;
+}) {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [chaveGerada, setChaveGerada] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      setNome("");
+      setEmail("");
+      setWhatsapp("");
+      setMsg("");
+      setChaveGerada(null);
+    }
+  }, [open]);
+
+  const defaultMsg = (chave: string) =>
+    `Olá${nome ? `, ${nome}` : ""}! 👋\n\nSua licença de teste (1 hora) para o MR Sem Limites está pronta:\n\n🔑 Chave: ${chave}\n📧 E-mail: ${email}\n\nApós ativar, ela expira em 60 minutos. Aproveite!`;
+
+  async function gerarEEnviar() {
+    const em = email.trim().toLowerCase();
+    if (!em || !em.includes("@")) {
+      toast.error("Informe um e-mail válido do cliente.");
+      return;
+    }
+    setBusy(true);
+    try {
+      // Limite anti-abuso: máx 2 testes por e-mail
+      const { count, error: cErr } = await (supabase as any)
+        .from("licencas")
+        .select("id", { count: "exact", head: true })
+        .eq("tipo", "teste")
+        .ilike("email", em);
+      if (cErr) throw cErr;
+      if ((count ?? 0) >= 2) {
+        throw new Error(
+          "Este cliente já utilizou o limite de 2 licenças teste. Ofereça uma licença Premium.",
+        );
+      }
+
+      // 1) Gera 1 chave (fica com duração_dias default; ajustamos abaixo)
+      const { data: created, error } = await (supabase as any).rpc("gerar_licencas", {
+        _quantidade: 1,
+        _duracao_dias: 1,
+        _revendedor_id: null,
+      });
+      if (error) throw error;
+      const novaId = created?.[0]?.id as string | undefined;
+      const novaChave = created?.[0]?.chave as string | undefined;
+      if (!novaId || !novaChave) throw new Error("Falha ao gerar chave.");
+
+      // 2) Marca como teste 1h
+      const { error: upErr } = await (supabase as any)
+        .from("licencas")
+        .update({
+          tipo: "teste",
+          trial_duracao_minutos: 60,
+          duracao_dias: null,
+          email: em,
+        })
+        .eq("id", novaId);
+      if (upErr) throw upErr;
+
+      setChaveGerada(novaChave);
+      setMsg((prev) => (prev.trim() ? prev : defaultMsg(novaChave)));
+      toast.success("Licença teste criada.");
+      onSaved();
+    } catch (err: any) {
+      toast.error(err?.message ?? "Falha ao gerar licença teste.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function abrirWhatsApp() {
+    const digits = whatsapp.replace(/\D/g, "");
+    if (!digits) {
+      toast.error("Informe o WhatsApp do cliente (com DDD).");
+      return;
+    }
+    const url = `https://wa.me/${digits}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function abrirEmail() {
+    if (!email.trim()) {
+      toast.error("Informe o e-mail do cliente.");
+      return;
+    }
+    const subject = "Sua licença de teste — MR Sem Limites";
+    const url = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(msg)}`;
+    window.location.href = url;
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="glass-strong sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Enviar Licença Teste (1 hora)</DialogTitle>
+          <DialogDescription>
+            Gera uma licença de teste vinculada ao e-mail do cliente e prepara o envio por WhatsApp
+            ou e-mail. Limite de 2 testes por cliente.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-3">
+          <Field label="Nome do cliente (opcional)">
+            <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex.: João" />
+          </Field>
+          <Field label="E-mail do cliente">
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="cliente@email.com"
+              disabled={!!chaveGerada}
+            />
+          </Field>
+          <Field label="WhatsApp (com DDD)">
+            <Input
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              placeholder="Ex.: 11999998888"
+            />
+          </Field>
+
+          {!chaveGerada ? (
+            <Button
+              type="button"
+              onClick={gerarEEnviar}
+              disabled={busy}
+              className="w-full gradient-primary text-primary-foreground"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : "Gerar chave de teste"}
+            </Button>
+          ) : (
+            <>
+              <div className="rounded-xl border border-amber-400/40 bg-amber-500/10 p-3 text-sm">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-300">
+                  Chave gerada
+                </div>
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <span className="font-mono text-amber-100">{chaveGerada}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(chaveGerada);
+                      toast.success("Chave copiada");
+                    }}
+                    className="rounded-md p-1 text-amber-200 hover:bg-white/5"
+                    aria-label="Copiar chave"
+                  >
+                    <Copy className="size-4" />
+                  </button>
+                </div>
+              </div>
+
+              <Field label="Mensagem (editável)">
+                <textarea
+                  value={msg}
+                  onChange={(e) => setMsg(e.target.value)}
+                  rows={6}
+                  className="w-full rounded-xl border border-border/60 bg-surface/40 p-3 text-sm outline-none focus:border-primary/60"
+                />
+              </Field>
+
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  onClick={abrirWhatsApp}
+                  className="rounded-full bg-emerald-500/90 text-white hover:bg-emerald-500"
+                >
+                  <MessageCircle className="size-4" strokeWidth={2} />
+                  WhatsApp
+                </Button>
+                <Button
+                  type="button"
+                  onClick={abrirEmail}
+                  variant="ghost"
+                  className="rounded-full border border-border/70 bg-surface/40"
+                >
+                  <Mail className="size-4" strokeWidth={2} />
+                  E-mail
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+
+        <DialogFooter className="pt-2">
+          <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+            Fechar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
