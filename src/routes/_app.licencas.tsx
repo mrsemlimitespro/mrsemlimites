@@ -397,6 +397,17 @@ function LicencasPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {canTeste && (
+            <Button
+              variant="ghost"
+              className="rounded-full border border-amber-400/40 bg-amber-500/10 px-4 text-amber-200 backdrop-blur-xl hover:bg-amber-500/20"
+              onClick={() => setOpenEnviarTeste(true)}
+              title="Criar e enviar licença teste (1 hora) para o cliente"
+            >
+              <Send className="size-4" strokeWidth={2} />
+              Licença Teste
+            </Button>
+          )}
           <Button
             variant="ghost"
             className="rounded-full border border-border/70 bg-surface/50 px-4 backdrop-blur-xl hover:bg-white/5"
@@ -415,6 +426,55 @@ function LicencasPage() {
         </div>
       </header>
 
+      {/* Sub-abas por duração */}
+      <div className="glass flex flex-wrap items-center gap-1.5 rounded-full p-1.5">
+        {BUCKETS.map((b) => {
+          const active = bucket === b.id;
+          const count = bucketCounts[b.id] ?? 0;
+          return (
+            <button
+              key={b.id}
+              type="button"
+              onClick={() => setBucket(b.id)}
+              className={cn(
+                "group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
+                active
+                  ? "gradient-primary text-primary-foreground shadow-[0_0_18px_-4px_color-mix(in_oklab,var(--primary)_65%,transparent)]"
+                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+              )}
+            >
+              <span>{b.label}</span>
+              <span
+                className={cn(
+                  "rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
+                  active ? "bg-white/20 text-white" : "bg-white/[0.06] text-muted-foreground",
+                )}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+        {hasOutros && (
+          <button
+            type="button"
+            onClick={() => setBucket("outros")}
+            className={cn(
+              "group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
+              bucket === "outros"
+                ? "gradient-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+            )}
+            title="Licenças legadas com durações diferentes das padrões"
+          >
+            <span>Outros</span>
+            <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
+              {bucketCounts.outros}
+            </span>
+          </button>
+        )}
+      </div>
+
       {/* Search + filter */}
       <div className="flex flex-col gap-3 md:flex-row">
         <label className="glass relative flex h-12 flex-1 items-center rounded-2xl pl-11 pr-4">
@@ -428,6 +488,7 @@ function LicencasPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar por chave, email ou cliente..."
+
             className="h-full w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/70"
           />
         </label>
