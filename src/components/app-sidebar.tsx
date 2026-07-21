@@ -12,6 +12,7 @@ import {
   LogIn,
   Bot,
   Wand2,
+  Store,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { toast } from "sonner";
