@@ -113,7 +113,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/report-tamper
           },
         });
 
-        // Conta eventos de tamper nas últimas 24h
+        // Conta eventos de tamper nas últimas 24h (apenas informativo)
         const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
         const { count } = await sb
           .from("licencas_eventos")
@@ -124,42 +124,20 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/report-tamper
 
         const total = Number(count ?? 1);
 
-        // Sinais de alta severidade bloqueiam de primeira
-        const highSeverity =
-          signal === "integrity_mismatch" || signal === "extension_repack";
-
-        if (highSeverity || total >= 3) {
-          // Bloqueia a licença e devolve tela de bloqueio
-          await sb
-            .from("licencas")
-            .update({ status: "cancelada" })
-            .eq("id", lic.id);
-
-          return new Response(
-            JSON.stringify({
-              ok: true,
-              action: "block",
-              tamper_count: total,
-              message:
-                "Detectamos tentativa de violação da extensão. Sua licença foi bloqueada por segurança. Fale com o suporte para reativar.",
-              support_whatsapp: SUPORTE_NUM,
-              support_whatsapp_url: `https://wa.me/${SUPORTE_NUM}?text=${encodeURIComponent(
-                `Olá, minha licença do MR Sem Limites foi bloqueada por segurança e quero regularizar. Chave: ${key}`,
-              )}`,
-              support_button_label: "Falar com o suporte",
-            }),
-            { status: 200, headers: cors },
-          );
-        }
-
+        // POLÍTICA: nunca bloqueia automaticamente. Só o admin bloqueia/desbloqueia
+        // manualmente no painel. A extensão apenas exibe aviso legal de proibição
+        // de engenharia reversa. Registramos o evento para o painel monitorar.
         return new Response(
           JSON.stringify({
             ok: true,
             action: "warn",
             tamper_count: total,
-            remaining: Math.max(0, 3 - total),
             message:
-              "Percebemos uma tentativa de inspeção. Se continuar, sua licença será bloqueada automaticamente.",
+              "AVISO LEGAL: É proibida a engenharia reversa, descompilação, inspeção ou uso de IA para analisar o código desta extensão. Somente o administrador rogeriocftv.mr@gmail.com está autorizado. Violações serão registradas.",
+            support_whatsapp: SUPORTE_NUM,
+            support_whatsapp_url: `https://wa.me/${SUPORTE_NUM}?text=${encodeURIComponent(
+              `Olá, sou usuário do MR Sem Limites e preciso de suporte. Chave: ${key}`,
+            )}`,
           }),
           { status: 200, headers: cors },
         );
@@ -167,3 +145,4 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/report-tamper
     },
   },
 });
+
