@@ -205,6 +205,22 @@ function LoginPage() {
             Criar conta
           </Link>
         </p>
+
+        <div className="relative my-1">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-border/50" />
+          </div>
+          <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
+            <span className="bg-surface/60 px-2 text-muted-foreground">ou</span>
+          </div>
+        </div>
+
+        <Link
+          to="/quero-ser-revendedor"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-primary/10"
+        >
+          🏪 Quero ser revendedor
+        </Link>
       </form>
     </AuthShell>
   );
