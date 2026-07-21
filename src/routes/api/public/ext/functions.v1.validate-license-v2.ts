@@ -63,7 +63,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         const { data: lic } = await sb
           .from("licencas")
           .select(
-            "id, status, tipo, expira_em, device_id, max_dispositivos, trial_iniciado_em, trial_duracao_minutos, ativada_em, duracao_dias",
+            "id, status, tipo, expira_em, device_id, max_dispositivos, trial_iniciado_em, trial_duracao_minutos, ativada_em, duracao_dias, email, cliente_id, clientes:cliente_id(nome, email)",
           )
           .eq("chave", key)
           .maybeSingle();
@@ -75,9 +75,21 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           );
         }
 
+        const cliente = (lic as any).clientes ?? null;
+        const cliente_nome: string | null =
+          (cliente?.nome as string | undefined)?.trim() ||
+          ((lic.email || cliente?.email) ? String(lic.email || cliente?.email).split("@")[0] : null) ||
+          null;
+        const cliente_email: string | null = lic.email || cliente?.email || null;
+
         if (lic.status === "cancelada" || lic.status === "revogada") {
           return new Response(
-            JSON.stringify({ status: "invalid", message: "Licença revogada" }),
+            JSON.stringify({
+              status: "invalid",
+              message: "Sua licença foi bloqueada. Fale com o suporte para reativar.",
+              cliente_nome,
+              cliente_email,
+            }),
             { status: 200, headers: cors },
           );
         }
@@ -116,6 +128,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
             JSON.stringify({
               status: "expired",
               message: "Seus dias de extensão acabaram. Renove sua licença para continuar usando o MR Sem Limites.",
+              cliente_nome,
+              cliente_email,
             }),
             { status: 200, headers: cors },
           );
@@ -174,6 +188,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
             license_id: lic.id,
             plan: lic.tipo === "premium" ? "premium" : "trial",
             expires_at: expira_em,
+            cliente_nome,
+            cliente_email,
           }),
           { status: 200, headers: cors },
         );
