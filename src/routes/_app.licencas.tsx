@@ -701,6 +701,15 @@ function LicencasPage() {
                   )}
                   <button
                     type="button"
+                    aria-label="Editar licença"
+                    title="Editar chave, cliente e observações"
+                    onClick={() => setEditarOf(rows.find((r) => r.id === l.id) ?? null)}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                  >
+                    <Pencil className="size-4" strokeWidth={2} />
+                  </button>
+                  <button
+                    type="button"
                     aria-label="Excluir licença"
                     title="Excluir licença"
                     onClick={() => excluirUma(l.id)}
