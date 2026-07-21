@@ -82,6 +82,12 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           null;
         const cliente_email: string | null = lic.email || cliente?.email || null;
 
+        const SUPORTE_WHATSAPP_NUMERO = "5511962579428";
+        const SUPORTE_WHATSAPP_URL = (motivo: string) =>
+          `https://wa.me/${SUPORTE_WHATSAPP_NUMERO}?text=${encodeURIComponent(
+            `Olá, minha licença do MR Sem Limites ${motivo}. Pode me ajudar? Chave: ${key}`,
+          )}`;
+
         if (lic.status === "cancelada" || lic.status === "revogada") {
           return new Response(
             JSON.stringify({
@@ -89,6 +95,9 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
               message: "Sua licença foi bloqueada. Fale com o suporte para reativar.",
               cliente_nome,
               cliente_email,
+              support_whatsapp: SUPORTE_WHATSAPP_NUMERO,
+              support_whatsapp_url: SUPORTE_WHATSAPP_URL("foi bloqueada"),
+              support_button_label: "Falar com o suporte",
             }),
             { status: 200, headers: cors },
           );
