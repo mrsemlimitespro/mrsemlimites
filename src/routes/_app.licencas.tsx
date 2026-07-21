@@ -675,6 +675,27 @@ function LicencasPage() {
                   >
                     <Copy className="size-4" strokeWidth={2} />
                   </button>
+                  {l.status === "revogada" || l.status === "bloqueada" ? (
+                    <button
+                      type="button"
+                      aria-label="Desbloquear licença"
+                      title="Desbloquear licença"
+                      onClick={() => reativar(l.id)}
+                      className="rounded-md p-1.5 text-emerald-400 transition-colors hover:bg-emerald-500/15"
+                    >
+                      <PlayCircle className="size-4" strokeWidth={2} />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      aria-label="Bloquear licença"
+                      title="Bloquear licença"
+                      onClick={() => cancelar(l.id)}
+                      className="rounded-md p-1.5 text-amber-400 transition-colors hover:bg-amber-500/15"
+                    >
+                      <Ban className="size-4" strokeWidth={2} />
+                    </button>
+                  )}
                   <button
                     type="button"
                     aria-label="Excluir licença"
@@ -684,6 +705,7 @@ function LicencasPage() {
                   >
                     <Trash2 className="size-4" strokeWidth={2} />
                   </button>
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
