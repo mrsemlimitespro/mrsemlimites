@@ -239,6 +239,7 @@ function LicencasPage() {
   const [loading, setLoading] = useState(true);
   const [historyOf, setHistoryOf] = useState<LicencaRow | null>(null);
   const [renovarOf, setRenovarOf] = useState<LicencaRow | null>(null);
+  const [editarOf, setEditarOf] = useState<LicencaRow | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkRenovarOpen, setBulkRenovarOpen] = useState(false);
   const [bulkBusy, setBulkBusy] = useState(false);
