@@ -506,6 +506,7 @@ function LicencasPage() {
             <SelectItem value="ativas">Ativas</SelectItem>
             <SelectItem value="expiradas">Expiradas</SelectItem>
             <SelectItem value="revogadas">Revogadas</SelectItem>
+            <SelectItem value="bloqueadas">Bloqueadas (anti-tamper)</SelectItem>
           </SelectContent>
         </Select>
       </div>
