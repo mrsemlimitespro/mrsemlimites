@@ -128,6 +128,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
             JSON.stringify({
               status: "expired",
               message: "Seus dias de extensão acabaram. Renove sua licença para continuar usando o MR Sem Limites.",
+              cliente_nome,
+              cliente_email,
             }),
             { status: 200, headers: cors },
           );
