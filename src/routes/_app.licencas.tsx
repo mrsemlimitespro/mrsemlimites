@@ -109,7 +109,7 @@ type License = {
   tipo: string | null;
 };
 
-type Filter = "todos" | "ativas" | "expiradas" | "revogadas";
+type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
 
 /** Sub-abas por duração. */
 type Bucket = "teste" | "1d" | "30d" | "60d" | "90d" | "1ano" | "outros";
