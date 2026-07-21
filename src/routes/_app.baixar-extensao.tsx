@@ -1,6 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, CheckCircle2, Package, Upload, Video, Loader2 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Download,
+  CheckCircle2,
+  Package,
+  Upload,
+  Video,
+  Loader2,
+  ShieldCheck,
+  ShieldAlert,
+  Activity,
+  Clock,
+  Monitor,
+  KeyRound,
+  Sparkles,
+  CalendarClock,
+  Radio,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { playSfx } from "@/lib/sfx";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
+import { cn } from "@/lib/utils";
 const currentExtensionAsset = { url: "/mr-sem-limites-2.2.7.zip" };
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
