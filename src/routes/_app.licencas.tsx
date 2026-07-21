@@ -248,7 +248,7 @@ function LicencasPage() {
     const { data, error } = await (supabase as any)
       .from("licencas")
       .select(
-        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, clientes(nome)",
+        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, clientes(nome)",
       )
       .order("created_at", { ascending: false });
     if (error) {
