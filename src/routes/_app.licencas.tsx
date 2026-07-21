@@ -706,7 +706,7 @@ function LicencasPage() {
                         <CalendarPlus className="size-4" /> Renovar
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      {l.status === "revogada" ? (
+                      {l.status === "revogada" || l.status === "bloqueada" ? (
                         <DropdownMenuItem onClick={() => reativar(l.id)}>
                           <PlayCircle className="size-4" /> Reativar
                         </DropdownMenuItem>
