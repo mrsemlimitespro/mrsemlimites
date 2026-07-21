@@ -188,6 +188,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
             license_id: lic.id,
             plan: lic.tipo === "premium" ? "premium" : "trial",
             expires_at: expira_em,
+            cliente_nome,
+            cliente_email,
           }),
           { status: 200, headers: cors },
         );
