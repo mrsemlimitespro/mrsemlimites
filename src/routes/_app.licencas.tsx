@@ -299,7 +299,8 @@ function LicencasPage() {
       filter === "todos" ||
       (filter === "ativas" && l.status === "ativa") ||
       (filter === "expiradas" && l.status === "expirada") ||
-      (filter === "revogadas" && l.status === "revogada");
+      (filter === "revogadas" && l.status === "revogada") ||
+      (filter === "bloqueadas" && l.status === "bloqueada");
     const matchB = bucketOfId.get(l.id) === bucket;
     return matchQ && matchF && matchB;
   });
