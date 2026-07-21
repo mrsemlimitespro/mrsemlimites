@@ -93,7 +93,7 @@ type LicencaRow = {
   clientes?: { nome: string | null } | null;
 };
 
-type ViewStatus = "ativa" | "expirada" | "revogada";
+type ViewStatus = "ativa" | "expirada" | "revogada" | "bloqueada";
 
 type License = {
   id: string;
@@ -109,7 +109,7 @@ type License = {
   tipo: string | null;
 };
 
-type Filter = "todos" | "ativas" | "expiradas" | "revogadas";
+type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
 
 /** Sub-abas por duração. */
 type Bucket = "teste" | "1d" | "30d" | "60d" | "90d" | "1ano" | "outros";
@@ -141,6 +141,7 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
   const exp = row.expira_em ? new Date(row.expira_em).getTime() : null;
   let status: ViewStatus = "ativa";
   if (row.status === "revogada") status = "revogada";
+  else if (row.status === "cancelada" || row.status === "bloqueada") status = "bloqueada";
   else if (exp !== null && exp < now) status = "expirada";
 
   return {
@@ -298,7 +299,8 @@ function LicencasPage() {
       filter === "todos" ||
       (filter === "ativas" && l.status === "ativa") ||
       (filter === "expiradas" && l.status === "expirada") ||
-      (filter === "revogadas" && l.status === "revogada");
+      (filter === "revogadas" && l.status === "revogada") ||
+      (filter === "bloqueadas" && l.status === "bloqueada");
     const matchB = bucketOfId.get(l.id) === bucket;
     return matchQ && matchF && matchB;
   });
@@ -504,6 +506,7 @@ function LicencasPage() {
             <SelectItem value="ativas">Ativas</SelectItem>
             <SelectItem value="expiradas">Expiradas</SelectItem>
             <SelectItem value="revogadas">Revogadas</SelectItem>
+            <SelectItem value="bloqueadas">Bloqueadas (anti-tamper)</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -703,7 +706,7 @@ function LicencasPage() {
                         <CalendarPlus className="size-4" /> Renovar
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      {l.status === "revogada" ? (
+                      {l.status === "revogada" || l.status === "bloqueada" ? (
                         <DropdownMenuItem onClick={() => reativar(l.id)}>
                           <PlayCircle className="size-4" /> Reativar
                         </DropdownMenuItem>
@@ -772,6 +775,12 @@ function StatusPill({ status }: { status: License["status"] }) {
         color: "var(--destructive)",
         bg: "color-mix(in oklab, var(--destructive) 22%, transparent)",
         text: "oklch(0.88 0.16 25)",
+      },
+      bloqueada: {
+        label: "BLOQUEADA",
+        color: "var(--destructive)",
+        bg: "color-mix(in oklab, var(--destructive) 28%, transparent)",
+        text: "oklch(0.9 0.18 25)",
       },
     };
   const s = map[status];
