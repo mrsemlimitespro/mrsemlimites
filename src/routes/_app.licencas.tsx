@@ -1600,3 +1600,146 @@ function EnviarTesteModal({
     </Dialog>
   );
 }
+
+/**
+ * Modal de edição de licença: permite alterar a chave (com validação de
+ * unicidade), o cliente vinculado (nome + e-mail) e observações internas.
+ * Aplicável a qualquer duração (teste, 1d, 30d, 60d, 90d, 1 ano).
+ */
+function EditarLicencaModal({
+  licenca,
+  onOpenChange,
+  onSaved,
+}: {
+  licenca: LicencaRow | null;
+  onOpenChange: (v: boolean) => void;
+  onSaved: () => void;
+}) {
+  const [chave, setChave] = useState("");
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [observacoes, setObservacoes] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (licenca) {
+      setChave(licenca.chave ?? "");
+      setNome(licenca.clientes?.nome ?? "");
+      setEmail(licenca.email ?? "");
+      setObservacoes(licenca.observacoes_admin ?? "");
+    }
+  }, [licenca]);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!licenca) return;
+    const novaChave = chave.trim();
+    if (!novaChave) {
+      toast.error("A chave não pode ficar vazia.");
+      return;
+    }
+    setBusy(true);
+    try {
+      // 1) Atualiza a licença (chave, email, observações)
+      const patch: Record<string, unknown> = {
+        chave: novaChave,
+        email: email.trim() ? email.trim().toLowerCase() : null,
+        observacoes_admin: observacoes.trim() || null,
+      };
+      const { error: upErr } = await (supabase as any)
+        .from("licencas")
+        .update(patch)
+        .eq("id", licenca.id);
+      if (upErr) throw upErr;
+
+      // 2) Atualiza nome do cliente vinculado (se houver)
+      if (licenca.cliente_id && nome.trim()) {
+        const { error: cliErr } = await (supabase as any)
+          .from("clientes")
+          .update({ nome: nome.trim() })
+          .eq("id", licenca.cliente_id);
+        if (cliErr) throw cliErr;
+      }
+
+      toast.success("Licença atualizada");
+      onSaved();
+      onOpenChange(false);
+    } catch (err: any) {
+      const msg = String(err?.message ?? "Falha ao salvar");
+      toast.error(
+        msg.includes("duplicate") || msg.includes("unique")
+          ? "Essa chave já existe. Escolha outra."
+          : msg,
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Dialog open={!!licenca} onOpenChange={onOpenChange}>
+      <DialogContent className="glass-strong sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Editar licença</DialogTitle>
+          <DialogDescription>
+            Altere a chave, o cliente vinculado e adicione observações internas.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form className="space-y-4" onSubmit={submit}>
+          <Field label="Chave">
+            <Input
+              value={chave}
+              onChange={(e) => setChave(e.target.value.toUpperCase())}
+              className="font-mono"
+              placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+              autoFocus
+            />
+          </Field>
+          <Field label="Nome do cliente">
+            <Input
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Ex: João Silva"
+              disabled={!licenca?.cliente_id}
+            />
+            {!licenca?.cliente_id && (
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Sem cliente vinculado. Use “Vincular a Cliente” para conectar.
+              </p>
+            )}
+          </Field>
+          <Field label="E-mail">
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="cliente@email.com"
+            />
+          </Field>
+          <Field label="Observações (interno)">
+            <Textarea
+              value={observacoes}
+              onChange={(e) => setObservacoes(e.target.value)}
+              rows={4}
+              placeholder="Anotações internas sobre esta licença (não visível ao cliente)"
+            />
+          </Field>
+
+          <DialogFooter className="pt-2">
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={busy}
+              className="gradient-primary text-primary-foreground"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
