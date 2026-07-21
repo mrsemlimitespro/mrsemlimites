@@ -148,6 +148,54 @@ function LicencasDashboard() {
       </div>
 
       <div className="glass rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Bug className="size-4 text-rose-400" />
+            <h2 className="text-lg font-semibold">Alertas de violação (anti-tamper)</h2>
+          </div>
+          <span className="text-xs text-muted-foreground">
+            {tampers.length} evento(s) recente(s) · admin com bypass total
+          </span>
+        </div>
+        {tampers.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Nenhuma tentativa de inspeção detectada. A extensão reporta automaticamente F12,
+            DevTools, integridade e repack — 3 sinais em 24h bloqueiam a licença.
+          </p>
+        ) : (
+          <ul className="divide-y divide-white/5">
+            {tampers.map((ev) => {
+              const signal = ev.tipo.replace(/^tamper:/, "");
+              const chave = ev.licencas?.chave ?? "—";
+              return (
+                <li key={ev.id} className="py-2.5 flex items-center justify-between gap-3 text-sm">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-md bg-rose-500/15 text-rose-300 px-1.5 py-0.5 text-[10px] uppercase tracking-wider">
+                        {signal}
+                      </span>
+                      <span className="font-mono text-xs truncate">
+                        {chave.slice(0, 8)}…{chave.slice(-4)}
+                      </span>
+                      {ev.licencas?.email ? (
+                        <span className="text-muted-foreground truncate">· {ev.licencas.email}</span>
+                      ) : null}
+                    </div>
+                    {ev.mensagem ? (
+                      <div className="text-xs text-muted-foreground truncate mt-0.5">{ev.mensagem}</div>
+                    ) : null}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground shrink-0">
+                    {formatDistanceToNow(new Date(ev.created_at), { locale: ptBR, addSuffix: true })}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
+      <div className="glass rounded-2xl p-6">
         <h2 className="text-lg font-semibold mb-2">Endpoints públicos ativos</h2>
         <ul className="grid gap-1.5 text-sm font-mono text-muted-foreground">
           <li>POST /api/public/validar-licenca</li>
@@ -157,6 +205,7 @@ function LicencasDashboard() {
           <li>POST /api/public/licenca/reset-hwid</li>
           <li>POST /api/public/licenca/revogar</li>
           <li>GET&nbsp;&nbsp;/api/public/licenca/config</li>
+          <li>POST /api/public/ext/functions/v1/report-tamper</li>
         </ul>
       </div>
     </div>
