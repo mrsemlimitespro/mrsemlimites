@@ -89,6 +89,10 @@ function BaixarExtensaoPage() {
 
       <InstallSteps />
 
+      <div className="mt-6">
+        <ExtensionStatusStrip />
+      </div>
+
       <div className="mt-8 flex flex-col gap-4">
         {RELEASES.map((r) => (
           <ReleaseCard key={r.version} release={r} />
