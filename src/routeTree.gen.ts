@@ -70,6 +70,7 @@ import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/
 import { Route as ApiPublicHooksEmailWorkerRouteImport } from './routes/api/public/hooks/email-worker'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
+import { Route as ApiPublicExtFunctionsV1ReportTamperRouteImport } from './routes/api/public/ext/functions.v1.report-tamper'
 import { Route as ApiPublicExtFunctionsV1Lov4RouteImport } from './routes/api/public/ext/functions.v1.lov4'
 import { Route as ApiPublicExtFunctionsV1InjectConfigRouteImport } from './routes/api/public/ext/functions.v1.inject-config'
 import { Route as ApiPublicExtFunctionsV1GetTemplatesRouteImport } from './routes/api/public/ext/functions.v1.get-templates'
@@ -389,6 +390,12 @@ const ApiPublicExtFunctionsV1ServeExtensionUiRoute =
     path: '/api/public/ext/functions/v1/serve-extension-ui',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtFunctionsV1ReportTamperRoute =
+  ApiPublicExtFunctionsV1ReportTamperRouteImport.update({
+    id: '/api/public/ext/functions/v1/report-tamper',
+    path: '/api/public/ext/functions/v1/report-tamper',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtFunctionsV1Lov4Route =
   ApiPublicExtFunctionsV1Lov4RouteImport.update({
     id: '/api/public/ext/functions/v1/lov4',
@@ -483,6 +490,7 @@ export interface FileRoutesByFullPath {
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/lov4': typeof ApiPublicExtFunctionsV1Lov4Route
+  '/api/public/ext/functions/v1/report-tamper': typeof ApiPublicExtFunctionsV1ReportTamperRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
@@ -549,6 +557,7 @@ export interface FileRoutesByTo {
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/lov4': typeof ApiPublicExtFunctionsV1Lov4Route
+  '/api/public/ext/functions/v1/report-tamper': typeof ApiPublicExtFunctionsV1ReportTamperRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
@@ -618,6 +627,7 @@ export interface FileRoutesById {
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/lov4': typeof ApiPublicExtFunctionsV1Lov4Route
+  '/api/public/ext/functions/v1/report-tamper': typeof ApiPublicExtFunctionsV1ReportTamperRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
@@ -687,6 +697,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/lov4'
+    | '/api/public/ext/functions/v1/report-tamper'
     | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
     | '/api/public/ext/storage/v1/object/$'
@@ -753,6 +764,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/lov4'
+    | '/api/public/ext/functions/v1/report-tamper'
     | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
     | '/api/public/ext/storage/v1/object/$'
@@ -821,6 +833,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/lov4'
+    | '/api/public/ext/functions/v1/report-tamper'
     | '/api/public/ext/functions/v1/serve-extension-ui'
     | '/api/public/ext/functions/v1/validate-license-v2'
     | '/api/public/ext/storage/v1/object/$'
@@ -851,6 +864,7 @@ export interface RootRouteChildren {
   ApiPublicExtFunctionsV1GetTemplatesRoute: typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   ApiPublicExtFunctionsV1InjectConfigRoute: typeof ApiPublicExtFunctionsV1InjectConfigRoute
   ApiPublicExtFunctionsV1Lov4Route: typeof ApiPublicExtFunctionsV1Lov4Route
+  ApiPublicExtFunctionsV1ReportTamperRoute: typeof ApiPublicExtFunctionsV1ReportTamperRoute
   ApiPublicExtFunctionsV1ServeExtensionUiRoute: typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
   ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
   ApiPublicExtStorageV1ObjectSplatRoute: typeof ApiPublicExtStorageV1ObjectSplatRoute
@@ -1285,6 +1299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtFunctionsV1ServeExtensionUiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/functions/v1/report-tamper': {
+      id: '/api/public/ext/functions/v1/report-tamper'
+      path: '/api/public/ext/functions/v1/report-tamper'
+      fullPath: '/api/public/ext/functions/v1/report-tamper'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1ReportTamperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/lov4': {
       id: '/api/public/ext/functions/v1/lov4'
       path: '/api/public/ext/functions/v1/lov4'
@@ -1465,6 +1486,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicExtFunctionsV1InjectConfigRoute:
     ApiPublicExtFunctionsV1InjectConfigRoute,
   ApiPublicExtFunctionsV1Lov4Route: ApiPublicExtFunctionsV1Lov4Route,
+  ApiPublicExtFunctionsV1ReportTamperRoute:
+    ApiPublicExtFunctionsV1ReportTamperRoute,
   ApiPublicExtFunctionsV1ServeExtensionUiRoute:
     ApiPublicExtFunctionsV1ServeExtensionUiRoute,
   ApiPublicExtFunctionsV1ValidateLicenseV2Route:
@@ -1474,13 +1497,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
