@@ -141,6 +141,7 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
   const exp = row.expira_em ? new Date(row.expira_em).getTime() : null;
   let status: ViewStatus = "ativa";
   if (row.status === "revogada") status = "revogada";
+  else if (row.status === "cancelada" || row.status === "bloqueada") status = "bloqueada";
   else if (exp !== null && exp < now) status = "expirada";
 
   return {
