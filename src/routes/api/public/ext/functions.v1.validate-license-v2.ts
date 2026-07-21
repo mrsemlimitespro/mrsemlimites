@@ -139,6 +139,9 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
               message: "Seus dias de extensão acabaram. Renove sua licença para continuar usando o MR Sem Limites.",
               cliente_nome,
               cliente_email,
+              support_whatsapp: SUPORTE_WHATSAPP_NUMERO,
+              support_whatsapp_url: SUPORTE_WHATSAPP_URL("venceu e quero renovar"),
+              support_button_label: "Renovar / Falar com o suporte",
             }),
             { status: 200, headers: cors },
           );
