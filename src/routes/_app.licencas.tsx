@@ -112,23 +112,25 @@ type License = {
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas";
 
 /** Sub-abas por duração. */
-type Bucket = "teste" | "1h" | "7d" | "30d" | "1ano" | "outros";
+type Bucket = "teste" | "1d" | "30d" | "60d" | "90d" | "1ano" | "outros";
 
 const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
   { id: "teste", label: "Teste", sub: "1 hora" },
-  { id: "1h", label: "1 hora", sub: "premium" },
-  { id: "7d", label: "7 dias", sub: "premium" },
+  { id: "1d", label: "1 dia", sub: "premium" },
   { id: "30d", label: "30 dias", sub: "premium" },
+  { id: "60d", label: "60 dias", sub: "premium" },
+  { id: "90d", label: "90 dias", sub: "premium" },
   { id: "1ano", label: "1 ano", sub: "premium" },
 ];
 
 function bucketOfRow(row: LicencaRow): Bucket {
   if ((row.tipo ?? "").toLowerCase() === "teste") return "teste";
   const dias = row.duracao_dias ?? null;
-  if (dias === 7) return "7d";
+  if (dias === 1) return "1d";
   if (dias === 30) return "30d";
+  if (dias === 60) return "60d";
+  if (dias === 90) return "90d";
   if (dias === 365) return "1ano";
-  if ((dias === null || dias === 0) && row.trial_duracao_minutos === 60) return "1h";
   return "outros";
 }
 
@@ -276,7 +278,7 @@ function LicencasPage() {
   }, [rows]);
 
   const bucketCounts = useMemo(() => {
-    const c: Record<string, number> = { teste: 0, "1h": 0, "7d": 0, "30d": 0, "1ano": 0, outros: 0 };
+    const c: Record<string, number> = { teste: 0, "1d": 0, "30d": 0, "60d": 0, "90d": 0, "1ano": 0, outros: 0 };
     bucketOfId.forEach((b) => {
       c[b] = (c[b] ?? 0) + 1;
     });
@@ -792,9 +794,10 @@ type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number
 
 const LICENSE_PRESETS: Preset[] = [
   { label: "Teste 1 hora", kind: "teste", minutos: 60 },
-  { label: "Premium 1 hora", kind: "premium", dias: 0, minutos: 60 },
-  { label: "Premium 7 dias", kind: "premium", dias: 7 },
+  { label: "Premium 1 dia", kind: "premium", dias: 1 },
   { label: "Premium 30 dias", kind: "premium", dias: 30 },
+  { label: "Premium 60 dias", kind: "premium", dias: 60 },
+  { label: "Premium 90 dias", kind: "premium", dias: 90 },
   { label: "Premium 1 ano", kind: "premium", dias: 365 },
 ];
 

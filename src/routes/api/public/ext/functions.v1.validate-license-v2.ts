@@ -113,7 +113,10 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         if (expira_em && new Date(expira_em).getTime() < Date.now()) {
           await sb.from("licencas").update({ status: "expirada" }).eq("id", lic.id);
           return new Response(
-            JSON.stringify({ status: "expired", message: "Licença expirada" }),
+            JSON.stringify({
+              status: "expired",
+              message: "Seus dias de extensão acabaram. Renove sua licença para continuar usando o MR Sem Limites.",
+            }),
             { status: 200, headers: cors },
           );
         }
