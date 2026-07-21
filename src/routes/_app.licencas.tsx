@@ -739,6 +739,11 @@ function LicencasPage() {
                       >
                         <CalendarPlus className="size-4" /> Renovar
                       </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setEditarOf(rows.find((r) => r.id === l.id) ?? null)}
+                      >
+                        <Pencil className="size-4" /> Editar
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       {l.status === "revogada" || l.status === "bloqueada" ? (
                         <DropdownMenuItem onClick={() => reativar(l.id)}>
