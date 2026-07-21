@@ -93,7 +93,7 @@ type LicencaRow = {
   clientes?: { nome: string | null } | null;
 };
 
-type ViewStatus = "ativa" | "expirada" | "revogada";
+type ViewStatus = "ativa" | "expirada" | "revogada" | "bloqueada";
 
 type License = {
   id: string;
