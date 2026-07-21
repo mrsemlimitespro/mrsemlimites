@@ -395,3 +395,384 @@ function VideoReleaseCard({ isAdmin }: { isAdmin: boolean }) {
     </Card>
   );
 }
+
+// =====================================================================
+// Status strip da extensão instalada — mostra chips arrastáveis
+// com estado ativo/uso/expiração/dispositivos por licença do usuário.
+// =====================================================================
+
+type LicencaResumo = {
+  id: string;
+  chave: string;
+  status: string;
+  tipo: string;
+  expira_em: string | null;
+  ultimo_acesso: string | null;
+  device_id: string | null;
+  max_dispositivos: number | null;
+  dispositivos: number;
+};
+
+function ExtensionStatusStrip() {
+  const [loading, setLoading] = useState(true);
+  const [licencas, setLicencas] = useState<LicencaResumo[]>([]);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const dragState = useRef<{ down: boolean; startX: number; startScroll: number; moved: boolean }>({
+    down: false,
+    startX: 0,
+    startScroll: 0,
+    moved: false,
+  });
+  const [tick, setTick] = useState(0);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data: userRes } = await supabase.auth.getUser();
+      const user = userRes?.user;
+      if (!user) {
+        setLicencas([]);
+        return;
+      }
+      // Busca licenças ligadas ao email do usuário logado.
+      const { data } = await (supabase as any)
+        .from("licencas")
+        .select(
+          "id, chave, status, tipo, expira_em, ultimo_acesso, device_id, max_dispositivos, email, cliente_id",
+        )
+        .or(`email.eq.${user.email},cliente_id.eq.${user.id}`)
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      const rows = (data ?? []) as any[];
+      const ids = rows.map((r) => r.id);
+      let devMap: Record<string, number> = {};
+      if (ids.length) {
+        const { data: devs } = await (supabase as any)
+          .from("licenca_dispositivos")
+          .select("licenca_id")
+          .in("licenca_id", ids);
+        for (const d of devs ?? []) {
+          devMap[d.licenca_id] = (devMap[d.licenca_id] ?? 0) + 1;
+        }
+      }
+      setLicencas(
+        rows.map((r) => ({
+          id: r.id,
+          chave: r.chave,
+          status: r.status,
+          tipo: r.tipo,
+          expira_em: r.expira_em,
+          ultimo_acesso: r.ultimo_acesso,
+          device_id: r.device_id,
+          max_dispositivos: r.max_dispositivos,
+          dispositivos: devMap[r.id] ?? 0,
+        })),
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  // Atualiza contadores de tempo a cada 30s para não travar.
+  useEffect(() => {
+    const t = window.setInterval(() => setTick((v) => v + 1), 30_000);
+    return () => window.clearInterval(t);
+  }, []);
+  void tick;
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    dragState.current = {
+      down: true,
+      startX: e.clientX,
+      startScroll: el.scrollLeft,
+      moved: false,
+    };
+    el.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const s = dragState.current;
+    if (!s.down) return;
+    const el = scrollerRef.current;
+    if (!el) return;
+    const dx = e.clientX - s.startX;
+    if (Math.abs(dx) > 4) s.moved = true;
+    el.scrollLeft = s.startScroll - dx;
+  };
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    dragState.current.down = false;
+    try {
+      scrollerRef.current?.releasePointerCapture(e.pointerId);
+    } catch {
+      /* noop */
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex gap-2 overflow-hidden">
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="h-16 w-40 shrink-0 animate-pulse rounded-2xl bg-muted/30"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (!licencas.length) {
+    return (
+      <Card className="glass border-border/60">
+        <CardContent className="flex items-center gap-3 p-4 text-sm text-muted-foreground">
+          <ShieldAlert className="size-4 text-amber-400" />
+          Nenhuma licença ativa vinculada a este usuário ainda.
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between px-1">
+        <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Status da extensão
+        </div>
+        <div className="text-[11px] text-muted-foreground/70">
+          Arraste para ver mais →
+        </div>
+      </div>
+
+      {licencas.map((lic) => (
+        <LicencaChipsRow
+          key={lic.id}
+          licenca={lic}
+          scrollerRef={scrollerRef}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+        />
+      ))}
+    </div>
+  );
+}
+
+function LicencaChipsRow({
+  licenca,
+  scrollerRef,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+}: {
+  licenca: LicencaResumo;
+  scrollerRef: React.MutableRefObject<HTMLDivElement | null>;
+  onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
+  onPointerMove: (e: React.PointerEvent<HTMLDivElement>) => void;
+  onPointerUp: (e: React.PointerEvent<HTMLDivElement>) => void;
+}) {
+  const expirou =
+    licenca.expira_em !== null && new Date(licenca.expira_em).getTime() < Date.now();
+  const ativa =
+    (licenca.status === "ativa" || licenca.status === "aguardando") && !expirou;
+
+  const ultimoAcessoMs = licenca.ultimo_acesso
+    ? Date.now() - new Date(licenca.ultimo_acesso).getTime()
+    : null;
+  const emUso = ultimoAcessoMs !== null && ultimoAcessoMs < 5 * 60_000;
+
+  const chips: Array<{
+    key: string;
+    icon: JSX.Element;
+    label: string;
+    value: string;
+    tone: "ok" | "warn" | "bad" | "info";
+  }> = [];
+
+  // Status
+  chips.push({
+    key: "status",
+    icon: ativa ? <ShieldCheck className="size-4" /> : <ShieldAlert className="size-4" />,
+    label: "Extensão",
+    value: ativa ? "Ativa" : expirou ? "Expirada" : "Inativa",
+    tone: ativa ? "ok" : "bad",
+  });
+
+  // Em uso
+  chips.push({
+    key: "uso",
+    icon: emUso ? <Radio className="size-4" /> : <Activity className="size-4" />,
+    label: "Uso agora",
+    value: emUso
+      ? "Em uso"
+      : ultimoAcessoMs !== null
+        ? `${formatRelativeShort(ultimoAcessoMs)} atrás`
+        : "Sem acesso",
+    tone: emUso ? "ok" : "info",
+  });
+
+  // Tempo até vencer
+  if (licenca.expira_em) {
+    const restMs = new Date(licenca.expira_em).getTime() - Date.now();
+    const restStr = restMs > 0 ? formatRelativeShort(restMs) : "Venceu";
+    const tone: "ok" | "warn" | "bad" =
+      restMs <= 0
+        ? "bad"
+        : restMs < 24 * 3600_000
+          ? "warn"
+          : restMs < 7 * 86400_000
+            ? "warn"
+            : "ok";
+    chips.push({
+      key: "expira",
+      icon: <Clock className="size-4" />,
+      label: "Vence em",
+      value: restStr,
+      tone,
+    });
+  } else {
+    chips.push({
+      key: "expira",
+      icon: <Sparkles className="size-4" />,
+      label: "Validade",
+      value: "Vitalícia",
+      tone: "ok",
+    });
+  }
+
+  // Tipo / plano
+  chips.push({
+    key: "tipo",
+    icon: <Sparkles className="size-4" />,
+    label: "Plano",
+    value: licenca.tipo === "teste" ? "Teste" : "Premium",
+    tone: licenca.tipo === "teste" ? "warn" : "ok",
+  });
+
+  // Dispositivos
+  chips.push({
+    key: "dev",
+    icon: <Monitor className="size-4" />,
+    label: "Dispositivos",
+    value: `${licenca.dispositivos}/${licenca.max_dispositivos ?? 1}`,
+    tone:
+      licenca.max_dispositivos && licenca.dispositivos > licenca.max_dispositivos
+        ? "bad"
+        : "info",
+  });
+
+  // Último acesso data
+  if (licenca.ultimo_acesso) {
+    chips.push({
+      key: "ult",
+      icon: <CalendarClock className="size-4" />,
+      label: "Último acesso",
+      value: new Date(licenca.ultimo_acesso).toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      tone: "info",
+    });
+  }
+
+  // Chave mascarada
+  chips.push({
+    key: "chave",
+    icon: <KeyRound className="size-4" />,
+    label: "Licença",
+    value: maskKey(licenca.chave),
+    tone: "info",
+  });
+
+  return (
+    <div className="relative mb-3">
+      <div
+        ref={scrollerRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        className={cn(
+          "flex snap-x snap-mandatory gap-2 overflow-x-auto pb-2",
+          "[scrollbar-width:thin] cursor-grab active:cursor-grabbing select-none",
+        )}
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        {chips.map((c) => (
+          <StatusChip key={c.key} {...c} />
+        ))}
+      </div>
+      <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-background to-transparent" />
+    </div>
+  );
+}
+
+function StatusChip({
+  icon,
+  label,
+  value,
+  tone,
+}: {
+  icon: JSX.Element;
+  label: string;
+  value: string;
+  tone: "ok" | "warn" | "bad" | "info";
+}) {
+  const toneClass =
+    tone === "ok"
+      ? "border-emerald-400/30 text-emerald-200 bg-emerald-500/10"
+      : tone === "warn"
+        ? "border-amber-400/30 text-amber-200 bg-amber-500/10"
+        : tone === "bad"
+          ? "border-rose-400/30 text-rose-200 bg-rose-500/10"
+          : "border-border/60 text-foreground/80 bg-muted/20";
+
+  return (
+    <div
+      className={cn(
+        "glass shrink-0 snap-start rounded-2xl border px-3 py-2",
+        "min-w-[148px] flex items-center gap-2.5",
+        toneClass,
+      )}
+    >
+      <div className="grid size-8 place-items-center rounded-xl bg-background/40">
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <div className="text-[10px] font-semibold uppercase tracking-wider opacity-70">
+          {label}
+        </div>
+        <div className="truncate text-sm font-semibold">{value}</div>
+      </div>
+    </div>
+  );
+}
+
+function maskKey(key: string): string {
+  if (!key) return "—";
+  if (key.length <= 8) return key;
+  return `${key.slice(0, 4)}…${key.slice(-4)}`;
+}
+
+function formatRelativeShort(ms: number): string {
+  const abs = Math.abs(ms);
+  const s = Math.floor(abs / 1000);
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ${m % 60}min`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d}d ${h % 24}h`;
+  const mo = Math.floor(d / 30);
+  if (mo < 12) return `${mo}mês${mo > 1 ? "es" : ""}`;
+  const y = Math.floor(d / 365);
+  return `${y}ano${y > 1 ? "s" : ""}`;
+}
