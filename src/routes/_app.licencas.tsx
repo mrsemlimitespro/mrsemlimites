@@ -781,6 +781,11 @@ function LicencasPage() {
         onOpenChange={(v) => !v && setRenovarOf(null)}
         onSaved={reload}
       />
+      <EditarLicencaModal
+        licenca={editarOf}
+        onOpenChange={(v) => !v && setEditarOf(null)}
+        onSaved={reload}
+      />
       <BulkRenovarModal
         open={bulkRenovarOpen}
         ids={Array.from(selected)}
