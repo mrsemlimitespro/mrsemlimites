@@ -19,6 +19,7 @@ import {
   Send,
   MessageCircle,
   Mail,
+  Pencil,
 } from "lucide-react";
 
 import { toast } from "sonner";
