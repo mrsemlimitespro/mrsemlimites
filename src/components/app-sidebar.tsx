@@ -51,6 +51,7 @@ const revendedorItems: NavItem[] = [
   { title: "Painel", url: "/dashboard", icon: LayoutDashboard },
   { title: "Licenças", url: "/licencas", icon: KeyRound },
   { title: "Clientes", url: "/clientes", icon: Users },
+  { title: "Revendas", url: "/revendedor", icon: Store },
   { title: "Créditos", url: "/creditos", icon: Coins },
   { title: "Aulas", url: "/aulas", icon: GraduationCap },
 ];
