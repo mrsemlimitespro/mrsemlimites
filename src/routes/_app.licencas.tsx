@@ -775,6 +775,12 @@ function StatusPill({ status }: { status: License["status"] }) {
         bg: "color-mix(in oklab, var(--destructive) 22%, transparent)",
         text: "oklch(0.88 0.16 25)",
       },
+      bloqueada: {
+        label: "BLOQUEADA",
+        color: "var(--destructive)",
+        bg: "color-mix(in oklab, var(--destructive) 28%, transparent)",
+        text: "oklch(0.9 0.18 25)",
+      },
     };
   const s = map[status];
   return (
