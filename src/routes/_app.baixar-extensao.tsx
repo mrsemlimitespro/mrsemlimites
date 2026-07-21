@@ -588,7 +588,7 @@ function LicencaChipsRow({
 
   const chips: Array<{
     key: string;
-    icon: JSX.Element;
+    icon: React.ReactNode;
     label: string;
     value: string;
     tone: "ok" | "warn" | "bad" | "info";
@@ -706,7 +706,7 @@ function LicencaChipsRow({
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         {chips.map((c) => (
-          <StatusChip key={c.key} {...c} />
+          <StatusChip icon={c.icon} label={c.label} value={c.value} tone={c.tone} key={c.key} />
         ))}
       </div>
       <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-background to-transparent" />
@@ -720,7 +720,7 @@ function StatusChip({
   value,
   tone,
 }: {
-  icon: JSX.Element;
+  icon: React.ReactNode;
   label: string;
   value: string;
   tone: "ok" | "warn" | "bad" | "info";
