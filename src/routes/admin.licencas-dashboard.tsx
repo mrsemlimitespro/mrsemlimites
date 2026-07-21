@@ -2,7 +2,30 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Activity, ShieldAlert, ShieldCheck, ShieldX, Smartphone, TrendingUp, KeyRound, RotateCcw } from "lucide-react";
+import { Activity, ShieldAlert, ShieldCheck, ShieldX, Smartphone, TrendingUp, KeyRound, RotateCcw, Bug } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
+
+type TamperEvent = {
+  id: string;
+  licenca_id: string;
+  tipo: string;
+  mensagem: string | null;
+  device_id: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  licencas?: { chave: string | null; email: string | null } | null;
+};
+
+async function fetchTamperEvents(): Promise<TamperEvent[]> {
+  const { data } = await supabase
+    .from("licencas_eventos")
+    .select("id, licenca_id, tipo, mensagem, device_id, metadata, created_at, licencas:licenca_id(chave, email)")
+    .like("tipo", "tamper:%")
+    .order("created_at", { ascending: false })
+    .limit(20);
+  return (data ?? []) as TamperEvent[];
+}
 
 export const Route = createFileRoute("/admin/licencas-dashboard")({
   component: LicencasDashboard,
