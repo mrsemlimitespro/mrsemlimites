@@ -83,7 +83,6 @@ async function fetchMetrics(): Promise<Metrics> {
 
 function LicencasDashboard() {
   const { data, isLoading } = useQuery({ queryKey: ["licencas-dashboard"], queryFn: fetchMetrics });
-  const { data: data, isLoading } = useQuery({ queryKey: ["licencas-dashboard"], queryFn: fetchMetrics });
   const { data: tampers = [] } = useQuery({ queryKey: ["licencas-tamper-events"], queryFn: fetchTamperEvents, refetchInterval: 15_000 });
   const qc = useQueryClient();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
