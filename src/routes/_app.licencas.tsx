@@ -794,9 +794,10 @@ type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number
 
 const LICENSE_PRESETS: Preset[] = [
   { label: "Teste 1 hora", kind: "teste", minutos: 60 },
-  { label: "Premium 1 hora", kind: "premium", dias: 0, minutos: 60 },
-  { label: "Premium 7 dias", kind: "premium", dias: 7 },
+  { label: "Premium 1 dia", kind: "premium", dias: 1 },
   { label: "Premium 30 dias", kind: "premium", dias: 30 },
+  { label: "Premium 60 dias", kind: "premium", dias: 60 },
+  { label: "Premium 90 dias", kind: "premium", dias: 90 },
   { label: "Premium 1 ano", kind: "premium", dias: 365 },
 ];
 
