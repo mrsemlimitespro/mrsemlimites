@@ -3,7 +3,7 @@ import { lazy, Suspense } from "react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { InnerPillMenu } from "@/components/inner-pill-menu";
-import { MobileFloatingNav } from "@/components/mobile-floating-nav";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { TopBar } from "@/components/top-bar";
 import { FirePromosButton } from "@/components/fire-promos-button";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
@@ -64,7 +64,7 @@ function AppLayout() {
       <WhatsappZapButton />
       <InstagramFollowButton />
       <InnerPillMenu />
-      <MobileFloatingNav />
+      <MobileBottomNav />
       <PwaInstallPrompt />
       <WatermarkFooter />
     </div>

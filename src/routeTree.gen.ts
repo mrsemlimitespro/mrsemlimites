@@ -46,7 +46,10 @@ import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppPacksRouteImport } from './routes/_app.packs'
 import { Route as AppMinhaContaRouteImport } from './routes/_app.minha-conta'
+import { Route as AppLojaRouteImport } from './routes/_app.loja'
 import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
+import { Route as AppGestaoRouteImport } from './routes/_app.gestao'
+import { Route as AppFerramentasRouteImport } from './routes/_app.ferramentas'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
 import { Route as AppClientesRouteImport } from './routes/_app.clientes'
@@ -261,9 +264,24 @@ const AppMinhaContaRoute = AppMinhaContaRouteImport.update({
   path: '/minha-conta',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLojaRoute = AppLojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppLicencasRoute = AppLicencasRouteImport.update({
   id: '/licencas',
   path: '/licencas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGestaoRoute = AppGestaoRouteImport.update({
+  id: '/gestao',
+  path: '/gestao',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFerramentasRoute = AppFerramentasRouteImport.update({
+  id: '/ferramentas',
+  path: '/ferramentas',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
@@ -441,7 +459,10 @@ export interface FileRoutesByFullPath {
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
   '/dashboard': typeof AppDashboardRoute
+  '/ferramentas': typeof AppFerramentasRoute
+  '/gestao': typeof AppGestaoRoute
   '/licencas': typeof AppLicencasRoute
+  '/loja': typeof AppLojaRoute
   '/minha-conta': typeof AppMinhaContaRoute
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
@@ -507,7 +528,10 @@ export interface FileRoutesByTo {
   '/clientes': typeof AppClientesRoute
   '/creditos': typeof AppCreditosRoute
   '/dashboard': typeof AppDashboardRoute
+  '/ferramentas': typeof AppFerramentasRoute
+  '/gestao': typeof AppGestaoRoute
   '/licencas': typeof AppLicencasRoute
+  '/loja': typeof AppLojaRoute
   '/minha-conta': typeof AppMinhaContaRoute
   '/packs': typeof AppPacksRouteWithChildren
   '/perfil': typeof AppPerfilRoute
@@ -577,7 +601,10 @@ export interface FileRoutesById {
   '/_app/clientes': typeof AppClientesRoute
   '/_app/creditos': typeof AppCreditosRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/ferramentas': typeof AppFerramentasRoute
+  '/_app/gestao': typeof AppGestaoRoute
   '/_app/licencas': typeof AppLicencasRoute
+  '/_app/loja': typeof AppLojaRoute
   '/_app/minha-conta': typeof AppMinhaContaRoute
   '/_app/packs': typeof AppPacksRouteWithChildren
   '/_app/perfil': typeof AppPerfilRoute
@@ -648,7 +675,10 @@ export interface FileRouteTypes {
     | '/clientes'
     | '/creditos'
     | '/dashboard'
+    | '/ferramentas'
+    | '/gestao'
     | '/licencas'
+    | '/loja'
     | '/minha-conta'
     | '/packs'
     | '/perfil'
@@ -714,7 +744,10 @@ export interface FileRouteTypes {
     | '/clientes'
     | '/creditos'
     | '/dashboard'
+    | '/ferramentas'
+    | '/gestao'
     | '/licencas'
+    | '/loja'
     | '/minha-conta'
     | '/packs'
     | '/perfil'
@@ -783,7 +816,10 @@ export interface FileRouteTypes {
     | '/_app/clientes'
     | '/_app/creditos'
     | '/_app/dashboard'
+    | '/_app/ferramentas'
+    | '/_app/gestao'
     | '/_app/licencas'
+    | '/_app/loja'
     | '/_app/minha-conta'
     | '/_app/packs'
     | '/_app/perfil'
@@ -1131,11 +1167,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMinhaContaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/loja': {
+      id: '/_app/loja'
+      path: '/loja'
+      fullPath: '/loja'
+      preLoaderRoute: typeof AppLojaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/licencas': {
       id: '/_app/licencas'
       path: '/licencas'
       fullPath: '/licencas'
       preLoaderRoute: typeof AppLicencasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/gestao': {
+      id: '/_app/gestao'
+      path: '/gestao'
+      fullPath: '/gestao'
+      preLoaderRoute: typeof AppGestaoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ferramentas': {
+      id: '/_app/ferramentas'
+      path: '/ferramentas'
+      fullPath: '/ferramentas'
+      preLoaderRoute: typeof AppFerramentasRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/dashboard': {
@@ -1363,7 +1420,10 @@ interface AppRouteChildren {
   AppClientesRoute: typeof AppClientesRoute
   AppCreditosRoute: typeof AppCreditosRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppFerramentasRoute: typeof AppFerramentasRoute
+  AppGestaoRoute: typeof AppGestaoRoute
   AppLicencasRoute: typeof AppLicencasRoute
+  AppLojaRoute: typeof AppLojaRoute
   AppMinhaContaRoute: typeof AppMinhaContaRoute
   AppPacksRoute: typeof AppPacksRouteWithChildren
   AppPerfilRoute: typeof AppPerfilRoute
@@ -1381,7 +1441,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppClientesRoute: AppClientesRoute,
   AppCreditosRoute: AppCreditosRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppFerramentasRoute: AppFerramentasRoute,
+  AppGestaoRoute: AppGestaoRoute,
   AppLicencasRoute: AppLicencasRoute,
+  AppLojaRoute: AppLojaRoute,
   AppMinhaContaRoute: AppMinhaContaRoute,
   AppPacksRoute: AppPacksRouteWithChildren,
   AppPerfilRoute: AppPerfilRoute,
@@ -1497,13 +1560,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

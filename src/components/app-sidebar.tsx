@@ -56,6 +56,11 @@ const revendedorItems: NavItem[] = [
   { title: "Aulas", url: "/aulas", icon: GraduationCap },
 ];
 
+// Só admin: gestão global dos revendedores cadastrados
+const adminItems: NavItem[] = [
+  { title: "Revendedores", url: "/admin/revendedores-gestao", icon: Store },
+];
+
 type FooterItem = NavItem | { title: string; action: "logout"; icon: IconType };
 
 const authedFooterItems: FooterItem[] = [
@@ -93,6 +98,7 @@ export function AppSidebar() {
   // Cliente final não enxerga funções de revendedor (Painel/Licenças/Clientes/Créditos).
   const primaryItems: NavItem[] = (() => {
     if (authed !== true) return publicItems;
+    if (role === "admin") return [...publicItems, ...revendedorItems, ...adminItems];
     if (isPrivilegedRole(role)) return [...publicItems, ...revendedorItems];
     // cliente ou role ainda carregando: só conteúdo público + Aulas
     return [...publicItems, ...clienteItems];

@@ -1,84 +1,84 @@
-# Fase 4 — Comunicação + Revendas + Portal do Cliente
+# Reorganização Mobile-First + Aba Revendedores + PWA
 
-Escopo grande. Divido em blocos independentes que não tocam SDK, checkout, APIs públicas, prompts/agents/packs/loja, tema, layout ou rotas existentes. Só **adiciono** rotas novas, tabelas novas (todas nullable/opt-in) e um serviço central de email.
+Escopo cirúrgico: só toca navegação, agrupamento visual e a nova tela de Revendedores. Todas as rotas, fluxos, licenças, checkout, extensão, login e permissões continuam iguais — só mudam como o usuário chega até elas no mobile.
 
-## 1. Provider de email (Resend + arquitetura plugável)
+## 1. Nova Bottom Nav (5 grupos, sem scroll horizontal)
 
-Novo módulo `src/lib/email/` com interface `EmailProvider`:
-- `resend.ts` (padrão, via connector Resend ou secret `RESEND_API_KEY`)
-- stubs vazios para `smtp.ts`, `sendgrid.ts`, `ses.ts`, `mailgun.ts` (contrato pronto, implementação futura)
-- `index.ts` seleciona provider via `EMAIL_PROVIDER` env (default `resend`)
+Reescrever `src/components/mobile-bottom-nav.tsx` com exatamente 5 abas fixas (flex-1, sem overflow):
 
-Configuração: peço ao usuário aprovar Resend via `standard_connectors--connect` OU salvar `RESEND_API_KEY` via `add_secret`. Enquanto não configurado, envios ficam em fila com status `pending_config` — não quebra nada.
+| Aba | Rota-hub | Agrupa |
+|---|---|---|
+| Início | `/` | Home |
+| Ferramentas | `/ferramentas` (nova) | Agents, Packs, Prompts, Extensão |
+| Loja | `/loja` (nova) | Loja, Meus Clientes*, Meu Estoque*, Créditos Lovable, Comprar Chaves |
+| Gestão | `/gestao` (nova) | Clientes, Licenças, **Revendedores (novo, admin-only)** |
+| Perfil | `/perfil` | Perfil, Aulas, Créditos, Configurações, Notificações |
 
-## 2. Tabelas novas (migração única)
+\*"Meus Clientes" e "Meu Estoque" já existem hoje dentro da Loja; permanecem como sub-abas.
 
-Todas nullable, todas com GRANT + RLS:
+O `matchTab` marca a aba ativa quando a rota atual é o hub OU qualquer rota agrupada nele (ex: `/licencas`, `/clientes`, `/admin/revendedores-gestao` → aba Gestão ativa).
 
-- `email_templates` — id, chave (unique: `licenca_criada`, `licenca_renovada`, `licenca_reenviada`, `licenca_premium`, `licenca_reativada`, `licenca_movida`, `compra_aprovada`, `pagamento_recusado`, `expiracao_7d`, `expiracao_1d`, `promocao`), assunto, html, texto, variaveis jsonb, ativo, updated_at. Seed com 11 templates padrão em português.
-- `email_queue` — id, template_chave, destinatario, assunto, html, variables, status (`pending|sending|sent|failed`), attempts, last_error, scheduled_for, sent_at, cliente_id, licenca_id, revendedor_id, metadata.
-- `email_logs` — id, queue_id, evento (`queued|sent|failed|bounced|opened|clicked`), detalhes jsonb, created_at.
-- `comissoes` — id, revendedor_id, payment_id, licenca_id, cliente_id, valor, percentual, status (`pendente|pago|cancelado`), pago_em, created_at.
+## 2. Hubs = páginas com sub-navegação horizontal
 
-Trigger `tg_licenca_email` em `licencas` (AFTER INSERT/UPDATE): enfileira email do template certo conforme transição (criada/renovada/reativada/premium/movida).
+Cada hub novo (`/ferramentas`, `/loja`, `/gestao`) é uma rota TanStack simples que renderiza um componente `<HubTabs />` com abas horizontais roláveis (padrão já usado hoje na Loja). Cada aba renderiza o **conteúdo da rota original re-exportado** — não duplica lógica:
 
-Trigger `tg_pagamento_comissao` em `payment_transactions` (após aprovado): calcula comissão via `revendedores.comissao_percentual` e insere em `comissoes`.
+```
+src/routes/_app.ferramentas.tsx   → tabs: Agents | Packs | Prompts | Extensão
+src/routes/_app.loja.tsx          → tabs: Loja | Meus Clientes | Estoque | Créditos | Comprar Chaves
+src/routes/_app.gestao.tsx        → tabs: Clientes | Licenças | Revendedores (admin)
+```
 
-RPC `enfileirar_email(_template, _destinatario, _variables, _licenca_id?, _cliente_id?)`.
-RPC `reenviar_licenca(_licenca_id)` — recarrega variáveis e enfileira `licenca_reenviada`, grava audit.
+As rotas antigas (`/agents`, `/packs`, `/prompts`, `/licencas`, `/clientes`, etc.) **continuam existindo** para deep-links, sidebar desktop e links internos. Os hubs são atalhos mobile — a URL da aba ativa reflete a sub-rota real (`?tab=agents` ou navegação direta) pra preservar back button e refresh.
 
-## 3. Worker de envio
+## 3. Aba Revendedores (admin-only, dentro de Gestão)
 
-Rota nova `src/routes/api/public/hooks/email-worker.ts` (POST):
-- verifica header `apikey` = anon key
-- pega até 20 emails `pending`, marca `sending`, renderiza template com variáveis, chama provider, marca `sent` ou incrementa `attempts` (máx 5 com backoff exponencial via `scheduled_for`).
-- registra em `email_logs`.
+Nova sub-aba `Revendedores` visível só para `role === "admin"`. Reusa a lógica que já existe em `/admin/revendedores-gestao`:
 
-Cron `pg_cron` a cada 1 min chamando esse endpoint (via `supabase--insert`).
+- Lista (nome, e-mail, status ativo/inativo)
+- Busca por e-mail
+- Botão "Novo revendedor" (mesmo modal atual → Magic Link)
+- Por revendedor: contagem de licenças/testes gerados + toggle bloquear/desbloquear
+- Deixa claro na UI: "Painel Revendedor" (rota `/revendedor`, visão dele) ≠ "Revendedores" (visão admin sobre todos)
 
-## 4. Portal do Cliente (`/minha-conta`)
+Se já existe conteúdo em `/admin/revendedores-gestao`, a aba renderiza o mesmo componente — não recria a tela do zero.
 
-Nova rota `src/routes/_app.minha-conta.tsx` (com sub-tabs, sem tocar navegação existente — acesso via link direto e card no perfil).
+## 4. Sidebar desktop (`app-sidebar.tsx`)
 
-Abas:
-- **Licenças** — lista licenças do cliente logado (via `cliente_id` = email do user), com Copiar / Baixar (txt) / Renovar (abre checkout) / Detalhes / Suporte / dias restantes / último acesso / dispositivo.
-- **Produtos** — produtos vinculados via `licenca_produtos` + acessos de packs/prompts/agents (leitura das tabelas existentes, sem alterá-las).
-- **Downloads** — extensão + manuais + assets ligados aos produtos.
-- **Pedidos** — `payment_transactions` do cliente.
-- **Histórico** — `licencas_eventos` + `email_logs` do cliente.
-- **Notificações** — `notificacoes` com destino user.
+Mantém itens individuais como hoje (desktop tem espaço). Só adiciona o item "Revendedores" no bloco admin apontando pra `/admin/revendedores-gestao`. Sem quebras.
 
-Design usa tokens existentes (`.glass`, `.icon-tile`, gradientes). Zero mudança de tema.
+## 5. Empty states
 
-## 5. Dashboard do Revendedor
+Substituir textos soltos ("Sem atividade ainda", "Nenhum registro ainda") por um componente `<EmptyState icon title description action />` reutilizável com ilustração leve (ícone lucide + gradiente do design system). Aplicar em: Agents (Atividade Recente), Packs (lista vazia), Prompts (histórico), Clientes (lista vazia), Notificações.
 
-Nova rota `src/routes/_app.revendedor.tsx` (só role revendedor): clientes, licenças ativas, vendas do mês, comissões (pago/pendente), receita, pendências, últimas 10 vendas, últimos 10 clientes. Só leitura via RPCs novas `revendedor_dashboard()` e `revendedor_comissoes()`.
+## 6. PWA polish
 
-## 6. Admin — Comunicação
+Manifest e ícones já existem (`public/manifest.webmanifest`, 192/512/maskable). Verificar:
+- `theme_color` e `background_color` batem com o dark atual (#0b0716 ✔)
+- Splash respeitando safe-area no iOS (`apple-touch-icon` no `__root.tsx` head)
+- Nenhum service worker ativo hoje que faça cache-first (regra Lovable) — só manifest-only, que é o correto pra "instalável"
+- Bottom nav respeita `env(safe-area-inset-bottom)` (já respeita)
 
-Nova rota `src/routes/admin.comunicacao.tsx`: fila, enviados, falhas (com botão reenviar), editor de templates (tabela `email_templates`), logs. Reusa componentes admin existentes.
+Nada de service worker novo — instalabilidade já funciona com manifest.
 
-Botão "Reenviar licença" nas telas de licença admin (`admin.licencas.tsx`, `admin.clientes.$id.tsx`) chama a RPC `reenviar_licenca`.
+## 7. O que NÃO muda
 
-## 7. Segurança / performance
+- Nenhuma rota antiga é removida
+- Nenhum componente de licença, checkout, extensão, anti-tamper, login é alterado
+- SDK da extensão, endpoints `/api/public/*`, banco: intocados
+- Design system (tokens, gradientes, glass) preservado
 
-- Templates renderizam apenas: nome, produto, chave da licença (últimos 4 chars mascaráveis? — mantenho chave completa pois é o próprio ativo do cliente), validade, status, link download, link extensão, link suporte. Nunca secrets, tokens, service role, device_id completo.
-- Fila desacoplada; retry com backoff; sem bloquear triggers de licença (só `INSERT` na fila).
-- Provider chamado apenas do worker server-side.
+## Arquivos
 
-## 8. Não muda
+**Novos:**
+- `src/routes/_app.ferramentas.tsx`
+- `src/routes/_app.loja.tsx`
+- `src/routes/_app.gestao.tsx`
+- `src/components/hub-tabs.tsx` (sub-nav horizontal reutilizável)
+- `src/components/empty-state.tsx`
 
-- Nenhum arquivo em `src/routes/api/public/ext/`, `src/routes/api/public/licenca/`, `src/routes/api/public/webhooks/`.
-- Nenhum arquivo do SDK (`extension-sdk/`).
-- Checkout, prompts, agents, packs, loja intactos.
-- `src/styles.css`, `tailwind`, tema — intactos.
-- Navegação (`app-sidebar.tsx`) — só adiciono link "Minha Conta" no menu do cliente autenticado (item novo, sem remover nada). Se preferir, deixo só acessível via `/perfil`.
+**Editados:**
+- `src/components/mobile-bottom-nav.tsx` (5 abas com matches expandidos)
+- `src/components/app-sidebar.tsx` (adiciona "Revendedores" no bloco admin)
+- 4–5 telas que hoje têm empty state solto (aplicar `<EmptyState />`)
 
-## Perguntas antes de codar
-
-1. **Provider de email** — posso usar Resend via connector Lovable (recomendado) ou você prefere que eu peça `RESEND_API_KEY` direto?
-2. **Comissão padrão** — quando `revendedores.comissao_percentual` for null, uso quantos %? (sugiro 30%)
-3. **"Minha Conta" na sidebar** — adiciono um ícone no rail lateral para clientes, ou deixo só via `/perfil`? (Você disse "não alterar navegação existente" — interpreto como não remover/reordenar; adicionar 1 item de cliente é OK?)
-4. **Templates iniciais** — OK eu escrever os 11 em português com identidade MR Lova, ou você quer fornecer o copy?
-
-Depois das respostas eu executo tudo em uma única leva (migração + arquivos).
+Confirma pra eu executar?
