@@ -39,7 +39,7 @@ export function HubTabs({ tabs, className }: HubTabsProps) {
         className,
       )}
     >
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {tabs.map((t) => {
           const active = isActive(t);
           const Icon = t.icon;
