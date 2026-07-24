@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, ShoppingBag, Sparkles, Library, User } from "lucide-react";
+import { Home, Wrench, ShoppingBag, LayoutGrid, User } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 import { cn } from "@/lib/utils";
@@ -12,39 +12,44 @@ type TabItem = {
   title: string;
   to: string;
   icon: IconType;
-  /** Rotas que também ativam esta aba (submenus internos). */
   matches: string[];
 };
 
 /**
- * Bottom Navigation unificado (Material Design + Human Interface Guidelines).
- * 5 abas principais que agrupam todas as áreas do app. Nenhuma rota foi removida —
- * apenas reagrupadas via `matches[]` para preservar toda a lógica existente.
+ * Bottom Navigation mobile-first — exatamente 5 abas, sem scroll horizontal.
+ * Cada aba agrupa múltiplas rotas via `matches[]`; toda navegação existente
+ * é preservada — só muda como o usuário chega até ela no mobile.
  */
 const items: TabItem[] = [
   { id: "home", title: "Início", to: "/", icon: Home, matches: ["/"] },
   {
+    id: "ferramentas",
+    title: "Ferramentas",
+    to: "/ferramentas",
+    icon: Wrench,
+    matches: ["/ferramentas", "/agents", "/packs", "/prompts", "/baixar-extensao"],
+  },
+  {
     id: "loja",
     title: "Loja",
-    to: "/creditos",
+    to: "/loja",
     icon: ShoppingBag,
-    matches: ["/creditos"],
+    matches: ["/loja", "/creditos", "/dashboard", "/checkout"],
   },
   {
-    id: "ia",
-    title: "IA",
-    to: "/prompts",
-    icon: Sparkles,
-    matches: ["/prompts", "/agents", "/packs"],
+    id: "gestao",
+    title: "Gestão",
+    to: "/gestao",
+    icon: LayoutGrid,
+    matches: ["/gestao", "/clientes", "/licencas", "/admin/revendedores-gestao", "/revendedor"],
   },
   {
-    id: "biblioteca",
-    title: "Biblioteca",
-    to: "/licencas",
-    icon: Library,
-    matches: ["/licencas", "/aulas", "/clientes"],
+    id: "perfil",
+    title: "Perfil",
+    to: "/perfil",
+    icon: User,
+    matches: ["/perfil", "/minha-conta", "/aulas"],
   },
-  { id: "perfil", title: "Perfil", to: "/perfil", icon: User, matches: ["/perfil"] },
 ];
 
 function matchTab(pathname: string, tab: TabItem): boolean {
@@ -66,7 +71,6 @@ export function MobileBottomNav() {
         paddingBottom: "env(safe-area-inset-bottom)",
         paddingLeft: "env(safe-area-inset-left)",
         paddingRight: "env(safe-area-inset-right)",
-        // Elevation sutil acima do conteúdo
         boxShadow: "0 -1px 0 0 oklch(1 0 0 / 4%), 0 -12px 40px -12px oklch(0 0 0 / 55%)",
       }}
     >
@@ -88,7 +92,6 @@ export function MobileBottomNav() {
                   active ? "text-primary-foreground" : "text-foreground/60 hover:text-foreground",
                 )}
               >
-                {/* Indicador ativo — pill translúcido no topo */}
                 <span
                   aria-hidden
                   className={cn(
@@ -113,7 +116,7 @@ export function MobileBottomNav() {
                 />
                 <span
                   className={cn(
-                    "text-[11px] font-medium leading-none tracking-tight",
+                    "text-[10.5px] font-medium leading-none tracking-tight",
                     active && "font-semibold",
                   )}
                 >
