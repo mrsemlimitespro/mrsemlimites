@@ -50,28 +50,28 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.3.1 (v20 - Final)",
+    version: "2.3.2 (v21 - Final)",
+    date: "05/08/2026",
+    filename: "mr-sem-limites-v21-final.zip",
+    downloadPath: currentExtensionAsset.url,
+    size: "688 KB",
+    latest: true,
+    changelog: [
+      "Visual: Bordas e brilho alterados para Azul Neon conforme solicitado.",
+      "Branding: Removido completamente 'Lovable' e 'LVB-' da interface.",
+      "Chaves: Modelo original (XXXXX-XXXXX-XXXXX-XXXXX) restaurado visualmente.",
+      "Correção: Backend sincronizado com o painel MR Sem Limites para evitar erros de entrada.",
+    ],
+  },
+  {
+    version: "2.3.1 (v20)",
     date: "05/08/2026",
     filename: "mr-sem-limites-v20-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "685 KB",
-    latest: true,
     changelog: [
-      "Visual: Bordas e brilho agora em Azul Neon (solicitação do usuário).",
-      "Branding: Removido completamente 'Lovable' e placeholder 'LVB-'.",
-      "Chaves: Placeholder e validação aceitam o formato original (XXXXX-XXXXX-XXXXX-XXXXX).",
-      "Estabilidade: Correção na validação de entrada para evitar erro de formato inválido.",
-    ],
-  },
-  {
-    version: "2.3.0 (v19)",
-    date: "05/08/2026",
-    filename: "mr-sem-limites-v19-final.zip",
-    downloadPath: currentExtensionAsset.url,
-    size: "682 KB",
-    changelog: [
-      "Retorno ao modelo de chave original.",
-      "Identidade Visual: Título atualizado para 'MR Sem Limites'.",
+      "Visual: Bordas e brilho em Azul Neon.",
+      "Branding: Removido 'Lovable' e placeholder 'LVB-'.",
     ],
   },
 ];
