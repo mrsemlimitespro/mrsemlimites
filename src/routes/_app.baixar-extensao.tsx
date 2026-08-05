@@ -50,22 +50,30 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.3.0 (v19 - Final)",
+    version: "2.3.1 (v20 - Final)",
+    date: "05/08/2026",
+    filename: "mr-sem-limites-v20-final.zip",
+    downloadPath: currentExtensionAsset.url,
+    size: "685 KB",
+    latest: true,
+    changelog: [
+      "Visual: Bordas e brilho agora em Azul Neon (solicitação do usuário).",
+      "Branding: Removido completamente 'Lovable' e placeholder 'LVB-'.",
+      "Chaves: Placeholder e validação aceitam o formato original (XXXXX-XXXXX-XXXXX-XXXXX).",
+      "Estabilidade: Correção na validação de entrada para evitar erro de formato inválido.",
+    ],
+  },
+  {
+    version: "2.3.0 (v19)",
     date: "05/08/2026",
     filename: "mr-sem-limites-v19-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "682 KB",
-    latest: true,
     changelog: [
-      "Retorno ao modelo de chave original (XXXXX-XXXXX-XXXXX-XXXXX).",
-      "Compatibilidade mantida com chaves que utilizam prefixo MR-.",
-      "Remoção total de referências a 'Lovable' no painel lateral da extensão.",
+      "Retorno ao modelo de chave original.",
       "Identidade Visual: Título atualizado para 'MR Sem Limites'.",
-      "Backend: Sincronização completa com o estoque nativo do painel.",
-      "Correção: Placeholder e mensagens de erro de formato agora seguem o padrão clássico.",
     ],
   },
-
 ];
 
 const VIDEO_BUCKET = "extension-releases";
