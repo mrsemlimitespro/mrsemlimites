@@ -50,22 +50,22 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.2.9 (v18 - Final)",
+    version: "2.3.0 (v19 - Final)",
     date: "05/08/2026",
-    filename: "mr-sem-limites-v18-final.zip",
+    filename: "mr-sem-limites-v19-final.zip",
     downloadPath: currentExtensionAsset.url,
-    size: "680 KB",
+    size: "682 KB",
     latest: true,
     changelog: [
-      "Identidade Visual: Removido 'Lovable ∞ PRO' do painel lateral.",
-      "Novo Modelo de Chave: Placeholder atualizado para MR-XXXXX-XXXXX-XXXXX.",
-      "Substituição Completa: Backend antigo removido e trocado pelo servidor MR Sem Limites.",
-      "Personalização: Nome e cores (Magenta/Pink) aplicados em toda a interface.",
-      "Validação Ativa: Integrado com o novo endpoint de licenças do painel.",
-      "Segurança: Ofuscação preservada com injeção de rotas oficiais.",
-      "Estabilidade: Build final v18 otimizada para o novo ecossistema.",
+      "Retorno ao modelo de chave original (XXXXX-XXXXX-XXXXX-XXXXX).",
+      "Compatibilidade mantida com chaves que utilizam prefixo MR-.",
+      "Remoção total de referências a 'Lovable' no painel lateral da extensão.",
+      "Identidade Visual: Título atualizado para 'MR Sem Limites'.",
+      "Backend: Sincronização completa com o estoque nativo do painel.",
+      "Correção: Placeholder e mensagens de erro de formato agora seguem o padrão clássico.",
     ],
   },
+
 ];
 
 const VIDEO_BUCKET = "extension-releases";
