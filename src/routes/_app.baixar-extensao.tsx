@@ -52,18 +52,18 @@ const RELEASES: ExtensionRelease[] = [
   {
     version: "2.2.9 (v18 - Final)",
     date: "05/08/2026",
-    filename: "mr-sem-limites-v17-final.zip",
+    filename: "mr-sem-limites-v18-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "680 KB",
     latest: true,
     changelog: [
+      "Identidade Visual: Removido 'Lovable ∞ PRO' do painel lateral.",
+      "Novo Modelo de Chave: Placeholder atualizado para MR-XXXXX-XXXXX-XXXXX.",
       "Substituição Completa: Backend antigo removido e trocado pelo servidor MR Sem Limites.",
-      "Identidade Visual: Nome e cores (Magenta/Pink) aplicados em toda a interface.",
-      "Personalização: Removida marca 'Lovabre Verde', substituída por 'MR Sem Limites'.",
-      "Novo Modelo de Chave: Entrada de licença padronizada com o novo layout do sistema.",
+      "Personalização: Nome e cores (Magenta/Pink) aplicados em toda a interface.",
       "Validação Ativa: Integrado com o novo endpoint de licenças do painel.",
       "Segurança: Ofuscação preservada com injeção de rotas oficiais.",
-      "Estabilidade: Build final v17 otimizada para o novo ecossistema.",
+      "Estabilidade: Build final v18 otimizada para o novo ecossistema.",
     ],
   },
 ];
