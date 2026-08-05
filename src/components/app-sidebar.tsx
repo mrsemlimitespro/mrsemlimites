@@ -13,6 +13,7 @@ import {
   Bot,
   Wand2,
   Store,
+  Server,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { toast } from "sonner";
