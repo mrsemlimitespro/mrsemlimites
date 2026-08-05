@@ -22,6 +22,7 @@ import {
   KeySquare,
   Blocks,
   Home as HomeIcon,
+  Server,
 } from "lucide-react";
 import { useModules } from "@/lib/admin/use-modules";
 
