@@ -1093,6 +1093,7 @@ function ChaveTesteModal({
                 value={chave}
                 onChange={(e) => setChave(e.target.value)}
                 placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+
                 className="font-mono"
               />
               <button

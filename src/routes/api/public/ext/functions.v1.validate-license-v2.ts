@@ -48,17 +48,18 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           );
         }
 
-        // Validação de formato: MR-XXXXX-XXXXX-XXXXX
-        const keyPattern = /^MR-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$/;
+        // Validação de formato flexível: aceita MR- ou formato antigo XXXXX-XXXXX-XXXXX-XXXXX
+        const keyPattern = /^([A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|MR-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5})$/;
         if (!keyPattern.test(key)) {
           return new Response(
             JSON.stringify({ 
               status: "invalid", 
-              message: "Formato de licença inválido (Ex: MR-XXXXX-XXXXX-XXXXX)" 
+              message: "Formato de licença inválido" 
             }),
             { status: 200, headers: cors },
           );
         }
+
 
 
         const sb = createClient(
