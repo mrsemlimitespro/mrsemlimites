@@ -57,6 +57,7 @@ const RELEASES: ExtensionRelease[] = [
     size: "650 KB",
     latest: true,
     changelog: [
+      "Ativação Automática: O painel lateral agora abre automaticamente ao clicar no ícone da extensão.",
       "Integração Nativa: Backend configurado para mrsemlimites.lovable.app.",
       "Correção Estrutural: Manifest.json atualizado com permissões e domínios oficiais.",
       "Identidade Visual: Logo e nome MR Sem Limites aplicados com sucesso.",
