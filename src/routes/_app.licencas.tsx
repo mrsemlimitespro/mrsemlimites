@@ -68,8 +68,8 @@ import { RequireAuth } from "@/components/require-auth";
 export const Route = createFileRoute("/_app/licencas")({
   head: () => ({
     meta: [
-      { title: "Licenças — MR sem limites" },
-      { name: "description", content: "Gestão de licenças no MR sem limites." },
+      { title: "Licenças — MR Sem Limites" },
+      { name: "description", content: "Gestão de licenças no MR Sem Limites." },
     ],
   }),
   component: () => (
