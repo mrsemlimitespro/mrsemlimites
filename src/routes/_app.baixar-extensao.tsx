@@ -50,19 +50,19 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.2.8",
+    version: "2.2.8 (v17 - Final)",
     date: "05/08/2026",
-    filename: "mr-sem-limites-v17.zip",
+    filename: "mr-sem-limites-v17-final.zip",
     downloadPath: currentExtensionAsset.url,
-    size: "650 KB",
+    size: "680 KB",
     latest: true,
     changelog: [
-      "Ativação Automática: O painel lateral agora abre automaticamente ao clicar no ícone da extensão.",
-      "Integração Nativa: Backend configurado para mrsemlimites.lovable.app.",
-      "Correção Estrutural: Manifest.json atualizado com permissões e domínios oficiais.",
-      "Identidade Visual: Logo e nome MR Sem Limites aplicados com sucesso.",
-      "Segurança: Sistema anti-tamper e logs de integridade ativos.",
-      "Performance: Build v17 otimizada para navegadores baseados em Chromium.",
+      "Substituição Completa: Backend antigo removido e trocado pelo servidor MR Sem Limites.",
+      "Identidade Visual: Nome e cores (Magenta/Pink) aplicados em toda a interface.",
+      "Personalização: Removida marca 'Lovabre Verde', substituída por 'MR Sem Limites'.",
+      "Validação Ativa: Integrado com o novo endpoint de licenças do painel.",
+      "Segurança: Ofuscação preservada com injeção de rotas oficiais.",
+      "Estabilidade: Build final v17 otimizada para o novo ecossistema.",
     ],
   },
 ];
