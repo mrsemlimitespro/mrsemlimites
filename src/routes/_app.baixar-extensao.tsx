@@ -50,28 +50,28 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.3.2 (v21.1 - Hotfix)",
+    version: "2.3.3 (v21.2 - Rebuild)",
+    date: "05/08/2026",
+    filename: "mr-sem-limites-v21-final.zip",
+    downloadPath: currentExtensionAsset.url,
+    size: "690 KB",
+    latest: true,
+    changelog: [
+      "Hotfix Crítico: Corrigido erro de sintaxe nos nomes de funções internas que impedia a extensão de inicializar.",
+      "Forçar Abertura: Injetado comando para obrigar o Painel Lateral a abrir imediatamente ao clicar no ícone da extensão.",
+      "Visual: Refinamento do Azul Neon (#00f2ff) nas bordas com brilho aprimorado.",
+      "Limpeza: Removido definitivamente qualquer rastro de branding antigo.",
+    ],
+  },
+  {
+    version: "2.3.2 (v21.1)",
     date: "05/08/2026",
     filename: "mr-sem-limites-v21-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "688 KB",
-    latest: true,
     changelog: [
-      "Hotfix: Corrigido erro de sintaxe no arquivo background.js que impedia a extensão de abrir.",
-      "Visual: Bordas e brilho alterados para Azul Neon conforme solicitado.",
-      "Branding: Removido completamente 'Lovable' e 'LVB-' da interface.",
-      "Chaves: Modelo original (XXXXX-XXXXX-XXXXX-XXXXX) restaurado visualmente.",
-    ],
-  },
-  {
-    version: "2.3.1 (v20)",
-    date: "05/08/2026",
-    filename: "mr-sem-limites-v20-final.zip",
-    downloadPath: currentExtensionAsset.url,
-    size: "685 KB",
-    changelog: [
-      "Visual: Bordas e brilho em Azul Neon.",
-      "Branding: Removido 'Lovable' e placeholder 'LVB-'.",
+      "Visual: Bordas e brilho Azul Neon.",
+      "Branding: Remoção completa de termos antigos.",
     ],
   },
 ];
