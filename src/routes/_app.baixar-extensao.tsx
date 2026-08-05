@@ -50,7 +50,7 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.2.8 (v17 - Final)",
+    version: "2.2.9 (v18 - Final)",
     date: "05/08/2026",
     filename: "mr-sem-limites-v17-final.zip",
     downloadPath: currentExtensionAsset.url,

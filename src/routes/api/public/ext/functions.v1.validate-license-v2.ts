@@ -48,6 +48,18 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           );
         }
 
+        // Validação de formato: MR-XXXXX-XXXXX-XXXXX
+        const keyPattern = /^MR-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$/;
+        if (!keyPattern.test(key)) {
+          return new Response(
+            JSON.stringify({ 
+              status: "invalid", 
+              message: "Formato de licença inválido (Ex: MR-XXXXX-XXXXX-XXXXX)" 
+            }),
+            { status: 200, headers: cors },
+          );
+        }
+
         const sb = createClient(
           process.env.SUPABASE_URL!,
           process.env.SUPABASE_SERVICE_ROLE_KEY!,
