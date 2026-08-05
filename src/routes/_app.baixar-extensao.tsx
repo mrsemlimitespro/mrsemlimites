@@ -60,6 +60,7 @@ const RELEASES: ExtensionRelease[] = [
       "Substituição Completa: Backend antigo removido e trocado pelo servidor MR Sem Limites.",
       "Identidade Visual: Nome e cores (Magenta/Pink) aplicados em toda a interface.",
       "Personalização: Removida marca 'Lovabre Verde', substituída por 'MR Sem Limites'.",
+      "Novo Modelo de Chave: Entrada de licença padronizada com o novo layout do sistema.",
       "Validação Ativa: Integrado com o novo endpoint de licenças do painel.",
       "Segurança: Ofuscação preservada com injeção de rotas oficiais.",
       "Estabilidade: Build final v17 otimizada para o novo ecossistema.",
