@@ -50,17 +50,17 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.3.2 (v21 - Final)",
+    version: "2.3.2 (v21.1 - Hotfix)",
     date: "05/08/2026",
     filename: "mr-sem-limites-v21-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "688 KB",
     latest: true,
     changelog: [
+      "Hotfix: Corrigido erro de sintaxe no arquivo background.js que impedia a extensão de abrir.",
       "Visual: Bordas e brilho alterados para Azul Neon conforme solicitado.",
       "Branding: Removido completamente 'Lovable' e 'LVB-' da interface.",
       "Chaves: Modelo original (XXXXX-XXXXX-XXXXX-XXXXX) restaurado visualmente.",
-      "Correção: Backend sincronizado com o painel MR Sem Limites para evitar erros de entrada.",
     ],
   },
   {
