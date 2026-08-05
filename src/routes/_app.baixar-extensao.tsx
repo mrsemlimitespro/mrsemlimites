@@ -117,6 +117,9 @@ function InstallSteps() {
           <li>Ative o <strong>Modo desenvolvedor</strong> (canto superior direito).</li>
           <li>Clique em <strong>Carregar sem compactação</strong> e selecione a pasta descompactada.</li>
         </ol>
+        <div className="mt-4 rounded-lg bg-amber-500/10 p-3 text-[11px] leading-relaxed text-amber-200/80 border border-amber-500/20">
+          <strong>Atenção:</strong> Se a extensão não abrir ou der erro ao carregar, verifique se você selecionou a <strong>pasta raiz</strong> (que contém o arquivo manifest.json) e não uma pasta vazia ou o arquivo .zip diretamente.
+        </div>
       </CardContent>
     </Card>
   );
