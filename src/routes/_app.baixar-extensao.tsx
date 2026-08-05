@@ -26,7 +26,7 @@ import { playSfx } from "@/lib/sfx";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
-const currentExtensionAsset = { url: "/mr-sem-limites-2.2.7.zip" };
+import currentExtensionAsset from "@/assets/MR-Sem-Limites-v17.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
@@ -50,20 +50,18 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.2.7",
-    date: "13/07/2026",
-    filename: "mr-sem-limites-2.2.7.zip",
+    version: "2.2.8",
+    date: "05/08/2026",
+    filename: "mr-sem-limites-v17.zip",
     downloadPath: currentExtensionAsset.url,
-    size: "750 KB",
+    size: "650 KB",
     latest: true,
     changelog: [
-      "Build de produção protegida: JS minificado, mangled, comentários e código morto removidos (terser em modo module para background/lib e script para os demais)",
-      "Agora o ZIP descompacta em uma única pasta 'MR Sem Limites' — não bagunça mais os arquivos no diretório onde você extrair",
-      "Bolinha flutuante virou um quadrado com a logo em destaque (mesmo drag e mesma função de ativar/desativar)",
-      "Header do painel com nova logo em destaque também no canto direito, ao lado do Publish",
-      "Dashboard da extensão modernizado: 6 cards de ação (Corrigir/Refatorar/Melhorar/Otimizar/Segurança/Responsivo) com ícones coloridos e efeito glass premium",
-      "Removidas referências visíveis a 'LOV 3' — agora aparece 'MR Sem Limites' em todos os badges e status",
-      "Nada mudou nas funções: envio, anexos, licença, download e Publish continuam iguais",
+      "Integração completa: Novo backend MR Sem Limites configurado nativamente.",
+      "Identidade Visual: Logo e nome oficial MR Sem Limites aplicados em toda a interface.",
+      "Distribuição: Build otimizada v17 para performance máxima.",
+      "Segurança: Sistema anti-tamper integrado com logs silenciosos.",
+      "Conectividade: Endpoints de validação e relatórios de integridade apontando para o servidor atual.",
     ],
   },
 ];
