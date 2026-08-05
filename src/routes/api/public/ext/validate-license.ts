@@ -19,7 +19,6 @@ export const Route = createFileRoute("/api/public/ext/validate-license")({
           /* noop */
         }
         
-        // Conforme pedido: SEMPRE retorna status 'valid' independente da chave
         const response = {
           status: "valid",
           message: "Licença ativa",
