@@ -22,6 +22,7 @@ import {
   KeySquare,
   Blocks,
   Home as HomeIcon,
+  Server,
 } from "lucide-react";
 import { useModules } from "@/lib/admin/use-modules";
 
@@ -131,6 +132,7 @@ const specialLinks: SpecialLink[] = [
   { key: "ajustar-creditos", to: "/admin/ajustar-creditos", label: "Ajustar Créditos", icon: Coins, group: "Comercial" },
 
   // ⚙ Sistema
+  { key: "api-dashboard", to: "/admin/api-dashboard", label: "API de Controle", icon: Server, group: "Sistema" },
   { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks, group: "Sistema" },
   { key: "configuracoes", to: "/admin/configuracoes", label: "Configurações Gerais", icon: Settings2, group: "Sistema" },
   { key: "personalizacao", to: "/admin/personalizacao", label: "Aparência", icon: Palette, group: "Sistema" },

@@ -36,6 +36,7 @@ import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configura
 import { Route as AdminComunicacaoRouteImport } from './routes/admin.comunicacao'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
+import { Route as AdminApiDashboardRouteImport } from './routes/admin.api-dashboard'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
 import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
@@ -71,6 +72,8 @@ import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/publ
 import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
 import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
 import { Route as ApiPublicHooksEmailWorkerRouteImport } from './routes/api/public/hooks/email-worker'
+import { Route as ApiPublicExtValidateLicenseRouteImport } from './routes/api/public/ext/validate-license'
+import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public/ext/send-command'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
 import { Route as ApiPublicExtFunctionsV1ReportTamperRouteImport } from './routes/api/public/ext/functions.v1.report-tamper'
@@ -212,6 +215,11 @@ const AdminClientesRoute = AdminClientesRouteImport.update({
 const AdminBackupRoute = AdminBackupRouteImport.update({
   id: '/backup',
   path: '/backup',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApiDashboardRoute = AdminApiDashboardRouteImport.update({
+  id: '/api-dashboard',
+  path: '/api-dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAnimacoesRoute = AdminAnimacoesRouteImport.update({
@@ -396,6 +404,17 @@ const ApiPublicHooksEmailWorkerRoute =
     path: '/api/public/hooks/email-worker',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtValidateLicenseRoute =
+  ApiPublicExtValidateLicenseRouteImport.update({
+    id: '/api/public/ext/validate-license',
+    path: '/api/public/ext/validate-license',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtSendCommandRoute = ApiPublicExtSendCommandRouteImport.update({
+  id: '/api/public/ext/send-command',
+  path: '/api/public/ext/send-command',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
   ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
     id: '/api/public/ext/functions/v1/validate-license-v2',
@@ -473,6 +492,7 @@ export interface FileRoutesByFullPath {
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
+  '/admin/api-dashboard': typeof AdminApiDashboardRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/comunicacao': typeof AdminComunicacaoRoute
@@ -496,6 +516,8 @@ export interface FileRoutesByFullPath {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
+  '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -542,6 +564,7 @@ export interface FileRoutesByTo {
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
+  '/admin/api-dashboard': typeof AdminApiDashboardRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/comunicacao': typeof AdminComunicacaoRoute
@@ -566,6 +589,8 @@ export interface FileRoutesByTo {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
+  '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -615,6 +640,7 @@ export interface FileRoutesById {
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
+  '/admin/api-dashboard': typeof AdminApiDashboardRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/comunicacao': typeof AdminComunicacaoRoute
@@ -639,6 +665,8 @@ export interface FileRoutesById {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
+  '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -689,6 +717,7 @@ export interface FileRouteTypes {
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
+    | '/admin/api-dashboard'
     | '/admin/backup'
     | '/admin/clientes'
     | '/admin/comunicacao'
@@ -712,6 +741,8 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext/send-command'
+    | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -758,6 +789,7 @@ export interface FileRouteTypes {
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
+    | '/admin/api-dashboard'
     | '/admin/backup'
     | '/admin/clientes'
     | '/admin/comunicacao'
@@ -782,6 +814,8 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext/send-command'
+    | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -830,6 +864,7 @@ export interface FileRouteTypes {
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
+    | '/admin/api-dashboard'
     | '/admin/backup'
     | '/admin/clientes'
     | '/admin/comunicacao'
@@ -854,6 +889,8 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext/send-command'
+    | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -885,6 +922,8 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
+  ApiPublicExtSendCommandRoute: typeof ApiPublicExtSendCommandRoute
+  ApiPublicExtValidateLicenseRoute: typeof ApiPublicExtValidateLicenseRoute
   ApiPublicHooksEmailWorkerRoute: typeof ApiPublicHooksEmailWorkerRoute
   ApiPublicLicencaConfigRoute: typeof ApiPublicLicencaConfigRoute
   ApiPublicLicencaConsultaRoute: typeof ApiPublicLicencaConsultaRoute
@@ -1095,6 +1134,13 @@ declare module '@tanstack/react-router' {
       path: '/backup'
       fullPath: '/admin/backup'
       preLoaderRoute: typeof AdminBackupRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/api-dashboard': {
+      id: '/admin/api-dashboard'
+      path: '/api-dashboard'
+      fullPath: '/admin/api-dashboard'
+      preLoaderRoute: typeof AdminApiDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/animacoes': {
@@ -1342,6 +1388,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksEmailWorkerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/validate-license': {
+      id: '/api/public/ext/validate-license'
+      path: '/api/public/ext/validate-license'
+      fullPath: '/api/public/ext/validate-license'
+      preLoaderRoute: typeof ApiPublicExtValidateLicenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext/send-command': {
+      id: '/api/public/ext/send-command'
+      path: '/api/public/ext/send-command'
+      fullPath: '/api/public/ext/send-command'
+      preLoaderRoute: typeof ApiPublicExtSendCommandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/validate-license-v2': {
       id: '/api/public/ext/functions/v1/validate-license-v2'
       path: '/api/public/ext/functions/v1/validate-license-v2'
@@ -1473,6 +1533,7 @@ interface AdminRouteChildren {
   AdminResourceRoute: typeof AdminResourceRoute
   AdminAjustarCreditosRoute: typeof AdminAjustarCreditosRoute
   AdminAnimacoesRoute: typeof AdminAnimacoesRoute
+  AdminApiDashboardRoute: typeof AdminApiDashboardRoute
   AdminBackupRoute: typeof AdminBackupRoute
   AdminClientesRoute: typeof AdminClientesRouteWithChildren
   AdminComunicacaoRoute: typeof AdminComunicacaoRoute
@@ -1498,6 +1559,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminResourceRoute: AdminResourceRoute,
   AdminAjustarCreditosRoute: AdminAjustarCreditosRoute,
   AdminAnimacoesRoute: AdminAnimacoesRoute,
+  AdminApiDashboardRoute: AdminApiDashboardRoute,
   AdminBackupRoute: AdminBackupRoute,
   AdminClientesRoute: AdminClientesRouteWithChildren,
   AdminComunicacaoRoute: AdminComunicacaoRoute,
@@ -1531,6 +1593,8 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
+  ApiPublicExtSendCommandRoute: ApiPublicExtSendCommandRoute,
+  ApiPublicExtValidateLicenseRoute: ApiPublicExtValidateLicenseRoute,
   ApiPublicHooksEmailWorkerRoute: ApiPublicHooksEmailWorkerRoute,
   ApiPublicLicencaConfigRoute: ApiPublicLicencaConfigRoute,
   ApiPublicLicencaConsultaRoute: ApiPublicLicencaConsultaRoute,

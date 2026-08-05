@@ -13,6 +13,7 @@ import {
   Bot,
   Wand2,
   Store,
+  Server,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { toast } from "sonner";
@@ -59,6 +60,7 @@ const revendedorItems: NavItem[] = [
 // Só admin: gestão global dos revendedores cadastrados
 const adminItems: NavItem[] = [
   { title: "Revendedores", url: "/admin/revendedores-gestao", icon: Store },
+  { title: "API Control", url: "/admin/api-dashboard", icon: Server },
 ];
 
 type FooterItem = NavItem | { title: string; action: "logout"; icon: IconType };
