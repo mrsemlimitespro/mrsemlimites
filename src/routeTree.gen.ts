@@ -36,6 +36,7 @@ import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configura
 import { Route as AdminComunicacaoRouteImport } from './routes/admin.comunicacao'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
+import { Route as AdminApiDashboardRouteImport } from './routes/admin.api-dashboard'
 import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
 import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
 import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
@@ -214,6 +215,11 @@ const AdminClientesRoute = AdminClientesRouteImport.update({
 const AdminBackupRoute = AdminBackupRouteImport.update({
   id: '/backup',
   path: '/backup',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApiDashboardRoute = AdminApiDashboardRouteImport.update({
+  id: '/api-dashboard',
+  path: '/api-dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAnimacoesRoute = AdminAnimacoesRouteImport.update({
@@ -486,6 +492,7 @@ export interface FileRoutesByFullPath {
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
+  '/admin/api-dashboard': typeof AdminApiDashboardRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/comunicacao': typeof AdminComunicacaoRoute
@@ -557,6 +564,7 @@ export interface FileRoutesByTo {
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
+  '/admin/api-dashboard': typeof AdminApiDashboardRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/comunicacao': typeof AdminComunicacaoRoute
@@ -632,6 +640,7 @@ export interface FileRoutesById {
   '/admin/$resource': typeof AdminResourceRoute
   '/admin/ajustar-creditos': typeof AdminAjustarCreditosRoute
   '/admin/animacoes': typeof AdminAnimacoesRoute
+  '/admin/api-dashboard': typeof AdminApiDashboardRoute
   '/admin/backup': typeof AdminBackupRoute
   '/admin/clientes': typeof AdminClientesRouteWithChildren
   '/admin/comunicacao': typeof AdminComunicacaoRoute
@@ -708,6 +717,7 @@ export interface FileRouteTypes {
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
+    | '/admin/api-dashboard'
     | '/admin/backup'
     | '/admin/clientes'
     | '/admin/comunicacao'
@@ -779,6 +789,7 @@ export interface FileRouteTypes {
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
+    | '/admin/api-dashboard'
     | '/admin/backup'
     | '/admin/clientes'
     | '/admin/comunicacao'
@@ -853,6 +864,7 @@ export interface FileRouteTypes {
     | '/admin/$resource'
     | '/admin/ajustar-creditos'
     | '/admin/animacoes'
+    | '/admin/api-dashboard'
     | '/admin/backup'
     | '/admin/clientes'
     | '/admin/comunicacao'
@@ -1122,6 +1134,13 @@ declare module '@tanstack/react-router' {
       path: '/backup'
       fullPath: '/admin/backup'
       preLoaderRoute: typeof AdminBackupRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/api-dashboard': {
+      id: '/admin/api-dashboard'
+      path: '/api-dashboard'
+      fullPath: '/admin/api-dashboard'
+      preLoaderRoute: typeof AdminApiDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/animacoes': {
@@ -1514,6 +1533,7 @@ interface AdminRouteChildren {
   AdminResourceRoute: typeof AdminResourceRoute
   AdminAjustarCreditosRoute: typeof AdminAjustarCreditosRoute
   AdminAnimacoesRoute: typeof AdminAnimacoesRoute
+  AdminApiDashboardRoute: typeof AdminApiDashboardRoute
   AdminBackupRoute: typeof AdminBackupRoute
   AdminClientesRoute: typeof AdminClientesRouteWithChildren
   AdminComunicacaoRoute: typeof AdminComunicacaoRoute
@@ -1539,6 +1559,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminResourceRoute: AdminResourceRoute,
   AdminAjustarCreditosRoute: AdminAjustarCreditosRoute,
   AdminAnimacoesRoute: AdminAnimacoesRoute,
+  AdminApiDashboardRoute: AdminApiDashboardRoute,
   AdminBackupRoute: AdminBackupRoute,
   AdminClientesRoute: AdminClientesRouteWithChildren,
   AdminComunicacaoRoute: AdminComunicacaoRoute,
