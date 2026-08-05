@@ -71,6 +71,8 @@ import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/publ
 import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
 import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
 import { Route as ApiPublicHooksEmailWorkerRouteImport } from './routes/api/public/hooks/email-worker'
+import { Route as ApiPublicExtValidateLicenseRouteImport } from './routes/api/public/ext/validate-license'
+import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public/ext/send-command'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
 import { Route as ApiPublicExtFunctionsV1ReportTamperRouteImport } from './routes/api/public/ext/functions.v1.report-tamper'
@@ -396,6 +398,17 @@ const ApiPublicHooksEmailWorkerRoute =
     path: '/api/public/hooks/email-worker',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtValidateLicenseRoute =
+  ApiPublicExtValidateLicenseRouteImport.update({
+    id: '/api/public/ext/validate-license',
+    path: '/api/public/ext/validate-license',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtSendCommandRoute = ApiPublicExtSendCommandRouteImport.update({
+  id: '/api/public/ext/send-command',
+  path: '/api/public/ext/send-command',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
   ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
     id: '/api/public/ext/functions/v1/validate-license-v2',
@@ -496,6 +509,8 @@ export interface FileRoutesByFullPath {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
+  '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -566,6 +581,8 @@ export interface FileRoutesByTo {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
+  '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -639,6 +656,8 @@ export interface FileRoutesById {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
+  '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
@@ -712,6 +731,8 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext/send-command'
+    | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -782,6 +803,8 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext/send-command'
+    | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -854,6 +877,8 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext/send-command'
+    | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
     | '/api/public/licenca/consulta'
@@ -885,6 +910,8 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
+  ApiPublicExtSendCommandRoute: typeof ApiPublicExtSendCommandRoute
+  ApiPublicExtValidateLicenseRoute: typeof ApiPublicExtValidateLicenseRoute
   ApiPublicHooksEmailWorkerRoute: typeof ApiPublicHooksEmailWorkerRoute
   ApiPublicLicencaConfigRoute: typeof ApiPublicLicencaConfigRoute
   ApiPublicLicencaConsultaRoute: typeof ApiPublicLicencaConsultaRoute
@@ -1342,6 +1369,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksEmailWorkerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/validate-license': {
+      id: '/api/public/ext/validate-license'
+      path: '/api/public/ext/validate-license'
+      fullPath: '/api/public/ext/validate-license'
+      preLoaderRoute: typeof ApiPublicExtValidateLicenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext/send-command': {
+      id: '/api/public/ext/send-command'
+      path: '/api/public/ext/send-command'
+      fullPath: '/api/public/ext/send-command'
+      preLoaderRoute: typeof ApiPublicExtSendCommandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/validate-license-v2': {
       id: '/api/public/ext/functions/v1/validate-license-v2'
       path: '/api/public/ext/functions/v1/validate-license-v2'
@@ -1531,6 +1572,8 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
+  ApiPublicExtSendCommandRoute: ApiPublicExtSendCommandRoute,
+  ApiPublicExtValidateLicenseRoute: ApiPublicExtValidateLicenseRoute,
   ApiPublicHooksEmailWorkerRoute: ApiPublicHooksEmailWorkerRoute,
   ApiPublicLicencaConfigRoute: ApiPublicLicencaConfigRoute,
   ApiPublicLicencaConsultaRoute: ApiPublicLicencaConsultaRoute,
@@ -1560,13 +1603,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
