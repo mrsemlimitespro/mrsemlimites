@@ -57,11 +57,11 @@ const RELEASES: ExtensionRelease[] = [
     size: "650 KB",
     latest: true,
     changelog: [
-      "Integração completa: Novo backend MR Sem Limites configurado nativamente.",
-      "Identidade Visual: Logo e nome oficial MR Sem Limites aplicados em toda a interface.",
-      "Distribuição: Build otimizada v17 para performance máxima.",
-      "Segurança: Sistema anti-tamper integrado com logs silenciosos.",
-      "Conectividade: Endpoints de validação e relatórios de integridade apontando para o servidor atual.",
+      "Integração Nativa: Backend configurado para mrsemlimites.lovable.app.",
+      "Correção Estrutural: Manifest.json atualizado com permissões e domínios oficiais.",
+      "Identidade Visual: Logo e nome MR Sem Limites aplicados com sucesso.",
+      "Segurança: Sistema anti-tamper e logs de integridade ativos.",
+      "Performance: Build v17 otimizada para navegadores baseados em Chromium.",
     ],
   },
 ];
