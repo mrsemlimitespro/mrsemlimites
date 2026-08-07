@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_app/redefinir-senha")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Criar nova senha — IBCT Sem Limites" },
+      { title: "Criar nova senha — MR Sem Limites" },
       { name: "robots", content: "noindex" },
     ],
   }),

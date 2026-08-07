@@ -81,7 +81,7 @@ export function downloadItemAsHtml(item: DownloadableItem) {
     <a class="btn" href="#" onclick="navigator.clipboard.writeText(document.querySelector('pre').innerText);this.textContent='Copiado ✓';return false;">Copiar prompt</a>`
       : ""
   }
-  <footer>Baixado de IBCT Sem Limites</footer>
+  <footer>Baixado de MR Sem Limites</footer>
 </main>
 </body>
 </html>`;

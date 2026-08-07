@@ -125,7 +125,7 @@ export function PwaInstallPrompt() {
           <Download className="size-5 text-primary-foreground" />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-semibold">Instalar ibctsemlimites</div>
+          <div className="text-sm font-semibold">Instalar mrsemlimites</div>
           <div className="mt-0.5 text-xs text-muted-foreground">
             Tenha o app na tela inicial, abertura rápida e experiência em tela cheia.
           </div>

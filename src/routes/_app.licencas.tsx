@@ -68,8 +68,8 @@ import { RequireAuth } from "@/components/require-auth";
 export const Route = createFileRoute("/_app/licencas")({
   head: () => ({
     meta: [
-      { title: "Licenças — IBCT Sem Limites" },
-      { name: "description", content: "Gestão de licenças no IBCT Sem Limites." },
+      { title: "Licenças — MR Sem Limites" },
+      { name: "description", content: "Gestão de licenças no MR Sem Limites." },
     ],
   }),
   component: () => (
@@ -1418,7 +1418,7 @@ function EnviarTesteModal({
   }, [open]);
 
   const defaultMsg = (chave: string) =>
-    `Olá${nome ? `, ${nome}` : ""}! 👋\n\nSua licença de teste (1 hora) para o IBCT Sem Limites está pronta:\n\n🔑 Chave: ${chave}\n📧 E-mail: ${email}\n\nApós ativar, ela expira em 60 minutos. Aproveite!`;
+    `Olá${nome ? `, ${nome}` : ""}! 👋\n\nSua licença de teste (1 hora) para o MR Sem Limites está pronta:\n\n🔑 Chave: ${chave}\n📧 E-mail: ${email}\n\nApós ativar, ela expira em 60 minutos. Aproveite!`;
 
   async function gerarEEnviar() {
     const em = email.trim().toLowerCase();
@@ -1490,7 +1490,7 @@ function EnviarTesteModal({
       toast.error("Informe o e-mail do cliente.");
       return;
     }
-    const subject = "Sua licença de teste — IBCT Sem Limites";
+    const subject = "Sua licença de teste — MR Sem Limites";
     const url = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(msg)}`;

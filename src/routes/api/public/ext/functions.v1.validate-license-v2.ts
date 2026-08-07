@@ -99,7 +99,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         const SUPORTE_WHATSAPP_NUMERO = "5511962579428";
         const SUPORTE_WHATSAPP_URL = (motivo: string) =>
           `https://wa.me/${SUPORTE_WHATSAPP_NUMERO}?text=${encodeURIComponent(
-            `Olá, minha licença do IBCT Sem Limites ${motivo}. Pode me ajudar? Chave: ${key}`,
+            `Olá, minha licença do MR Sem Limites ${motivo}. Pode me ajudar? Chave: ${key}`,
           )}`;
 
         if (lic.status === "cancelada" || lic.status === "revogada") {
@@ -150,7 +150,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           return new Response(
             JSON.stringify({
               status: "expired",
-              message: "Seus dias de extensão acabaram. Renove sua licença para continuar usando o IBCT Sem Limites.",
+              message: "Seus dias de extensão acabaram. Renove sua licença para continuar usando o MR Sem Limites.",
               cliente_nome,
               cliente_email,
               support_whatsapp: SUPORTE_WHATSAPP_NUMERO,

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_app/prompts")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "AI Prompts — IBCT Sem Limites" },
+      { title: "AI Prompts — MR Sem Limites" },
       { name: "description", content: "Catálogo Premium de Prompts Profissionais." },
       { name: "robots", content: "noindex" },
     ],
@@ -54,7 +54,7 @@ function PromptsPage() {
           theme="prompts"
           brand="AI Prompts"
           userName={userName}
-          userOrg="IBCT SEM LIMITES"
+          userOrg="MR SEM LIMITES"
           stats={stats}
           loading={isLoading}
           onOpenLibrary={() => setView("library")}

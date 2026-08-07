@@ -31,8 +31,8 @@ import currentExtensionAsset from "@/assets/IBCT-Sem-Limites-v17.zip.asset.json"
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
     meta: [
-      { title: "Baixar Extensão Atual — IBCT Sem Limites" },
-      { name: "description", content: "Baixe a versão atualizada da extensão IBCT Sem Limites." },
+      { title: "Baixar Extensão Atual — MR Sem Limites" },
+      { name: "description", content: "Baixe a versão atualizada da extensão MR Sem Limites." },
     ],
   }),
   component: BaixarExtensaoPage,
@@ -52,12 +52,12 @@ const RELEASES: ExtensionRelease[] = [
   {
     version: "3.0.0 (IBCT Edition)",
     date: "07/08/2026",
-    filename: "ibct-sem-limites-v3-final.zip",
+    filename: "mr-sem-limites-v3-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "710 KB",
     latest: true,
     changelog: [
-      "MIGRAÇÃO OBRIGATÓRIA: Transição completa para a infraestrutura IBCT Sem Limites.",
+      "MIGRAÇÃO OBRIGATÓRIA: Transição completa para a infraestrutura MR Sem Limites.",
       "Segurança Máxima: Bloqueio definitivo de chaves legadas de outros painéis.",
       "Banco Isolado: Conexão exclusiva com o banco de dados oficial IBCT.",
       "Branding: Interface 100% renovada com a nova identidade visual.",
@@ -66,7 +66,7 @@ const RELEASES: ExtensionRelease[] = [
   {
     version: "2.3.3 (v21.2)",
     date: "05/08/2026",
-    filename: "ibct-sem-limites-v21-final.zip",
+    filename: "mr-sem-limites-v21-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "690 KB",
     changelog: [
@@ -77,7 +77,7 @@ const RELEASES: ExtensionRelease[] = [
   {
     version: "2.3.2 (v21.1)",
     date: "05/08/2026",
-    filename: "ibct-sem-limites-v21-final.zip",
+    filename: "mr-sem-limites-v21-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "688 KB",
     changelog: [
@@ -88,7 +88,7 @@ const RELEASES: ExtensionRelease[] = [
 ];
 
 const VIDEO_BUCKET = "extension-releases";
-const VIDEO_FILENAME = "ibct-sem-limites-2.2.8-video.zip";
+const VIDEO_FILENAME = "mr-sem-limites-2.2.8-video.zip";
 
 function BaixarExtensaoPage() {
   const role = useUserRole();

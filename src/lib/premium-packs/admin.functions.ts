@@ -195,7 +195,7 @@ export const adminUpsertPremiumPack = createServerFn({ method: "POST" })
     const { source_folder_url, sales_url, ...rest } = data;
     const payload: Record<string, unknown> = {
       ...rest,
-      // Schema IBCT Sem Limites usa `sales_product_id` como URL/id do produto.
+      // Schema MR Sem Limites usa `sales_product_id` como URL/id do produto.
       sales_product_id: sales_url ?? null,
       ultima_atualizacao: new Date().toISOString(),
     };
