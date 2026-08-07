@@ -54,7 +54,7 @@ function PromptsPage() {
           theme="prompts"
           brand="AI Prompts"
           userName={userName}
-          userOrg="MR SEM LIMITES"
+          userOrg="IBCT SEM LIMITES"
           stats={stats}
           loading={isLoading}
           onOpenLibrary={() => setView("library")}
