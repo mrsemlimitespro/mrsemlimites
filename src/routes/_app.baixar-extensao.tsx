@@ -26,7 +26,7 @@ import { playSfx } from "@/lib/sfx";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
-import currentExtensionAsset from "@/assets/MR-Sem-Limites-v17.zip.asset.json";
+import currentExtensionAsset from "@/assets/IBCT-Sem-Limites-v17.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
