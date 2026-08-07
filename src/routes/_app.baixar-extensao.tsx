@@ -74,7 +74,6 @@ const RELEASES: ExtensionRelease[] = [
       "Forçar Abertura: Comando para obrigar o Painel Lateral a abrir.",
     ],
   },
-];
   {
     version: "2.3.2 (v21.1)",
     date: "05/08/2026",
