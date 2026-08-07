@@ -50,28 +50,17 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "3.0.0 (IBCT Edition)",
-    date: "07/08/2026",
-    filename: "mr-sem-limites-v3-final.zip",
-    downloadPath: currentExtensionAsset.url,
-    size: "710 KB",
-    latest: true,
-    changelog: [
-      "MIGRAÇÃO OBRIGATÓRIA: Transição completa para a infraestrutura MR Sem Limites.",
-      "Segurança Máxima: Bloqueio definitivo de chaves legadas de outros painéis.",
-      "Banco Isolado: Conexão exclusiva com o banco de dados oficial IBCT.",
-      "Branding: Interface 100% renovada com a nova identidade visual.",
-    ],
-  },
-  {
-    version: "2.3.3 (v21.2)",
+    version: "2.3.3 (v21.2 - Rebuild)",
     date: "05/08/2026",
     filename: "mr-sem-limites-v21-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "690 KB",
+    latest: true,
     changelog: [
-      "Hotfix: Corrigido erro de sintaxe nos nomes de funções internas.",
-      "Forçar Abertura: Comando para obrigar o Painel Lateral a abrir.",
+      "Hotfix Crítico: Corrigido erro de sintaxe nos nomes de funções internas que impedia a extensão de inicializar.",
+      "Forçar Abertura: Injetado comando para obrigar o Painel Lateral a abrir imediatamente ao clicar no ícone da extensão.",
+      "Visual: Refinamento do Azul Neon (#00f2ff) nas bordas com brilho aprimorado.",
+      "Limpeza: Removido definitivamente qualquer rastro de branding antigo.",
     ],
   },
   {
