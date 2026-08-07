@@ -7,12 +7,12 @@ import { useUserRole } from "@/hooks/useUserRole";
 export const Route = createFileRoute("/_app/gestao")({
   head: () => ({
     meta: [
-      { title: "Gestão — MR Sem Limites" },
+      { title: "Gestão — IBCT Sem Limites" },
       {
         name: "description",
         content: "Central de gestão: clientes, licenças e revendedores.",
       },
-      { property: "og:title", content: "Gestão — MR Sem Limites" },
+      { property: "og:title", content: "Gestão — IBCT Sem Limites" },
       {
         property: "og:description",
         content: "Gerencie clientes, licenças e revendedores em um só hub.",

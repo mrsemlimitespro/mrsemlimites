@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_app/packs")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Packs Premium — MR Sem Limites" },
+      { title: "Packs Premium — IBCT Sem Limites" },
       { name: "description", content: "Coleções premium com acesso vitalício." },
       { name: "robots", content: "noindex" },
     ],

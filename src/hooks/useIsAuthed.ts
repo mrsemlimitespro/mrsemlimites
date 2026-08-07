@@ -1,5 +1,5 @@
 /**
- * useIsAuthed — versão adaptada para MR Sem Limites (sem AppAuthorizationProvider).
+ * useIsAuthed — versão adaptada para IBCT Sem Limites (sem AppAuthorizationProvider).
  * Detecta sessão local-first para render imediato, revalida via supabase.auth
  * e reage a mudanças em tempo real.
  *

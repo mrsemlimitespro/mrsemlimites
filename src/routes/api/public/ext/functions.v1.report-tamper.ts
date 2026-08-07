@@ -136,7 +136,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/report-tamper
               "AVISO LEGAL: É proibida a engenharia reversa, descompilação, inspeção ou uso de IA para analisar o código desta extensão. Somente o administrador rogeriocftv.mr@gmail.com está autorizado. Violações serão registradas.",
             support_whatsapp: SUPORTE_NUM,
             support_whatsapp_url: `https://wa.me/${SUPORTE_NUM}?text=${encodeURIComponent(
-              `Olá, sou usuário do MR Sem Limites e preciso de suporte. Chave: ${key}`,
+              `Olá, sou usuário do IBCT Sem Limites e preciso de suporte. Chave: ${key}`,
             )}`,
           }),
           { status: 200, headers: cors },

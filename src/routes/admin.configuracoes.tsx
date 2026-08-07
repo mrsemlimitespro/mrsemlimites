@@ -198,7 +198,7 @@ function ConfiguracoesPage() {
             <Input
               value={(values as any).email_link_portal ?? ""}
               onChange={(e) => setValues((v) => ({ ...(v as any), email_link_portal: e.target.value }))}
-              placeholder="https://mrsemlimites.lovable.app/revendedor"
+              placeholder="https://ibctsemlimites.lovable.app/revendedor"
             />
           </div>
           <div>
@@ -228,7 +228,7 @@ function ConfiguracoesPage() {
             <Input
               value={(values as any).email_remetente_nome ?? ""}
               onChange={(e) => setValues((v) => ({ ...(v as any), email_remetente_nome: e.target.value }))}
-              placeholder="MR Sem Limites"
+              placeholder="IBCT Sem Limites"
             />
           </div>
           <div className="md:col-span-2">
@@ -236,7 +236,7 @@ function ConfiguracoesPage() {
             <Input
               value={(values as any).email_from ?? ""}
               onChange={(e) => setValues((v) => ({ ...(v as any), email_from: e.target.value }))}
-              placeholder='MR Sem Limites <no-reply@seudominio.com>'
+              placeholder='IBCT Sem Limites <no-reply@seudominio.com>'
             />
             <p className="mt-1 text-[11px] text-muted-foreground">
               Preencha somente após verificar o domínio no Resend. Enquanto vazio, o sistema usa o remetente padrão.

@@ -62,7 +62,7 @@ export const Route = createFileRoute("/api/public/hooks/email-worker")({
         const dbFrom = (cfg as any)?.email_from as string | null | undefined;
         const fromName = (cfg as any)?.email_remetente_nome || "MR sem Limites";
         const fromAddr =
-          (cfg as any)?.email_remetente_endereco || "contato@mrsemlimites.com";
+          (cfg as any)?.email_remetente_endereco || "contato@ibctsemlimites.com";
         const from =
           (dbFrom && dbFrom.trim()) ||
           (envFrom && envFrom.trim()) ||

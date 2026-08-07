@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_app/agents")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "AI Agents — MR Sem Limites" },
+      { title: "AI Agents — IBCT Sem Limites" },
       { name: "description", content: "Catálogo Premium de Agentes Inteligentes." },
       { name: "robots", content: "noindex" },
     ],

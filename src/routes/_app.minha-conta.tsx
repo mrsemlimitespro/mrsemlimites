@@ -274,7 +274,7 @@ function LicencaCard({ l, produto }: { l: Licenca; produto: string | null }) {
           </Button>
         )}
         <Button size="sm" variant="ghost" asChild>
-          <a href="https://mrsemlimites.lovable.app/suporte" target="_blank" rel="noreferrer">
+          <a href="https://ibctsemlimites.lovable.app/suporte" target="_blank" rel="noreferrer">
             <LifeBuoy className="mr-1 size-4" /> Suporte
           </a>
         </Button>

@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
  *
  * O antigo backend expunha uma edge function "lov4" que roteava proxy de chat,
  * upload de anexos para o Lovable e outras ações auxiliares. Ela é agora um
- * ponto de extensão do MR Sem Limites: responde graciosamente para não
+ * ponto de extensão do IBCT Sem Limites: responde graciosamente para não
  * quebrar a extensão enquanto novas ações forem implementadas pelo painel.
  * Nenhum tráfego sai para o servidor antigo — dependência = 0%.
  */
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/lov4")({
               status: "unavailable",
               error: "proxy_upload_disabled",
               message:
-                "Envio de anexos usa o Storage do MR Sem Limites diretamente. Nenhum proxy externo é necessário.",
+                "Envio de anexos usa o Storage do IBCT Sem Limites diretamente. Nenhum proxy externo é necessário.",
             }),
             { status: 200, headers: cors },
           );
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/lov4")({
             service: "lov4",
             action,
             data: null,
-            message: "Ação encaminhada para o backend MR Sem Limites.",
+            message: "Ação encaminhada para o backend IBCT Sem Limites.",
           }),
           { status: 200, headers: cors },
         );

@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 /**
  * Compatibility layer para a extensão MR LOV 2.2 (endpoint antigo: inject-config).
  * Recebe {key, email?} e devolve {license:{plan,expires_at,bound_email}, config}.
- * Toda validação usa exclusivamente o banco do MR Sem Limites.
+ * Toda validação usa exclusivamente o banco do IBCT Sem Limites.
  */
 const cors = {
   "Access-Control-Allow-Origin": "*",
