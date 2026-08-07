@@ -1,5 +1,5 @@
 // PackQuickActions — menu de ações rápidas por card (Packs Premium).
-// Adaptação IBCT Sem Limites: sem shortcut de admin edit (a área admin ainda
+// Adaptação MR Sem Limites: sem shortcut de admin edit (a área admin ainda
 // não existe nesta fase) e sem dependência de `useIsAdminMaster`.
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";

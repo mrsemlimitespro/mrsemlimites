@@ -137,7 +137,7 @@ function ApiDashboard() {
             <Key className="size-5 text-blue-500" />
           </div>
           <div className="space-y-1">
-            <h4 className="font-bold">Nota Técnica: Backend IBCT Sem Limites</h4>
+            <h4 className="font-bold">Nota Técnica: Backend MR Sem Limites</h4>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Estes endpoints foram criados para substituir o backend antigo. O sistema de CORS está configurado para aceitar 
               qualquer requisição vinda de extensões Chrome (<code className="bg-white/5 px-1 rounded">chrome-extension://*</code>). 

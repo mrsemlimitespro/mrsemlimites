@@ -4,7 +4,7 @@
  * Restritas a Admin (via `has_role`). Toda operação grava em `pack_access`
  * com `origin = 'manual'` para distinguir de webhooks de venda.
  *
- * Adaptação IBCT Sem Limites: não existe tabela `subscribers`; o vínculo com
+ * Adaptação MR Sem Limites: não existe tabela `subscribers`; o vínculo com
  * `user_id` é resolvido diretamente pela tabela `auth.users` via Admin API.
  */
 import { createServerFn } from "@tanstack/react-start";

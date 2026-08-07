@@ -1,6 +1,6 @@
 /**
  * Biblioteca de Prompts — Server Functions.
- * Adaptado do projeto Link MR Store Pro para o schema atual do IBCT Sem Limites:
+ * Adaptado do projeto Link MR Store Pro para o schema atual do MR Sem Limites:
  * - `download_count` (origem) → `downloads` (destino)
  * - `status` (origem: text[]) → `status` (destino: text scalar). Normalizado
  *   como array de 0 ou 1 elemento no retorno para manter a UI intacta.
@@ -30,7 +30,7 @@ export type LibraryPrompt = {
   updated_at: string;
 };
 
-/** Colunas reais no IBCT Sem Limites (usa `downloads`, não `download_count`). */
+/** Colunas reais no MR Sem Limites (usa `downloads`, não `download_count`). */
 const LIST_COLS =
   "id,numero,categoria,subcategoria,titulo,descricao,autor,tags,cover_url,destaque,nivel,versao,status,compatibilidade,uso_count,downloads,created_at,updated_at";
 

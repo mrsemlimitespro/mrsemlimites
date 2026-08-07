@@ -6,12 +6,12 @@ import { HubTabs, type HubTab } from "@/components/hub-tabs";
 export const Route = createFileRoute("/_app/ferramentas")({
   head: () => ({
     meta: [
-      { title: "Ferramentas — IBCT Sem Limites" },
+      { title: "Ferramentas — MR Sem Limites" },
       {
         name: "description",
         content: "Central de ferramentas: Agents, Packs, Prompts e Extensão.",
       },
-      { property: "og:title", content: "Ferramentas — IBCT Sem Limites" },
+      { property: "og:title", content: "Ferramentas — MR Sem Limites" },
       {
         property: "og:description",
         content: "Acesse Agents, Packs, Prompts e a Extensão em um único hub.",
@@ -53,7 +53,7 @@ const cards = [
   {
     to: "/baixar-extensao",
     title: "Extensão",
-    description: "Download e status da sua extensão IBCT Sem Limites.",
+    description: "Download e status da sua extensão MR Sem Limites.",
     icon: Download,
     color: "var(--brand-emerald)",
   },

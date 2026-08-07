@@ -1,5 +1,5 @@
 /**
- * Detecção de plataforma para IBCT Sem Limites.
+ * Detecção de plataforma para MR Sem Limites.
  *
  * Uso em componentes/hooks:
  *   import { isNative, isAndroid, isIOS, isWeb } from "@/lib/platform";
