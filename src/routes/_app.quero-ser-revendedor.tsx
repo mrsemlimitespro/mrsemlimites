@@ -8,13 +8,13 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/_app/quero-ser-revendedor")({
   head: () => ({
     meta: [
-      { title: "Quero ser Revendedor — MR Sem Limites" },
+      { title: "Quero ser Revendedor — IBCT Sem Limites" },
       {
         name: "description",
         content:
-          "Torne-se revendedor oficial MR Sem Limites por uma taxa única de R$ 29,90. Painel exclusivo, gere licenças ilimitadas, defina seus preços e crie promoções.",
+          "Torne-se revendedor oficial IBCT Sem Limites por uma taxa única de R$ 29,90. Painel exclusivo, gere licenças ilimitadas, defina seus preços e crie promoções.",
       },
-      { property: "og:title", content: "Seja Revendedor — MR Sem Limites" },
+      { property: "og:title", content: "Seja Revendedor — IBCT Sem Limites" },
       {
         property: "og:description",
         content:

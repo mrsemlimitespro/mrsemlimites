@@ -1,6 +1,6 @@
 /**
  * Local favorites — fallback leve (localStorage) para módulos AI.
- * Evita depender de tabelas de favoritos que não existem no MR Sem Limites
+ * Evita depender de tabelas de favoritos que não existem no IBCT Sem Limites
  * (o destino tem `prompt_favorites`, mas não uma tabela equivalente para
  * agentes). Escopo é por `kind` (ex: "ai-agent").
  */

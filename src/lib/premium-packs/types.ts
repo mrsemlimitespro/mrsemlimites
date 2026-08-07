@@ -97,7 +97,7 @@ export type PremiumPack = {
 
 /**
  * Admin-only view. Inclui o blob de origem criptografado e o link de venda
- * externo (armazenado em `sales_product_id` — o schema do MR Sem Limites usa
+ * externo (armazenado em `sales_product_id` — o schema do IBCT Sem Limites usa
  * essa coluna como URL/ID do produto no gateway).
  */
 export type AdminPremiumPack = PremiumPack & {

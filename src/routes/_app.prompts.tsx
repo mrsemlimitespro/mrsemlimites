@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_app/prompts")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "AI Prompts — MR Sem Limites" },
+      { title: "AI Prompts — IBCT Sem Limites" },
       { name: "description", content: "Catálogo Premium de Prompts Profissionais." },
       { name: "robots", content: "noindex" },
     ],

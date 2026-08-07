@@ -1,7 +1,7 @@
 /**
  * PackCover — componente único e canônico para exibir capas/banners de Packs.
  *
- * Adaptação MR Sem Limites: removida a dependência de `@/lib/cover-cache`
+ * Adaptação IBCT Sem Limites: removida a dependência de `@/lib/cover-cache`
  * (não existe neste projeto). Mantém aspect-ratio por variant, object-cover
  * automático com fallback para contain + blur quando o aspecto diverge,
  * skeleton shimmer e placeholder.
