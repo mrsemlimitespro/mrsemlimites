@@ -26,13 +26,13 @@ import { playSfx } from "@/lib/sfx";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
-import currentExtensionAsset from "@/assets/MR-Sem-Limites-v17.zip.asset.json";
+import currentExtensionAsset from "@/assets/IBCT-Sem-Limites-v17.zip.asset.json";
 
 export const Route = createFileRoute("/_app/baixar-extensao")({
   head: () => ({
     meta: [
-      { title: "Baixar Extensão Atual — MR Sem Limites" },
-      { name: "description", content: "Baixe a versão atualizada da extensão MR Sem Limites." },
+      { title: "Baixar Extensão Atual — IBCT Sem Limites" },
+      { name: "description", content: "Baixe a versão atualizada da extensão IBCT Sem Limites." },
     ],
   }),
   component: BaixarExtensaoPage,
@@ -50,23 +50,34 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.3.3 (v21.2 - Rebuild)",
-    date: "05/08/2026",
-    filename: "mr-sem-limites-v21-final.zip",
+    version: "3.0.0 (IBCT Edition)",
+    date: "07/08/2026",
+    filename: "ibct-sem-limites-v3-final.zip",
     downloadPath: currentExtensionAsset.url,
-    size: "690 KB",
+    size: "710 KB",
     latest: true,
     changelog: [
-      "Hotfix Crítico: Corrigido erro de sintaxe nos nomes de funções internas que impedia a extensão de inicializar.",
-      "Forçar Abertura: Injetado comando para obrigar o Painel Lateral a abrir imediatamente ao clicar no ícone da extensão.",
-      "Visual: Refinamento do Azul Neon (#00f2ff) nas bordas com brilho aprimorado.",
-      "Limpeza: Removido definitivamente qualquer rastro de branding antigo.",
+      "MIGRAÇÃO OBRIGATÓRIA: Transição completa para a infraestrutura IBCT Sem Limites.",
+      "Segurança Máxima: Bloqueio definitivo de chaves legadas de outros painéis.",
+      "Banco Isolado: Conexão exclusiva com o banco de dados oficial IBCT.",
+      "Branding: Interface 100% renovada com a nova identidade visual.",
+    ],
+  },
+  {
+    version: "2.3.3 (v21.2)",
+    date: "05/08/2026",
+    filename: "ibct-sem-limites-v21-final.zip",
+    downloadPath: currentExtensionAsset.url,
+    size: "690 KB",
+    changelog: [
+      "Hotfix: Corrigido erro de sintaxe nos nomes de funções internas.",
+      "Forçar Abertura: Comando para obrigar o Painel Lateral a abrir.",
     ],
   },
   {
     version: "2.3.2 (v21.1)",
     date: "05/08/2026",
-    filename: "mr-sem-limites-v21-final.zip",
+    filename: "ibct-sem-limites-v21-final.zip",
     downloadPath: currentExtensionAsset.url,
     size: "688 KB",
     changelog: [
@@ -77,7 +88,7 @@ const RELEASES: ExtensionRelease[] = [
 ];
 
 const VIDEO_BUCKET = "extension-releases";
-const VIDEO_FILENAME = "mr-sem-limites-2.2.8-video.zip";
+const VIDEO_FILENAME = "ibct-sem-limites-2.2.8-video.zip";
 
 function BaixarExtensaoPage() {
   const role = useUserRole();

@@ -46,13 +46,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_app/")({
   head: () => ({
     meta: [
-      { title: "MR Sem Limites — Plataforma completa de revenda digital" },
+      { title: "IBCT Sem Limites — Plataforma completa de revenda digital" },
       {
         name: "description",
         content:
           "Agentes IA, Prompts, Packs, Extensões, Automações, Templates e Comunidade. Compra segura, entrega após confirmação do pagamento e suporte no WhatsApp.",
       },
-      { property: "og:title", content: "MR Sem Limites — Revenda Digital Premium" },
+      { property: "og:title", content: "IBCT Sem Limites — Revenda Digital Premium" },
       {
         property: "og:description",
         content: "Agentes IA, Prompts, Packs, Extensões, Automações e mais.",
@@ -488,7 +488,7 @@ const DEPOIMENTOS = [
   {
     nome: "Carlos M.",
     cargo: "Revendedor há 3 anos",
-    texto: "Os Agentes e Packs da MR Sem Limites me ajudaram a escalar sem dor de cabeça.",
+    texto: "Os Agentes e Packs da IBCT Sem Limites me ajudaram a escalar sem dor de cabeça.",
   },
   {
     nome: "Ana L.",
@@ -751,7 +751,7 @@ function ComunidadeSection() {
   return (
     <section className="space-y-3">
       <h2 className="section-title">
-        <span aria-hidden className="section-title-bar" /> Comunidade MR Sem Limites
+        <span aria-hidden className="section-title-bar" /> Comunidade IBCT Sem Limites
       </h2>
       <div
         className="glass rounded-2xl p-6 md:p-8"
@@ -761,7 +761,7 @@ function ComunidadeSection() {
         }}
       >
         <p className="text-base font-semibold md:text-lg">
-          Faça parte da comunidade MR Sem Limites.
+          Faça parte da comunidade IBCT Sem Limites.
         </p>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
           Um espaço para quem quer evoluir com Inteligência Artificial, Marketing Digital,

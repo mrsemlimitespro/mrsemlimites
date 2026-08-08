@@ -205,7 +205,7 @@ export function PremiumPacksHub({ onBack }: { onBack?: () => void }) {
           <div className="min-w-0">
             <div className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-ai-300/30 bg-ai-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.26em] text-ai-100">
               <Sparkles className="h-3 w-3" />
-              MR Sem Limites · Marketplace
+              IBCT Sem Limites · Marketplace
             </div>
             <h1 className="bg-gradient-to-r from-ai-50 via-ai-200 to-ai-300 bg-clip-text text-3xl sm:text-4xl font-bold tracking-tight text-transparent">
               Central de Packs Premium

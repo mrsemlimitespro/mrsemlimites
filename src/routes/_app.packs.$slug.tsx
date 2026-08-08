@@ -9,7 +9,7 @@ import { RequireAuth } from "@/components/require-auth";
 export const Route = createFileRoute("/_app/packs/$slug")({
   ssr: false,
   head: () => ({
-    meta: [{ title: "Pack Premium — MR Sem Limites" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Pack Premium — IBCT Sem Limites" }, { name: "robots", content: "noindex" }],
   }),
   component: () => (
     <RequireAuth>

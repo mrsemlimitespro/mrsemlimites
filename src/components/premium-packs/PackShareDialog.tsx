@@ -1,5 +1,5 @@
 /**
- * PackShareDialog — Share Center simplificado para o MR Sem Limites.
+ * PackShareDialog — Share Center simplificado para o IBCT Sem Limites.
  *
  * Adaptação: removidas as dependências de `share-center/logs.functions` e
  * `useCanShare` (o Share Center completo do origem não existe aqui).

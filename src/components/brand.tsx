@@ -1,7 +1,7 @@
-import logoAsset from "@/assets/mr-sem-limites-logo.png.asset.json";
+import logoAsset from "@/assets/ibct-sem-limites-logo.png.asset.json";
 import { cn } from "@/lib/utils";
 
-export const BRAND_NAME = "MR Sem Limites";
+export const BRAND_NAME = "IBCT Sem Limites";
 export const BRAND_TAGLINE = "PREMIUM";
 export const BRAND_LOGO_URL = logoAsset.url;
 

@@ -1,7 +1,7 @@
 /**
  * PackDetailPage — página de detalhe pública de um Pack Premium.
  *
- * Adaptação MR Sem Limites (versão enxuta desta fase):
+ * Adaptação IBCT Sem Limites (versão enxuta desta fase):
  *  - Hero com banner + capa flutuante + metadados
  *  - Tabs: Sobre · Histórico
  *  - Botão de compartilhar (abre PackShareDialog) e favoritar (localStorage)
