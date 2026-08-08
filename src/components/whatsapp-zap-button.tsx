@@ -2,7 +2,7 @@ import { MessageCircle } from "lucide-react";
 import { playSfx } from "@/lib/sfx";
 
 const WHATSAPP_PHONE = "5511956915920";
-const WHATSAPP_MESSAGE = "Vim do IBCT Sem Limites, quero conhecer a Extensão da Lovable";
+const WHATSAPP_MESSAGE = "Vim do MR Sem Limites, quero conhecer a Extensão da Lovable";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
 export function WhatsappZapButton() {

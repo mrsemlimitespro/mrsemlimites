@@ -6,15 +6,15 @@ import { HubTabs, type HubTab } from "@/components/hub-tabs";
 export const Route = createFileRoute("/_app/loja")({
   head: () => ({
     meta: [
-      { title: "Loja — IBCT Sem Limites" },
+      { title: "Loja — MR Sem Limites" },
       {
         name: "description",
         content: "Loja, meus clientes, estoque, créditos e compra de chaves.",
       },
-      { property: "og:title", content: "Loja — IBCT Sem Limites" },
+      { property: "og:title", content: "Loja — MR Sem Limites" },
       {
         property: "og:description",
-        content: "Comercial da IBCT Sem Limites em um único hub.",
+        content: "Comercial da MR Sem Limites em um único hub.",
       },
     ],
   }),

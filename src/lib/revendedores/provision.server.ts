@@ -43,7 +43,7 @@ export async function provisionRevendedor(input: ProvisionInput): Promise<Provis
     .maybeSingle();
 
   const s = (settings ?? {}) as Record<string, string | null>;
-  const linkPortal = s.email_link_portal || "https://ibctsemlimites.lovable.app/revendedor";
+  const linkPortal = s.email_link_portal || "https://mrsemlimites.lovable.app/revendedor";
   const linkComunidade = s.link_comunidade || "";
   const linkSuporte = s.email_link_suporte || "";
   const linkManual = s.email_link_manual || "";
@@ -123,7 +123,7 @@ export async function provisionRevendedor(input: ProvisionInput): Promise<Provis
   }
 
   // 5. Enfileira email de boas-vindas
-  const remetente = s.email_remetente_nome || "IBCT Sem Limites";
+  const remetente = s.email_remetente_nome || "MR Sem Limites";
   const assunto = `${remetente} — Bem-vindo(a) ao Painel do Revendedor!`;
   const html = renderWelcomeHtml({
     nome,

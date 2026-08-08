@@ -1,6 +1,6 @@
 /**
  * AI Agents — server functions (leitura pública).
- * Copiado do projeto Link MR Store Pro. Schema idêntico no IBCT Sem Limites,
+ * Copiado do projeto Link MR Store Pro. Schema idêntico no MR Sem Limites,
  * então nenhuma adaptação de colunas é necessária.
  *
  * Etapa 2: só migramos leitura pública (`getAgents`). Admin/CRUD ficam

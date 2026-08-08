@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
 /**
- * Endpoint público de validação de licenças da IBCT Sem Limites.
+ * Endpoint público de validação de licenças da MR Sem Limites.
  *
  * Fluxo (retrocompatível com o shape antigo):
  *  - Busca licença pela `chave` MR

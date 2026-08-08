@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
  * Compat storage proxy — a extensão MR LOV 2.2 fala com o Storage do backend
  * antigo no formato `${BASE}/storage/v1/object/<bucket>/<path>` (upload) e
  * `${BASE}/storage/v1/object/public/<bucket>/<path>` (download público).
- * Aqui redirecionamos essas chamadas para o Storage do IBCT Sem Limites.
+ * Aqui redirecionamos essas chamadas para o Storage do MR Sem Limites.
  * Só o bucket `lovable-message-attachments` é aceito.
  */
 

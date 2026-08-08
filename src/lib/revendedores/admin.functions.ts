@@ -344,7 +344,7 @@ export const resetRevendedorPassword = createServerFn({ method: "POST" })
         type: "recovery",
         email: rev.email,
         options: {
-          redirectTo: "https://ibctsemlimites.lovable.app/redefinir-senha",
+          redirectTo: "https://mrsemlimites.lovable.app/redefinir-senha",
         },
       });
       recoveryLink =
@@ -445,8 +445,8 @@ async function enqueueTempPasswordEmail(
   supabaseAdmin: any,
   v: { email: string; nome: string; senha: string; revendedorId: string },
 ) {
-  const linkPortal = "https://ibctsemlimites.lovable.app/redefinir-senha";
-  const assunto = "IBCT Sem Limites — Acesso ao Painel do Revendedor";
+  const linkPortal = "https://mrsemlimites.lovable.app/redefinir-senha";
+  const assunto = "MR Sem Limites — Acesso ao Painel do Revendedor";
   const html = `<!doctype html><html><body style="font-family:Inter,Arial,sans-serif;background:#0b0b12;color:#e6e6ea;padding:24px">
   <div style="max-width:560px;margin:0 auto;background:#12121a;border:1px solid #2a2a35;border-radius:16px;padding:28px">
     <h1 style="margin:0 0 8px 0;font-size:22px">Olá, ${escapeHtml(v.nome)} 👋</h1>
@@ -475,11 +475,11 @@ async function enqueueResetEmail(
   v: { email: string; nome: string | null; recoveryLink: string; revendedorId: string },
 ) {
   const nome = v.nome || v.email.split("@")[0];
-  const link = v.recoveryLink || "https://ibctsemlimites.lovable.app/redefinir-senha";
+  const link = v.recoveryLink || "https://mrsemlimites.lovable.app/redefinir-senha";
   await supabaseAdmin.from("email_queue").insert({
     destinatario: v.email,
     destinatario_nome: nome,
-    assunto: "IBCT Sem Limites — Redefinição de senha",
+    assunto: "MR Sem Limites — Redefinição de senha",
     html: `<!doctype html><html><body style="font-family:Inter,Arial,sans-serif;background:#0b0b12;color:#e6e6ea;padding:24px">
   <div style="max-width:560px;margin:0 auto;background:#12121a;border:1px solid #2a2a35;border-radius:16px;padding:28px">
     <h1 style="margin:0 0 8px 0;font-size:20px">Redefina sua senha</h1>
@@ -501,7 +501,7 @@ async function enqueuePasswordChangedEmail(
   await supabaseAdmin.from("email_queue").insert({
     destinatario: v.email,
     destinatario_nome: nome,
-    assunto: "IBCT Sem Limites — Sua senha foi alterada",
+    assunto: "MR Sem Limites — Sua senha foi alterada",
     html: `<!doctype html><html><body style="font-family:Inter,Arial,sans-serif;background:#0b0b12;color:#e6e6ea;padding:24px">
   <div style="max-width:560px;margin:0 auto;background:#12121a;border:1px solid #2a2a35;border-radius:16px;padding:28px">
     <h1 style="margin:0 0 8px 0;font-size:20px">Senha alterada com sucesso ✅</h1>

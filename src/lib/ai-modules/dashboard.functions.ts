@@ -1,7 +1,7 @@
 /**
  * Dashboard stats (AI Prompts / AI Agents).
  * Copiado verbatim do projeto Link MR Store Pro — funciona com schema atual
- * do IBCT Sem Limites (mesmas colunas em ai_prompts, ai_agents, prompt_favorites,
+ * do MR Sem Limites (mesmas colunas em ai_prompts, ai_agents, prompt_favorites,
  * prompt_history).
  */
 import { createServerFn } from "@tanstack/react-start";
