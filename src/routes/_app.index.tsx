@@ -1,8 +1,3 @@
-/**
- * MR SEM LIMITES — FASE 1.6: IDENTIFICAÇÃO OFICIAL DO SUPABASE DESTINO
- * A Fase 1.5 encontrou uma inconsistência crítica: o novo Supabase (mr-sem-limites)
- * não foi detectado como conexão ativa. Esta fase documenta a identidade oficial.
- */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import {
