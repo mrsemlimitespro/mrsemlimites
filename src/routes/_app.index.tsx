@@ -1,7 +1,7 @@
 /**
- * Este relatório consolida o Inventário Técnico do ecossistema MR Sem Limites.
- * Auditado e validado em 14 de Julho de 2026.
- * Foco: Preparação para Backend Independente e Multi-Extensão.
+ * MR SEM LIMITES — FASE 1.6: IDENTIFICAÇÃO OFICIAL DO SUPABASE DESTINO
+ * A Fase 1.5 encontrou uma inconsistência crítica: o novo Supabase (mr-sem-limites)
+ * não foi detectado como conexão ativa. Esta fase documenta a identidade oficial.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
