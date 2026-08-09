@@ -1,3 +1,8 @@
+/**
+ * 🚨 MR SEM LIMITES — FASE 1.8: CONEXÃO E VERIFICAÇÃO DO SUPABASE DESTINO
+ * A Fase 1.7 foi concluída com sucesso. O backend dbyoofojkakaigdemoyp permanece como ORIGEM.
+ * Esta fase foca na conexão read-only com o novo projeto mr-sem-limites.
+ */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import {
