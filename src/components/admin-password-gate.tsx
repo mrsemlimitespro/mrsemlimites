@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Loader2, ShieldCheck, Lock, KeyRound } from "lucide-react";
+import { Loader2, ShieldCheck, Lock, KeyRound, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -35,9 +35,11 @@ export function AdminPasswordDialog({
 }) {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [needsSetup, setNeedsSetup] = useState(false);
   const [newPassword, setNewPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
@@ -151,14 +153,21 @@ export function AdminPasswordDialog({
                 <KeyRound className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="new-pass"
-                  type="password"
-                  className="pl-9"
+                  type={showNewPassword ? "text" : "password"}
+                  className="pl-9 pr-10"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   autoComplete="new-password"
                   required
                   minLength={4}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showNewPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
               </div>
             </div>
             <div>
@@ -190,14 +199,21 @@ export function AdminPasswordDialog({
                 <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="admin-pass"
-                  type="password"
-                  className="pl-9"
+                  type={showPassword ? "text" : "password"}
+                  className="pl-9 pr-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                   autoFocus
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
               </div>
             </div>
             <Button type="submit" className="w-full gradient-primary" disabled={busy}>
