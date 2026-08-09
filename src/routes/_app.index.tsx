@@ -1,3 +1,38 @@
+/**
+ * MR SEM LIMITES — FASE 1.10: CONECTAR E VALIDAR O SUPABASE DESTINO
+ * O projeto Supabase destino foi confirmado manualmente no Dashboard.
+ * 
+ * DESTINO OFICIAL
+ * Nome: mr-sem-limites
+ * Project ID: nbehebyxnkpihbiathmx
+ * Região: sa-east-1 — América do Sul (São Paulo)
+ * 
+ * ORIGEM ATUAL
+ * Project ID: dbyoofojkakaigdemoyp
+ * A origem é o backend atual e deve permanecer funcionando e intocada durante toda a migração.
+ * 
+ * 🚨 REGRA ABSOLUTA
+ * Nesta etapa NÃO fazer migração.
+ * NÃO executar migrations.
+ * NÃO criar tabelas.
+ * NÃO criar funções.
+ * NÃO criar RPCs.
+ * NÃO criar triggers.
+ * NÃO criar policies.
+ * NÃO alterar RLS.
+ * NÃO criar buckets.
+ * NÃO migrar Storage.
+ * NÃO migrar Auth.
+ * NÃO copiar usuários.
+ * NÃO copiar dados.
+ * NÃO alterar pagamentos.
+ * NÃO alterar licenças.
+ * NÃO alterar a extensão.
+ * NÃO alterar versões da extensão.
+ * NÃO alterar o MR Remote Cloud.
+ * NÃO alterar o banco de origem.
+ * Esta etapa é SOMENTE para conectar e validar o projeto destino.
+ */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import {
