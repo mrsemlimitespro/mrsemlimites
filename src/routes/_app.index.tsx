@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router"; // oi
+import { createFileRoute, Link } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import {
   Bot,
