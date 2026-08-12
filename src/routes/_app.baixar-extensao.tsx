@@ -419,7 +419,7 @@ function VideoReleaseCard({ isAdmin }: { isAdmin: boolean }) {
   };
 
   return (
-    <Card className="glass border-border/60 overflow-hidden relative">
+    <Card className="glass border-border/40 overflow-hidden relative rounded-2xl bg-surface/30">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-fuchsia-400/70 to-transparent" />
       <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-start md:justify-between">
         <div className="flex-1 min-w-0">
