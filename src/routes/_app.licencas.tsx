@@ -863,15 +863,15 @@ type PresetKind = "teste" | "premium";
 type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number };
 
 const LICENSE_PRESETS: Preset[] = [
-  { label: "Teste 1 hora", kind: "teste", minutos: 60 },
-  { label: "Teste 1 dia", kind: "teste", minutos: 60 * 24 },
-  { label: "Teste 2 dias", kind: "teste", minutos: 60 * 24 * 2 },
-  { label: "Teste 3 dias", kind: "teste", minutos: 60 * 24 * 3 },
-  { label: "Premium 30 dias", kind: "premium", dias: 30 },
-  { label: "Premium 60 dias", kind: "premium", dias: 60 },
-  { label: "Premium 90 dias", kind: "premium", dias: 90 },
-  { label: "Premium 180 dias", kind: "premium", dias: 180 },
-  { label: "Premium 1 ano", kind: "premium", dias: 365 },
+  { label: "1 hora", kind: "teste", minutos: 60 },
+  { label: "1 dia", kind: "teste", minutos: 60 * 24 },
+  { label: "2 dias", kind: "teste", minutos: 60 * 24 * 2 },
+  { label: "3 dias", kind: "teste", minutos: 60 * 24 * 3 },
+  { label: "30 dias", kind: "premium", dias: 30 },
+  { label: "60 dias", kind: "premium", dias: 60 },
+  { label: "90 dias", kind: "premium", dias: 90 },
+  { label: "180 dias", kind: "premium", dias: 180 },
+  { label: "1 ano", kind: "premium", dias: 365 },
 ];
 
 
@@ -981,9 +981,9 @@ function NovaLicencaModal({
                           ? `${p.minutos} minutos`
                           : p.minutos === 60
                             ? "1 hora"
-                            : `${Math.round((p.minutos ?? 0) / (60 * 24))} dia${
-                                (p.minutos ?? 0) / (60 * 24) > 1 ? "s" : ""
-                              }`
+                            : p.minutos === 60 * 24
+                              ? "1 dia"
+                              : `${Math.round((p.minutos ?? 0) / (60 * 24))} dias`
                         : (p.dias ?? 0) === 0 && p.minutos
                           ? p.minutos === 60
                             ? "1 hora"
