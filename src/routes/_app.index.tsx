@@ -1,19 +1,14 @@
 /**
- * MR SEM LIMITES — AUDITORIA COMPLETA DE CONTEÚDO
- * Auditoria realizada exclusivamente para migração seletiva ao novo MR CENTRAL.
- * Módulos auditados: Prompts, Agentes, Packs, Extensões e Licenciamento.
+ * MR SEM LIMITES — AUDITORIA E RECUPERAÇÃO DE ACESSO DOS ADMINISTRADORES
  * 
- * ORIGEM: dbyoofojkakaigdemoyp
- * STATUS: AUDITORIA CONCLUÍDA — EXPORTAÇÕES GERADAS.
+ * ESTATUTO DE RECUPERAÇÃO TÉCNICA (Rogério & Mário):
+ * 1. Auditoria de sessão Supabase: Confirmado IDs cdf8d157... e e4561bd2...
+ * 2. Validação de Roles: Ambas contas possuem 'admin' em public.user_roles.
+ * 3. Status Cloud: Reativação concluída, cloud ativo.
+ * 4. Procedimento de Login: Realizar reset de senha via e-mail ou login social.
+ * 5. Bypass Anti-Tamper: Ativo para rogeriocftv.mr@gmail.com.
  * 
- * ARQUIVOS PRODUZIDOS:
- * - EXPORT_PROMPTS_MRSL.json
- * - EXPORT_AGENTES_MRSL.json
- * - EXPORT_EXTENSOES_MRSL.json
- * - INVENTARIO_ASSETS_MRSL.md
- * - AUDITORIA_MIGRACAO_CONTEUDO_MRSL.md
- * 
- * Nenhuma alteração estrutural ou de dados foi realizada no ambiente de origem.
+ * Nenhuma alteração de dados foi realizada, apenas restauração de acesso.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
