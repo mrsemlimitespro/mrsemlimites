@@ -1,40 +1,19 @@
 /**
- * MR SEM LIMITES — REVALIDAÇÃO PRÉ-FASE 2
- * A execução da Fase 2 foi interrompida corretamente porque o ambiente estava pausado e o destino ainda não estava detectado como conexão ativa.
- * Agora NÃO execute nenhuma migration ainda.
- * Faça somente um novo PRE-FLIGHT READ-ONLY.
+ * MR SEM LIMITES — AUDITORIA COMPLETA DE CONTEÚDO
+ * Auditoria realizada exclusivamente para migração seletiva ao novo MR CENTRAL.
+ * Módulos auditados: Prompts, Agentes, Packs, Extensões e Licenciamento.
  * 
  * ORIGEM: dbyoofojkakaigdemoyp
- * DESTINO: nbehebyxnkpihbiathmx
+ * STATUS: AUDITORIA CONCLUÍDA — EXPORTAÇÕES GERADAS.
  * 
- * DESTINO OFICIAL
- * Nome: mr-sem-limites
- * Project ID: nbehebyxnkpihbiathmx
- * Região: sa-east-1 — São Paulo
+ * ARQUIVOS PRODUZIDOS:
+ * - EXPORT_PROMPTS_MRSL.json
+ * - EXPORT_AGENTES_MRSL.json
+ * - EXPORT_EXTENSOES_MRSL.json
+ * - INVENTARIO_ASSETS_MRSL.md
+ * - AUDITORIA_MIGRACAO_CONTEUDO_MRSL.md
  * 
- * Verifique:
- * 1. Se a origem (dbyoofojkakaigdemoyp) já foi retomada. Se estiver pausada, informe e PARE.
- * 2. Se o destino (nbehebyxnkpihbiathmx) já está conectado ao Lovable. Se não estiver conectado, informe e PARE.
- * 3. Se ambos estiverem acessíveis, NÃO execute a Fase 2 ainda.
- * 
- * Entregue somente:
- * ORIGEM:
- * Project ID: [ID]
- * Status: [Retomada/Pausada]
- * 
- * DESTINO:
- * Project ID: [ID]
- * Status: [Conectado/Desconectado]
- * Região: [Região]
- * 
- * CONEXÃO:
- * Destino conectado: SIM/NÃO
- * SQL/DDL no destino disponível: SIM/NÃO
- * Schema public acessível: SIM/NÃO
- * Destino possui objetos: SIM/NÃO
- * 
- * Finalize com:
- * PRÉ-FLIGHT APROVADO — AGUARDANDO AUTORIZAÇÃO PARA EXECUTAR O SCHEMA.
+ * Nenhuma alteração estrutural ou de dados foi realizada no ambiente de origem.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
