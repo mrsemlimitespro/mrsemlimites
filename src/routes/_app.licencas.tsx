@@ -1,4 +1,6 @@
+import { PageHeader } from "@/components/page-container";
 import { createFileRoute } from "@tanstack/react-router";
+
 import { useEffect, useMemo, useState } from "react";
 import {
   Copy,
@@ -395,76 +397,62 @@ function LicencasPage() {
 
   return (
     <PageContainer className="space-y-8 pb-32">
-      {/* Page Header */}
-      <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
-            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-            Infraestrutura
-          </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-            Gestão de <span className="text-primary">Licenças</span>
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-lg">
-            Emissão, controle e auditoria de chaves de acesso para a rede MR SEM LIMITES.
-          </p>
-          
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border/40">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Disponíveis</span>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-xl font-bold text-primary">
-                  {isAdmin ? "♾️" : available}
-                </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
-                  READY
-                </span>
-              </div>
-            </div>
-            <div className="w-px h-8 bg-border/40" />
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total Criadas</span>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-xl font-bold">{total}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          {canTeste && (
+      <PageHeader 
+        group="Comercial"
+        title="Gestão de Licenças"
+        subtitle="Emissão, controle e auditoria de chaves de acesso para a rede MR SEM LIMITES."
+        breadcrumb="Dashboard > Licenças"
+        actions={
+          <>
+            {canTeste && (
+              <button
+                onClick={() => setOpenEnviarTeste(true)}
+                className="group relative flex items-center gap-2 overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 px-5 py-3 text-sm font-bold text-primary transition-all hover:bg-primary/10 active:scale-95 shadow-lg shadow-primary/5"
+              >
+                <Send className="size-4" />
+                <span>Express Trial (1h)</span>
+              </button>
+            )}
             <button
-              onClick={() => setOpenEnviarTeste(true)}
-              className="group relative flex items-center gap-2 overflow-hidden rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-3 text-sm font-bold text-amber-200 transition-all hover:bg-amber-500/10 active:scale-95"
+              onClick={() => setOpenTeste(true)}
+              className="rounded-2xl border border-border/40 bg-surface/30 px-5 py-3 text-sm font-bold text-foreground hover:bg-surface/50 transition-all active:scale-95"
             >
-              <Send className="size-4" />
-              <span>Express Trial (1h)</span>
+              Vincular Cliente
             </button>
-          )}
-          <button
-            onClick={() => setOpenTeste(true)}
-            className="rounded-2xl border border-border/40 bg-surface/30 px-5 py-3 text-sm font-bold text-foreground hover:bg-surface/50 transition-all active:scale-95"
-          >
-            Vincular Cliente
-          </button>
-          <button
-            onClick={() => setOpenNova(true)}
-            className="rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95 flex items-center gap-2"
-          >
-            <Plus className="size-4" strokeWidth={3} />
-            Gerar Licença
-          </button>
-        </div>
-      </header>
+            <button
+              onClick={() => setOpenNova(true)}
+              className="rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95 flex items-center gap-2"
+            >
+              <Plus className="size-4" strokeWidth={3} />
+              Gerar Licença
+            </button>
+          </>
+        }
+      />
 
+      {/* KPI Cards compactos conforme referência */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+         <KpiMini label="Disponíveis" value={isAdmin ? "♾️" : String(available)} icon={KeyRound} color="blue" />
+         <KpiMini label="Total Criadas" value={String(total)} icon={Plus} color="violet" />
+         <KpiMini label="Ativas" value={String(licenses.filter(l => l.status === 'ativa').length)} icon={PlayCircle} color="emerald" />
+         <KpiMini label="Expirando" value={String(licenses.filter(l => l.status === 'ativa' && l.expiraEm && (new Date(l.expiraEm).getTime() - Date.now() < 7 * 86400000)).length)} icon={Hourglass} color="amber" />
+         <KpiMini label="Expiradas" value={String(licenses.filter(l => l.status === 'expirada').length)} icon={RotateCcw} color="red" />
+         <KpiMini label="Suspensas" value={String(licenses.filter(l => l.status === 'bloqueada').length)} icon={Ban} color="orange" />
+         <KpiMini label="Revogadas" value={String(licenses.filter(l => l.status === 'revogada').length)} icon={Trash2} color="red" />
+      </div>
 
       {/* Bucket Filter Hub */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 pt-4 border-t border-border/40">
         <div className="flex items-center justify-between">
            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Filtrar por Período</h3>
-           <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-emerald-500" />
-              <span className="text-[10px] font-bold text-muted-foreground/80 uppercase">Ativas em destaque</span>
+           <div className="flex items-center gap-3">
+              <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">Sessão Atual</span>
+              <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-1 rounded-full">
+                 <div className="size-1.5 rounded-full bg-primary animate-pulse" />
+                 <span className="text-[10px] font-bold text-primary uppercase tracking-tighter">
+                   {BUCKETS.find(b => b.id === bucket)?.label || "Todos"}
+                 </span>
+              </div>
            </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -476,37 +464,42 @@ function LicencasPage() {
                 key={b.id}
                 onClick={() => setBucket(b.id)}
                 className={cn(
-                  "flex items-center gap-3 rounded-2xl px-5 py-3 text-xs font-bold transition-all border",
+                  "flex items-center gap-3 rounded-xl px-4 py-2.5 text-[11px] font-bold transition-all border",
                   active
-                    ? "bg-primary/10 text-primary border-primary/30 shadow-lg shadow-primary/5"
+                    ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
                     : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
                 )}
               >
                 <span>{b.label}</span>
                 <span className={cn(
-                  "size-5 rounded-lg grid place-items-center text-[9px] font-black",
-                  active ? "bg-primary text-white" : "bg-white/10 text-muted-foreground/60"
+                  "size-5 rounded-lg grid place-items-center text-[9px] font-black transition-colors",
+                  active ? "bg-white/20 text-white" : "bg-white/5 text-muted-foreground/40"
                 )}>
                   {count}
                 </span>
               </button>
             );
           })}
+          <button
+            onClick={() => setBucket("outros")}
+            className={cn(
+              "flex items-center gap-3 rounded-xl px-4 py-2.5 text-[11px] font-bold transition-all border",
+              bucket === "outros"
+                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
+            )}
+          >
+            <span>Todos</span>
+            <span className={cn(
+              "size-5 rounded-lg grid place-items-center text-[9px] font-black",
+              bucket === "outros" ? "bg-white/20 text-white" : "bg-white/5 text-muted-foreground/40"
+            )}>
+              {total}
+            </span>
+          </button>
         </div>
       </div>
 
-      {/* Stats/Summary Row (Optional, adding for depth) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded-[1.5rem] border border-border/40 bg-surface/30 p-4 flex items-center gap-4">
-          <div className="size-10 rounded-xl bg-primary/10 text-primary grid place-items-center">
-            <KeyRound className="size-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Sessão Atual</span>
-            <span className="text-sm font-bold">{bucket === "teste" ? "Trials de 1h" : `${bucket} Premium`}</span>
-          </div>
-        </div>
-      </div>
 
       {/* Search + filter */}
       <div className="flex flex-col gap-3 md:flex-row">
