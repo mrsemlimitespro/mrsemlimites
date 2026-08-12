@@ -18,8 +18,8 @@ export function InstagramFollowButton() {
         right: "max(0.75rem, env(safe-area-inset-right))",
         // WhatsApp está em bottom = 5.5rem; este botão fica ~8px acima dele (altura ~2.5rem + 0.5rem gap)
         bottom: "calc(5.5rem + env(safe-area-inset-bottom) + 3rem)",
-        width: "min(calc(100vw - 1.5rem - env(safe-area-inset-left) - env(safe-area-inset-right)), clamp(160px, 44vw, 180px))",
-        maxWidth: "min(72vw, 200px)",
+        width: "min(calc(100vw - 1.5rem - env(safe-area-inset-left) - env(safe-area-inset-right)), clamp(160px, 35vw, 180px))",
+        maxWidth: "min(60vw, 160px)",
         boxShadow:
           "0 0 0 1px oklch(1 0 0 / 6%), 0 14px 32px -18px oklch(0 0 0 / 70%), 0 0 24px -10px color-mix(in oklab, oklch(0.68 0.28 340) 45%, transparent)",
         backgroundImage:
