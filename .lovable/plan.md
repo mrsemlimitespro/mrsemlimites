@@ -1,84 +1,42 @@
-# Reorganização Mobile-First + Aba Revendedores + PWA
+# Plano de Repaginação Visual Premium — MR SEM LIMITES
 
-Escopo cirúrgico: só toca navegação, agrupamento visual e a nova tela de Revendedores. Todas as rotas, fluxos, licenças, checkout, extensão, login e permissões continuam iguais — só mudam como o usuário chega até elas no mobile.
+Executar uma transformação visual completa para uma estética SaaS premium (fintech/cybersecurity), removendo o excesso de rosa e padronizando o Design System.
 
-## 1. Nova Bottom Nav (5 grupos, sem scroll horizontal)
+## Objetivos Visuais
+- **Paleta:** Preto profundo, grafite, cinza carvão, azul elétrico/neon, ciano e toques de violeta.
+- **Estética:** Clean, tecnológica, premium, com hierarquia visual clara.
+- **Componentes:** Padronização de botões, inputs, cards e tabelas.
 
-Reescrever `src/components/mobile-bottom-nav.tsx` com exatamente 5 abas fixas (flex-1, sem overflow):
+## Etapa 1: Design System e Global Styles
+- [ ] Atualizar `src/styles.css` com novos tokens de cores (substituindo magenta dominante por tons de azul/grafite).
+- [ ] Refinar utilitários `.glass` e `.card-premium`.
+- [ ] Padronizar tipografia e espaçamentos.
 
-| Aba | Rota-hub | Agrupa |
-|---|---|---|
-| Início | `/` | Home |
-| Ferramentas | `/ferramentas` (nova) | Agents, Packs, Prompts, Extensão |
-| Loja | `/loja` (nova) | Loja, Meus Clientes*, Meu Estoque*, Créditos Lovable, Comprar Chaves |
-| Gestão | `/gestao` (nova) | Clientes, Licenças, **Revendedores (novo, admin-only)** |
-| Perfil | `/perfil` | Perfil, Aulas, Créditos, Configurações, Notificações |
+## Etapa 2: Sidebar e Navegação
+- [ ] Refatorar `src/components/app-sidebar.tsx` para suporte a modo expandido/recolhido (rail).
+- [ ] Adicionar identificação de perfil (Admin, Revendedor, Cliente).
+- [ ] Organizar grupos lógicos (Comercial, Revenda, Conteúdo, Operação, Sistema).
 
-\*"Meus Clientes" e "Meu Estoque" já existem hoje dentro da Loja; permanecem como sub-abas.
+## Etapa 3: Core Layout e Dashboard
+- [ ] Atualizar `src/routes/_app.tsx` e `src/components/top-bar.tsx`.
+- [ ] Repaginar Dashboards (`_app.dashboard.tsx` e `admin.index.tsx`) com cards modernos e dados reais.
+- [ ] Implementar visualização diferenciada por Role (Ultra Admin vs Revendedor vs Cliente).
 
-O `matchTab` marca a aba ativa quando a rota atual é o hub OU qualquer rota agrupada nele (ex: `/licencas`, `/clientes`, `/admin/revendedores-gestao` → aba Gestão ativa).
+## Etapa 4: Telas de Conteúdo e Operação
+- [ ] Modernizar tabelas em Licenças (`_app.licencas.tsx`) e Clientes.
+- [ ] Repaginar Catálogos de IA (Agents e Prompts).
+- [ ] Atualizar página de Downloads (`_app.baixar-extensao.tsx`).
 
-## 2. Hubs = páginas com sub-navegação horizontal
+## Etapa 5: Autenticação e Login
+- [ ] Repaginar `src/routes/login.tsx` e `registro.tsx`.
+- [ ] Remover excesso de rosa e aplicar background dark premium.
 
-Cada hub novo (`/ferramentas`, `/loja`, `/gestao`) é uma rota TanStack simples que renderiza um componente `<HubTabs />` com abas horizontais roláveis (padrão já usado hoje na Loja). Cada aba renderiza o **conteúdo da rota original re-exportado** — não duplica lógica:
+## Detalhes Técnicos
+- Utilizar `oklch` para todas as cores novas.
+- Preservar integridade de todas as rotas e funções de API.
+- Garantir responsividade em 4 breakpoints (Mobile, Tablet, Notebook, Desktop).
 
-```
-src/routes/_app.ferramentas.tsx   → tabs: Agents | Packs | Prompts | Extensão
-src/routes/_app.loja.tsx          → tabs: Loja | Meus Clientes | Estoque | Créditos | Comprar Chaves
-src/routes/_app.gestao.tsx        → tabs: Clientes | Licenças | Revendedores (admin)
-```
-
-As rotas antigas (`/agents`, `/packs`, `/prompts`, `/licencas`, `/clientes`, etc.) **continuam existindo** para deep-links, sidebar desktop e links internos. Os hubs são atalhos mobile — a URL da aba ativa reflete a sub-rota real (`?tab=agents` ou navegação direta) pra preservar back button e refresh.
-
-## 3. Aba Revendedores (admin-only, dentro de Gestão)
-
-Nova sub-aba `Revendedores` visível só para `role === "admin"`. Reusa a lógica que já existe em `/admin/revendedores-gestao`:
-
-- Lista (nome, e-mail, status ativo/inativo)
-- Busca por e-mail
-- Botão "Novo revendedor" (mesmo modal atual → Magic Link)
-- Por revendedor: contagem de licenças/testes gerados + toggle bloquear/desbloquear
-- Deixa claro na UI: "Painel Revendedor" (rota `/revendedor`, visão dele) ≠ "Revendedores" (visão admin sobre todos)
-
-Se já existe conteúdo em `/admin/revendedores-gestao`, a aba renderiza o mesmo componente — não recria a tela do zero.
-
-## 4. Sidebar desktop (`app-sidebar.tsx`)
-
-Mantém itens individuais como hoje (desktop tem espaço). Só adiciona o item "Revendedores" no bloco admin apontando pra `/admin/revendedores-gestao`. Sem quebras.
-
-## 5. Empty states
-
-Substituir textos soltos ("Sem atividade ainda", "Nenhum registro ainda") por um componente `<EmptyState icon title description action />` reutilizável com ilustração leve (ícone lucide + gradiente do design system). Aplicar em: Agents (Atividade Recente), Packs (lista vazia), Prompts (histórico), Clientes (lista vazia), Notificações.
-
-## 6. PWA polish
-
-Manifest e ícones já existem (`public/manifest.webmanifest`, 192/512/maskable). Verificar:
-- `theme_color` e `background_color` batem com o dark atual (#0b0716 ✔)
-- Splash respeitando safe-area no iOS (`apple-touch-icon` no `__root.tsx` head)
-- Nenhum service worker ativo hoje que faça cache-first (regra Lovable) — só manifest-only, que é o correto pra "instalável"
-- Bottom nav respeita `env(safe-area-inset-bottom)` (já respeita)
-
-Nada de service worker novo — instalabilidade já funciona com manifest.
-
-## 7. O que NÃO muda
-
-- Nenhuma rota antiga é removida
-- Nenhum componente de licença, checkout, extensão, anti-tamper, login é alterado
-- SDK da extensão, endpoints `/api/public/*`, banco: intocados
-- Design system (tokens, gradientes, glass) preservado
-
-## Arquivos
-
-**Novos:**
-- `src/routes/_app.ferramentas.tsx`
-- `src/routes/_app.loja.tsx`
-- `src/routes/_app.gestao.tsx`
-- `src/components/hub-tabs.tsx` (sub-nav horizontal reutilizável)
-- `src/components/empty-state.tsx`
-
-**Editados:**
-- `src/components/mobile-bottom-nav.tsx` (5 abas com matches expandidos)
-- `src/components/app-sidebar.tsx` (adiciona "Revendedores" no bloco admin)
-- 4–5 telas que hoje têm empty state solto (aplicar `<EmptyState />`)
-
-Confirma pra eu executar?
+## Validação
+- Testar todos os fluxos de Role.
+- Verificar estados de loading (Skeletons).
+- Gerar relatório `REPAGINACAO_PREMIUM_MR_SEM_LIMITES.md`.
