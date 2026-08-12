@@ -344,7 +344,7 @@ function PanelBadge({ authed, role, isExpanded }: { authed: boolean | null, role
     )}>
       <div className={cn(
         "shrink-0 size-8 grid place-items-center rounded-lg text-lg border",
-        colorClasses
+        activeColorClass
       )}>
         {cfg.emoji}
       </div>
