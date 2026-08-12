@@ -86,45 +86,54 @@ function BaixarExtensaoPage() {
   const [activeTab, setActiveTab] = useState<"extensao" | "backend">("extensao");
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 pb-24 pt-8 md:pt-12">
-      <header className="mb-8">
-        <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Central de Downloads
+    <div className="mx-auto w-full max-w-[1400px] space-y-8 pb-32">
+      <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
+            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
+            Distribuição
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+            Central de <span className="text-primary">Downloads</span>
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-lg">
+            Versões oficiais das extensões e ferramentas para administradores.
+          </p>
         </div>
-        <h1 className="text-3xl font-bold md:text-4xl">Arquivos Disponíveis</h1>
-        <p className="mt-2 text-muted-foreground">
-          Versões oficiais das extensões e ferramentas para administradores.
-        </p>
       </header>
 
       {/* Tabs */}
-      <div className="mb-8 flex border-b border-border/40">
-        <button
-          onClick={() => setActiveTab("extensao")}
-          className={cn(
-            "px-6 py-3 text-sm font-semibold transition-all relative",
-            activeTab === "extensao" ? "text-primary" : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          Extensões
-          {activeTab === "extensao" && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
-          )}
-        </button>
-        {isAdmin && (
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+           <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Categoria de Arquivos</h3>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => setActiveTab("backend")}
+            onClick={() => setActiveTab("extensao")}
             className={cn(
-              "px-6 py-3 text-sm font-semibold transition-all relative",
-              activeTab === "backend" ? "text-brand-magenta" : "text-muted-foreground hover:text-foreground"
+              "flex items-center gap-3 rounded-2xl px-5 py-3 text-xs font-bold transition-all border",
+              activeTab === "extensao"
+                ? "bg-primary/10 text-primary border-primary/30 shadow-lg shadow-primary/5"
+                : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
             )}
           >
-            ZIP Backend
-            {activeTab === "backend" && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-magenta" />
-            )}
+            <span>Extensões</span>
           </button>
-        )}
+          
+          {isAdmin && (
+            <button
+              onClick={() => setActiveTab("backend")}
+              className={cn(
+                "flex items-center gap-3 rounded-2xl px-5 py-3 text-xs font-bold transition-all border",
+                activeTab === "backend"
+                  ? "bg-brand-magenta/10 text-brand-magenta border-brand-magenta/30 shadow-lg shadow-brand-magenta/5"
+                  : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
+              )}
+            >
+              <span>ZIP Backend</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {activeTab === "extensao" ? (
@@ -266,12 +275,12 @@ function ReleaseCard({ release }: { release: ExtensionRelease }) {
   };
 
   return (
-    <Card className="glass border-border/60 overflow-hidden">
-      <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-start md:justify-between">
+    <Card className="glass border-border/40 overflow-hidden rounded-2xl bg-surface/30">
+      <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-start md:justify-between">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="grid size-10 place-items-center rounded-xl gradient-primary">
-              <Package className="size-5 text-primary-foreground" />
+            <div className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">
+              <Package className="size-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
