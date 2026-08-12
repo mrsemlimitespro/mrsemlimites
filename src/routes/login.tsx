@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-r
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { BrandLockup } from "@/components/brand";
+import { BrandLogo } from "@/components/brand-logo";
 import { PasswordInput, SocialSignIn } from "@/components/auth-extras";
 import { NativeService } from "@/native/NativeService";
 import {
@@ -249,7 +249,7 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-violet/10 rounded-full blur-[120px] pointer-events-none opacity-50" />
        
       <div className="relative z-10 w-full max-w-[420px] flex flex-col items-center gap-8 px-6 py-12">
-        <BrandLockup />
+        <BrandLogo className="h-16 w-48 mb-2" />
         <div className="w-full rounded-[2.5rem] border border-border/40 bg-surface/30 backdrop-blur-xl p-8 shadow-2xl shadow-black/50">{children}</div>
       </div>
     </div>

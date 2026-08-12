@@ -33,7 +33,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { playSfx } from "@/lib/sfx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { BRAND_NAME, BrandMark } from "@/components/brand";
+import { BRAND_NAME } from "@/components/brand";
+import { BrandLogo } from "@/components/brand-logo";
+
 import { LogoutIncentiveDialog } from "@/components/logout-incentive-dialog";
 import { useIsAuthed } from "@/hooks/useIsAuthed";
 import { useUserRole, isPrivilegedRole } from "@/hooks/useUserRole";
@@ -148,25 +150,20 @@ export function AppSidebar({
         <aside
           aria-label="Navegação principal"
           className={cn(
-            "fixed left-0 top-0 z-40 hidden h-full md:flex flex-col transition-all duration-300 ease-in-out",
+            "relative z-40 hidden md:flex flex-col transition-all duration-300 ease-in-out shrink-0",
             "border-r border-border/50 bg-background/80 backdrop-blur-xl",
             isExpanded ? "w-64" : "w-20"
           )}
         >
           {/* Header & Logo */}
-          <div className="flex h-16 items-center px-4 mb-2">
-            <Link to="/" className="flex items-center gap-3 overflow-hidden">
-              <div className="shrink-0 size-9 grid place-items-center rounded-xl bg-gradient-primary shadow-lg shadow-primary/20">
-                <BrandMark size={22} className="text-white" />
-              </div>
-              <span className={cn(
-                "font-bold text-lg tracking-tight transition-all duration-300 whitespace-nowrap",
-                !isExpanded && "opacity-0 -translate-x-4 pointer-events-none"
-              )}>
-                {BRAND_NAME.split(" ")[0]} <span className="text-primary">{BRAND_NAME.split(" ")[1]}</span>
-              </span>
+          <div className="flex h-16 items-center px-4 mb-2 overflow-hidden">
+            <Link to="/" className="flex items-center gap-3 w-full">
+              <BrandLogo 
+                className={cn("transition-all duration-300", isExpanded ? "w-40 h-10" : "w-12 h-10")} 
+              />
             </Link>
           </div>
+
 
           {/* User Badge / Role Indicator */}
           <div className="px-3 mb-6">

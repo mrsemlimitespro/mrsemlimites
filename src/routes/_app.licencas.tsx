@@ -28,6 +28,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
+import { PageContainer } from "@/components/page-container";
+
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -392,7 +394,7 @@ function LicencasPage() {
 
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] space-y-8 pb-32">
+    <PageContainer className="space-y-8 pb-32">
       {/* Page Header */}
       <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
@@ -404,7 +406,7 @@ function LicencasPage() {
             Gestão de <span className="text-primary">Licenças</span>
           </h1>
           <p className="text-sm text-muted-foreground max-w-lg">
-            Emissão, controle e auditoria de chaves de acesso para a rede MR Lova.
+            Emissão, controle e auditoria de chaves de acesso para a rede MR SEM LIMITES.
           </p>
           
           <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border/40">
@@ -454,6 +456,7 @@ function LicencasPage() {
           </button>
         </div>
       </header>
+
 
       {/* Bucket Filter Hub */}
       <div className="flex flex-col gap-4">
@@ -784,6 +787,8 @@ function LicencasPage() {
                   </DropdownMenu>
                 </div>
 
+
+
               </li>
             ))}
           </ul>
@@ -818,7 +823,8 @@ function LicencasPage() {
           reload();
         }}
       />
-    </div>
+    </PageContainer>
+
   );
 }
 
