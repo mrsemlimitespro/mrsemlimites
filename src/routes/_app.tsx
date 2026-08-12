@@ -29,6 +29,7 @@ export const Route = createFileRoute("/_app")({
 function AppLayout() {
   const [isExpanded, setIsExpanded] = useState(true);
 
+  return (
     <div className="relative min-h-screen w-full">
       {/* Partículas só em telas >= md para preservar performance em mobile */}
       <div className="pointer-events-none absolute inset-0 z-0 hidden md:block">
