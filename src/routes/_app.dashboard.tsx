@@ -423,32 +423,35 @@ function KpiCard({ kpi }: { kpi: Kpi }) {
   const Icon = kpi.icon;
   return (
     <div
-      className="card-premium card-premium-hover group relative overflow-hidden p-5"
-      style={{ ["--tile-color" as never]: kpi.color }}
+      className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-border/40 bg-surface/40 p-6 transition-all duration-300 hover:bg-surface/60 hover:border-primary/30"
     >
-      {/* halo colorido no canto — muito sutil */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-40 blur-2xl transition-opacity duration-300 group-hover:opacity-70"
-        style={{
-          background: `radial-gradient(circle, color-mix(in oklab, ${kpi.color} 55%, transparent) 0%, transparent 70%)`,
-        }}
-      />
-      <div className="relative flex items-start justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          {kpi.label}
-        </p>
-        <span className="icon-tile size-10 shrink-0">
-          <Icon className="size-[18px]" strokeWidth={2} />
-        </span>
+      <div className="flex items-start justify-between">
+        <div className="space-y-1">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+            {kpi.label}
+          </p>
+          <p className="text-3xl font-extrabold tracking-tight text-foreground">
+            {kpi.value}
+          </p>
+        </div>
+        <div className="shrink-0 size-11 grid place-items-center rounded-2xl bg-surface border border-border/40 group-hover:border-primary/30 group-hover:text-primary transition-colors">
+          <Icon className="size-5" strokeWidth={2.5} />
+        </div>
       </div>
 
-      <p className="relative mt-4 text-[30px] font-semibold tracking-tight md:text-[32px]">
-        {kpi.value}
-      </p>
-      <p className="relative mt-1 text-xs text-muted-foreground/80">Últimos 7 dias</p>
+      <div className="mt-8 flex items-end justify-between gap-4">
+        <div className="flex flex-col gap-1">
+           <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1">
+              +12% <span className="opacity-50 font-normal">vs mês ant.</span>
+           </span>
+           <span className="text-[10px] font-medium text-muted-foreground/60">Últimos 7 dias</span>
+        </div>
+        <div className="flex-1 h-12 max-w-[120px]">
+           <Sparkline data={kpi.sparkline} color={kpi.color} />
+        </div>
+      </div>
 
-      <Sparkline data={kpi.sparkline} color={kpi.color} className="relative mt-4" />
+      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 transition-opacity duration-500 bg-gradient-glow" />
     </div>
   );
 }
