@@ -83,35 +83,138 @@ function BaixarExtensaoPage() {
   const role = useUserRole();
   const canSeeVideo = role === "admin" || role === "revendedor";
   const isAdmin = role === "admin";
+  const [activeTab, setActiveTab] = useState<"extensao" | "backend">("extensao");
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 pb-24 pt-8 md:pt-12">
       <header className="mb-8">
         <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Extensão
+          Central de Downloads
         </div>
-        <h1 className="text-3xl font-bold md:text-4xl">Baixar Extensão</h1>
+        <h1 className="text-3xl font-bold md:text-4xl">Arquivos Disponíveis</h1>
         <p className="mt-2 text-muted-foreground">
-          Somente a versão atualizada fica disponível para evitar instalar arquivo antigo.
+          Versões oficiais das extensões e ferramentas para administradores.
         </p>
       </header>
 
-      <InstallSteps />
-
-      <div className="mt-6">
-        <ExtensionStatusStrip />
+      {/* Tabs */}
+      <div className="mb-8 flex border-b border-border/40">
+        <button
+          onClick={() => setActiveTab("extensao")}
+          className={cn(
+            "px-6 py-3 text-sm font-semibold transition-all relative",
+            activeTab === "extensao" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          Extensões
+          {activeTab === "extensao" && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+          )}
+        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setActiveTab("backend")}
+            className={cn(
+              "px-6 py-3 text-sm font-semibold transition-all relative",
+              activeTab === "backend" ? "text-brand-magenta" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            ZIP Backend
+            {activeTab === "backend" && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-magenta" />
+            )}
+          </button>
+        )}
       </div>
 
-      <div className="mt-8 flex flex-col gap-4">
-        {RELEASES.map((r) => (
-          <ReleaseCard key={r.version} release={r} />
-        ))}
-
-        {canSeeVideo && <VideoReleaseCard isAdmin={isAdmin} />}
-      </div>
+      {activeTab === "extensao" ? (
+        <div className="space-y-8">
+          <InstallSteps />
+          <div className="mt-6">
+            <ExtensionStatusStrip />
+          </div>
+          <div className="mt-8 flex flex-col gap-4">
+            {RELEASES.map((r) => (
+              <ReleaseCard key={r.version} release={r} />
+            ))}
+            {canSeeVideo && <VideoReleaseCard isAdmin={isAdmin} />}
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <BackendZipCard />
+        </div>
+      )}
     </div>
   );
 }
+
+function BackendZipCard() {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = () => {
+    setDownloading(true);
+    playSfx("swipe");
+    const a = document.createElement("a");
+    a.href = "/master.zip";
+    a.download = "master.zip";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => {
+      setDownloading(false);
+      toast.success("Download do Master Kit iniciado");
+    }, 1000);
+  };
+
+  return (
+    <Card className="glass border-brand-magenta/30 overflow-hidden relative">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-magenta/70 to-transparent" />
+      <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3">
+            <div className="grid size-12 place-items-center rounded-2xl bg-brand-magenta/20">
+              <Package className="size-6 text-brand-magenta" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-brand-magenta">Extension Master Kit</h2>
+              <p className="text-sm text-muted-foreground">Pacote completo do backend e rotas de API (v17.0)</p>
+            </div>
+          </div>
+          <ul className="mt-6 space-y-2 text-sm text-foreground/80">
+            <li className="flex items-center gap-2">
+              <CheckCircle2 className="size-4 text-brand-magenta" />
+              <span>Estrutura completa de rotas `/api/public/`</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle2 className="size-4 text-brand-magenta" />
+              <span>Lógica de validação de licença v2</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle2 className="size-4 text-brand-magenta" />
+              <span>Migrações SQL e documentação MASTER</span>
+            </li>
+          </ul>
+        </div>
+        <div className="shrink-0 mt-4 md:mt-0">
+          <Button 
+            onClick={handleDownload}
+            disabled={downloading}
+            className="w-full md:w-auto bg-brand-magenta hover:bg-brand-magenta/90 text-white font-bold px-8 h-12 rounded-xl shadow-[0_0_20px_-5px_var(--brand-magenta)]"
+          >
+            {downloading ? (
+              <Loader2 className="mr-2 size-5 animate-spin" />
+            ) : (
+              <Download className="mr-2 size-5" />
+            )}
+            {downloading ? "Processando..." : "Baixar ZIP"}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 
 function InstallSteps() {
   return (
