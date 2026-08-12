@@ -262,18 +262,18 @@ function FeedCard({
   empty?: string;
 }) {
   return (
-    <div className="glass rounded-2xl p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-semibold">
-          <Icon className="size-4 text-muted-foreground" />
+    <div className="glass overflow-hidden rounded-2xl border border-border/40 bg-surface/30">
+      <div className="flex items-center justify-between border-b border-border/40 bg-white/[0.02] px-4 py-3">
+        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          <Icon className="size-3.5" />
           <span>{title}</span>
         </div>
         {to && (
           <Link
             to={to as never}
-            className="text-[11px] text-muted-foreground hover:text-foreground"
+            className="rounded-lg bg-white/5 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
           >
-            ver tudo →
+            Ver tudo
           </Link>
         )}
       </div>
@@ -321,17 +321,20 @@ function AdminControlCenter() {
   const licencas = useLatest<any>("licencas", "id, chave, plano, status, created_at");
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <header className="space-y-1">
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          Painel Administrativo
+    <div className="mx-auto max-w-[1400px] space-y-8 pb-32">
+      <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
+            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
+            Infraestrutura
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+            Central de <span className="text-primary">Controle</span>
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-lg">
+            Visão consolidada de usuários, receita, licenças e atividade global do sistema.
+          </p>
         </div>
-        <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
-          <span className="gradient-text-warm">Central de Controle</span>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Visão consolidada de usuários, receita, licenças e atividade do sistema.
-        </p>
       </header>
 
       {/* KPIs */}
@@ -347,12 +350,18 @@ function AdminControlCenter() {
       </section>
 
       {/* Monitoramento */}
-      <section aria-labelledby="mon-heading" className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Activity className="size-4 text-muted-foreground" />
-          <h2 id="mon-heading" className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Centro de Monitoramento
-          </h2>
+      <section aria-labelledby="mon-heading" className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="size-4 text-primary" />
+            <h2 id="mon-heading" className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+              Centro de Monitoramento
+            </h2>
+          </div>
+          <div className="flex items-center gap-2">
+             <span className="size-2 rounded-full bg-emerald-500" />
+             <span className="text-[10px] font-bold text-muted-foreground/80 uppercase">Atividade em tempo real</span>
+          </div>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <FeedCard
