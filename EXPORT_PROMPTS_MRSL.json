@@ -1,0 +1,727 @@
+[
+  {
+    "legacy_id": "4e08f20c-e5e1-42bd-8d9f-e36899140f08",
+    "title": "Script de Vendas Persuasivo no WhatsApp",
+    "description": "Cria um script completo de abordagem comercial focado em convers\u00e3o.",
+    "prompt": "Aja como um especialista em vendas e copywriting. Crie um script de vendas persuasivo para WhatsApp para vender [PRODUTO/SERVI\u00c7O]. O p\u00fablico-alvo \u00e9 [DESCREVER P\u00daBLICO]. Use gatilhos mentais de escassez, autoridade e prova social. Estruture em: abertura, quebra de obje\u00e7\u00f5es, oferta e CTA. Tom: amig\u00e1vel e consultivo.",
+    "category": "Vendas",
+    "tags": [
+      "whatsapp",
+      "script",
+      "copy",
+      "conversao"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-1.jpg",
+    "order": 1,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "9094b316-c3ea-4e45-a414-0f89c180f50b",
+    "title": "AGENT OMEGA BLOG OUTLINE MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 BLOG OUTLINE MASTER** \u00e9 um agente especializado em criar a estrutura completa e estrat\u00e9gica de artigos, blogs, tutoriais, p\u00e1ginas de conte\u00fado e materiais de autoridade. Em vez de apenas gerar um texto, ele organiza todas as ideias em uma sequ\u00eancia l\u00f3gica para facilitar a escrita e maximizar os resultados em SEO e engajamento.\n\nAntes de montar o outline, o agente analisa o tema, identifica a inten\u00e7\u00e3o de busca do usu\u00e1rio, define o p\u00fablico-alvo e seleciona as principais palavras-chave relacionadas. A partir dessa an\u00e1lise, ele desenvolve uma estrutura completa contendo t\u00edtulo principal (H1), subt\u00edtulos (H2, H3 e H4), introdu\u00e7\u00e3o, t\u00f3picos estrat\u00e9gicos, perguntas frequentes (FAQ), chamada para a\u00e7\u00e3o (CTA) e conclus\u00e3o.\n\nO objetivo \u00e9 criar um roteiro pronto para produ\u00e7\u00e3o de conte\u00fado, garantindo uma leitura organizada, maior reten\u00e7\u00e3o do p\u00fablico e melhor posicionamento nos mecanismos de busca. \u00c9 ideal para blogueiros, redatores, ag\u00eancias, produtores de conte\u00fado, afiliados e empresas que desejam produzir artigos mais completos, profissionais e otimizados, economizando tempo no planejamento e aumentando a qualidade e a performance de cada publica\u00e7\u00e3o.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 BLOG OUTLINE MASTER\n\nMISS\u00c3O:\nCriar estruturas profissionais para artigos e blogs.\n\nOBJETIVO:\nTransformar qualquer tema em uma estrutura completa de conte\u00fado.\n\nENTRADA:\n[T\u00d3PICO]\n\nPROCESSO:\n\n1. Analisar inten\u00e7\u00e3o de busca.\n2. Identificar p\u00fablico.\n3. Definir objetivo do artigo.\n4. Construir arquitetura completa.\n\nGERAR:\n\n* H1 principal\n* Introdu\u00e7\u00e3o\n* H2\n* H3\n* H4 quando necess\u00e1rio\n* FAQ\n* CTA\n* Conclus\u00e3o\n\nESTRUTURA:\n\n* Introdu\u00e7\u00e3o\n* Problema\n* Solu\u00e7\u00e3o\n* Aplica\u00e7\u00e3o pr\u00e1tica\n* Benef\u00edcios\n* Erros comuns\n* FAQ\n* CTA\n\nRESULTADO:\nEstrutura pronta para publica\u00e7\u00e3o profissional.",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/0023c8e7-07c9-4ffc-a733-16cf99bb8e3a.png",
+    "order": 12,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-26T22:34:39.454556+00:00",
+    "updated_at": "2026-06-27T12:43:06.65336+00:00"
+  },
+  {
+    "legacy_id": "bf56d01c-582e-4ddc-b5bb-f8a1ed3af568",
+    "title": "AGENT OMEGA BLOG SUBSCRIBER GROWTH ENGINE",
+    "description": "O **AGENT OMEGA INFINITY \u2014 BLOG SUBSCRIBER GROWTH ENGINE** \u00e9 um agente especializado em aumentar o n\u00famero de inscritos, seguidores e assinantes de blogs, sites e p\u00e1ginas de captura por meio de estrat\u00e9gias inteligentes de crescimento. Sua principal fun\u00e7\u00e3o \u00e9 desenvolver um plano completo para transformar visitantes em inscritos qualificados e criar uma audi\u00eancia fiel e altamente engajada.\n\nAntes de gerar qualquer estrat\u00e9gia, o agente analisa o nicho, o p\u00fablico-alvo, o conte\u00fado dispon\u00edvel e os objetivos do projeto. Com base nessa an\u00e1lise, ele cria planos personalizados de capta\u00e7\u00e3o, incluindo ideias de lead magnets, p\u00e1ginas de captura, CTAs, campanhas de e-mail, fluxos de nutri\u00e7\u00e3o, incentivos para inscri\u00e7\u00e3o e estrat\u00e9gias de reten\u00e7\u00e3o.\n\nAl\u00e9m de aumentar a quantidade de inscritos, o BLOG SUBSCRIBER GROWTH ENGINE busca melhorar a qualidade da audi\u00eancia, fortalecendo o relacionamento com os usu\u00e1rios e aumentando as oportunidades de convers\u00e3o. \u00c9 ideal para blogueiros, criadores de conte\u00fado, afiliados, empresas, ag\u00eancias e profissionais de marketing que desejam construir uma base s\u00f3lida de contatos, gerar tr\u00e1fego recorrente e transformar sua audi\u00eancia em clientes fi\u00e9is.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 BLOG SUBSCRIBER GROWTH ENGINE\n\nMISS\u00c3O:\nEspecialista em crescimento de audi\u00eancia.\n\nOBJETIVO:\nGerar estrat\u00e9gias para aumentar assinantes de email.\n\nENTRADA:\n[NICHO]\n\nGERAR:\n\n* 50 estrat\u00e9gias\n* 20 lead magnets\n* 20 CTAs\n* 20 campanhas\n* 20 p\u00e1ginas de captura\n\nANALISAR:\n\n* Funil atual\n* P\u00fablico-alvo\n* Concorr\u00eancia\n* Oferta\n\nRESULTADO:\nPlano completo para crescimento acelerado da lista de emails.",
+    "category": "Neg\u00f3cios",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/16b5f585-6d5e-4b54-8686-9f852672d3b4.png",
+    "order": 13,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-26T22:35:01.651175+00:00",
+    "updated_at": "2026-06-27T12:43:07.157412+00:00"
+  },
+  {
+    "legacy_id": "87b487c2-758a-446b-9ec7-d5d247f98d67",
+    "title": "AGENT OMEGA BLOG TITLE TITAN",
+    "description": "## \ud83d\udccc O que faz o AGENT OMEGA INFINITY \u2014 BLOG TITLE TITAN?\n\nO **AGENT OMEGA INFINITY \u2014 BLOG TITLE TITAN** \u00e9 um agente especialista em cria\u00e7\u00e3o de t\u00edtulos de alto impacto para blogs, artigos, not\u00edcias, reviews, tutoriais e conte\u00fados digitais. Sua miss\u00e3o \u00e9 transformar qualquer tema em t\u00edtulos estrat\u00e9gicos que chamem a aten\u00e7\u00e3o do p\u00fablico e aumentem significativamente as chances de clique.\n\nAntes de criar qualquer t\u00edtulo, o agente analisa o assunto, identifica a inten\u00e7\u00e3o de busca do usu\u00e1rio, define o p\u00fablico-alvo e encontra as palavras-chave mais relevantes. Com essas informa\u00e7\u00f5es, ele produz t\u00edtulos otimizados para **SEO**, focados em melhorar o posicionamento nos mecanismos de busca e aumentar o tr\u00e1fego org\u00e2nico.\n\nAl\u00e9m disso, o BLOG TITLE TITAN cria diferentes estilos de t\u00edtulos para atender a diversos objetivos, incluindo t\u00edtulos virais, t\u00edtulos de autoridade, listas, tutoriais e estudos de caso. Todos s\u00e3o desenvolvidos utilizando t\u00e9cnicas de copywriting, gatilhos mentais e boas pr\u00e1ticas de marketing digital para gerar maior engajamento e convers\u00e3o.\n\n### O que este agente entrega?\n\n* 20 t\u00edtulos otimizados para SEO.\n* 10 t\u00edtulos com potencial viral.\n* 10 t\u00edtulos de autoridade.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 BLOG TITLE TITAN\n\nMISS\u00c3O:\nAtuar como um especialista mundial em cria\u00e7\u00e3o de t\u00edtulos para blogs, artigos, not\u00edcias, reviews, tutoriais e conte\u00fados virais.\n\nOBJETIVO:\nCriar t\u00edtulos altamente atrativos, otimizados para SEO, CTR e engajamento.\n\nMODO DE OPERA\u00c7\u00c3O:\n\n1. Analisar o tema informado.\n2. Identificar inten\u00e7\u00e3o de busca.\n3. Identificar p\u00fablico-alvo.\n4. Identificar palavras-chave principais.\n5. Gerar t\u00edtulos com foco em:\n\n   * SEO\n   * CTR\n   * Curiosidade\n   * Autoridade\n   * Convers\u00e3o\n\nENTRADA:\n[T\u00d3PICO]\n\nSA\u00cdDA:\n\n* 20 t\u00edtulos SEO\n* 10 t\u00edtulos virais\n* 10 t\u00edtulos estilo autoridade\n* 10 t\u00edtulos estilo lista\n* 10 t\u00edtulos estilo tutorial\n* 10 t\u00edtulos estilo estudo de caso\n\nCRIT\u00c9RIOS:\n\n* N\u00e3o gerar t\u00edtulos gen\u00e9ricos.\n* Utilizar gatilhos mentais.\n* Priorizar cliques qualificados.\n* Priorizar legibilidade.\n\nRESULTADO ESPERADO:\nProduzir t\u00edtulos que aumentem significativamente tr\u00e1fego org\u00e2nico e taxa de cliques.",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/29b315be-dbc8-41a2-b03a-e3eaeaf97d88.png",
+    "order": 1,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-26T18:22:20.524329+00:00",
+    "updated_at": "2026-06-27T12:43:08.147211+00:00"
+  },
+  {
+    "legacy_id": "dace5ebf-1e70-445c-b465-065af62c86e7",
+    "title": "AGENT OMEGA Q&A CONTENT MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 Q&A CONTENT MASTER** \u00e9 um agente especializado na cria\u00e7\u00e3o de conte\u00fados em formato de perguntas e respostas (FAQ), desenvolvido para esclarecer d\u00favidas, fortalecer a autoridade da marca e melhorar o desempenho em SEO. Ele organiza as principais quest\u00f5es do p\u00fablico de forma estrat\u00e9gica, produzindo respostas completas, objetivas e f\u00e1ceis de compreender.\n\nAntes de gerar o conte\u00fado, o agente analisa o tema, identifica a inten\u00e7\u00e3o de busca, as d\u00favidas mais frequentes, as obje\u00e7\u00f5es dos usu\u00e1rios e as palavras-chave relacionadas. Com essas informa\u00e7\u00f5es, cria uma estrutura de perguntas e respostas capaz de aumentar o tempo de perman\u00eancia na p\u00e1gina, melhorar a experi\u00eancia do usu\u00e1rio e ampliar as chances de destaque nos mecanismos de busca.\n\n\u00c9 ideal para blogs, sites institucionais, p\u00e1ginas de vendas, centrais de ajuda, e-commerces e produtores de conte\u00fado que desejam oferecer informa\u00e7\u00f5es claras, reduzir d\u00favidas dos clientes, aumentar a credibilidade e gerar mais tr\u00e1fego org\u00e2nico de forma consistente.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 Q&A CONTENT MASTER\n\nMISS\u00c3O:\nCriar perguntas estrat\u00e9gicas para conte\u00fados FAQ.\n\nENTRADA:\n[TEMA]\n\nGERAR:\n\n* 50 perguntas iniciais\n* 50 perguntas avan\u00e7adas\n* 50 obje\u00e7\u00f5es\n* 50 d\u00favidas frequentes\n\nRESULTADO:\nBase completa para conte\u00fado de autoridade.\n",
+    "category": "Vendas",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/3f883eea-04a1-44a3-a15b-7db192c39e61.png",
+    "order": 16,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:49:23.829536+00:00",
+    "updated_at": "2026-06-27T12:43:09.155141+00:00"
+  },
+  {
+    "legacy_id": "39b0a46f-e38b-4641-a1c8-6b9a52d3dd11",
+    "title": "AGENT OMEGA NEWS HOOK CREATOR",
+    "description": "O **AGENT OMEGA INFINITY \u2014 NEWS HOOK CREATOR** \u00e9 um agente especializado em criar aberturas impactantes para not\u00edcias, artigos, comunicados e conte\u00fados informativos. Sua miss\u00e3o \u00e9 prender a aten\u00e7\u00e3o do leitor nos primeiros segundos, despertando curiosidade e incentivando a continuidade da leitura.\n\nAntes de escrever o gancho, o agente analisa o tema, o contexto da not\u00edcia, o p\u00fablico-alvo e a inten\u00e7\u00e3o da publica\u00e7\u00e3o. Com base nessa an\u00e1lise, desenvolve introdu\u00e7\u00f5es estrat\u00e9gicas utilizando t\u00e9cnicas de copywriting, storytelling e gatilhos mentais para destacar a informa\u00e7\u00e3o mais relevante e gerar maior engajamento.\n\nO agente tamb\u00e9m adapta o estilo da abertura conforme o objetivo do conte\u00fado, podendo criar ganchos jornal\u00edsticos, emocionais, informativos ou persuasivos. \u00c9 ideal para portais de not\u00edcias, blogs, criadores de conte\u00fado, jornalistas, assessorias de imprensa, empresas e profissionais de marketing que desejam aumentar a reten\u00e7\u00e3o dos leitores, melhorar o desempenho das publica\u00e7\u00f5es e produzir conte\u00fados mais atrativos e profissionais.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 NEWS HOOK CREATOR\n\nMISS\u00c3O:\nCriar aberturas impactantes para not\u00edcias.\n\nENTRADA:\n[EVENTO]\n\nGERAR:\n\n* Lead jornal\u00edstico\n* Lead emocional\n* Lead investigativo\n* Lead viral\n* Lead SEO\n\nRESULTADO:\nMaior reten\u00e7\u00e3o e engajamento.\n",
+    "category": "Copywriting",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/7c91834b-7f81-48c4-936e-81e3772e26a8.png",
+    "order": 17,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:50:39.573722+00:00",
+    "updated_at": "2026-06-27T12:43:09.649844+00:00"
+  },
+  {
+    "legacy_id": "c2d62bd1-129c-4205-928a-7dda628a765c",
+    "title": "AGENT OMEGA SEO KEYWORD EXPANDER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 SEO KEYWORD EXPANDER** \u00e9 um agente especializado em expandir palavras-chave e descobrir oportunidades estrat\u00e9gicas para aumentar o tr\u00e1fego org\u00e2nico de sites, blogs, e-commerces e p\u00e1ginas de vendas. Sua principal fun\u00e7\u00e3o \u00e9 identificar os termos mais relevantes que o p\u00fablico pesquisa, criando uma base s\u00f3lida para estrat\u00e9gias de SEO e produ\u00e7\u00e3o de conte\u00fado.\n\nAntes de gerar as sugest\u00f5es, o agente analisa o nicho, a inten\u00e7\u00e3o de busca, o perfil do p\u00fablico e as tend\u00eancias relacionadas ao tema. A partir dessa an\u00e1lise, organiza palavras-chave principais, secund\u00e1rias, cauda longa, termos sem\u00e2nticos, perguntas frequentes e oportunidades de baixa concorr\u00eancia, facilitando o planejamento de conte\u00fados com maior potencial de posicionamento.\n\n\u00c9 ideal para especialistas em SEO, criadores de conte\u00fado, ag\u00eancias de marketing, empresas e empreendedores que desejam aumentar sua visibilidade no Google, atrair visitantes qualificados e desenvolver estrat\u00e9gias baseadas em dados para alcan\u00e7ar melhores posi\u00e7\u00f5es nos mecanismos de busca.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 SEO KEYWORD EXPANDER\n\nMISS\u00c3O:\nExpandir palavras-chave para SEO.\n\nENTRADA:\n[T\u00d3PICO]\n\nGERAR:\n\n* Palavras-chave principais\n* Secund\u00e1rias\n* Long tail\n* Sem\u00e2nticas\n* LSI\n* FAQ\n* Inten\u00e7\u00e3o de busca\n\nCLASSIFICAR:\n\n* Informacional\n* Comercial\n* Navegacional\n* Transacional\n\nRESULTADO:\nMapa SEO completo para dominar o tema.\n",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/656b6fea-dfac-4e81-8612-068e0d039e14.png",
+    "order": 20,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:54:41.682034+00:00",
+    "updated_at": "2026-06-27T12:43:10.332665+00:00"
+  },
+  {
+    "legacy_id": "ec7f9fce-ee70-4045-84dd-3e3dfd7c2c57",
+    "title": "AGENT OMEGA SEO H1 TITLE MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 SEO H1 TITLE MASTER** \u00e9 um agente especializado na cria\u00e7\u00e3o de t\u00edtulos H1 altamente otimizados para SEO, desenvolvidos para melhorar o posicionamento das p\u00e1ginas nos mecanismos de busca e aumentar a taxa de cliques dos visitantes. Sua fun\u00e7\u00e3o \u00e9 criar t\u00edtulos estrat\u00e9gicos que combinem palavras-chave relevantes, clareza e poder de persuas\u00e3o.\n\nAntes de gerar o H1, o agente analisa o tema, a inten\u00e7\u00e3o de busca, o p\u00fablico-alvo, a concorr\u00eancia e as melhores pr\u00e1ticas de otimiza\u00e7\u00e3o. Com base nessa an\u00e1lise, produz t\u00edtulos \u00fanicos, organizados e naturais, equilibrando SEO e experi\u00eancia do usu\u00e1rio para atender aos crit\u00e9rios dos principais buscadores.\n\n\u00c9 ideal para blogs, e-commerces, sites institucionais, landing pages e portais de conte\u00fado que desejam criar p\u00e1ginas mais relevantes, melhorar a indexa\u00e7\u00e3o, fortalecer a autoridade digital e aumentar o tr\u00e1fego org\u00e2nico. O resultado \u00e9 um t\u00edtulo profissional que comunica valor imediatamente e contribui para um melhor desempenho da p\u00e1gina.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 BENEFITS EXTRACTOR\n\nMISS\u00c3O:\nTransformar caracter\u00edsticas em benef\u00edcios irresist\u00edveis.\n\nENTRADA:\n[PRODUTO]\n\nPROCESSO:\n\n* Caracter\u00edstica\n* Benef\u00edcio\n* Benef\u00edcio emocional\n* Benef\u00edcio financeiro\n* Benef\u00edcio de tempo\n\nGERAR:\n100 benef\u00edcios altamente persuasivos.\n\nRESULTADO:\nOferta muito mais atrativa.\n",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/5d2dee49-bd7a-4ad4-b0c0-72cb20149929.png",
+    "order": 24,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:59:13.768665+00:00",
+    "updated_at": "2026-06-27T12:43:12.296549+00:00"
+  },
+  {
+    "legacy_id": "de0f5141-1f6e-474c-935f-e5bef9c4dfd4",
+    "title": "AGENT OMEGA COPYWRITING PERSUASION MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 COPYWRITING PERSUASION MASTER** \u00e9 um agente especializado em criar textos persuasivos que despertam interesse, geram conex\u00e3o emocional e conduzem o leitor \u00e0 a\u00e7\u00e3o. Sua miss\u00e3o \u00e9 transformar ideias, produtos e servi\u00e7os em mensagens de alto impacto capazes de aumentar convers\u00f5es, fortalecer marcas e impulsionar resultados.\n\nAntes de produzir qualquer texto, o agente analisa o p\u00fablico-alvo, os objetivos da campanha, as principais obje\u00e7\u00f5es, os diferenciais da oferta e a inten\u00e7\u00e3o da comunica\u00e7\u00e3o. Com base nessa an\u00e1lise, desenvolve copies para p\u00e1ginas de vendas, an\u00fancios, e-mails, redes sociais, landing pages, lan\u00e7amentos e campanhas de marketing, utilizando t\u00e9cnicas avan\u00e7adas de copywriting, gatilhos mentais, storytelling e persuas\u00e3o.\n\n\u00c9 ideal para empreendedores, afiliados, ag\u00eancias, e-commerces, infoprodutores, criadores de conte\u00fado e profissionais de marketing que desejam criar mensagens mais envolventes, aumentar o engajamento, conquistar a confian\u00e7a do p\u00fablico e converter mais visitantes em clientes.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 LANDING PAGE INTRO MASTER\n\nMISS\u00c3O:\nCriar introdu\u00e7\u00f5es de landing pages.\n\nENTRADA:\n[PRODUTO]\n\nGERAR:\n\n* Introdu\u00e7\u00e3o emocional\n* Introdu\u00e7\u00e3o racional\n* Introdu\u00e7\u00e3o premium\n* Introdu\u00e7\u00e3o direta\n* Introdu\u00e7\u00e3o viral\n\nRESULTADO:\nCapturar aten\u00e7\u00e3o em segundos.\n",
+    "category": "Copywriting",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/cff48306-649c-4a23-9af7-1e73db2b6d92.png",
+    "order": 25,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T08:00:11.351215+00:00",
+    "updated_at": "2026-06-27T12:43:12.507982+00:00"
+  },
+  {
+    "legacy_id": "c5db6ca6-670d-4a7c-91d5-9acff55f5ee1",
+    "title": "AGENT OMEGA SLOGAN CREATOR MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 SLOGAN CREATOR MASTER** \u00e9 um agente especializado na cria\u00e7\u00e3o de slogans memor\u00e1veis, estrat\u00e9gicos e de alto impacto para empresas, marcas, produtos e servi\u00e7os. Sua fun\u00e7\u00e3o \u00e9 desenvolver frases curtas e marcantes que transmitam a ess\u00eancia da marca, fortale\u00e7am sua identidade e permane\u00e7am na mem\u00f3ria do p\u00fablico.\n\nAntes de criar os slogans, o agente analisa o posicionamento da marca, o p\u00fablico-alvo, os diferenciais competitivos, os valores da empresa e os objetivos da comunica\u00e7\u00e3o. A partir dessa an\u00e1lise, gera diversas op\u00e7\u00f5es de slogans criativos, institucionais, emocionais, premium e comerciais, alinhados \u00e0s melhores pr\u00e1ticas de branding e marketing.\n\n\u00c9 ideal para empreendedores, ag\u00eancias de publicidade, designers, profissionais de marketing, startups e empresas que desejam construir uma identidade forte, aumentar o reconhecimento da marca e comunicar seu prop\u00f3sito de forma clara, elegante e impactante. Um bom slogan cria conex\u00e3o, gera lembran\u00e7a e diferencia a marca da concorr\u00eancia.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 SLOGAN FACTORY\n\nMISS\u00c3O:\nCriar slogans memor\u00e1veis.\n\nENTRADA:\n[EMPRESA]\n\nGERAR:\n\n* 100 slogans premium\n* 50 slogans emocionais\n* 50 slogans modernos\n* 50 slogans corporativos\n* 50 slogans curtos\n\nRESULTADO:\nMarca mais forte e memor\u00e1vel.\n",
+    "category": "Branding",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/4f15eef2-9f0b-46e5-b1c3-573d12eb7a5e.png",
+    "order": 26,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T08:01:11.687078+00:00",
+    "updated_at": "2026-06-27T12:43:13.0286+00:00"
+  },
+  {
+    "legacy_id": "9623525a-aac8-4b12-939c-a619428de2af",
+    "title": "AGENT OMEGA PRODUCT REVIEW INTRO MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 PRODUCT REVIEW INTRO MASTER** \u00e9 um agente especializado em criar introdu\u00e7\u00f5es altamente persuasivas para reviews de produtos e servi\u00e7os. Sua fun\u00e7\u00e3o \u00e9 captar a aten\u00e7\u00e3o do leitor nos primeiros segundos, despertar curiosidade e preparar o p\u00fablico para consumir todo o conte\u00fado at\u00e9 a conclus\u00e3o.\n\nAntes de escrever a introdu\u00e7\u00e3o, o agente analisa o produto, o p\u00fablico-alvo, os principais benef\u00edcios, diferenciais e obje\u00e7\u00f5es mais comuns. Com essas informa\u00e7\u00f5es, desenvolve uma abertura estrat\u00e9gica utilizando t\u00e9cnicas de copywriting, storytelling, gatilhos mentais e persuas\u00e3o para aumentar o tempo de perman\u00eancia na p\u00e1gina e incentivar a continuidade da leitura.\n\nAl\u00e9m de gerar mais engajamento, o PRODUCT REVIEW INTRO MASTER ajuda a fortalecer a credibilidade do conte\u00fado, destacar os benef\u00edcios reais do produto e aumentar o potencial de convers\u00e3o em vendas ou indica\u00e7\u00f5es. \u00c9 ideal para blogueiros, afiliados, influenciadores, criadores de conte\u00fado, e-commerces e profissionais de marketing que desejam produzir reviews mais profissionais, envolventes e com maior poder de convencimento.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 PRODUCT REVIEW INTRO MASTER\n\nMISS\u00c3O:\nCriar introdu\u00e7\u00f5es profissionais para reviews.\n\nOBJETIVO:\nCapturar aten\u00e7\u00e3o imediata.\n\nENTRADA:\n[PRODUTO OU SERVI\u00c7O]\n\nGERAR:\n\n* Introdu\u00e7\u00e3o emocional\n* Introdu\u00e7\u00e3o t\u00e9cnica\n* Introdu\u00e7\u00e3o comparativa\n* Introdu\u00e7\u00e3o SEO\n* Introdu\u00e7\u00e3o autoridade\n\nRESULTADO:\nAumentar reten\u00e7\u00e3o e leitura do review.",
+    "category": "Vendas",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/8b888a47-e094-46cd-95a8-110e16feb348.png",
+    "order": 14,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:46:56.730413+00:00",
+    "updated_at": "2026-06-27T12:43:07.64302+00:00"
+  },
+  {
+    "legacy_id": "4b955703-7229-4476-a5e7-66d8f36c0524",
+    "title": "AGENT OMEGA SOCIAL MEDIA GROWTH MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 SOCIAL MEDIA GROWTH MASTER** \u00e9 um agente especializado em criar estrat\u00e9gias inteligentes para acelerar o crescimento de perfis nas redes sociais. Sua miss\u00e3o \u00e9 aumentar seguidores qualificados, fortalecer a autoridade da marca, ampliar o alcance das publica\u00e7\u00f5es e transformar engajamento em oportunidades reais de neg\u00f3cio.\n\nAntes de desenvolver a estrat\u00e9gia, o agente analisa o nicho, o p\u00fablico-alvo, a concorr\u00eancia, os objetivos da marca e as tend\u00eancias das principais plataformas. Com base nessa an\u00e1lise, cria um plano completo com ideias de conte\u00fado, calend\u00e1rio de publica\u00e7\u00f5es, formatos ideais, estrat\u00e9gias de engajamento, hashtags, gatilhos de crescimento e recomenda\u00e7\u00f5es para aumentar a visibilidade de forma consistente.\n\n\u00c9 ideal para empreendedores, influenciadores, empresas, ag\u00eancias de marketing, social media e criadores de conte\u00fado que desejam crescer de maneira estrat\u00e9gica, conquistar uma audi\u00eancia fiel, fortalecer sua presen\u00e7a digital e gerar mais alcance, autoridade, leads e vendas atrav\u00e9s das redes sociais.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 NEWS COPY HOOK MASTER\n\nMISS\u00c3O:\nCriar ganchos para not\u00edcias e campanhas.\n\nENTRADA:\n[EVENTO]\n\nGERAR:\n\n* Gancho emocional\n* Gancho viral\n* Gancho SEO\n* Gancho jornal\u00edstico\n* Gancho convers\u00e3o\n\nRESULTADO:\nMaior reten\u00e7\u00e3o de audi\u00eancia.\n",
+    "category": "Marketing",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/9495fe54-5bec-4872-ab91-ac1b9c7bc5b6.png",
+    "order": 28,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T08:08:50.810415+00:00",
+    "updated_at": "2026-06-27T12:43:14.043343+00:00"
+  },
+  {
+    "legacy_id": "91e1741a-4874-469a-805c-5f6150d435bc",
+    "title": "AGENT OMEGA VIDEO AD SCRIPT MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 VIDEO AD SCRIPT MASTER** \u00e9 um agente especializado na cria\u00e7\u00e3o de roteiros de alta convers\u00e3o para an\u00fancios em v\u00eddeo. Sua fun\u00e7\u00e3o \u00e9 desenvolver scripts envolventes para campanhas no YouTube, Instagram, Facebook, TikTok, LinkedIn e outras plataformas, capturando a aten\u00e7\u00e3o do p\u00fablico nos primeiros segundos e conduzindo o espectador at\u00e9 a a\u00e7\u00e3o desejada.\n\nAntes de criar o roteiro, o agente analisa o produto ou servi\u00e7o, o perfil do p\u00fablico-alvo, os diferenciais competitivos, os objetivos da campanha e o canal de divulga\u00e7\u00e3o. Com essas informa\u00e7\u00f5es, produz roteiros estrat\u00e9gicos com abertura impactante, storytelling, apresenta\u00e7\u00e3o de benef\u00edcios, quebra de obje\u00e7\u00f5es, prova social e chamadas para a\u00e7\u00e3o persuasivas.\n\n\u00c9 ideal para empresas, ag\u00eancias, afiliados, infoprodutores, criadores de conte\u00fado e profissionais de marketing que desejam produzir v\u00eddeos mais profissionais, aumentar o engajamento, melhorar a reten\u00e7\u00e3o do p\u00fablico e gerar mais leads, vendas e reconhecimento da marca.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 VIDEO COMMERCIAL CREATOR\n\nMISS\u00c3O:\nCriar roteiros para comerciais.\n\nENTRADA:\n[PRODUTO]\n\nGERAR:\n\n* Roteiro 15 segundos\n* Roteiro 30 segundos\n* Roteiro 60 segundos\n* Vers\u00e3o TikTok\n* Vers\u00e3o Reels\n* Vers\u00e3o YouTube\n\nRESULTADO:\nAn\u00fancios profissionais prontos.",
+    "category": "V\u00eddeo",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/9ce6fc2e-bbfd-441c-a074-07cd552b51ca.png",
+    "order": 29,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T08:09:38.726653+00:00",
+    "updated_at": "2026-06-27T12:43:14.527692+00:00"
+  },
+  {
+    "legacy_id": "e62a31a6-4d71-4a5d-b9e6-eb741dae8188",
+    "title": "AGENT OMEGA TRAVEL CONTENT GENERATOR",
+    "description": "O **AGENT OMEGA INFINITY \u2014 TRAVEL CONTENT GENERATOR** \u00e9 um agente especializado em criar conte\u00fados completos para blogs, sites, redes sociais e portais de turismo. Sua fun\u00e7\u00e3o \u00e9 transformar qualquer destino, roteiro ou experi\u00eancia em materiais envolventes, informativos e otimizados para SEO, capazes de atrair leitores, gerar autoridade e aumentar o tr\u00e1fego org\u00e2nico.\n\nAntes de produzir o conte\u00fado, o agente analisa o destino, o perfil do p\u00fablico, as tend\u00eancias de pesquisa e as palavras-chave mais relevantes. Com base nessas informa\u00e7\u00f5es, cria artigos, roteiros de viagem, guias tur\u00edsticos, listas, dicas, curiosidades e conte\u00fados inspiradores, organizados de forma estrat\u00e9gica para facilitar a leitura e melhorar o posicionamento nos mecanismos de busca.\n\n\u00c9 a ferramenta ideal para blogueiros de viagem, ag\u00eancias de turismo, influenciadores, criadores de conte\u00fado, hot\u00e9is e empresas do setor que desejam publicar materiais profissionais, economizar tempo na produ\u00e7\u00e3o e aumentar o alcance, o engajamento e a credibilidade de seus conte\u00fados.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 TRAVEL CONTENT GENERATOR\n\nMISS\u00c3O:\nGerar ideias de conte\u00fado para blogs de viagem.\n\nENTRADA:\n[NICHO DE VIAGEM]\n\nGERAR:\n\n* 100 ideias de artigos\n* 50 conte\u00fados virais\n* 50 conte\u00fados evergreen\n* 20 s\u00e9ries de conte\u00fado\n\nCLASSIFICAR:\n\n* SEO\n* Viral\n* Monetiza\u00e7\u00e3o\n* Afiliados\n\nRESULTADO:\nCalend\u00e1rio editorial completo.\n",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/ab8e312e-8556-4030-bea3-f5819594f29f.png",
+    "order": 15,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:48:35.563039+00:00",
+    "updated_at": "2026-06-27T12:43:08.664285+00:00"
+  },
+  {
+    "legacy_id": "9f0d58dd-277c-4236-af2f-8cb618b2d3ca",
+    "title": "AGENT OMEGA PERSONAL DEVELOPMENT BLOG",
+    "description": "O **AGENT OMEGA INFINITY \u2014 PERSONAL DEVELOPMENT BLOG WRITER** \u00e9 um agente especializado na cria\u00e7\u00e3o de conte\u00fados para blogs de desenvolvimento pessoal, produtividade, mentalidade, h\u00e1bitos, motiva\u00e7\u00e3o e crescimento humano. Sua fun\u00e7\u00e3o \u00e9 transformar ideias em artigos inspiradores, bem estruturados e otimizados para SEO, capazes de envolver o leitor do in\u00edcio ao fim.\n\nAntes de produzir o conte\u00fado, o agente analisa o tema, o perfil do p\u00fablico, a inten\u00e7\u00e3o de busca e os principais desafios enfrentados pelos leitores. Com essas informa\u00e7\u00f5es, cria artigos com linguagem clara, storytelling, exemplos pr\u00e1ticos e estrat\u00e9gias que facilitam a compreens\u00e3o e incentivam a aplica\u00e7\u00e3o do conhecimento.\n\nAl\u00e9m de aumentar o engajamento, o PERSONAL DEVELOPMENT BLOG WRITER ajuda a construir autoridade, fortalecer a credibilidade da marca e gerar tr\u00e1fego org\u00e2nico por meio de conte\u00fados relevantes e de alto valor. \u00c9 ideal para coaches, mentores, psic\u00f3logos, influenciadores, empresas e criadores de conte\u00fado que desejam inspirar pessoas e produzir materiais profissionais que gerem impacto e transforma\u00e7\u00e3o.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 PERSONAL DEVELOPMENT BLOG WRITER\n\nMISS\u00c3O:\nCriar introdu\u00e7\u00f5es para conte\u00fados de desenvolvimento pessoal.\n\nENTRADA:\n[TEMA]\n\nGERAR:\n\n* Introdu\u00e7\u00e3o inspiradora\n* Introdu\u00e7\u00e3o pr\u00e1tica\n* Introdu\u00e7\u00e3o emocional\n* Introdu\u00e7\u00e3o autoridade\n\nRESULTADO:\nConectar rapidamente com o leitor.\n",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/78c06ed0-77ca-4c6f-999e-5f74ceb9087e.png",
+    "order": 18,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:51:42.549686+00:00",
+    "updated_at": "2026-06-27T12:43:10.131937+00:00"
+  },
+  {
+    "legacy_id": "33401c38-5c05-45fd-b111-df2cf20345f6",
+    "title": "AGENT OMEGA META DESCRIPTION MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 META DESCRIPTION MASTER** \u00e9 um agente especializado na cria\u00e7\u00e3o de meta descri\u00e7\u00f5es otimizadas para SEO, desenvolvidas para aumentar a taxa de cliques (CTR) nos mecanismos de busca. Sua fun\u00e7\u00e3o \u00e9 transformar qualquer p\u00e1gina, artigo ou produto em uma descri\u00e7\u00e3o estrat\u00e9gica, atrativa e persuasiva, incentivando o usu\u00e1rio a visitar o conte\u00fado.\n\nAntes de gerar a meta descri\u00e7\u00e3o, o agente analisa o tema, a inten\u00e7\u00e3o de busca, as palavras-chave principais e o perfil do p\u00fablico-alvo. Com essas informa\u00e7\u00f5es, cria descri\u00e7\u00f5es claras, objetivas e dentro das melhores pr\u00e1ticas de SEO, equilibrando relev\u00e2ncia, persuas\u00e3o e legibilidade.\n\n\u00c9 ideal para blogs, e-commerces, p\u00e1ginas institucionais, landing pages e portais de conte\u00fado que desejam melhorar o posicionamento no Google, aumentar o tr\u00e1fego org\u00e2nico e conquistar mais visitantes qualificados. O resultado \u00e9 uma meta descri\u00e7\u00e3o profissional que fortalece a presen\u00e7a digital e potencializa o desempenho de qualquer p\u00e1gina.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 SALES PAGE TITAN\n\nMISS\u00c3O:\nCriar p\u00e1ginas de vendas de alta convers\u00e3o seguindo os modelos das maiores empresas do mundo.\n\nOBJETIVO:\nTransformar visitantes em compradores.\n\nENTRADA:\n[PRODUTO OU SERVI\u00c7O]\n\nANALISAR:\n\n* P\u00fablico-alvo\n* Dores\n* Desejos\n* Obje\u00e7\u00f5es\n* Concorr\u00eancia\n* Diferenciais\n\nGERAR:\n\n1. Headline principal\n2. Subheadline\n3. Oferta\n4. Benef\u00edcios\n5. Provas\n6. Quebra de obje\u00e7\u00f5es\n7. FAQ\n8. CTA\n9. Garantia\n10. Fechamento\n\nESTILO:\n\n* Hormozi\n* Russell Brunson\n* Dan Kennedy\n* Alex Cattoni\n\nRESULTADO:\nP\u00e1gina pronta para vender.\n",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/50133b03-ad1c-4edc-811e-4b5b18d2e6dd.png",
+    "order": 21,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:55:48.622856+00:00",
+    "updated_at": "2026-06-27T12:43:10.834442+00:00"
+  },
+  {
+    "legacy_id": "53265fba-6be6-4638-9b0b-fc1e24259342",
+    "title": "AGENT OMEGA LONG TAIL KEYWORD GENERATOR",
+    "description": "O **AGENT OMEGA INFINITY \u2014 LONG TAIL KEYWORD GENERATOR** \u00e9 um agente especializado em encontrar palavras-chave de cauda longa com alto potencial de ranqueamento e convers\u00e3o. Sua fun\u00e7\u00e3o \u00e9 descobrir oportunidades que normalmente passam despercebidas, permitindo criar conte\u00fados altamente direcionados para um p\u00fablico mais qualificado.\n\nAntes de gerar as sugest\u00f5es, o agente analisa o nicho, a inten\u00e7\u00e3o de busca, o comportamento dos usu\u00e1rios, a concorr\u00eancia e as tend\u00eancias do mercado. Com base nessa an\u00e1lise, produz uma lista estrat\u00e9gica de palavras-chave long tail, perguntas relacionadas, termos sem\u00e2nticos e oportunidades de baixa concorr\u00eancia, facilitando a cria\u00e7\u00e3o de artigos, p\u00e1ginas e campanhas com maior potencial de tr\u00e1fego org\u00e2nico.\n\n\u00c9 ideal para especialistas em SEO, blogueiros, ag\u00eancias de marketing, criadores de conte\u00fado, e-commerces e empresas que desejam conquistar melhores posi\u00e7\u00f5es no Google, atrair visitantes mais qualificados, reduzir a concorr\u00eancia e aumentar a taxa de convers\u00e3o por meio de estrat\u00e9gias inteligentes de palavras-chave.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 EMAIL SUBJECT MASTER\n\nMISS\u00c3O:\nCriar assuntos de email imposs\u00edveis de ignorar.\n\nENTRADA:\n[OFERTA]\n\nGERAR:\n\n* 50 assuntos emocionais\n* 50 assuntos curiosidade\n* 50 assuntos urg\u00eancia\n* 50 assuntos autoridade\n* 50 assuntos benef\u00edcio\n\nOTIMIZA\u00c7\u00c3O:\n\n* Taxa de abertura\n* CTR\n* Convers\u00e3o\n\nRESULTADO:\nAumentar drasticamente abertura dos emails.",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/5b3a154b-91d4-4b98-90cd-b224b809c467.png",
+    "order": 22,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:56:33.011724+00:00",
+    "updated_at": "2026-06-27T12:43:11.848537+00:00"
+  },
+  {
+    "legacy_id": "82d8a507-7289-4e44-a5f9-8783df365b17",
+    "title": "AGENT OMEGA ACTION PLAN CONTENT ENGINE",
+    "description": "O **AGENT OMEGA INFINITY \u2014 ACTION PLAN CONTENT ENGINE** \u00e9 um agente especializado em transformar qualquer tema, objetivo ou estrat\u00e9gia em um plano de a\u00e7\u00e3o claro, organizado e totalmente execut\u00e1vel. Sua fun\u00e7\u00e3o \u00e9 criar roteiros pr\u00e1ticos que orientam cada etapa da execu\u00e7\u00e3o, facilitando a implementa\u00e7\u00e3o de projetos e aumentando as chances de alcan\u00e7ar resultados consistentes.\n\nAntes de montar o plano, o agente analisa o objetivo, o p\u00fablico-alvo, os recursos dispon\u00edveis, os desafios e as prioridades do projeto. Com base nessa an\u00e1lise, desenvolve um cronograma estruturado com etapas, metas, checklists, a\u00e7\u00f5es priorit\u00e1rias, indicadores de desempenho e recomenda\u00e7\u00f5es pr\u00e1ticas para cada fase.\n\n\u00c9 ideal para criadores de conte\u00fado, empresas, ag\u00eancias, empreendedores, gestores e profissionais que desejam organizar processos, acelerar a execu\u00e7\u00e3o de projetos, reduzir erros e manter o foco nas atividades que realmente geram resultados. O resultado \u00e9 um plano estrat\u00e9gico completo, f\u00e1cil de seguir e preparado para transformar ideias em a\u00e7\u00f5es concretas.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 ACTION PLAN CONTENT ENGINE\n\nMISS\u00c3O:\nCriar planos de a\u00e7\u00e3o para artigos.\n\nENTRADA:\n[T\u00d3PICO]\n\nGERAR:\n\n* Plano de a\u00e7\u00e3o 30 dias\n* Plano de a\u00e7\u00e3o 60 dias\n* Plano de a\u00e7\u00e3o 90 dias\n* Checklist\n* Cronograma\n\nRESULTADO:\nConte\u00fado altamente aplic\u00e1vel.",
+    "category": "Neg\u00f3cios",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/upload/d8adaf9f-5452-4be3-8e38-ddce062b7949.png",
+    "order": 19,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:53:32.164057+00:00",
+    "updated_at": "2026-06-27T12:43:13.549088+00:00"
+  },
+  {
+    "legacy_id": "84f3e73e-e2b5-44c5-a98b-3afe99d30464",
+    "title": "Plano de Marketing Digital em 30 Dias",
+    "description": "Gera um plano de marketing completo com cronograma e m\u00e9tricas.",
+    "prompt": "Voc\u00ea \u00e9 um estrategista de marketing digital. Monte um plano completo de 30 dias para [NEG\u00d3CIO/NICHO] com objetivo de [OBJETIVO]. Inclua: an\u00e1lise de p\u00fablico, posicionamento, conte\u00fado semanal (Instagram, TikTok, YouTube), funil de vendas, KPIs e a\u00e7\u00f5es di\u00e1rias detalhadas. Formato: tabela por semana.",
+    "category": "Marketing",
+    "tags": [
+      "estrategia",
+      "plano",
+      "funil"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-2.jpg",
+    "order": 2,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "e49d978d-c30f-48c6-b056-1b6fb0879600",
+    "title": "Calend\u00e1rio Editorial de 30 Posts",
+    "description": "Cria 30 ideias de conte\u00fado organizadas por tipo e objetivo.",
+    "prompt": "Crie um calend\u00e1rio editorial com 30 ideias de posts para [NICHO] no Instagram. Para cada post, traga: data, tema, formato (carrossel, reels, story), t\u00edtulo, gancho de abertura, CTA e 5 hashtags estrat\u00e9gicas. Misture conte\u00fado educativo, viral, autoridade e venda.",
+    "category": "Conte\u00fado",
+    "tags": [
+      "instagram",
+      "calendario",
+      "editorial"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-3.jpg",
+    "order": 3,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "73b43c0e-4e27-4268-9c89-7c3cbc22d7da",
+    "title": "Bio Magn\u00e9tica de Alta Convers\u00e3o",
+    "description": "Bio profissional que comunica autoridade e gera cliques.",
+    "prompt": "Crie 5 op\u00e7\u00f5es de bio para Instagram de [PROFISS\u00c3O/NICHO]. Cada bio deve ter: 1) Proposta de valor clara, 2) Prova de autoridade, 3) Para quem \u00e9, 4) CTA com emoji para link na bio. Limite: 150 caracteres por bio. Estilo: direto, magn\u00e9tico e profissional.",
+    "category": "Instagram",
+    "tags": [
+      "bio",
+      "instagram",
+      "perfil"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-4.jpg",
+    "order": 4,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "011a39fe-e774-4c9c-bcb8-cabaacbc6ae8",
+    "title": "Roteiro de Reels Viral em 3 Atos",
+    "description": "Estrutura comprovada para Reels com alto retention.",
+    "prompt": "Escreva um roteiro de Reels de 30 segundos sobre [TEMA]. Estruture em: HOOK (3s primeiros - pol\u00eamico ou curiosidade), DESENVOLVIMENTO (entrega de valor em bullets r\u00e1pidos com cortes), CTA (chamada para salvar, comentar ou seguir). Inclua sugest\u00e3o de \u00e1udio em alta e descri\u00e7\u00e3o otimizada para SEO do Instagram.",
+    "category": "Reels",
+    "tags": [
+      "reels",
+      "viral",
+      "roteiro"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-5.jpg",
+    "order": 5,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "20460037-6898-4243-8dc2-5e73a321d3a7",
+    "title": "Copy de An\u00fancio Facebook/Instagram Ads",
+    "description": "An\u00fancio focado em convers\u00e3o usando f\u00f3rmula AIDA + PAS.",
+    "prompt": "Aja como copywriter s\u00eanior. Escreva 3 varia\u00e7\u00f5es de copy para an\u00fancio Meta Ads de [PRODUTO]. Use a f\u00f3rmula: Aten\u00e7\u00e3o (headline impactante), Interesse (problema do p\u00fablico), Desejo (solu\u00e7\u00e3o + benef\u00edcios), A\u00e7\u00e3o (CTA forte). M\u00e1ximo 125 caracteres na headline principal. Inclua emojis estrat\u00e9gicos.",
+    "category": "Copywriting",
+    "tags": [
+      "ads",
+      "meta",
+      "copy",
+      "conversao"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-6.jpg",
+    "order": 6,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "e6ed6363-ac91-48b8-ae59-49fbfbdc6216",
+    "title": "Fluxo Completo de ManyChat",
+    "description": "Automa\u00e7\u00e3o de WhatsApp/Instagram para captura e qualifica\u00e7\u00e3o de leads.",
+    "prompt": "Monte um fluxo de automa\u00e7\u00e3o ManyChat para [OBJETIVO: captura/venda/agendamento]. Estruture: gatilho de entrada, mensagem de boas-vindas, qualifica\u00e7\u00e3o (3 perguntas), entrega de isca digital, follow-up em 24h e tag de segmenta\u00e7\u00e3o. Inclua textos prontos para cada bloco e condicionais inteligentes.",
+    "category": "Automa\u00e7\u00e3o",
+    "tags": [
+      "manychat",
+      "whatsapp",
+      "automacao",
+      "leads"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-7.jpg",
+    "order": 7,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "059229dd-2261-4fca-a95e-ef51361ea908",
+    "title": "An\u00e1lise SWOT Estrat\u00e9gica com IA",
+    "description": "Gera SWOT detalhado e plano de a\u00e7\u00e3o para 90 dias.",
+    "prompt": "Atue como consultor de neg\u00f3cios s\u00eanior. Fa\u00e7a uma an\u00e1lise SWOT completa para [EMPRESA/IDEIA: descrever]. Para cada quadrante (For\u00e7as, Fraquezas, Oportunidades, Amea\u00e7as) traga 5 pontos com justificativa. Em seguida, crie um plano de a\u00e7\u00e3o de 90 dias com prioridades, respons\u00e1veis sugeridos e m\u00e9tricas.",
+    "category": "Neg\u00f3cios",
+    "tags": [
+      "swot",
+      "estrategia",
+      "consultoria"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-8.jpg",
+    "order": 8,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "2b7c378d-83f2-4c10-a7ab-d585c2340ce3",
+    "title": "Mega Prompt: Assistente Personalizado",
+    "description": "Transforma o ChatGPT em um especialista no seu nicho.",
+    "prompt": "Voc\u00ea agora \u00e9 [NOME DO ASSISTENTE], especialista s\u00eanior em [NICHO] com 20 anos de experi\u00eancia. Suas regras: 1) Sempre pergunte detalhes antes de responder, 2) Responda em formato estruturado (t\u00f3picos + exemplos), 3) Traga dados e cases reais, 4) Termine perguntando se devo aprofundar algum ponto. Confirme com \"Pronto, pode come\u00e7ar.\"",
+    "category": "ChatGPT",
+    "tags": [
+      "chatgpt",
+      "assistente",
+      "sistema"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-9.jpg",
+    "order": 9,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "53cf7b5f-d6d7-44ec-a98a-b5615b8d3283",
+    "title": "Agente Aut\u00f4nomo de Pesquisa de Mercado",
+    "description": "Pesquisa, organiza e entrega relat\u00f3rio de mercado completo.",
+    "prompt": "Aja como agente aut\u00f4nomo de pesquisa de mercado. Tarefa: pesquisar o mercado de [NICHO/PRODUTO] no Brasil. Entregue: 1) Tamanho do mercado e crescimento, 2) Top 5 concorrentes (for\u00e7as, fraquezas, pre\u00e7o), 3) Perfil do consumidor ideal, 4) Tend\u00eancias para os pr\u00f3ximos 12 meses, 5) Oportunidades n\u00e3o exploradas, 6) Recomenda\u00e7\u00e3o final. Formato: relat\u00f3rio executivo.",
+    "category": "Agentes IA",
+    "tags": [
+      "agente",
+      "pesquisa",
+      "mercado"
+    ],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-10.jpg",
+    "order": 10,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-10T22:11:02.355554+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "7481aec3-df33-4aeb-a827-313fb8fd69f3",
+    "title": "C\u00f3pia - PROMPT 001 \u2014 AGENT OMEGA BLOG TITLE TITAN",
+    "description": "## \ud83d\udccc O que faz o AGENT OMEGA INFINITY \u2014 BLOG TITLE TITAN?\n\nO **AGENT OMEGA INFINITY \u2014 BLOG TITLE TITAN** \u00e9 um agente especialista em cria\u00e7\u00e3o de t\u00edtulos de alto impacto para blogs, artigos, not\u00edcias, reviews, tutoriais e conte\u00fados digitais. Sua miss\u00e3o \u00e9 transformar qualquer tema em t\u00edtulos estrat\u00e9gicos que chamem a aten\u00e7\u00e3o do p\u00fablico e aumentem significativamente as chances de clique.\n\nAntes de criar qualquer t\u00edtulo, o agente analisa o assunto, identifica a inten\u00e7\u00e3o de busca do usu\u00e1rio, define o p\u00fablico-alvo e encontra as palavras-chave mais relevantes. Com essas informa\u00e7\u00f5es, ele produz t\u00edtulos otimizados para **SEO**, focados em melhorar o posicionamento nos mecanismos de busca e aumentar o tr\u00e1fego org\u00e2nico.\n\nAl\u00e9m disso, o BLOG TITLE TITAN cria diferentes estilos de t\u00edtulos para atender a diversos objetivos, incluindo t\u00edtulos virais, t\u00edtulos de autoridade, listas, tutoriais e estudos de caso. Todos s\u00e3o desenvolvidos utilizando t\u00e9cnicas de copywriting, gatilhos mentais e boas pr\u00e1ticas de marketing digital para gerar maior engajamento e convers\u00e3o.\n\n### O que este agente entrega?\n\n* 20 t\u00edtulos otimizados para SEO.\n* 10 t\u00edtulos com potencial viral.\n* 10 t\u00edtulos de autoridade.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 BLOG TITLE TITAN\n\nMISS\u00c3O:\nAtuar como um especialista mundial em cria\u00e7\u00e3o de t\u00edtulos para blogs, artigos, not\u00edcias, reviews, tutoriais e conte\u00fados virais.\n\nOBJETIVO:\nCriar t\u00edtulos altamente atrativos, otimizados para SEO, CTR e engajamento.\n\nMODO DE OPERA\u00c7\u00c3O:\n\n1. Analisar o tema informado.\n2. Identificar inten\u00e7\u00e3o de busca.\n3. Identificar p\u00fablico-alvo.\n4. Identificar palavras-chave principais.\n5. Gerar t\u00edtulos com foco em:\n\n   * SEO\n   * CTR\n   * Curiosidade\n   * Autoridade\n   * Convers\u00e3o\n\nENTRADA:\n[T\u00d3PICO]\n\nSA\u00cdDA:\n\n* 20 t\u00edtulos SEO\n* 10 t\u00edtulos virais\n* 10 t\u00edtulos estilo autoridade\n* 10 t\u00edtulos estilo lista\n* 10 t\u00edtulos estilo tutorial\n* 10 t\u00edtulos estilo estudo de caso\n\nCRIT\u00c9RIOS:\n\n* N\u00e3o gerar t\u00edtulos gen\u00e9ricos.\n* Utilizar gatilhos mentais.\n* Priorizar cliques qualificados.\n* Priorizar legibilidade.\n\nRESULTADO ESPERADO:\nProduzir t\u00edtulos que aumentem significativamente tr\u00e1fego org\u00e2nico e taxa de cliques.",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-11.jpg",
+    "order": 11,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-26T18:29:50.528963+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "b535b1e3-b326-4198-a114-2c389aae11f0",
+    "title": "AGENT OMEGA SEO H1 TITLE MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 SEO H1 TITLE MASTER** \u00e9 um agente especializado na cria\u00e7\u00e3o de t\u00edtulos H1 altamente otimizados para SEO, desenvolvidos para melhorar o posicionamento das p\u00e1ginas nos mecanismos de busca e aumentar a taxa de cliques dos visitantes. Sua fun\u00e7\u00e3o \u00e9 criar t\u00edtulos estrat\u00e9gicos que combinem palavras-chave relevantes, clareza e poder de persuas\u00e3o.\n\nAntes de gerar o H1, o agente analisa o tema, a inten\u00e7\u00e3o de busca, o p\u00fablico-alvo, a concorr\u00eancia e as melhores pr\u00e1ticas de otimiza\u00e7\u00e3o. Com base nessa an\u00e1lise, produz t\u00edtulos \u00fanicos, organizados e naturais, equilibrando SEO e experi\u00eancia do usu\u00e1rio para atender aos crit\u00e9rios dos principais buscadores.\n\n\u00c9 ideal para blogs, e-commerces, sites institucionais, landing pages e portais de conte\u00fado que desejam criar p\u00e1ginas mais relevantes, melhorar a indexa\u00e7\u00e3o, fortalecer a autoridade digital e aumentar o tr\u00e1fego org\u00e2nico. O resultado \u00e9 um t\u00edtulo profissional que comunica valor imediatamente e contribui para um melhor desempenho da p\u00e1gina.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 BENEFITS EXTRACTOR\n\nMISS\u00c3O:\nTransformar caracter\u00edsticas em benef\u00edcios irresist\u00edveis.\n\nENTRADA:\n[PRODUTO]\n\nPROCESSO:\n\n* Caracter\u00edstica\n* Benef\u00edcio\n* Benef\u00edcio emocional\n* Benef\u00edcio financeiro\n* Benef\u00edcio de tempo\n\nGERAR:\n100 benef\u00edcios altamente persuasivos.\n\nRESULTADO:\nOferta muito mais atrativa.\n",
+    "category": "SEO",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-23.jpg",
+    "order": 23,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T07:56:59.14949+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "4bc93541-c46c-4af7-b303-fc1a5fb0a0eb",
+    "title": "AGENT OMEGA CONTENT STRATEGY MASTER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 CONTENT STRATEGY MASTER** \u00e9 um agente especializado em desenvolver estrat\u00e9gias completas de conte\u00fado para marcas, empresas, criadores e neg\u00f3cios digitais. Sua miss\u00e3o \u00e9 transformar objetivos em planos de a\u00e7\u00e3o inteligentes, organizando conte\u00fados que atraem o p\u00fablico certo, fortalecem a autoridade da marca e aumentam os resultados de marketing.\n\nAntes de criar qualquer estrat\u00e9gia, o agente analisa o nicho, o p\u00fablico-alvo, a concorr\u00eancia, as tend\u00eancias do mercado e os objetivos do projeto. Com base nessa an\u00e1lise, desenvolve um planejamento estrat\u00e9gico com calend\u00e1rio editorial, pilares de conte\u00fado, formatos ideais, canais de distribui\u00e7\u00e3o, frequ\u00eancia de publica\u00e7\u00e3o e indicadores de desempenho.\n\n\u00c9 ideal para empresas, ag\u00eancias, empreendedores, infoprodutores, influenciadores e profissionais de marketing que desejam produzir conte\u00fado com prop\u00f3sito, aumentar o alcance, gerar engajamento, fortalecer sua presen\u00e7a digital e transformar conte\u00fado em crescimento consistente para o neg\u00f3cio.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 POWER WORD GENERATOR\n\nMISS\u00c3O:\nCriar listas de palavras de poder para copywriting.\n\nGERAR:\n\n* Urg\u00eancia\n* Escassez\n* Exclusividade\n* Autoridade\n* Seguran\u00e7a\n* Desejo\n* Curiosidade\n\nRESULTADO:\nBanco profissional de gatilhos mentais.\n",
+    "category": "Neg\u00f3cios",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-27.jpg",
+    "order": 27,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T08:02:38.890238+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  },
+  {
+    "legacy_id": "3fe41fbd-bf8f-4fd4-b917-764c7a6de5e5",
+    "title": "AGENT OMEGA AFFILIATE PARTNER FINDER",
+    "description": "O **AGENT OMEGA INFINITY \u2014 AFFILIATE PARTNER FINDER** \u00e9 um agente especializado em identificar oportunidades de parcerias estrat\u00e9gicas e programas de afiliados para ampliar o alcance de marcas, produtos e servi\u00e7os. Sua miss\u00e3o \u00e9 encontrar os parceiros mais compat\u00edveis com o seu nicho, aumentando a visibilidade da empresa e criando novas fontes de tr\u00e1fego, vendas e receita.\n\nAntes de apresentar as recomenda\u00e7\u00f5es, o agente analisa o segmento de atua\u00e7\u00e3o, o p\u00fablico-alvo, o posicionamento da marca, os objetivos comerciais e o perfil dos parceiros ideais. A partir dessa an\u00e1lise, desenvolve uma estrat\u00e9gia personalizada com sugest\u00f5es de afiliados, influenciadores, criadores de conte\u00fado, empresas complementares e canais de divulga\u00e7\u00e3o que possam gerar resultados consistentes.\n\n\u00c9 ideal para empresas, e-commerces, infoprodutores, ag\u00eancias, startups e empreendedores que desejam expandir sua rede de parceiros, fortalecer sua presen\u00e7a no mercado, aumentar a autoridade da marca e acelerar o crescimento por meio de programas de afilia\u00e7\u00e3o e parcerias inteligentes.",
+    "prompt": "AGENT OMEGA INFINITY \u2014 SALES LETTER ENGINE\n\nMISS\u00c3O:\nCriar cartas de vendas completas.\n\nENTRADA:\n[PRODUTO]\n\nESTRUTURA:\n\n* Headline\n* Storytelling\n* Problema\n* Solu\u00e7\u00e3o\n* Benef\u00edcios\n* Prova\n* Oferta\n* CTA\n\nRESULTADO:\nCarta de vendas pronta para convers\u00e3o.\n",
+    "category": "Vendas",
+    "tags": [],
+    "provider": null,
+    "model": null,
+    "variables": null,
+    "settings": null,
+    "image": "/api/public/premium-cover/generated/prompt-30.jpg",
+    "order": 30,
+    "status": "ativo",
+    "metadata": {
+      "nivel": "Iniciante",
+      "uso_count": 0,
+      "popularidade": 0
+    },
+    "created_at": "2026-06-27T08:12:59.529232+00:00",
+    "updated_at": "2026-07-07T06:52:38.149844+00:00"
+  }
+]
