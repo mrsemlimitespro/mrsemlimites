@@ -1,0 +1,33 @@
+# INVENTÁRIO DE ASSETS MRSL
+
+- Prompt: Script de Vendas Persuasivo no WhatsApp -> /api/public/premium-cover/generated/prompt-1.jpg
+- Prompt: AGENT OMEGA BLOG OUTLINE MASTER -> /api/public/premium-cover/upload/0023c8e7-07c9-4ffc-a733-16cf99bb8e3a.png
+- Prompt: AGENT OMEGA BLOG SUBSCRIBER GROWTH ENGINE -> /api/public/premium-cover/upload/16b5f585-6d5e-4b54-8686-9f852672d3b4.png
+- Prompt: AGENT OMEGA BLOG TITLE TITAN -> /api/public/premium-cover/upload/29b315be-dbc8-41a2-b03a-e3eaeaf97d88.png
+- Prompt: AGENT OMEGA Q&A CONTENT MASTER -> /api/public/premium-cover/upload/3f883eea-04a1-44a3-a15b-7db192c39e61.png
+- Prompt: AGENT OMEGA NEWS HOOK CREATOR -> /api/public/premium-cover/upload/7c91834b-7f81-48c4-936e-81e3772e26a8.png
+- Prompt: AGENT OMEGA SEO KEYWORD EXPANDER -> /api/public/premium-cover/upload/656b6fea-dfac-4e81-8612-068e0d039e14.png
+- Prompt: AGENT OMEGA SEO H1 TITLE MASTER -> /api/public/premium-cover/upload/5d2dee49-bd7a-4ad4-b0c0-72cb20149929.png
+- Prompt: AGENT OMEGA COPYWRITING PERSUASION MASTER -> /api/public/premium-cover/upload/cff48306-649c-4a23-9af7-1e73db2b6d92.png
+- Prompt: AGENT OMEGA SLOGAN CREATOR MASTER -> /api/public/premium-cover/upload/4f15eef2-9f0b-46e5-b1c3-573d12eb7a5e.png
+- Prompt: AGENT OMEGA PRODUCT REVIEW INTRO MASTER -> /api/public/premium-cover/upload/8b888a47-e094-46cd-95a8-110e16feb348.png
+- Prompt: AGENT OMEGA SOCIAL MEDIA GROWTH MASTER -> /api/public/premium-cover/upload/9495fe54-5bec-4872-ab91-ac1b9c7bc5b6.png
+- Prompt: AGENT OMEGA VIDEO AD SCRIPT MASTER -> /api/public/premium-cover/upload/9ce6fc2e-bbfd-441c-a074-07cd552b51ca.png
+- Prompt: AGENT OMEGA TRAVEL CONTENT GENERATOR -> /api/public/premium-cover/upload/ab8e312e-8556-4030-bea3-f5819594f29f.png
+- Prompt: AGENT OMEGA PERSONAL DEVELOPMENT BLOG -> /api/public/premium-cover/upload/78c06ed0-77ca-4c6f-999e-5f74ceb9087e.png
+- Prompt: AGENT OMEGA META DESCRIPTION MASTER -> /api/public/premium-cover/upload/50133b03-ad1c-4edc-811e-4b5b18d2e6dd.png
+- Prompt: AGENT OMEGA LONG TAIL KEYWORD GENERATOR -> /api/public/premium-cover/upload/5b3a154b-91d4-4b98-90cd-b224b809c467.png
+- Prompt: AGENT OMEGA ACTION PLAN CONTENT ENGINE -> /api/public/premium-cover/upload/d8adaf9f-5452-4be3-8e38-ddce062b7949.png
+- Prompt: Plano de Marketing Digital em 30 Dias -> /api/public/premium-cover/generated/prompt-2.jpg
+- Prompt: Calendário Editorial de 30 Posts -> /api/public/premium-cover/generated/prompt-3.jpg
+- Prompt: Bio Magnética de Alta Conversão -> /api/public/premium-cover/generated/prompt-4.jpg
+- Prompt: Roteiro de Reels Viral em 3 Atos -> /api/public/premium-cover/generated/prompt-5.jpg
+- Prompt: Copy de Anúncio Facebook/Instagram Ads -> /api/public/premium-cover/generated/prompt-6.jpg
+- Prompt: Fluxo Completo de ManyChat -> /api/public/premium-cover/generated/prompt-7.jpg
+- Prompt: Análise SWOT Estratégica com IA -> /api/public/premium-cover/generated/prompt-8.jpg
+- Prompt: Mega Prompt: Assistente Personalizado -> /api/public/premium-cover/generated/prompt-9.jpg
+- Prompt: Agente Autônomo de Pesquisa de Mercado -> /api/public/premium-cover/generated/prompt-10.jpg
+- Prompt: Cópia - PROMPT 001 — AGENT OMEGA BLOG TITLE TITAN -> /api/public/premium-cover/generated/prompt-11.jpg
+- Prompt: AGENT OMEGA SEO H1 TITLE MASTER -> /api/public/premium-cover/generated/prompt-23.jpg
+- Prompt: AGENT OMEGA CONTENT STRATEGY MASTER -> /api/public/premium-cover/generated/prompt-27.jpg
+- Prompt: AGENT OMEGA AFFILIATE PARTNER FINDER -> /api/public/premium-cover/generated/prompt-30.jpg
