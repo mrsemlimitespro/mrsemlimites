@@ -13,16 +13,15 @@ export function WatermarkFooter() {
           fontFamily:
             'ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Courier New", monospace',
           background:
-            "linear-gradient(90deg, color-mix(in oklab, var(--brand-magenta) 90%, transparent) 0%, color-mix(in oklab, var(--brand-blue) 90%, transparent) 50%, color-mix(in oklab, var(--brand-magenta) 90%, transparent) 100%)",
+            "linear-gradient(90deg, color-mix(in oklab, var(--primary) 80%, transparent) 0%, color-mix(in oklab, var(--brand-cyan) 80%, transparent) 50%, color-mix(in oklab, var(--primary) 80%, transparent) 100%)",
           backgroundSize: "200% 100%",
           WebkitBackgroundClip: "text",
           backgroundClip: "text",
           WebkitTextFillColor: "transparent",
           color: "transparent",
-          textShadow: "0 0 18px color-mix(in oklab, var(--brand-magenta) 35%, transparent)",
-          filter:
-            "drop-shadow(0 0 6px color-mix(in oklab, var(--brand-blue) 25%, transparent))",
-          animation: "watermark-shine 6s linear infinite",
+          opacity: 0.5,
+          filter: "drop-shadow(0 0 4px color-mix(in oklab, var(--primary) 15%, transparent))",
+          animation: "watermark-shine 8s linear infinite",
         }}
       >
         {TEXT}

@@ -102,7 +102,7 @@ export function FirePromosButton() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Promoções do dia"
-        className="fixed bottom-24 right-5 z-40 grid size-16 place-items-center rounded-full text-white shadow-2xl transition-transform hover:scale-105 md:bottom-8 md:right-8"
+        className="fixed bottom-24 right-5 z-40 grid size-14 place-items-center rounded-full text-white shadow-2xl transition-transform hover:scale-105 md:bottom-8 md:right-8"
         style={{
           background:
             "radial-gradient(circle at 30% 30%, #ffd166 0%, #ff8a3d 35%, #ff2e6a 70%, #7a1c1c 100%)",
@@ -111,7 +111,7 @@ export function FirePromosButton() {
           animation: "fire-pulse 2.2s ease-in-out infinite",
         }}
       >
-        <Flame className="size-7 drop-shadow-[0_2px_6px_rgba(0,0,0,.5)]" strokeWidth={2.2} />
+        <Flame className="size-6 drop-shadow-[0_2px_6px_rgba(0,0,0,.5)]" strokeWidth={2.2} />
         {badge > 0 && (
           <span className="absolute -top-1 -right-1 grid size-6 place-items-center rounded-full border-2 border-background bg-white text-[11px] font-bold text-[color:var(--brand-magenta)]">
             {badge}

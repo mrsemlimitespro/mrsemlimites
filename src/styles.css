@@ -109,7 +109,7 @@
   --brand-violet: oklch(0.65 0.22 290);
   --brand-blue: oklch(0.68 0.2 250);
   --brand-cyan: oklch(0.78 0.16 210);
-  --brand-magenta: oklch(0.65 0.24 330);
+  --brand-magenta: oklch(0.68 0.22 345); /* Refined slightly for the new palette */
   --brand-pink: oklch(0.72 0.2 10);
   --brand-orange: oklch(0.75 0.18 50);
   --brand-emerald: oklch(0.72 0.16 165);
