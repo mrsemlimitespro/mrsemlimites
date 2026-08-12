@@ -20,7 +20,9 @@ import React, { useEffect, useState, useCallback, useId } from "react";
 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { BRAND_LOGO_URL, BRAND_NAME } from "@/components/brand";
+import { BrandLogo } from "@/components/brand-logo";
+import { PageContainer } from "@/components/page-container";
+
 import { PromoCarousel } from "@/components/promo-carousel";
 import {
   PromocoesSection,
@@ -334,7 +336,7 @@ function DashboardPage() {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] space-y-8 pb-32">
+    <PageContainer className="space-y-8 pb-32">
       {/* Header — Identidade Premium */}
       <section className="flex flex-col gap-2">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -343,7 +345,7 @@ function DashboardPage() {
               Dashboard de <span className="text-primary">Performance</span>
             </h1>
             <p className="text-sm text-muted-foreground max-w-lg">
-              Monitoramento central de operações, vendas e engajamento da rede MR Lova.
+              Monitoramento central de operações, vendas e engajamento da rede MR SEM LIMITES.
             </p>
           </div>
           
@@ -365,7 +367,7 @@ function DashboardPage() {
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
           <div className="shrink-0 size-32 md:size-40 rounded-[2rem] bg-gradient-primary p-0.5 shadow-2xl shadow-primary/20">
             <div className="h-full w-full rounded-[1.9rem] bg-black grid place-items-center overflow-hidden">
-               <img src={BRAND_LOGO_URL} alt="Logo" className="w-full h-full object-cover opacity-90" />
+               <BrandLogo className="w-full h-full p-4" />
             </div>
           </div>
           <div className="flex-1 text-center md:text-left">
@@ -373,7 +375,7 @@ function DashboardPage() {
               Bem-vindo ao Futuro <br /> da <span className="text-primary">Revenda Digital</span>
             </h2>
             <p className="text-sm md:text-base text-muted-foreground max-w-xl mb-6 leading-relaxed">
-              Explore o ecossistema completo do {BRAND_NAME}. De ferramentas exclusivas com IA a gestão automatizada de licenças em larga escala.
+              Explore o ecossistema completo do MR SEM LIMITES. De ferramentas exclusivas com IA a gestão automatizada de licenças em larga escala.
             </p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
                <button className="rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95">
@@ -388,16 +390,15 @@ function DashboardPage() {
       </section>
 
       {/* Seções da Home — ordem e visibilidade controladas em /admin/home */}
-      {homeSections.map((slug) => {
-        const render = HOME_SECTION_RENDERERS[slug];
-        return render ? render() : null;
-      })}
-
-
-
+      <div className="space-y-12">
+        {homeSections.map((slug) => {
+          const render = HOME_SECTION_RENDERERS[slug];
+          return render ? render() : null;
+        })}
+      </div>
 
       {/* Métricas — cabeçalho + 4 KPI cards */}
-      <section className="space-y-3">
+      <section className="space-y-4">
         <div className="section-title">
           <span aria-hidden className="section-title-bar" />
           Métricas em tempo real
@@ -410,14 +411,15 @@ function DashboardPage() {
       </section>
 
       {/* Bottom 3-column row */}
-      <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
         <ActivityCard items={activity} />
         <ChartCard days={metrics?.chartDays ?? []} values={metrics?.chartValues ?? []} />
         <RecentSalesCard sales={sales} />
       </section>
-    </div>
+    </PageContainer>
   );
 }
+
 
 function KpiCard({ kpi }: { kpi: Kpi }) {
   const Icon = kpi.icon;
