@@ -850,10 +850,10 @@ const LICENSE_PRESETS: Preset[] = [
   { label: "Teste 1 dia", kind: "teste", minutos: 60 * 24 },
   { label: "Teste 2 dias", kind: "teste", minutos: 60 * 24 * 2 },
   { label: "Teste 3 dias", kind: "teste", minutos: 60 * 24 * 3 },
-  { label: "Premium 1 dia", kind: "premium", dias: 1 },
   { label: "Premium 30 dias", kind: "premium", dias: 30 },
   { label: "Premium 60 dias", kind: "premium", dias: 60 },
   { label: "Premium 90 dias", kind: "premium", dias: 90 },
+  { label: "Premium 180 dias", kind: "premium", dias: 180 },
   { label: "Premium 1 ano", kind: "premium", dias: 365 },
 ];
 
