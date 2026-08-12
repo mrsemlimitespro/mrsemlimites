@@ -573,8 +573,14 @@ function LicencasPage() {
       )}
 
       {/* Table */}
-      <div className="glass overflow-hidden rounded-2xl">
-        <div className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="glass relative overflow-hidden rounded-2xl">
+        {/* Marca d'água centralizada conforme referência */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden opacity-[0.03]">
+           <img src="/src/assets/mr-sem-limites-logo.png" alt="" className="w-1/2 grayscale brightness-200" />
+        </div>
+
+        <div className="relative grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+
           <div className="flex items-center">
             <Checkbox
               checked={filtered.length > 0 && filtered.every((l) => selected.has(l.id))}
