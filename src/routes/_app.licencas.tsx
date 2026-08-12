@@ -392,61 +392,66 @@ function LicencasPage() {
 
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-6">
-      {/* Header */}
-      <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] gradient-text-warm">
-            Gestão
+    <div className="mx-auto w-full max-w-[1400px] space-y-8 pb-32">
+      {/* Page Header */}
+      <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
+            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
+            Infraestrutura
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+            Gestão de <span className="text-primary">Licenças</span>
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-lg">
+            Emissão, controle e auditoria de chaves de acesso para a rede MR Lova.
           </p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">Licenças</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Gerencie as licenças criadas por você
-          </p>
-          <p className="mt-3 inline-flex items-center gap-1.5 text-sm">
-            <KeyRound className="size-3.5 text-primary" strokeWidth={2} />
-            {isAdmin ? (
-              <>
-                <span className="font-semibold text-primary text-lg leading-none">♾️</span>
-                <span className="font-semibold text-primary">ilimitadas</span>
-                <span className="text-muted-foreground">/ {total} criadas</span>
-              </>
-            ) : (
-              <>
-                <span className="font-semibold text-primary">{available} disponíveis</span>
-                <span className="text-muted-foreground">/ {total} total</span>
-              </>
-            )}
-          </p>
+          
+          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border/40">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Disponíveis</span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-xl font-bold text-primary">
+                  {isAdmin ? "♾️" : available}
+                </span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+                  READY
+                </span>
+              </div>
+            </div>
+            <div className="w-px h-8 bg-border/40" />
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total Criadas</span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-xl font-bold">{total}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           {canTeste && (
-            <Button
-              variant="ghost"
-              className="rounded-full border border-amber-400/40 bg-amber-500/10 px-4 text-amber-200 backdrop-blur-xl hover:bg-amber-500/20"
+            <button
               onClick={() => setOpenEnviarTeste(true)}
-              title="Criar e enviar licença teste (1 hora) para o cliente"
+              className="group relative flex items-center gap-2 overflow-hidden rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-3 text-sm font-bold text-amber-200 transition-all hover:bg-amber-500/10 active:scale-95"
             >
-              <Send className="size-4" strokeWidth={2} />
-              Licença Teste
-            </Button>
+              <Send className="size-4" />
+              <span>Express Trial (1h)</span>
+            </button>
           )}
-          <Button
-            variant="ghost"
-            className="rounded-full border border-border/70 bg-surface/50 px-4 backdrop-blur-xl hover:bg-white/5"
+          <button
             onClick={() => setOpenTeste(true)}
+            className="rounded-2xl border border-border/40 bg-surface/30 px-5 py-3 text-sm font-bold text-foreground hover:bg-surface/50 transition-all active:scale-95"
           >
-            <FlaskConical className="size-4" strokeWidth={2} />
-            Vincular a Cliente
-          </Button>
-          <Button
-            className="rounded-full gradient-primary text-primary-foreground shadow-[0_0_24px_-4px_color-mix(in_oklab,var(--primary)_70%,transparent)] hover:opacity-95"
+            Vincular Cliente
+          </button>
+          <button
             onClick={() => setOpenNova(true)}
+            className="rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95 flex items-center gap-2"
           >
-            <Plus className="size-4" strokeWidth={2.5} />
-            Nova Licença
-          </Button>
+            <Plus className="size-4" strokeWidth={3} />
+            Gerar Licença
+          </button>
         </div>
       </header>
 
