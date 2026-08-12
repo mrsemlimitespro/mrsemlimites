@@ -877,16 +877,18 @@ function NovaLicencaModal({
   const [busy, setBusy] = useState(false);
   const preset = presets[presetIdx] ?? presets[0];
   const maxQtd = isAdmin ? 500 : 1;
+  const [usarModeloMR, setUsarModeloMR] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     try {
-      // 1) Gera as chaves no estoque
+      // 1) Gera as chaves no estoque - agora passando o modelo de chave escolhido
       const { data: created, error } = await (supabase as any).rpc("gerar_licencas", {
         _quantidade: quantidade,
         _duracao_dias: preset.dias ?? 1,
         _revendedor_id: null,
+        _modelo_mr: usarModeloMR,
       });
       if (error) throw error;
 
@@ -977,6 +979,35 @@ function NovaLicencaModal({
                   </button>
                 );
               })}
+            </div>
+          </Field>
+
+          <Field label="Modelo da Chave">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setUsarModeloMR(false)}
+                className={cn(
+                  "flex-1 rounded-xl border px-3 py-2 text-xs font-medium transition-all",
+                  !usarModeloMR
+                    ? "border-primary bg-primary/10 text-primary shadow-[0_0_12px_-4px_var(--primary)]"
+                    : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5"
+                )}
+              >
+                Padrão (XXXXX-...)
+              </button>
+              <button
+                type="button"
+                onClick={() => setUsarModeloMR(true)}
+                className={cn(
+                  "flex-1 rounded-xl border px-3 py-2 text-xs font-medium transition-all",
+                  usarModeloMR
+                    ? "border-primary bg-primary/10 text-primary shadow-[0_0_12px_-4px_var(--primary)]"
+                    : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5"
+                )}
+              >
+                MR (MR-XXXX-...)
+              </button>
             </div>
           </Field>
 
