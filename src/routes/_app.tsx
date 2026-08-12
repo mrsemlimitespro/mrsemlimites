@@ -1,5 +1,6 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
+import { cn } from "@/lib/utils";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { InnerPillMenu } from "@/components/inner-pill-menu";
@@ -26,7 +27,8 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
-  return (
+  const [isExpanded, setIsExpanded] = useState(true);
+
     <div className="relative min-h-screen w-full">
       {/* Partículas só em telas >= md para preservar performance em mobile */}
       <div className="pointer-events-none absolute inset-0 z-0 hidden md:block">
@@ -34,11 +36,18 @@ function AppLayout() {
           <SoftParticles />
         </Suspense>
       </div>
-      <AppSidebar />
+      <AppSidebar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
       <ImpersonationBanner />
       <MustChangePasswordGuard />
       <div
-        className="relative z-10 flex min-h-screen flex-col pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(0.5rem+env(safe-area-inset-top))] md:pl-[calc(5rem+env(safe-area-inset-left))] md:pt-[calc(1rem+env(safe-area-inset-top))]"
+        className={cn(
+          "relative z-10 flex min-h-screen flex-col transition-all duration-300 ease-in-out",
+          "pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(0.5rem+env(safe-area-inset-top))]",
+          isExpanded 
+            ? "md:pl-[calc(16rem+env(safe-area-inset-left))]" 
+            : "md:pl-[calc(5rem+env(safe-area-inset-left))]",
+          "md:pt-[calc(1rem+env(safe-area-inset-top))]"
+        )}
       >
 
         <TopBar />

@@ -94,12 +94,18 @@ const authedFooterItems: FooterItem[] = [
 
 const anonFooterItems: FooterItem[] = [{ title: "Acessar Conta", url: "/login", icon: LogIn }];
 
-export function AppSidebar() {
+export function AppSidebar({ 
+  isExpanded, 
+  setIsExpanded 
+}: { 
+  isExpanded: boolean; 
+  setIsExpanded: (v: boolean) => void 
+}) {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
   
-  const [isExpanded, setIsExpanded] = useState(true);
+  
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const authed = useIsAuthed();
