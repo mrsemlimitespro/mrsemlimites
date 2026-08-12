@@ -864,6 +864,30 @@ function StatusPill({ status }: { status: License["status"] }) {
   );
 }
 
+function KpiMini({ label, value, icon: Icon, color }: { label: string, value: string, icon: any, color: string }) {
+  const colors: Record<string, string> = {
+    blue: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+    violet: "text-violet-500 bg-violet-500/10 border-violet-500/20",
+    emerald: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+    amber: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+    red: "text-red-500 bg-red-500/10 border-red-500/20",
+    orange: "text-orange-500 bg-orange-500/10 border-orange-500/20",
+  };
+
+  return (
+    <div className="rounded-xl border border-border/40 bg-surface/30 p-3 space-y-3">
+       <div className={cn("size-8 rounded-lg grid place-items-center border", colors[color])}>
+          <Icon className="size-4" />
+       </div>
+       <div className="flex flex-col">
+          <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/40 leading-none mb-1">{label}</span>
+          <span className="text-lg font-black tracking-tight leading-none">{value}</span>
+       </div>
+    </div>
+  );
+}
+
+
 type PresetKind = "teste" | "premium";
 type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number };
 
