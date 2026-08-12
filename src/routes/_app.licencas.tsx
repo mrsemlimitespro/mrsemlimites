@@ -516,15 +516,15 @@ function LicencasPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar por chave, email ou cliente..."
-
-            className="h-full w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/70"
+            className="h-full w-full bg-transparent text-[13px] outline-none placeholder:text-muted-foreground/40 font-medium"
           />
         </label>
 
         <Select value={filter} onValueChange={(v) => setFilter(v as Filter)}>
-          <SelectTrigger className="glass h-12 rounded-2xl md:w-48">
+          <SelectTrigger className="glass h-12 rounded-2xl md:w-48 border-primary/20 bg-primary/5 text-primary text-[11px] font-bold uppercase tracking-widest">
             <SelectValue />
           </SelectTrigger>
+
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
             <SelectItem value="ativas">Ativas</SelectItem>
