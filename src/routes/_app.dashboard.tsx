@@ -1,4 +1,6 @@
+import { PageHeader } from "@/components/page-container";
 import { createFileRoute } from "@tanstack/react-router";
+
 import {
   DollarSign,
   MessageSquare,
@@ -337,29 +339,24 @@ function DashboardPage() {
 
   return (
     <PageContainer className="space-y-8 pb-32">
-      {/* Header — Identidade Premium */}
-      <section className="flex flex-col gap-2">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div className="space-y-1">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              Dashboard de <span className="text-primary">Performance</span>
-            </h1>
-            <p className="text-sm text-muted-foreground max-w-lg">
-              Monitoramento central de operações, vendas e engajamento da rede MR SEM LIMITES.
-            </p>
-          </div>
-          
+      <PageHeader 
+        group="Visão Geral"
+        title="Dashboard de Performance"
+        subtitle="Monitoramento central de operações, vendas e engajamento da rede MR SEM LIMITES."
+        breadcrumb="Dashboard"
+        actions={
           <div className="flex items-center gap-3">
             <div className="flex flex-col items-end">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Sistema</span>
-              <span className="text-xs font-bold text-primary flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_var(--primary)]" />
-                Operando em Tempo Real
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 leading-none mb-1">Sistema</span>
+              <span className="text-[10px] font-bold text-primary flex items-center gap-1.5 uppercase">
+                <span className="size-1.5 rounded-full bg-primary animate-pulse" />
+                Tempo Real
               </span>
             </div>
           </div>
-        </div>
-      </section>
+        }
+      />
+
 
       {/* Hero — Destaque visual */}
       <section className="relative overflow-hidden rounded-[2.5rem] border border-border/40 bg-surface/30 p-8 md:p-12">
