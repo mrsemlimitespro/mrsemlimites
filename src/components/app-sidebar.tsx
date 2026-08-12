@@ -32,10 +32,15 @@ import {
   Terminal,
   Activity,
   CreditCard as PaymentIcon,
-  Webhook
+  Webhook,
+  ShoppingCart, 
+  TrendingUp, 
+  Trophy
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { toast } from "sonner";
+import { UserRole } from "@/hooks/useUserRole";
+
 
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -118,7 +123,7 @@ const getAllItems = (role: string | null): NavItem[] => {
   return items;
 };
 
-import { ShoppingCart, TrendingUp, Trophy } from "lucide-react";
+// ShoppingCart, TrendingUp, Trophy já importados acima
 
 export function AppSidebar({ 
   isExpanded, 
@@ -144,7 +149,7 @@ export function AppSidebar({
     });
   }, []);
 
-  const navItems = getAllItems(role);
+  const navItems = getAllItems(role as UserRole);
 
   // Group items
   const groupedItems = navItems.reduce((acc, item) => {
