@@ -16,8 +16,10 @@ export function PageContainer({ children, className, maxWidth = "1400px" }: Page
       )}
       style={{ maxWidth }}
     >
+      {children}
+
       {/* Assinatura Inferior (Sempre no final do container de cada página) */}
-      <div className="mt-20 pb-10 flex flex-col items-center space-y-4">
+      <div className="mt-32 pb-10 flex flex-col items-center space-y-4">
          <div className="flex items-center gap-6 w-full max-w-2xl">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/50 to-primary shadow-[0_0_10px_var(--primary)]" />
             <span className="text-2xl md:text-4xl font-black tracking-[0.4em] text-foreground italic drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">SEM LIMITES</span>
@@ -27,10 +29,10 @@ export function PageContainer({ children, className, maxWidth = "1400px" }: Page
             AUTOMAÇÃO • PRODUTIVIDADE • RESULTADOS
          </p>
       </div>
-      {children}
     </div>
   );
 }
+
 
 export function PageHeader({ 
   group,
