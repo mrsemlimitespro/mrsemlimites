@@ -488,25 +488,20 @@ function LicencasPage() {
                 </span>
               </button>
             );
-          })}
-        {hasOutros && (
-          <button
-            type="button"
-            onClick={() => setBucket("outros")}
-            className={cn(
-              "group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
-              bucket === "outros"
-                ? "gradient-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
-            )}
-            title="Licenças legadas com durações diferentes das padrões"
-          >
-            <span>Outros</span>
-            <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
-              {bucketCounts.outros}
-            </span>
-          </button>
-        )}
+        </div>
+      </div>
+
+      {/* Stats/Summary Row (Optional, adding for depth) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="rounded-[1.5rem] border border-border/40 bg-surface/30 p-4 flex items-center gap-4">
+          <div className="size-10 rounded-xl bg-primary/10 text-primary grid place-items-center">
+            <KeyRound className="size-5" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Sessão Atual</span>
+            <span className="text-sm font-bold">{bucket === "teste" ? "Trials de 1h" : `${bucket} Premium`}</span>
+          </div>
+        </div>
       </div>
 
       {/* Search + filter */}
