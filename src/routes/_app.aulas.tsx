@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { GraduationCap, PlayCircle, Search, Sparkles } from "lucide-react";
+import { PageContainer } from "@/components/page-container";
+
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/aulas")({
@@ -18,7 +20,7 @@ export const Route = createFileRoute("/_app/aulas")({
 
 function AulasPage() {
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-6">
+    <PageContainer className="space-y-6">
       {/* Header */}
       <header className="space-y-2">
         <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -83,6 +85,7 @@ function AulasPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
+
   );
 }
