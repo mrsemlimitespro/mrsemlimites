@@ -488,7 +488,7 @@ function LicencasPage() {
                 </span>
               </button>
             );
-        </div>
+          })}
       </div>
 
       {/* Stats/Summary Row (Optional, adding for depth) */}
