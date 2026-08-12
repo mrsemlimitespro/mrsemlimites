@@ -785,7 +785,8 @@ function LicencasPage() {
                       )}
                     </DropdownMenuContent>
                   </DropdownMenu>
-    </PageContainer>
+                </div>
+
 
 
               </li>
@@ -822,7 +823,8 @@ function LicencasPage() {
           reload();
         }}
       />
-    </div>
+    </PageContainer>
+
   );
 }
 
