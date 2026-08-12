@@ -177,7 +177,7 @@ function BackendZipCard() {
   };
 
   return (
-    <Card className="glass border-brand-magenta/30 overflow-hidden relative">
+    <Card className="glass border-brand-magenta/40 overflow-hidden relative rounded-2xl bg-surface/30">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-magenta/70 to-transparent" />
       <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
@@ -209,7 +209,7 @@ function BackendZipCard() {
           <Button 
             onClick={handleDownload}
             disabled={downloading}
-            className="w-full md:w-auto bg-brand-magenta hover:bg-brand-magenta/90 text-white font-bold px-8 h-12 rounded-xl shadow-[0_0_20px_-5px_var(--brand-magenta)]"
+            className="w-full md:w-auto bg-brand-magenta hover:bg-brand-magenta/90 text-white font-bold px-8 h-12 rounded-xl shadow-lg shadow-brand-magenta/20"
           >
             {downloading ? (
               <Loader2 className="mr-2 size-5 animate-spin" />
