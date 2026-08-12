@@ -71,47 +71,47 @@
 :root {
   --radius: 0.875rem;
 
-  /* Deep near-black with a subtle violet undertone (matches print reference) */
-  --background: oklch(0.08 0.012 300);
-  --foreground: oklch(0.985 0.004 320);
+  /* Deep near-black, refined for modern SaaS */
+  --background: oklch(0.06 0.008 260);
+  --foreground: oklch(0.985 0.004 260);
 
-  /* Elevated glass surfaces — cards do print (dark navy/violet) */
-  --surface: oklch(0.145 0.028 295);
-  --surface-elevated: oklch(0.175 0.035 295);
+  /* Surface and Cards (Graphite theme) */
+  --surface: oklch(0.12 0.02 260);
+  --surface-elevated: oklch(0.16 0.025 260);
 
-  --card: oklch(0.145 0.028 295);
-  --card-foreground: oklch(0.985 0.004 320);
+  --card: oklch(0.12 0.02 260);
+  --card-foreground: oklch(0.985 0.004 260);
 
-  --popover: oklch(0.16 0.032 295);
-  --popover-foreground: oklch(0.985 0.004 320);
+  --popover: oklch(0.14 0.025 260);
+  --popover-foreground: oklch(0.985 0.004 260);
 
-  /* Primary = warm magenta→pink brand (usado em botões/gradiente) */
-  --primary: oklch(0.68 0.28 340);
-  --primary-foreground: oklch(0.99 0.005 20);
+  /* Brand: Electric Blue + Cyan */
+  --primary: oklch(0.68 0.2 250);
+  --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.22 0.04 295);
-  --secondary-foreground: oklch(0.97 0.01 20);
+  --secondary: oklch(0.18 0.03 260);
+  --secondary-foreground: oklch(0.97 0.01 260);
 
-  --muted: oklch(0.2 0.028 295);
-  --muted-foreground: oklch(0.72 0.025 300);
+  --muted: oklch(0.16 0.02 260);
+  --muted-foreground: oklch(0.70 0.02 260);
 
-  --accent: oklch(0.28 0.08 330);
-  --accent-foreground: oklch(0.985 0.005 20);
+  --accent: oklch(0.25 0.08 240);
+  --accent-foreground: oklch(0.985 0.005 260);
 
-  --destructive: oklch(0.66 0.24 25);
-  --destructive-foreground: oklch(0.98 0.005 20);
+  --destructive: oklch(0.60 0.22 30);
+  --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(1 0 0 / 7%);
-  --input: oklch(1 0 0 / 9%);
-  --ring: oklch(0.72 0.26 340);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.68 0.2 250);
 
-  /* Brand palette — magenta/violet/pink/orange do print */
-  --brand-violet: oklch(0.62 0.24 295);
-  --brand-blue: oklch(0.66 0.2 260);
-  --brand-cyan: oklch(0.78 0.14 210);
-  --brand-magenta: oklch(0.68 0.28 340);
-  --brand-pink: oklch(0.72 0.26 5);
-  --brand-orange: oklch(0.74 0.2 45);
+  /* Palette: Blue/Cyan/Violet/Charcoal */
+  --brand-violet: oklch(0.65 0.22 290);
+  --brand-blue: oklch(0.68 0.2 250);
+  --brand-cyan: oklch(0.78 0.16 210);
+  --brand-magenta: oklch(0.65 0.24 330);
+  --brand-pink: oklch(0.72 0.2 10);
+  --brand-orange: oklch(0.75 0.18 50);
   --brand-emerald: oklch(0.72 0.16 165);
   --brand-amber: oklch(0.78 0.16 80);
 
