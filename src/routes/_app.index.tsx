@@ -166,11 +166,27 @@ function HeroSection({
         <h1 className="gradient-text-warm text-3xl font-black tracking-tight md:text-5xl">
           {BRAND_NAME}
         </h1>
+        
+        {/* DOWNLOAD DIRETO DO MASTER KIT */}
+        {(isAdmin || role === "admin") && (
+          <div className="mb-4">
+            <a 
+              href="/master.zip" 
+              download 
+              className="inline-flex items-center gap-2 rounded-full bg-brand-magenta/20 border border-brand-magenta/30 px-4 py-2 text-xs font-bold text-brand-magenta animate-pulse hover:bg-brand-magenta hover:text-white transition-all shadow-[0_0_15px_-3px_var(--brand-magenta)]"
+            >
+              <Package className="size-4" />
+              BAIXAR MASTER KIT ZIP (DIRETO)
+            </a>
+          </div>
+        )}
+
         <p className="max-w-2xl px-2 text-sm text-muted-foreground md:text-base">
           Agentes IA, Prompts, Packs, Extensões, Automações, Templates e Comunidade —
           entrega após a confirmação do pagamento, com suporte humano no WhatsApp.
         </p>
       </div>
+
 
       <HeroCtas authed={authed} role={role} isAdmin={isAdmin} />
     </section>
