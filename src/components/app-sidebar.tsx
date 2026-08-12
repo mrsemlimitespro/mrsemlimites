@@ -14,6 +14,17 @@ import {
   Wand2,
   Store,
   Server,
+  Settings,
+  ChevronRight,
+  ChevronLeft,
+  Search,
+  LayoutGrid,
+  Zap,
+  ShieldCheck,
+  MessageSquare,
+  BarChart3,
+  CreditCard,
+  History,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { toast } from "sonner";
@@ -33,50 +44,62 @@ type NavItem = {
   title: string;
   url: string;
   icon: IconType;
+  group?: string;
 };
 
-// Público: acessível sem login (Home + Agents + Prompts)
+// Groups
+const GROUPS = {
+  CORE: "Essencial",
+  COMERCIAL: "Comercial",
+  IA: "Inteligência Artificial",
+  GESTAO: "Gestão & CRM",
+  SISTEMA: "Sistema",
+};
+
+// Público
 const publicItems: NavItem[] = [
-  { title: "Início", url: "/", icon: LayoutDashboard },
-  { title: "Agentes", url: "/agents", icon: Bot },
-  { title: "Prompts", url: "/prompts", icon: Wand2 },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.CORE },
+  { title: "Agentes IA", url: "/agents", icon: Bot, group: GROUPS.IA },
+  { title: "Prompts IA", url: "/prompts", icon: Wand2, group: GROUPS.IA },
 ];
 
-// Cliente final autenticado: acesso ao conteúdo, sem funções de revenda
+// Cliente
 const clienteItems: NavItem[] = [
-  { title: "Aulas", url: "/aulas", icon: GraduationCap },
+  { title: "Meus Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CORE },
 ];
 
-// Revendedor / Admin: painel comercial completo
+// Revendedor / Admin
 const revendedorItems: NavItem[] = [
-  { title: "Painel", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Licenças", url: "/licencas", icon: KeyRound },
-  { title: "Clientes", url: "/clientes", icon: Users },
-  { title: "Revendas", url: "/revendedor", icon: Store },
-  { title: "Créditos", url: "/creditos", icon: Coins },
-  { title: "Aulas", url: "/aulas", icon: GraduationCap },
+  { title: "Minhas Licenças", url: "/licencas", icon: KeyRound, group: GROUPS.COMERCIAL },
+  { title: "Base de Clientes", url: "/clientes", icon: Users, group: GROUPS.GESTAO },
+  { title: "Loja de Revenda", url: "/revendedor", icon: Store, group: GROUPS.COMERCIAL },
+  { title: "Carteira / Saldo", url: "/creditos", icon: Coins, group: GROUPS.COMERCIAL },
+  { title: "Biblioteca Pro", url: "/aulas", icon: GraduationCap, group: GROUPS.CORE },
 ];
 
-// Só admin: gestão global dos revendedores cadastrados
+// Admin Only
 const adminItems: NavItem[] = [
-  { title: "Revendedores", url: "/admin/revendedores-gestao", icon: Store },
-  { title: "API Control", url: "/admin/api-dashboard", icon: Server },
+  { title: "Gestão de Parceiros", url: "/admin/revendedores-gestao", icon: ShieldCheck, group: GROUPS.GESTAO },
+  { title: "Status da API", url: "/admin/api-dashboard", icon: Server, group: GROUPS.SISTEMA },
+  { title: "Configurações", url: "/admin/configuracoes", icon: Settings, group: GROUPS.SISTEMA },
 ];
 
 type FooterItem = NavItem | { title: string; action: "logout"; icon: IconType };
 
 const authedFooterItems: FooterItem[] = [
-  { title: "Baixar Extensão", url: "/baixar-extensao", icon: Download },
-  { title: "Perfil", url: "/perfil", icon: UserRound },
-  { title: "Sair", action: "logout", icon: LogOut },
+  { title: "Downloads", url: "/baixar-extensao", icon: Download },
+  { title: "Minha Conta", url: "/perfil", icon: UserRound },
+  { title: "Encerrar Sessão", action: "logout", icon: LogOut },
 ];
 
-const anonFooterItems: FooterItem[] = [{ title: "Entrar", url: "/login", icon: LogIn }];
+const anonFooterItems: FooterItem[] = [{ title: "Acessar Conta", url: "/login", icon: LogIn }];
 
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
+  
+  const [isExpanded, setIsExpanded] = useState(true);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const authed = useIsAuthed();
@@ -96,16 +119,22 @@ export function AppSidebar() {
     };
   }, []);
 
-  // Antes da checagem terminar, mostramos só os itens públicos para evitar flash.
-  // Cliente final não enxerga funções de revendedor (Painel/Licenças/Clientes/Créditos).
-  const primaryItems: NavItem[] = (() => {
+  const navItems: NavItem[] = (() => {
     if (authed !== true) return publicItems;
     if (role === "admin") return [...publicItems, ...revendedorItems, ...adminItems];
     if (isPrivilegedRole(role)) return [...publicItems, ...revendedorItems];
-    // cliente ou role ainda carregando: só conteúdo público + Aulas
     return [...publicItems, ...clienteItems];
   })();
+
   const footerItems: FooterItem[] = authed === true ? authedFooterItems : anonFooterItems;
+
+  // Group items
+  const groupedItems = navItems.reduce((acc, item) => {
+    const group = item.group || GROUPS.CORE;
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(item);
+    return acc;
+  }, {} as Record<string, NavItem[]>);
 
   return (
     <>
@@ -113,62 +142,86 @@ export function AppSidebar() {
         <aside
           aria-label="Navegação principal"
           className={cn(
-            "fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 md:flex",
-            "flex-col items-center gap-1 rounded-[2.5rem] px-2 py-4",
-            "border border-border/70 bg-surface/50 backdrop-blur-xl",
-            "max-h-[90vh] overflow-y-auto scrollbar-none",
+            "fixed left-0 top-0 z-40 hidden h-full md:flex flex-col transition-all duration-300 ease-in-out",
+            "border-r border-border/50 bg-background/80 backdrop-blur-xl",
+            isExpanded ? "w-64" : "w-20"
           )}
-          style={{
-            boxShadow:
-              "0 0 0 1px oklch(1 0 0 / 4%), 0 20px 60px -20px oklch(0 0 0 / 70%), 0 0 40px -6px color-mix(in oklab, var(--brand-magenta) 45%, transparent)",
-          }}
         >
-          <Link
-            to="/"
-            aria-label={`${BRAND_NAME} — ir para o dashboard`}
-            className="mb-2 transition-transform duration-200 hover:scale-105"
-          >
-            <BrandMark size={38} />
-          </Link>
+          {/* Header & Logo */}
+          <div className="flex h-16 items-center px-4 mb-2">
+            <Link to="/" className="flex items-center gap-3 overflow-hidden">
+              <div className="shrink-0 size-9 grid place-items-center rounded-xl bg-gradient-primary shadow-lg shadow-primary/20">
+                <BrandMark size={22} className="text-white" />
+              </div>
+              <span className={cn(
+                "font-bold text-lg tracking-tight transition-all duration-300 whitespace-nowrap",
+                !isExpanded && "opacity-0 -translate-x-4 pointer-events-none"
+              )}>
+                {BRAND_NAME.split(" ")[0]} <span className="text-primary">{BRAND_NAME.split(" ")[1]}</span>
+              </span>
+            </Link>
+          </div>
 
-          <PanelBadge authed={authed} role={role} />
+          {/* User Badge / Role Indicator */}
+          <div className="px-3 mb-6">
+            <PanelBadge authed={authed} role={role} isExpanded={isExpanded} />
+          </div>
 
-          <div className="mb-1 h-px w-6 bg-border/70" aria-hidden />
-
-          <nav className="flex flex-col gap-1.5">
-            {primaryItems.map((item) => (
-              <RailButton key={item.title} item={item} active={isActive(item.url)} />
+          {/* Navigation Items */}
+          <div className="flex-1 overflow-y-auto px-3 space-y-6 py-2 scrollbar-none">
+            {Object.entries(groupedItems).map(([group, items]) => (
+              <div key={group} className="space-y-1">
+                {isExpanded && (
+                  <h3 className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+                    {group}
+                  </h3>
+                )}
+                <div className="space-y-1">
+                  {items.map((item) => (
+                    <NavItemLink 
+                      key={item.url} 
+                      item={item} 
+                      active={isActive(item.url)} 
+                      isExpanded={isExpanded} 
+                    />
+                  ))}
+                </div>
+              </div>
             ))}
-          </nav>
+          </div>
 
-          <div className="my-2 h-px w-6 bg-border/70" aria-hidden />
-
-          <div className="flex flex-col gap-1.5">
+          {/* Footer Items */}
+          <div className="mt-auto border-t border-border/40 p-3 space-y-1 bg-surface/30">
             {footerItems.map((item) => {
               if ("url" in item) {
-                return <RailButton key={item.title} item={item} active={isActive(item.url)} />;
+                return (
+                  <NavItemLink 
+                    key={item.url} 
+                    item={item} 
+                    active={isActive(item.url)} 
+                    isExpanded={isExpanded} 
+                  />
+                );
               }
-              const isLogout = item.action === "logout";
               return (
-                <RailAction
-                  key={item.title}
-                  title={item.title}
-                  tooltip={
-                    isLogout && userEmail ? (
-                      <div className="flex flex-col gap-0.5">
-                        <span>{item.title}</span>
-                        <span className="text-[10px] text-muted-foreground">{userEmail}</span>
-                      </div>
-                    ) : (
-                      item.title
-                    )
-                  }
-                  icon={item.icon}
-                  variant={isLogout ? "danger" : "muted"}
-                  onClick={isLogout ? () => setLogoutOpen(true) : undefined}
+                <ActionLink 
+                  key={item.title} 
+                  item={item} 
+                  isExpanded={isExpanded}
+                  onClick={() => setLogoutOpen(true)}
+                  userEmail={userEmail}
                 />
               );
             })}
+
+            {/* Collapse Toggle */}
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="hidden md:flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors mt-2"
+            >
+              {isExpanded ? <ChevronLeft className="size-5" /> : <ChevronRight className="size-5" />}
+              {isExpanded && <span className="text-sm font-medium">Recolher menu</span>}
+            </button>
           </div>
         </aside>
       </TooltipProvider>
@@ -177,147 +230,129 @@ export function AppSidebar() {
   );
 }
 
-async function downloadExtension() {
-  try {
-    playSfx("swipe");
-    const filename = "mr-sem-limites-2.2.6.zip";
-    const res = await fetch("/api/public/download-extensao", { cache: "no-store" });
-    if (!res.ok) throw new Error(`Falha ao baixar (${res.status})`);
-    const blob = await res.blob();
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(a.href);
-    toast.success("Download iniciado");
-  } catch (err) {
-    toast.error(err instanceof Error ? err.message : "Falha ao baixar extensão");
-  }
-}
-
-function RailButton({ item, active }: { item: NavItem; active: boolean }) {
+function NavItemLink({ item, active, isExpanded }: { item: NavItem; active: boolean; isExpanded: boolean }) {
   const Icon = item.icon;
+  const content = (
+    <Link
+      to={item.url}
+      aria-label={item.title}
+      onClick={() => playSfx("swipe")}
+      className={cn(
+        "group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 relative overflow-hidden",
+        active 
+          ? "bg-primary/10 text-primary" 
+          : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+      )}
+    >
+      <div className={cn(
+        "shrink-0 size-9 grid place-items-center rounded-lg transition-all duration-300",
+        active ? "bg-primary text-white shadow-md shadow-primary/25" : "bg-surface text-muted-foreground group-hover:bg-white/10 group-hover:text-foreground"
+      )}>
+        <Icon className="size-5" />
+      </div>
+      
+      <span className={cn(
+        "text-sm font-medium whitespace-nowrap transition-all duration-300",
+        !isExpanded && "opacity-0 -translate-x-4 pointer-events-none"
+      )}>
+        {item.title}
+      </span>
+
+      {active && (
+        <span className="absolute right-0 top-0 h-full w-1 bg-primary rounded-l-full shadow-[0_0_12px_var(--primary)]" />
+      )}
+    </Link>
+  );
+
+  if (isExpanded) return content;
+
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Link
-          to={item.url}
-          aria-label={item.title}
-          onClick={() => playSfx("swipe")}
-          className={cn(
-            "group relative grid size-11 place-items-center rounded-full transition-all duration-200",
-            "text-foreground/60 hover:text-foreground",
-            active && "text-primary-foreground",
-          )}
-        >
-          {active && (
-            <>
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-full gradient-primary"
-              />
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-full"
-                style={{
-                  boxShadow:
-                    "0 0 0 1px color-mix(in oklab, var(--primary) 60%, transparent), 0 0 24px -2px color-mix(in oklab, var(--primary) 85%, transparent)",
-                }}
-              />
-            </>
-          )}
-          <Icon className="relative z-10 size-[18px]" strokeWidth={2} />
-        </Link>
-      </TooltipTrigger>
-      <TooltipContent side="right" sideOffset={12}>
+      <TooltipTrigger asChild>{content}</TooltipTrigger>
+      <TooltipContent side="right" sideOffset={12} className="font-medium">
         {item.title}
       </TooltipContent>
     </Tooltip>
   );
 }
 
-function RailAction({
-  title,
-  tooltip,
-  icon: Icon,
-  variant = "muted",
-  onClick,
-}: {
-  title: string;
-  tooltip?: React.ReactNode;
-  icon: IconType;
-  variant?: "muted" | "danger";
-  onClick?: () => void;
-}) {
+function ActionLink({ item, isExpanded, onClick, userEmail }: { item: any, isExpanded: boolean, onClick: () => void, userEmail?: string | null }) {
+  const Icon = item.icon;
+  const isLogout = item.action === "logout";
+
+  const content = (
+    <button
+      onClick={onClick}
+      className={cn(
+        "group flex w-full items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
+        isLogout 
+          ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
+          : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+      )}
+    >
+      <div className={cn(
+        "shrink-0 size-9 grid place-items-center rounded-lg transition-all duration-300",
+        isLogout ? "bg-red-500/10" : "bg-surface"
+      )}>
+        <Icon className="size-5" />
+      </div>
+      
+      <span className={cn(
+        "text-sm font-medium whitespace-nowrap transition-all duration-300",
+        !isExpanded && "opacity-0 -translate-x-4 pointer-events-none"
+      )}>
+        {item.title}
+      </span>
+    </button>
+  );
+
+  if (isExpanded) return content;
+
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          aria-label={title}
-          onClick={onClick}
-          className={cn(
-            "grid size-11 place-items-center rounded-full transition-all duration-200",
-            "text-foreground/55 hover:text-foreground hover:bg-white/5",
-            variant === "danger" && "hover:text-destructive hover:bg-destructive/10",
-          )}
-        >
-          <Icon className="size-[18px]" strokeWidth={2} />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent side="right" sideOffset={12}>
-        {tooltip ?? title}
+      <TooltipTrigger asChild>{content}</TooltipTrigger>
+      <TooltipContent side="right" sideOffset={12} className="flex flex-col gap-0.5">
+        <span className="font-medium">{item.title}</span>
+        {isLogout && userEmail && <span className="text-[10px] opacity-60 font-normal">{userEmail}</span>}
       </TooltipContent>
     </Tooltip>
   );
 }
 
-/**
- * PanelBadge — chip circular no topo do rail lateral indicando o painel atual
- * (Admin / Revendedor / Cliente / Visitante). Só visual, sem alterar rotas.
- */
-function PanelBadge({
-  authed,
-  role,
-}: {
-  authed: boolean | null;
-  role: ReturnType<typeof useUserRole>;
-}) {
+function PanelBadge({ authed, role, isExpanded }: { authed: boolean | null, role: string | null, isExpanded: boolean }) {
   const cfg = (() => {
-    if (authed !== true) return { emoji: "🌐", label: "Visitante", glow: "oklch(0.75 0.02 260)" };
-    if (role === "admin")
-      return { emoji: "⭐", label: "Administrador", glow: "var(--brand-orange)" };
-    if (role === "revendedor")
-      return { emoji: "🏪", label: "Revendedor", glow: "var(--brand-blue)" };
-    if (role === "cliente")
-      return { emoji: "👤", label: "Cliente", glow: "var(--brand-emerald)" };
-    return { emoji: "•", label: "Carregando…", glow: "oklch(0.6 0 0)" };
+    if (authed !== true) return { emoji: "🌐", label: "Visitante", color: "gray" };
+    if (role === "admin") return { emoji: "⚡", label: "Administrador", color: "amber" };
+    if (role === "revendedor") return { emoji: "🏪", label: "Revendedor", color: "blue" };
+    if (role === "cliente") return { emoji: "👤", label: "Cliente", color: "emerald" };
+    return { emoji: "•", label: "Conectando...", color: "gray" };
   })();
 
+  const colorClasses = {
+    amber: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+    blue: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+    emerald: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+    gray: "bg-gray-500/10 text-gray-400 border-gray-500/20",
+  }[cfg.color as keyof typeof colorClasses];
+
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <div
-          aria-label={`Painel atual: ${cfg.label}`}
-          className="mb-1 grid size-9 place-items-center rounded-full text-lg leading-none"
-          style={{
-            background: `color-mix(in oklab, ${cfg.glow} 25%, oklch(0 0 0 / 40%))`,
-            boxShadow: `0 0 0 1px color-mix(in oklab, ${cfg.glow} 55%, transparent), 0 0 18px -2px color-mix(in oklab, ${cfg.glow} 65%, transparent)`,
-          }}
-        >
-          <span aria-hidden>{cfg.emoji}</span>
-        </div>
-      </TooltipTrigger>
-      <TooltipContent side="right" sideOffset={12}>
-        <div className="flex flex-col gap-0.5">
-          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            Painel atual
-          </span>
-          <span className="font-semibold">{cfg.label}</span>
-        </div>
-      </TooltipContent>
-    </Tooltip>
+    <div className={cn(
+      "flex items-center gap-3 px-3 py-2 rounded-2xl border bg-surface/50 transition-all duration-300",
+      !isExpanded && "px-2 py-2 justify-center border-transparent bg-transparent"
+    )}>
+      <div className={cn(
+        "shrink-0 size-8 grid place-items-center rounded-lg text-lg border",
+        colorClasses
+      )}>
+        {cfg.emoji}
+      </div>
+      <div className={cn(
+        "flex flex-col min-w-0 transition-all duration-300",
+        !isExpanded && "opacity-0 w-0 pointer-events-none"
+      )}>
+        <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">Status</span>
+        <span className="text-xs font-bold truncate">{cfg.label}</span>
+      </div>
+    </div>
   );
 }
