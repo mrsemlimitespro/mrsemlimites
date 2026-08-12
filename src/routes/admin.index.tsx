@@ -19,6 +19,8 @@ import type { ComponentType, SVGProps } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { PageContainer } from "@/components/page-container";
+
 
 export const Route = createFileRoute("/admin/")({
   component: AdminControlCenter,
@@ -323,7 +325,7 @@ function AdminControlCenter() {
   const licencas = useLatest<any>("licencas", "id, chave, plano, status, created_at");
 
   return (
-    <div className="mx-auto max-w-[1400px] space-y-8 pb-32">
+    <PageContainer className="space-y-8 pb-32">
       <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
@@ -417,6 +419,7 @@ function AdminControlCenter() {
         Todos os feeds são somente leitura. Clique em qualquer card para abrir a tela
         correspondente.
       </p>
-    </div>
+    </PageContainer>
   );
 }
+
