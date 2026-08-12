@@ -392,111 +392,117 @@ function LicencasPage() {
 
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-6">
-      {/* Header */}
-      <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] gradient-text-warm">
-            Gestão
+    <div className="mx-auto w-full max-w-[1400px] space-y-8 pb-32">
+      {/* Page Header */}
+      <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
+            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
+            Infraestrutura
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+            Gestão de <span className="text-primary">Licenças</span>
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-lg">
+            Emissão, controle e auditoria de chaves de acesso para a rede MR Lova.
           </p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">Licenças</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Gerencie as licenças criadas por você
-          </p>
-          <p className="mt-3 inline-flex items-center gap-1.5 text-sm">
-            <KeyRound className="size-3.5 text-primary" strokeWidth={2} />
-            {isAdmin ? (
-              <>
-                <span className="font-semibold text-primary text-lg leading-none">♾️</span>
-                <span className="font-semibold text-primary">ilimitadas</span>
-                <span className="text-muted-foreground">/ {total} criadas</span>
-              </>
-            ) : (
-              <>
-                <span className="font-semibold text-primary">{available} disponíveis</span>
-                <span className="text-muted-foreground">/ {total} total</span>
-              </>
-            )}
-          </p>
+          
+          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border/40">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Disponíveis</span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-xl font-bold text-primary">
+                  {isAdmin ? "♾️" : available}
+                </span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+                  READY
+                </span>
+              </div>
+            </div>
+            <div className="w-px h-8 bg-border/40" />
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total Criadas</span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-xl font-bold">{total}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           {canTeste && (
-            <Button
-              variant="ghost"
-              className="rounded-full border border-amber-400/40 bg-amber-500/10 px-4 text-amber-200 backdrop-blur-xl hover:bg-amber-500/20"
+            <button
               onClick={() => setOpenEnviarTeste(true)}
-              title="Criar e enviar licença teste (1 hora) para o cliente"
+              className="group relative flex items-center gap-2 overflow-hidden rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-3 text-sm font-bold text-amber-200 transition-all hover:bg-amber-500/10 active:scale-95"
             >
-              <Send className="size-4" strokeWidth={2} />
-              Licença Teste
-            </Button>
+              <Send className="size-4" />
+              <span>Express Trial (1h)</span>
+            </button>
           )}
-          <Button
-            variant="ghost"
-            className="rounded-full border border-border/70 bg-surface/50 px-4 backdrop-blur-xl hover:bg-white/5"
+          <button
             onClick={() => setOpenTeste(true)}
+            className="rounded-2xl border border-border/40 bg-surface/30 px-5 py-3 text-sm font-bold text-foreground hover:bg-surface/50 transition-all active:scale-95"
           >
-            <FlaskConical className="size-4" strokeWidth={2} />
-            Vincular a Cliente
-          </Button>
-          <Button
-            className="rounded-full gradient-primary text-primary-foreground shadow-[0_0_24px_-4px_color-mix(in_oklab,var(--primary)_70%,transparent)] hover:opacity-95"
+            Vincular Cliente
+          </button>
+          <button
             onClick={() => setOpenNova(true)}
+            className="rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95 flex items-center gap-2"
           >
-            <Plus className="size-4" strokeWidth={2.5} />
-            Nova Licença
-          </Button>
+            <Plus className="size-4" strokeWidth={3} />
+            Gerar Licença
+          </button>
         </div>
       </header>
 
-      {/* Sub-abas por duração */}
-      <div className="glass flex flex-wrap items-center gap-1.5 rounded-full p-1.5">
-        {BUCKETS.map((b) => {
-          const active = bucket === b.id;
-          const count = bucketCounts[b.id] ?? 0;
-          return (
-            <button
-              key={b.id}
-              type="button"
-              onClick={() => setBucket(b.id)}
-              className={cn(
-                "group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
-                active
-                  ? "gradient-primary text-primary-foreground shadow-[0_0_18px_-4px_color-mix(in_oklab,var(--primary)_65%,transparent)]"
-                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
-              )}
-            >
-              <span>{b.label}</span>
-              <span
+      {/* Bucket Filter Hub */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+           <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Filtrar por Período</h3>
+           <div className="flex items-center gap-2">
+              <span className="size-2 rounded-full bg-emerald-500" />
+              <span className="text-[10px] font-bold text-muted-foreground/80 uppercase">Ativas em destaque</span>
+           </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {BUCKETS.map((b) => {
+            const active = bucket === b.id;
+            const count = bucketCounts[b.id] ?? 0;
+            return (
+              <button
+                key={b.id}
+                onClick={() => setBucket(b.id)}
                 className={cn(
-                  "rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
-                  active ? "bg-white/20 text-white" : "bg-white/[0.06] text-muted-foreground",
+                  "flex items-center gap-3 rounded-2xl px-5 py-3 text-xs font-bold transition-all border",
+                  active
+                    ? "bg-primary/10 text-primary border-primary/30 shadow-lg shadow-primary/5"
+                    : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
                 )}
               >
-                {count}
-              </span>
-            </button>
-          );
-        })}
-        {hasOutros && (
-          <button
-            type="button"
-            onClick={() => setBucket("outros")}
-            className={cn(
-              "group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
-              bucket === "outros"
-                ? "gradient-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
-            )}
-            title="Licenças legadas com durações diferentes das padrões"
-          >
-            <span>Outros</span>
-            <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
-              {bucketCounts.outros}
-            </span>
-          </button>
-        )}
+                <span>{b.label}</span>
+                <span className={cn(
+                  "size-5 rounded-lg grid place-items-center text-[9px] font-black",
+                  active ? "bg-primary text-white" : "bg-white/10 text-muted-foreground/60"
+                )}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Stats/Summary Row (Optional, adding for depth) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="rounded-[1.5rem] border border-border/40 bg-surface/30 p-4 flex items-center gap-4">
+          <div className="size-10 rounded-xl bg-primary/10 text-primary grid place-items-center">
+            <KeyRound className="size-5" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Sessão Atual</span>
+            <span className="text-sm font-bold">{bucket === "teste" ? "Trials de 1h" : `${bucket} Premium`}</span>
+          </div>
+        </div>
       </div>
 
       {/* Search + filter */}

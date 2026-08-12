@@ -334,32 +334,56 @@ function DashboardPage() {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-8 pb-32">
-      {/* Hero — Logo centralizada + boas-vindas */}
-      <section className="relative flex flex-col items-center justify-center gap-4 py-6 md:py-10">
-        <div
-          className="relative grid place-items-center rounded-[26%] overflow-hidden"
-          style={{
-            width: "min(220px, 55vw)",
-            height: "min(220px, 55vw)",
-            boxShadow:
-              "0 0 0 1px color-mix(in oklab, var(--brand-magenta) 55%, transparent), 0 0 80px -4px color-mix(in oklab, var(--brand-magenta) 60%, transparent), 0 0 90px -10px color-mix(in oklab, var(--brand-blue) 55%, transparent)",
-          }}
-        >
-          <img
-            src={BRAND_LOGO_URL}
-            alt={`${BRAND_NAME} logo`}
-            className="h-full w-full object-cover"
-            draggable={false}
-          />
+    <div className="mx-auto w-full max-w-[1400px] space-y-8 pb-32">
+      {/* Header — Identidade Premium */}
+      <section className="flex flex-col gap-2">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+              Dashboard de <span className="text-primary">Performance</span>
+            </h1>
+            <p className="text-sm text-muted-foreground max-w-lg">
+              Monitoramento central de operações, vendas e engajamento da rede MR Lova.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Sistema</span>
+              <span className="text-xs font-bold text-primary flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_var(--primary)]" />
+                Operando em Tempo Real
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="gradient-text-warm text-2xl font-bold tracking-tight md:text-3xl">
-            {BRAND_NAME}
-          </h1>
-          <p className="max-w-md text-xs text-muted-foreground md:text-sm">
-            Painel de controle em tempo real — vendas, clientes e atividade.
-          </p>
+      </section>
+
+      {/* Hero — Destaque visual */}
+      <section className="relative overflow-hidden rounded-[2.5rem] border border-border/40 bg-surface/30 p-8 md:p-12">
+        <div className="absolute inset-0 bg-gradient-glow opacity-50" />
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+          <div className="shrink-0 size-32 md:size-40 rounded-[2rem] bg-gradient-primary p-0.5 shadow-2xl shadow-primary/20">
+            <div className="h-full w-full rounded-[1.9rem] bg-black grid place-items-center overflow-hidden">
+               <img src={BRAND_LOGO_URL} alt="Logo" className="w-full h-full object-cover opacity-90" />
+            </div>
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight mb-3">
+              Bem-vindo ao Futuro <br /> da <span className="text-primary">Revenda Digital</span>
+            </h2>
+            <p className="text-sm md:text-base text-muted-foreground max-w-xl mb-6 leading-relaxed">
+              Explore o ecossistema completo do {BRAND_NAME}. De ferramentas exclusivas com IA a gestão automatizada de licenças em larga escala.
+            </p>
+            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+               <button className="rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95">
+                  Expandir Operação
+               </button>
+               <button className="rounded-xl bg-surface border border-border/40 px-6 py-3 text-sm font-bold text-foreground hover:bg-white/5 transition-all">
+                  Ver Documentação
+               </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -399,32 +423,35 @@ function KpiCard({ kpi }: { kpi: Kpi }) {
   const Icon = kpi.icon;
   return (
     <div
-      className="card-premium card-premium-hover group relative overflow-hidden p-5"
-      style={{ ["--tile-color" as never]: kpi.color }}
+      className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-border/40 bg-surface/40 p-6 transition-all duration-300 hover:bg-surface/60 hover:border-primary/30"
     >
-      {/* halo colorido no canto — muito sutil */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-40 blur-2xl transition-opacity duration-300 group-hover:opacity-70"
-        style={{
-          background: `radial-gradient(circle, color-mix(in oklab, ${kpi.color} 55%, transparent) 0%, transparent 70%)`,
-        }}
-      />
-      <div className="relative flex items-start justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          {kpi.label}
-        </p>
-        <span className="icon-tile size-10 shrink-0">
-          <Icon className="size-[18px]" strokeWidth={2} />
-        </span>
+      <div className="flex items-start justify-between">
+        <div className="space-y-1">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+            {kpi.label}
+          </p>
+          <p className="text-3xl font-extrabold tracking-tight text-foreground">
+            {kpi.value}
+          </p>
+        </div>
+        <div className="shrink-0 size-11 grid place-items-center rounded-2xl bg-surface border border-border/40 group-hover:border-primary/30 group-hover:text-primary transition-colors">
+          <Icon className="size-5" strokeWidth={2.5} />
+        </div>
       </div>
 
-      <p className="relative mt-4 text-[30px] font-semibold tracking-tight md:text-[32px]">
-        {kpi.value}
-      </p>
-      <p className="relative mt-1 text-xs text-muted-foreground/80">Últimos 7 dias</p>
+      <div className="mt-8 flex items-end justify-between gap-4">
+        <div className="flex flex-col gap-1">
+           <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1">
+              +12% <span className="opacity-50 font-normal">vs mês ant.</span>
+           </span>
+           <span className="text-[10px] font-medium text-muted-foreground/60">Últimos 7 dias</span>
+        </div>
+        <div className="flex-1 h-12 max-w-[120px]">
+           <Sparkline data={kpi.sparkline} color={kpi.color} />
+        </div>
+      </div>
 
-      <Sparkline data={kpi.sparkline} color={kpi.color} className="relative mt-4" />
+      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 transition-opacity duration-500 bg-gradient-glow" />
     </div>
   );
 }

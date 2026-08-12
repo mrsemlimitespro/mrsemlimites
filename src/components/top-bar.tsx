@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, Settings, Loader2, CheckCheck, LogOut } from "lucide-react";
-import { GlobalSearch } from "@/components/global-search";
+import { Bell, Settings, Loader2, CheckCheck, LogOut, Search, User, Menu } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 import { BrandMark } from "@/components/brand";
@@ -11,6 +10,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useIsAuthed } from "@/hooks/useIsAuthed";
 import { useImpersonation } from "@/hooks/useImpersonation";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { isAdminEmail } from "@/hooks/useIsAdmin";
 
 type Notif = {
   id: string;
@@ -34,8 +35,6 @@ function timeAgo(iso: string) {
   return `há ${d}d`;
 }
 
-import { isAdminEmail } from "@/hooks/useIsAdmin";
-
 export function TopBar() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [notifs, setNotifs] = useState<Notif[]>([]);
@@ -45,6 +44,13 @@ export function TopBar() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [firstName, setFirstName] = useState<string | null>(null);
   const [isRevendedor, setIsRevendedor] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -60,7 +66,7 @@ export function TopBar() {
       }
       setUserEmail(session.user.email ?? null);
       if (mounted) setIsAdminUser(isAdminEmail(session.user.email));
-      // Busca nome do revendedor para saudação personalizada.
+      
       try {
         const { data: rev } = await (supabase as any)
           .from("revendedores")
@@ -94,7 +100,7 @@ export function TopBar() {
       .from("notificacoes")
       .select("id, titulo, mensagem, tipo, categoria, link, lida_em, created_at")
       .order("created_at", { ascending: false })
-      .limit(15);
+      .limit(10);
     setNotifs((data ?? []) as Notif[]);
     setLoading(false);
   }
@@ -142,189 +148,157 @@ export function TopBar() {
 
   return (
     <header
-      className="sticky z-30 mx-auto flex w-full max-w-[1400px] items-center gap-2 px-3 md:gap-3 md:px-6"
+      className={cn(
+        "sticky top-0 z-30 flex h-16 w-full items-center justify-between px-4 md:px-8 transition-all duration-300",
+        scrolled ? "bg-background/80 backdrop-blur-md border-b border-border/40" : "bg-transparent"
+      )}
       style={{
-        top: impersonation
-          ? "calc(var(--impersonation-h, 96px) + 0.5rem)"
-          : undefined,
-        // Fallback padrão: sticky top-2 (0.5rem) desktop e top-2 mobile
-        ...(impersonation ? {} : { top: "0.5rem" }),
+        marginTop: impersonation ? "var(--impersonation-h, 96px)" : undefined,
       }}
     >
-      {/* Spacer for the floating rail on md+ */}
-      <div className="hidden md:block md:w-16 shrink-0" aria-hidden />
+      {/* Mobile Branding (only visible when Sidebar is hidden) */}
+      <div className="flex items-center gap-2 md:hidden">
+        <BrandMark size={28} />
+        <span className="font-bold text-sm tracking-tight">MR <span className="text-primary">Lova</span></span>
+      </div>
 
-      <PanelChip authed={authed} role={role} isAdminUser={isAdminUser} />
-
-      {signedIn && firstName && (
-        <div
-          className="hidden min-w-0 shrink-0 truncate text-sm font-medium text-foreground/90 md:block"
-          title={isRevendedor ? `Revendedor ${firstName}` : firstName}
-        >
-          {isRevendedor ? (
-            <>
-              Olá,{" "}
-              <span className="gradient-text-warm font-semibold">
-                Revendedor {firstName}
+      {/* Page Context / Welcome */}
+      <div className="hidden md:flex flex-col">
+        {signedIn && firstName && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium opacity-60">Olá,</span>
+            <span className="text-sm font-bold">{firstName}</span>
+            {isRevendedor && (
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary uppercase tracking-wider border border-primary/20">
+                Parceiro
               </span>
-            </>
-          ) : (
-            <>
-              Bem-vindo, <span className="font-semibold">{firstName}</span>
-            </>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </div>
 
+      {/* Actions Hub */}
+      <div className="flex items-center gap-2">
+        {/* Search Trigger (UX refinement: direct button if no global search yet) */}
+        <button className="hidden sm:grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors">
+          <Search className="size-5" />
+        </button>
 
-      <GlobalSearch />
-
-
-      <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
+        {/* Notifications */}
         <Popover>
           <PopoverTrigger asChild>
             <button
               type="button"
-              aria-label="Notificações"
-              className="relative grid size-11 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground active:scale-95"
+              className="relative grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all active:scale-95"
             >
-              <Bell className="size-[18px]" strokeWidth={2} />
+              <Bell className="size-5" />
               {unread > 0 && (
-                <span
-                  aria-hidden
-                  className="absolute -right-0.5 -top-0.5 grid min-w-[18px] place-items-center rounded-full px-1 text-[10px] font-semibold text-white"
-                  style={{
-                    background: "var(--brand-magenta)",
-                    boxShadow: "0 0 8px color-mix(in oklab, var(--brand-magenta) 80%, transparent)",
-                  }}
-                >
-                  {unread > 9 ? "9+" : unread}
-                </span>
+                <span className="absolute right-2 top-2 size-2 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]" />
               )}
             </button>
           </PopoverTrigger>
-          <PopoverContent align="end" className="glass-strong w-[360px] p-0" sideOffset={10}>
-            <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
-              <h4 className="text-sm font-semibold">Notificações</h4>
-              {unread > 0 ? (
-                <button
-                  type="button"
-                  onClick={markAllRead}
-                  className="inline-flex items-center gap-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <CheckCheck className="size-3.5" strokeWidth={2} />
-                  Marcar todas
+          <PopoverContent align="end" className="glass-strong w-80 p-0 overflow-hidden" sideOffset={12}>
+            <div className="flex items-center justify-between border-b border-border/40 bg-surface/30 px-4 py-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Alertas</span>
+              {unread > 0 && (
+                <button onClick={markAllRead} className="text-[10px] font-bold text-primary hover:underline">
+                  Limpar tudo
                 </button>
-              ) : null}
+              )}
             </div>
-            <div className="max-h-[420px] overflow-auto">
+            <div className="max-h-80 overflow-y-auto scrollbar-none">
               {loading ? (
-                <div className="flex items-center justify-center px-4 py-10 text-sm text-muted-foreground">
-                  <Loader2 className="mr-2 size-4 animate-spin" /> Carregando...
+                <div className="flex h-32 items-center justify-center">
+                  <Loader2 className="size-5 animate-spin text-primary" />
                 </div>
               ) : notifs.length === 0 ? (
-                <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-                  Nenhuma notificação.
-                </p>
+                <div className="flex flex-col items-center justify-center h-32 text-center p-4">
+                  <Bell className="size-8 text-muted-foreground/20 mb-2" />
+                  <p className="text-xs text-muted-foreground">Nada novo por aqui.</p>
+                </div>
               ) : (
-                <ul>
-                  {notifs.map((n) => {
-                    const body = (
-                      <div
-                        className={
-                          "flex items-start gap-3 border-b border-border/40 px-4 py-3 text-left transition-colors last:border-0 hover:bg-white/[0.03]"
-                        }
-                      >
-                        <span
-                          aria-hidden
-                          className="mt-1.5 size-1.5 shrink-0 rounded-full"
-                          style={{
-                            background: n.lida_em ? "transparent" : "var(--brand-magenta)",
-                            boxShadow: n.lida_em
-                              ? undefined
-                              : "0 0 8px color-mix(in oklab, var(--brand-magenta) 80%, transparent)",
-                          }}
-                        />
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium">{n.titulo}</p>
-                          {n.mensagem ? (
-                            <p className="line-clamp-2 text-xs text-muted-foreground">
-                              {n.mensagem}
-                            </p>
-                          ) : null}
-                          <p className="mt-1 text-[11px] text-muted-foreground/80">
+                <div className="divide-y divide-border/40">
+                  {notifs.map((n) => (
+                    <button
+                      key={n.id}
+                      onClick={() => markOne(n.id)}
+                      className={cn(
+                        "w-full px-4 py-3 text-left transition-colors hover:bg-white/5",
+                        !n.lida_em && "bg-primary/5"
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        {!n.lida_em && <div className="mt-1.5 size-1.5 rounded-full bg-primary shrink-0" />}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-bold truncate mb-0.5">{n.titulo}</p>
+                          <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                            {n.mensagem}
+                          </p>
+                          <p className="mt-1 text-[9px] font-bold opacity-40 uppercase tracking-tighter">
                             {timeAgo(n.created_at)}
                           </p>
                         </div>
                       </div>
-                    );
-                    return (
-                      <li key={n.id}>
-                        {n.link ? (
-                          <Link to={n.link} onClick={() => markOne(n.id)} className="block">
-                            {body}
-                          </Link>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => markOne(n.id)}
-                            className="block w-full"
-                          >
-                            {body}
-                          </button>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
           </PopoverContent>
         </Popover>
 
+        {/* Quick Settings (Admin Only) */}
         {isAdminUser && (
-          <IconBadge dot aria-label="Painel administrativo" onClick={() => setAdminOpen(true)}>
-            <Settings className="size-[18px]" strokeWidth={2} />
-          </IconBadge>
+          <button 
+            onClick={() => setAdminOpen(true)}
+            className="hidden sm:grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors"
+          >
+            <Settings className="size-5" />
+          </button>
         )}
+
+        <div className="mx-1 h-4 w-px bg-border/40" />
+
+        {/* User Menu */}
         {signedIn === false ? (
           <Link
             to="/login"
-            className="inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold text-primary-foreground gradient-primary active:scale-95 transition-transform"
+            className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white shadow-lg shadow-primary/20 transition-all hover:opacity-90 active:scale-95"
           >
-            Entrar
+            Acessar
           </Link>
         ) : (
           <Popover>
             <PopoverTrigger asChild>
-              <button
-                type="button"
-                aria-label="Perfil"
-                className="grid size-11 place-items-center overflow-hidden rounded-full border border-border/70 bg-surface/60 backdrop-blur-xl active:scale-95 transition-transform"
-              >
-                <BrandMark size={36} glow={false} className="rounded-full" />
+              <button className="flex items-center gap-2 rounded-xl p-1 pr-3 border border-border/40 bg-surface/30 hover:bg-surface/50 transition-colors active:scale-95">
+                <div className="size-8 rounded-lg bg-gradient-primary grid place-items-center">
+                  <User className="size-4 text-white" />
+                </div>
+                <div className="hidden sm:flex flex-col items-start min-w-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">Conta</span>
+                  <span className="text-xs font-bold truncate max-w-[80px]">{firstName || "Perfil"}</span>
+                </div>
               </button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="glass-strong w-64 p-3" sideOffset={10}>
-              <div className="mb-3 px-1">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                  Conectado como
-                </p>
-                <p className="mt-0.5 truncate text-sm font-medium" title={userEmail ?? ""}>
-                  {userEmail ?? "—"}
-                </p>
+            <PopoverContent align="end" className="glass-strong w-64 p-2 overflow-hidden" sideOffset={12}>
+              <div className="px-3 py-3 border-b border-border/40 bg-surface/30 mb-1 rounded-t-lg">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Email</p>
+                <p className="text-xs font-bold truncate text-foreground">{userEmail}</p>
               </div>
-              <button
-                type="button"
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  window.location.href = "/";
-                }}
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
-              >
-                <LogOut className="size-4" strokeWidth={2} />
-                Sair
-              </button>
+              <div className="space-y-1">
+                <Link to="/perfil" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold hover:bg-white/5 transition-colors">
+                  <User className="size-4" /> Ver Perfil
+                </Link>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = "/";
+                  }}
+                  className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-red-400 hover:bg-red-500/10 transition-colors"
+                >
+                  <LogOut className="size-4" /> Sair do Sistema
+                </button>
+              </div>
             </PopoverContent>
           </Popover>
         )}
@@ -332,86 +306,5 @@ export function TopBar() {
 
       <AdminPasswordDialog open={adminOpen} onOpenChange={setAdminOpen} />
     </header>
-  );
-}
-
-function IconBadge({
-  children,
-  dot = false,
-  onClick,
-  "aria-label": ariaLabel,
-}: {
-  children: React.ReactNode;
-  dot?: boolean;
-  onClick?: () => void;
-  "aria-label"?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={ariaLabel}
-      className="relative grid size-11 place-items-center rounded-full border border-border/70 bg-surface/60 text-foreground/80 backdrop-blur-xl transition-colors hover:text-foreground active:scale-95"
-    >
-      {children}
-      {dot && (
-        <span
-          aria-hidden
-          className="absolute right-2.5 top-2.5 size-2 rounded-full"
-          style={{
-            background: "var(--brand-magenta)",
-            boxShadow: "0 0 8px color-mix(in oklab, var(--brand-magenta) 80%, transparent)",
-          }}
-        />
-      )}
-    </button>
-  );
-}
-
-/**
- * PanelChip — indicador permanente no Header do painel atual do usuário.
- */
-function PanelChip({
-  authed,
-  role,
-  isAdminUser,
-}: {
-  authed: boolean | null;
-  role: ReturnType<typeof useUserRole>;
-  isAdminUser: boolean;
-}) {
-  const cfg = (() => {
-    if (isAdminUser || role === "admin")
-      return { emoji: "⭐", label: "Painel Administrador", glow: "var(--brand-orange)" };
-    if (role === "revendedor")
-      return { emoji: "🏪", label: "Painel Revendedor", glow: "var(--brand-blue)" };
-    if (authed === true && role === "cliente")
-      return { emoji: "👤", label: "Painel Cliente", glow: "var(--brand-emerald)" };
-    if (authed === false) return { emoji: "🌐", label: "Visitante", glow: "oklch(0.75 0.02 260)" };
-    return null; // loading
-  })();
-
-  if (!cfg) return null;
-
-  return (
-    <TooltipProvider delayDuration={150}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div
-            aria-label={cfg.label}
-            className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-surface/60 px-2.5 text-xs font-semibold backdrop-blur-xl md:h-11 md:px-3 md:text-sm"
-            style={{
-              boxShadow: `0 0 0 1px color-mix(in oklab, ${cfg.glow} 40%, transparent), 0 0 18px -4px color-mix(in oklab, ${cfg.glow} 55%, transparent)`,
-            }}
-          >
-            <span aria-hidden className="text-base leading-none md:text-lg">
-              {cfg.emoji}
-            </span>
-            <span className="hidden sm:inline">{cfg.label}</span>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">{cfg.label}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }

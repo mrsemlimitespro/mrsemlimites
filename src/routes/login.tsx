@@ -227,15 +227,15 @@ function LoginPage() {
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-border/70 bg-surface/60 px-3.5 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/60";
+  "w-full rounded-2xl border border-border/40 bg-surface/30 px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground/40 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all";
 
 export const primaryBtn =
-  "relative w-full rounded-full px-4 py-2.5 text-sm font-semibold text-primary-foreground gradient-primary disabled:opacity-60";
+  "relative w-full rounded-2xl px-4 py-3.5 text-sm font-bold text-white gradient-primary shadow-xl shadow-primary/20 active:scale-[0.98] transition-all disabled:opacity-60";
 
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs font-medium text-muted-foreground">{label}</span>
+    <label className="block space-y-2">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{label}</span>
       {children}
     </label>
   );
@@ -243,10 +243,14 @@ export function Field({ label, children }: { label: string; children: React.Reac
 
 export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-screen w-full">
-      <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-6 px-5 py-10">
+    <div className="relative min-h-screen w-full flex items-center justify-center bg-background overflow-hidden">
+       {/* Ambient glow backgrounds */}
+       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none opacity-50" />
+       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-violet/10 rounded-full blur-[120px] pointer-events-none opacity-50" />
+       
+      <div className="relative z-10 w-full max-w-[420px] flex flex-col items-center gap-8 px-6 py-12">
         <BrandLockup />
-        <div className="glass w-full rounded-2xl p-6">{children}</div>
+        <div className="w-full rounded-[2.5rem] border border-border/40 bg-surface/30 backdrop-blur-xl p-8 shadow-2xl shadow-black/50">{children}</div>
       </div>
     </div>
   );
