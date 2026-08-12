@@ -59,6 +59,7 @@ export function useUserRole(): UserRole {
   return role;
 }
 
-export function isPrivilegedRole(role: UserRole): boolean {
+export function isPrivilegedRole(role: UserRole | string | null): boolean {
   return role === "admin" || role === "revendedor";
 }
+
