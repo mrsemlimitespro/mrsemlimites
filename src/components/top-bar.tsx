@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, Settings, Loader2, CheckCheck, LogOut, Search, User, Menu } from "lucide-react";
+import { Bell, Settings, Loader2, LogOut, Search, User, Maximize, MessageCircle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -43,7 +43,6 @@ export function TopBar() {
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [firstName, setFirstName] = useState<string | null>(null);
-  const [isRevendedor, setIsRevendedor] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -61,28 +60,15 @@ export function TopBar() {
         setIsAdminUser(false);
         setUserEmail(null);
         setFirstName(null);
-        setIsRevendedor(false);
         return;
       }
       setUserEmail(session.user.email ?? null);
       if (mounted) setIsAdminUser(isAdminEmail(session.user.email));
       
-      try {
-        const { data: rev } = await (supabase as any)
-          .from("revendedores")
-          .select("nome")
-          .eq("auth_user_id", session.user.id)
-          .maybeSingle();
-        if (!mounted) return;
-        const nome = (rev?.nome ?? session.user.user_metadata?.nome ?? "").trim();
-        if (nome) {
-          setFirstName(nome.split(/\s+/)[0]);
-          setIsRevendedor(!!rev?.nome);
-        } else {
-          setFirstName(null);
-          setIsRevendedor(false);
-        }
-      } catch {
+      const nome = (session.user.user_metadata?.nome ?? "").trim();
+      if (nome) {
+        setFirstName(nome.split(/\s+/)[0]);
+      } else {
         setFirstName(null);
       }
     }
@@ -149,47 +135,37 @@ export function TopBar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-30 flex h-16 w-full items-center justify-between px-4 md:px-8 transition-all duration-300",
-        scrolled ? "bg-background/80 backdrop-blur-md border-b border-border/40" : "bg-transparent"
+        "sticky top-0 z-30 flex h-16 w-full items-center justify-between px-6 transition-all duration-300",
+        scrolled ? "bg-background/90 backdrop-blur-xl border-b border-border/40" : "bg-transparent"
       )}
       style={{
         marginTop: impersonation ? "var(--impersonation-h, 96px)" : undefined,
       }}
     >
-      {/* Mobile Branding */}
-      <div className="flex items-center gap-2 md:hidden">
+      {/* Busca Global (Estilo SaaS Premium) */}
+      <div className="flex-1 max-w-md hidden md:block">
+        <div className="relative group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+          <input 
+            type="text" 
+            placeholder="Buscar no sistema..."
+            className="w-full h-10 pl-10 pr-12 rounded-xl bg-white/5 border border-border/40 text-xs font-medium outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-muted-foreground/40"
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+             <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[9px] font-bold text-muted-foreground border border-white/10 uppercase tracking-tighter">Ctrl</kbd>
+             <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[9px] font-bold text-muted-foreground border border-white/10 uppercase tracking-tighter">K</kbd>
+          </div>
+        </div>
+      </div>
+
+      {/* Center Branding (Mobile Only) */}
+      <div className="flex md:hidden flex-1 items-center justify-center">
         <BrandLogo className="h-8 w-32" />
       </div>
 
-      {/* Center Logo Signature (Desktop) */}
-      <div className="absolute left-1/2 -translate-x-1/2 hidden lg:block">
-        <BrandLogo className="h-7 w-28 opacity-60 hover:opacity-100 transition-opacity" />
-      </div>
-
-
-      {/* Page Context / Welcome */}
-      <div className="hidden md:flex flex-col">
-        {signedIn && firstName && (
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium opacity-60">Olá,</span>
-            <span className="text-sm font-bold">{firstName}</span>
-            {isRevendedor && (
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary uppercase tracking-wider border border-primary/20">
-                Parceiro
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Actions Hub */}
-      <div className="flex items-center gap-2">
-        {/* Search Trigger (UX refinement: direct button if no global search yet) */}
-        <button className="hidden sm:grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors">
-          <Search className="size-5" />
-        </button>
-
-        {/* Notifications */}
+      {/* Actions Hub (Desktop) */}
+      <div className="flex items-center gap-3">
+        {/* Notificações */}
         <Popover>
           <PopoverTrigger asChild>
             <button
@@ -204,7 +180,7 @@ export function TopBar() {
           </PopoverTrigger>
           <PopoverContent align="end" className="glass-strong w-80 p-0 overflow-hidden" sideOffset={12}>
             <div className="flex items-center justify-between border-b border-border/40 bg-surface/30 px-4 py-3">
-              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Alertas</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Notificações</span>
               {unread > 0 && (
                 <button onClick={markAllRead} className="text-[10px] font-bold text-primary hover:underline">
                   Limpar tudo
@@ -218,8 +194,8 @@ export function TopBar() {
                 </div>
               ) : notifs.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-32 text-center p-4">
-                  <Bell className="size-8 text-muted-foreground/20 mb-2" />
-                  <p className="text-xs text-muted-foreground">Nada novo por aqui.</p>
+                  <Bell className="size-8 text-muted-foreground/10 mb-2" />
+                  <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">Tudo em dia</p>
                 </div>
               ) : (
                 <div className="divide-y divide-border/40">
@@ -233,13 +209,13 @@ export function TopBar() {
                       )}
                     >
                       <div className="flex items-start gap-3">
-                        {!n.lida_em && <div className="mt-1.5 size-1.5 rounded-full bg-primary shrink-0" />}
+                        {!n.lida_em && <div className="mt-1.5 size-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_var(--primary)]" />}
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-bold truncate mb-0.5">{n.titulo}</p>
-                          <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                          <p className="text-xs font-bold truncate mb-0.5 text-foreground">{n.titulo}</p>
+                          <p className="text-[10px] text-muted-foreground line-clamp-2 leading-relaxed font-medium">
                             {n.mensagem}
                           </p>
-                          <p className="mt-1 text-[9px] font-bold opacity-40 uppercase tracking-tighter">
+                          <p className="mt-1 text-[8px] font-bold opacity-30 uppercase tracking-tighter">
                             {timeAgo(n.created_at)}
                           </p>
                         </div>
@@ -252,61 +228,46 @@ export function TopBar() {
           </PopoverContent>
         </Popover>
 
+        {/* Mensagens */}
+        <button className="hidden sm:grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors">
+          <MessageCircle className="size-5" />
+        </button>
+
+        {/* Tela Cheia */}
+        <button 
+          onClick={() => {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen();
+            } else {
+              document.exitFullscreen();
+            }
+          }}
+          className="hidden sm:grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors"
+        >
+          <Maximize className="size-5" />
+        </button>
+
+        {/* Separator */}
+        <div className="mx-1 h-5 w-px bg-border/40" />
+
         {/* Quick Settings (Admin Only) */}
         {isAdminUser && (
           <button 
             onClick={() => setAdminOpen(true)}
-            className="hidden sm:grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors"
+            className="grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors"
           >
             <Settings className="size-5" />
           </button>
         )}
 
-        <div className="mx-1 h-4 w-px bg-border/40" />
-
-        {/* User Menu */}
-        {signedIn === false ? (
-          <Link
-            to="/login"
-            className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white shadow-lg shadow-primary/20 transition-all hover:opacity-90 active:scale-95"
-          >
-            Acessar
+        {/* Avatar/Perfil Small (Mobile Only or additional indicator) */}
+        <div className="md:hidden">
+          <Link to="/perfil" className="size-10 rounded-xl bg-gradient-primary p-0.5 grid place-items-center overflow-hidden">
+             <div className="h-full w-full rounded-[0.5rem] bg-black grid place-items-center">
+                <User className="size-5 text-white/80" />
+             </div>
           </Link>
-        ) : (
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="flex items-center gap-2 rounded-xl p-1 pr-3 border border-border/40 bg-surface/30 hover:bg-surface/50 transition-colors active:scale-95">
-                <div className="size-8 rounded-lg bg-gradient-primary grid place-items-center">
-                  <User className="size-4 text-white" />
-                </div>
-                <div className="hidden sm:flex flex-col items-start min-w-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">Conta</span>
-                  <span className="text-xs font-bold truncate max-w-[80px]">{firstName || "Perfil"}</span>
-                </div>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="glass-strong w-64 p-2 overflow-hidden" sideOffset={12}>
-              <div className="px-3 py-3 border-b border-border/40 bg-surface/30 mb-1 rounded-t-lg">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Email</p>
-                <p className="text-xs font-bold truncate text-foreground">{userEmail}</p>
-              </div>
-              <div className="space-y-1">
-                <Link to="/perfil" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold hover:bg-white/5 transition-colors">
-                  <User className="size-4" /> Ver Perfil
-                </Link>
-                <button
-                  onClick={async () => {
-                    await supabase.auth.signOut();
-                    window.location.href = "/";
-                  }}
-                  className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-red-400 hover:bg-red-500/10 transition-colors"
-                >
-                  <LogOut className="size-4" /> Sair do Sistema
-                </button>
-              </div>
-            </PopoverContent>
-          </Popover>
-        )}
+        </div>
       </div>
 
       <AdminPasswordDialog open={adminOpen} onOpenChange={setAdminOpen} />
