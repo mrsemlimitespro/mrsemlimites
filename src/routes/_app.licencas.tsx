@@ -114,14 +114,17 @@ type License = {
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
 
 /** Sub-abas por duração. */
-type Bucket = "teste" | "1d" | "30d" | "60d" | "90d" | "1ano" | "outros";
+type Bucket = "teste" | "1d" | "2d" | "3d" | "30d" | "60d" | "90d" | "180d" | "1ano" | "outros";
 
 const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
-  { id: "teste", label: "Teste", sub: "1 hora" },
+  { id: "teste", label: "1 hora", sub: "teste" },
   { id: "1d", label: "1 dia", sub: "premium" },
+  { id: "2d", label: "2 dias", sub: "premium" },
+  { id: "3d", label: "3 dias", sub: "premium" },
   { id: "30d", label: "30 dias", sub: "premium" },
   { id: "60d", label: "60 dias", sub: "premium" },
   { id: "90d", label: "90 dias", sub: "premium" },
+  { id: "180d", label: "180 dias", sub: "premium" },
   { id: "1ano", label: "1 ano", sub: "premium" },
 ];
 
@@ -129,9 +132,12 @@ function bucketOfRow(row: LicencaRow): Bucket {
   if ((row.tipo ?? "").toLowerCase() === "teste") return "teste";
   const dias = row.duracao_dias ?? null;
   if (dias === 1) return "1d";
+  if (dias === 2) return "2d";
+  if (dias === 3) return "3d";
   if (dias === 30) return "30d";
   if (dias === 60) return "60d";
   if (dias === 90) return "90d";
+  if (dias === 180) return "180d";
   if (dias === 365) return "1ano";
   return "outros";
 }
@@ -282,7 +288,18 @@ function LicencasPage() {
   }, [rows]);
 
   const bucketCounts = useMemo(() => {
-    const c: Record<string, number> = { teste: 0, "1d": 0, "30d": 0, "60d": 0, "90d": 0, "1ano": 0, outros: 0 };
+    const c: Record<string, number> = {
+      teste: 0,
+      "1d": 0,
+      "2d": 0,
+      "3d": 0,
+      "30d": 0,
+      "60d": 0,
+      "90d": 0,
+      "180d": 0,
+      "1ano": 0,
+      outros: 0,
+    };
     bucketOfId.forEach((b) => {
       c[b] = (c[b] ?? 0) + 1;
     });
