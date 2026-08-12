@@ -1,37 +1,40 @@
 /**
- * MR SEM LIMITES — FASE 1.10: CONECTAR E VALIDAR O SUPABASE DESTINO
- * O projeto Supabase destino foi confirmado manualmente no Dashboard.
+ * MR SEM LIMITES — REVALIDAÇÃO PRÉ-FASE 2
+ * A execução da Fase 2 foi interrompida corretamente porque o ambiente estava pausado e o destino ainda não estava detectado como conexão ativa.
+ * Agora NÃO execute nenhuma migration ainda.
+ * Faça somente um novo PRE-FLIGHT READ-ONLY.
+ * 
+ * ORIGEM: dbyoofojkakaigdemoyp
+ * DESTINO: nbehebyxnkpihbiathmx
  * 
  * DESTINO OFICIAL
  * Nome: mr-sem-limites
  * Project ID: nbehebyxnkpihbiathmx
- * Região: sa-east-1 — América do Sul (São Paulo)
+ * Região: sa-east-1 — São Paulo
  * 
- * ORIGEM ATUAL
- * Project ID: dbyoofojkakaigdemoyp
- * A origem é o backend atual e deve permanecer funcionando e intocada durante toda a migração.
+ * Verifique:
+ * 1. Se a origem (dbyoofojkakaigdemoyp) já foi retomada. Se estiver pausada, informe e PARE.
+ * 2. Se o destino (nbehebyxnkpihbiathmx) já está conectado ao Lovable. Se não estiver conectado, informe e PARE.
+ * 3. Se ambos estiverem acessíveis, NÃO execute a Fase 2 ainda.
  * 
- * 🚨 REGRA ABSOLUTA
- * Nesta etapa NÃO fazer migração.
- * NÃO executar migrations.
- * NÃO criar tabelas.
- * NÃO criar funções.
- * NÃO criar RPCs.
- * NÃO criar triggers.
- * NÃO criar policies.
- * NÃO alterar RLS.
- * NÃO criar buckets.
- * NÃO migrar Storage.
- * NÃO migrar Auth.
- * NÃO copiar usuários.
- * NÃO copiar dados.
- * NÃO alterar pagamentos.
- * NÃO alterar licenças.
- * NÃO alterar a extensão.
- * NÃO alterar versões da extensão.
- * NÃO alterar o MR Remote Cloud.
- * NÃO alterar o banco de origem.
- * Esta etapa é SOMENTE para conectar e validar o projeto destino.
+ * Entregue somente:
+ * ORIGEM:
+ * Project ID: [ID]
+ * Status: [Retomada/Pausada]
+ * 
+ * DESTINO:
+ * Project ID: [ID]
+ * Status: [Conectado/Desconectado]
+ * Região: [Região]
+ * 
+ * CONEXÃO:
+ * Destino conectado: SIM/NÃO
+ * SQL/DDL no destino disponível: SIM/NÃO
+ * Schema public acessível: SIM/NÃO
+ * Destino possui objetos: SIM/NÃO
+ * 
+ * Finalize com:
+ * PRÉ-FLIGHT APROVADO — AGUARDANDO AUTORIZAÇÃO PARA EXECUTAR O SCHEMA.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
