@@ -499,7 +499,7 @@ function VideoReleaseCard({ isAdmin }: { isAdmin: boolean }) {
             onClick={handleDownload}
             disabled={downloading || checking || !exists}
             size="lg"
-            className="w-full gradient-warm text-primary-foreground border-0"
+            className="w-full bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:opacity-90 shadow-lg shadow-fuchsia-500/20"
           >
             {downloading ? (
               <Loader2 className="mr-2 size-4 animate-spin" />
