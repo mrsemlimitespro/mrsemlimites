@@ -455,35 +455,40 @@ function LicencasPage() {
         </div>
       </header>
 
-      {/* Sub-abas por duração */}
-      <div className="glass flex flex-wrap items-center gap-1.5 rounded-full p-1.5">
-        {BUCKETS.map((b) => {
-          const active = bucket === b.id;
-          const count = bucketCounts[b.id] ?? 0;
-          return (
-            <button
-              key={b.id}
-              type="button"
-              onClick={() => setBucket(b.id)}
-              className={cn(
-                "group flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
-                active
-                  ? "gradient-primary text-primary-foreground shadow-[0_0_18px_-4px_color-mix(in_oklab,var(--primary)_65%,transparent)]"
-                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
-              )}
-            >
-              <span>{b.label}</span>
-              <span
+      {/* Bucket Filter Hub */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+           <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Filtrar por Período</h3>
+           <div className="flex items-center gap-2">
+              <span className="size-2 rounded-full bg-emerald-500" />
+              <span className="text-[10px] font-bold text-muted-foreground/80 uppercase">Ativas em destaque</span>
+           </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {BUCKETS.map((b) => {
+            const active = bucket === b.id;
+            const count = bucketCounts[b.id] ?? 0;
+            return (
+              <button
+                key={b.id}
+                onClick={() => setBucket(b.id)}
                 className={cn(
-                  "rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
-                  active ? "bg-white/20 text-white" : "bg-white/[0.06] text-muted-foreground",
+                  "flex items-center gap-3 rounded-2xl px-5 py-3 text-xs font-bold transition-all border",
+                  active
+                    ? "bg-primary/10 text-primary border-primary/30 shadow-lg shadow-primary/5"
+                    : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
                 )}
               >
-                {count}
-              </span>
-            </button>
-          );
-        })}
+                <span>{b.label}</span>
+                <span className={cn(
+                  "size-5 rounded-lg grid place-items-center text-[9px] font-black",
+                  active ? "bg-primary text-white" : "bg-white/10 text-muted-foreground/60"
+                )}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         {hasOutros && (
           <button
             type="button"
