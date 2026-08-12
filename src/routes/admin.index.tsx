@@ -277,10 +277,11 @@ function FeedCard({
           </Link>
         )}
       </div>
-      {items.length === 0 ? (
-        <p className="py-6 text-center text-xs text-muted-foreground">{empty}</p>
-      ) : (
-        <ul className="space-y-2">
+      <div className="p-2">
+        {items.length === 0 ? (
+          <p className="py-8 text-center text-[11px] text-muted-foreground/60">{empty}</p>
+        ) : (
+          <ul className="space-y-1">
           {items.map((it, i) => {
             const r = render(it);
             return (
