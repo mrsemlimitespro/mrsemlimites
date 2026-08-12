@@ -308,6 +308,7 @@ function FeedCard({
           })}
         </ul>
       )}
+      </div>
     </div>
   );
 }
