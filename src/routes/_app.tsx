@@ -9,7 +9,9 @@ import { TopBar } from "@/components/top-bar";
 import { FirePromosButton } from "@/components/fire-promos-button";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { WatermarkFooter } from "@/components/watermark-footer";
+import { BrandWatermark } from "@/components/brand-watermark";
 import { PageBackButton } from "@/components/page-back-button";
+
 import { NetworkStatusWatcher } from "@/components/network-status-watcher";
 import { PushBootstrapper } from "@/components/push-bootstrapper";
 import { WhatsappZapButton } from "@/components/whatsapp-zap-button";
@@ -30,46 +32,38 @@ function AppLayout() {
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
-    <div className="relative min-h-screen w-full">
+    <div className="relative min-h-screen w-full flex bg-background">
+      <BrandWatermark />
+      
       {/* Partículas só em telas >= md para preservar performance em mobile */}
       <div className="pointer-events-none absolute inset-0 z-0 hidden md:block">
         <Suspense fallback={null}>
           <SoftParticles />
         </Suspense>
       </div>
-      <AppSidebar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
-      <ImpersonationBanner />
-      <MustChangePasswordGuard />
-      <div
-        className={cn(
-          "relative z-10 flex min-h-screen flex-col transition-all duration-300 ease-in-out",
-          "pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[calc(0.5rem+env(safe-area-inset-top))]",
-          isExpanded 
-            ? "md:pl-[calc(16rem+env(safe-area-inset-left))]" 
-            : "md:pl-[calc(5rem+env(safe-area-inset-left))]",
-          "md:pt-[calc(1rem+env(safe-area-inset-top))]"
-        )}
-      >
 
+      <AppSidebar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <ImpersonationBanner />
+        <MustChangePasswordGuard />
         <TopBar />
+        
         <main
-          className="flex-1 px-3 pt-4 md:px-8 md:pt-6"
+          className="flex-1 overflow-y-auto overflow-x-hidden relative"
           style={{
-            paddingBottom:
-              "calc(5.5rem + env(safe-area-inset-bottom))" /* espaço p/ bottom nav 56px + safe area */,
+            paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom))",
           }}
         >
-          <div className="mb-3 md:mb-4">
-            <PageBackButton />
-          </div>
-          <div key={typeof window !== "undefined" ? window.location.pathname : "ssr"} className="content-in">
+          <div className="content-in h-full">
             <Outlet />
           </div>
-
         </main>
+        
         <NetworkStatusWatcher />
         <PushBootstrapper />
       </div>
+
       <FirePromosButton />
       <WhatsappZapButton />
       <InstagramFollowButton />
@@ -80,3 +74,4 @@ function AppLayout() {
     </div>
   );
 }
+

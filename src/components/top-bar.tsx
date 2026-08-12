@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Bell, Settings, Loader2, CheckCheck, LogOut, Search, User, Menu } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
-import { BrandMark } from "@/components/brand";
+import { BrandLogo } from "@/components/brand-logo";
 import { AdminPasswordDialog } from "@/components/admin-password-gate";
 import { supabase } from "@/integrations/supabase/client";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -156,11 +156,16 @@ export function TopBar() {
         marginTop: impersonation ? "var(--impersonation-h, 96px)" : undefined,
       }}
     >
-      {/* Mobile Branding (only visible when Sidebar is hidden) */}
+      {/* Mobile Branding */}
       <div className="flex items-center gap-2 md:hidden">
-        <BrandMark size={28} />
-        <span className="font-bold text-sm tracking-tight">MR <span className="text-primary">Lova</span></span>
+        <BrandLogo className="h-8 w-32" />
       </div>
+
+      {/* Center Logo Signature (Desktop) */}
+      <div className="absolute left-1/2 -translate-x-1/2 hidden lg:block">
+        <BrandLogo className="h-7 w-28 opacity-60 hover:opacity-100 transition-opacity" />
+      </div>
+
 
       {/* Page Context / Welcome */}
       <div className="hidden md:flex flex-col">
