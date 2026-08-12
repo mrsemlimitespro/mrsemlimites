@@ -321,19 +321,21 @@ function ActionLink({ item, isExpanded, onClick, userEmail }: { item: any, isExp
 
 function PanelBadge({ authed, role, isExpanded }: { authed: boolean | null, role: string | null, isExpanded: boolean }) {
   const cfg = (() => {
-    if (authed !== true) return { emoji: "🌐", label: "Visitante", color: "gray" };
-    if (role === "admin") return { emoji: "⚡", label: "Administrador", color: "amber" };
-    if (role === "revendedor") return { emoji: "🏪", label: "Revendedor", color: "blue" };
-    if (role === "cliente") return { emoji: "👤", label: "Cliente", color: "emerald" };
-    return { emoji: "•", label: "Conectando...", color: "gray" };
+    if (authed !== true) return { emoji: "🌐", label: "Visitante", color: "gray" as const };
+    if (role === "admin") return { emoji: "⚡", label: "Administrador", color: "amber" as const };
+    if (role === "revendedor") return { emoji: "🏪", label: "Revendedor", color: "blue" as const };
+    if (role === "cliente") return { emoji: "👤", label: "Cliente", color: "emerald" as const };
+    return { emoji: "•", label: "Conectando...", color: "gray" as const };
   })();
 
-  const colorClasses = {
+  const colors = {
     amber: "bg-amber-500/10 text-amber-500 border-amber-500/20",
     blue: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     emerald: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
     gray: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-  }[cfg.color as keyof typeof colorClasses];
+  };
+
+  const activeColorClass = colors[cfg.color];
 
   return (
     <div className={cn(
