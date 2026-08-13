@@ -160,7 +160,7 @@ function BaixarExtensaoPage() {
           <BackendZipCard />
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
 
