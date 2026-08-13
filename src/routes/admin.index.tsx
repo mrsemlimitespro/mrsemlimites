@@ -325,19 +325,19 @@ function AdminControlCenter() {
   const licencas = useLatest<any>("licencas", "id, chave, plano, status, created_at");
 
   return (
-    <PageContainer className="space-y-8 pb-32">
+    <PageContainer className="space-y-6 pb-24">
       <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
-            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-            Infraestrutura
+          <div className="flex items-center gap-2">
+            <div className="section-title-bar" />
+            <h1 className="text-2xl font-black tracking-tight text-white uppercase">
+               Central de <span className="text-brand-cyan">Controle</span>
+            </h1>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-            Central de <span className="text-primary">Controle</span>
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-lg">
-            Visão consolidada de usuários, receita, licenças e atividade global do sistema.
-          </p>
+          <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+            <ChevronRight className="size-3 text-brand-blue" />
+            Home / Sistema / <span className="text-brand-blue">Infraestrutura</span>
+          </div>
         </div>
       </header>
 
