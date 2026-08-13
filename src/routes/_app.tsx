@@ -1,16 +1,32 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  BarChart3,
+  ChevronRight,
+  CreditCard,
+  KeyRound,
+  LayoutDashboard,
+  Rocket,
+} from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
-import { InnerPillMenu } from "@/components/inner-pill-menu";
-import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-import { TopBar } from "@/components/top-bar";
-import { FirePromosButton } from "@/components/fire-promos-button";
-import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
-import { WatermarkFooter } from "@/components/watermark-footer";
 import { BrandWatermark } from "@/components/brand-watermark";
+import { FirePromosButton } from "@/components/fire-promos-button";
+import { ImpersonationBanner } from "@/components/impersonation-banner";
+import { InnerPillMenu } from "@/components/inner-pill-menu";
+import { InstagramFollowButton } from "@/components/instagram-follow-button";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import { MustChangePasswordGuard } from "@/components/must-change-password-guard";
+import { NetworkStatusWatcher } from "@/components/network-status-watcher";
 import { PageBackButton } from "@/components/page-back-button";
+import { PushBootstrapper } from "@/components/push-bootstrapper";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
+import { TopBar } from "@/components/top-bar";
+import { WatermarkFooter } from "@/components/watermark-footer";
+import { WhatsappZapButton } from "@/components/whatsapp-zap-button";
+import { useIsAuthed } from "@/hooks/useIsAuthed";
+import { useUserRole } from "@/hooks/useUserRole";
 
 import { NetworkStatusWatcher } from "@/components/network-status-watcher";
 import { PushBootstrapper } from "@/components/push-bootstrapper";

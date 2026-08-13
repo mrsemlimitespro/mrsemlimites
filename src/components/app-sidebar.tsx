@@ -151,8 +151,8 @@ export function AppSidebar({
           aria-label="Navegação principal"
           className={cn(
             "relative z-40 hidden md:flex flex-col transition-all duration-300 ease-in-out shrink-0",
-            "border-r border-border/50 bg-background/80 backdrop-blur-xl",
-            isExpanded ? "w-64" : "w-20"
+            "border-r border-white/5 bg-[#03050B]",
+            isExpanded ? "w-[204px]" : "w-20"
           )}
         >
           {/* Header & Logo */}
@@ -175,7 +175,7 @@ export function AppSidebar({
             {Object.entries(groupedItems).map(([group, items]) => (
               <div key={group} className="space-y-1">
                 {isExpanded && (
-                  <h3 className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+                  <h3 className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#8E99B5]/60 mb-2">
                     {group}
                   </h3>
                 )}
@@ -243,8 +243,8 @@ function NavItemLink({ item, active, isExpanded }: { item: NavItem; active: bool
       className={cn(
         "group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 relative overflow-hidden",
         active 
-          ? "bg-primary/10 text-primary" 
-          : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+          ? "bg-gradient-to-r from-brand-blue to-brand-violet text-white neon-glow-blue" 
+          : "text-[#8E99B5] hover:text-white hover:bg-white/5"
       )}
     >
       <div className={cn(
@@ -325,7 +325,7 @@ function ActionLink({ item, isExpanded, onClick, userEmail }: { item: any, isExp
 function PanelBadge({ authed, role, isExpanded }: { authed: boolean | null, role: string | null, isExpanded: boolean }) {
   const cfg = (() => {
     if (authed !== true) return { emoji: "🌐", label: "Visitante", color: "gray" as const };
-    if (role === "admin") return { emoji: "⚡", label: "Administrador", color: "amber" as const };
+    if (role === "admin") return { emoji: "⭐", label: "Ultra Administrador", color: "amber" as const };
     if (role === "revendedor") return { emoji: "🏪", label: "Revendedor", color: "blue" as const };
     if (role === "cliente") return { emoji: "👤", label: "Cliente", color: "emerald" as const };
     return { emoji: "•", label: "Conectando...", color: "gray" as const };
@@ -342,21 +342,25 @@ function PanelBadge({ authed, role, isExpanded }: { authed: boolean | null, role
 
   return (
     <div className={cn(
-      "flex items-center gap-3 px-3 py-2 rounded-2xl border bg-surface/50 transition-all duration-300",
+      "flex items-center gap-3 px-3 py-3 rounded-2xl border border-white/5 bg-white/5 transition-all duration-300",
       !isExpanded && "px-2 py-2 justify-center border-transparent bg-transparent"
     )}>
       <div className={cn(
-        "shrink-0 size-8 grid place-items-center rounded-lg text-lg border",
-        activeColorClass
+        "shrink-0 size-10 grid place-items-center rounded-full text-lg shadow-lg",
+        activeColorClass,
+        cfg.color === 'amber' && "bg-gradient-to-br from-brand-yellow to-brand-orange text-white border-transparent"
       )}>
-        {cfg.emoji}
+        {cfg.emoji === '⭐' ? <div className="text-xl">👤</div> : cfg.emoji}
       </div>
       <div className={cn(
         "flex flex-col min-w-0 transition-all duration-300",
         !isExpanded && "opacity-0 w-0 pointer-events-none"
       )}>
-        <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">Status</span>
-        <span className="text-xs font-bold truncate">{cfg.label}</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#8E99B5]">MARIO ROGERIO</span>
+        <span className="text-xs font-bold truncate flex items-center gap-1">
+          {cfg.label}
+          {cfg.color === 'amber' && <span className="text-brand-yellow">👑</span>}
+        </span>
       </div>
     </div>
   );
