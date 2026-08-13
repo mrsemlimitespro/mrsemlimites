@@ -440,7 +440,7 @@ function DashboardPage() {
                                 <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
                                    {new Date(act.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                                 </span>
-                                {act.metadata?.email && (
+                                {act.metadata && typeof act.metadata === 'object' && 'email' in act.metadata && (
                                    <span className="text-[10px] font-bold text-brand-blue/60 truncate max-w-[120px]">
                                       {String(act.metadata.email)}
                                    </span>
