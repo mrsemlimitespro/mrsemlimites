@@ -76,7 +76,7 @@ const KPIS: KpiCfg[] = [
     key: "clientes",
     label: "Clientes",
     icon: Users,
-    color: "var(--brand-emerald, oklch(0.75 0.16 155))",
+    color: "var(--brand-emerald)",
     to: "/admin/clientes",
     compute: async () => ({ value: await countTable("clientes") }),
   },
@@ -92,7 +92,7 @@ const KPIS: KpiCfg[] = [
     key: "visitantes",
     label: "Visitantes (30d)",
     icon: Globe2,
-    color: "oklch(0.75 0.02 260)",
+    color: "var(--brand-cyan)",
     to: "/admin",
     compute: async () => ({ value: "—", hint: "somente leitura" }),
   },
@@ -100,7 +100,7 @@ const KPIS: KpiCfg[] = [
     key: "licencas",
     label: "Licenças",
     icon: KeyRound,
-    color: "var(--brand-magenta)",
+    color: "var(--brand-violet)",
     to: "/admin/licencas",
     compute: async () => ({ value: await countTable("licencas") }),
   },
@@ -116,7 +116,7 @@ const KPIS: KpiCfg[] = [
     key: "receita-hoje",
     label: "Receita hoje",
     icon: DollarSign,
-    color: "var(--brand-emerald, oklch(0.75 0.16 155))",
+    color: "var(--brand-emerald)",
     to: "/admin/pagamentos",
     compute: async () => {
       const v = await sumField("pagamentos", "valor", (q) =>
@@ -152,7 +152,7 @@ const KPIS: KpiCfg[] = [
     key: "expirando",
     label: "Licenças expirando",
     icon: AlertTriangle,
-    color: "oklch(0.78 0.19 75)",
+    color: "var(--brand-orange)",
     to: "/admin/licencas",
     compute: async () => {
       const in7 = new Date();
@@ -169,7 +169,7 @@ const KPIS: KpiCfg[] = [
     key: "alertas",
     label: "Alertas",
     icon: Bell,
-    color: "oklch(0.72 0.2 25)",
+    color: "var(--brand-red)",
     to: "/admin/notificacoes",
     compute: async () => ({
       value: await countTable("notificacoes", (q) => q.is("lida_em", null)),
