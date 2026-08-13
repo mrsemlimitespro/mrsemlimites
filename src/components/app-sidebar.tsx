@@ -51,39 +51,37 @@ type NavItem = {
 
 // Groups
 const GROUPS = {
-  CORE: "Essencial",
-  COMERCIAL: "Comercial",
-  IA: "Inteligência Artificial",
-  GESTAO: "Gestão & CRM",
-  SISTEMA: "Sistema",
+  VISAO_GERAL: "VISÃO GERAL",
+  COMERCIAL: "COMERCIAL",
+  REVENDA: "REVENDA",
+  CONTEUDO: "CONTEÚDO",
+  OPERACAO: "OPERAÇÃO",
+  SISTEMA: "SISTEMA",
 };
 
-// Público
-const publicItems: NavItem[] = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.CORE },
-  { title: "Agentes IA", url: "/agents", icon: Bot, group: GROUPS.IA },
-  { title: "Prompts IA", url: "/prompts", icon: Wand2, group: GROUPS.IA },
-];
-
-// Cliente
-const clienteItems: NavItem[] = [
-  { title: "Meus Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CORE },
-];
-
-// Revendedor / Admin
-const revendedorItems: NavItem[] = [
+// Itens base (Admin e Revendedores)
+const baseItems: NavItem[] = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.VISAO_GERAL },
   { title: "Minhas Licenças", url: "/licencas", icon: KeyRound, group: GROUPS.COMERCIAL },
-  { title: "Base de Clientes", url: "/clientes", icon: Users, group: GROUPS.GESTAO },
-  { title: "Loja de Revenda", url: "/revendedor", icon: Store, group: GROUPS.COMERCIAL },
-  { title: "Carteira / Saldo", url: "/creditos", icon: Coins, group: GROUPS.COMERCIAL },
-  { title: "Biblioteca Pro", url: "/aulas", icon: GraduationCap, group: GROUPS.CORE },
+  { title: "Vincular Cliente", url: "/clientes", icon: Users, group: GROUPS.COMERCIAL },
+  { title: "Quero Revender", url: "/revendedor", icon: Store, group: GROUPS.REVENDA },
+  { title: "Saldo & Créditos", url: "/creditos", icon: Coins, group: GROUPS.REVENDA },
+  { title: "Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CONTEUDO },
+  { title: "Biblioteca Pro", url: "/prompts", icon: Wand2, group: GROUPS.CONTEUDO },
+  { title: "Histórico", url: "/historico", icon: History, group: GROUPS.OPERACAO },
 ];
 
 // Admin Only
 const adminItems: NavItem[] = [
-  { title: "Gestão de Parceiros", url: "/admin/revendedores-gestao", icon: ShieldCheck, group: GROUPS.GESTAO },
-  { title: "Status da API", url: "/admin/api-dashboard", icon: Server, group: GROUPS.SISTEMA },
+  { title: "Infraestrutura", url: "/admin", icon: Server, group: GROUPS.SISTEMA },
+  { title: "Gestão Global", url: "/admin/revendedores-gestao", icon: ShieldCheck, group: GROUPS.SISTEMA },
   { title: "Configurações", url: "/admin/configuracoes", icon: Settings, group: GROUPS.SISTEMA },
+];
+
+// Cliente (Simplified)
+const clienteItems: NavItem[] = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.VISAO_GERAL },
+  { title: "Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CONTEUDO },
 ];
 
 type FooterItem = NavItem | { title: string; action: "logout"; icon: IconType };
