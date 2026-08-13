@@ -335,90 +335,153 @@ function DashboardPage() {
     },
   ];
 
+  if (!metrics) return null;
+
   return (
-    <PageContainer className="space-y-8 pb-32">
-      {/* Header — Identidade Premium */}
-      <section className="flex flex-col gap-2">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div className="space-y-1">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              Dashboard de <span className="text-primary">Performance</span>
+    <PageContainer className="space-y-6 pb-24">
+      {/* Dashboard Header */}
+      <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className="section-title-bar" />
+            <h1 className="text-2xl font-black tracking-tight text-white uppercase">
+               Visão <span className="text-brand-cyan">Geral</span>
             </h1>
-            <p className="text-sm text-muted-foreground max-w-lg">
-              Monitoramento central de operações, vendas e engajamento da rede MR SEM LIMITES.
-            </p>
           </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Sistema</span>
-              <span className="text-xs font-bold text-primary flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_var(--primary)]" />
-                Operando em Tempo Real
-              </span>
-            </div>
+          <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+            <ChevronRight className="size-3 text-brand-blue" />
+            Home / Visão Geral / <span className="text-brand-blue">Dashboard</span>
           </div>
         </div>
-      </section>
 
-      {/* Hero — Destaque visual */}
-      <section className="relative overflow-hidden rounded-[2.5rem] border border-border/40 bg-surface/30 p-8 md:p-12">
-        <div className="absolute inset-0 bg-gradient-glow opacity-50" />
-        <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-          <div className="shrink-0 size-32 md:size-40 rounded-[2rem] bg-gradient-primary p-0.5 shadow-2xl shadow-primary/20">
-            <div className="h-full w-full rounded-[1.9rem] bg-black grid place-items-center overflow-hidden">
-               <BrandLogo className="w-full h-full p-4" />
-            </div>
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight mb-3">
-              Bem-vindo ao Futuro <br /> da <span className="text-primary">Revenda Digital</span>
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground max-w-xl mb-6 leading-relaxed">
-              Explore o ecossistema completo do MR SEM LIMITES. De ferramentas exclusivas com IA a gestão automatizada de licenças em larga escala.
-            </p>
-            <div className="flex flex-wrap justify-center md:justify-start gap-4">
-               <button className="rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95">
-                  Expandir Operação
-               </button>
-               <button className="rounded-xl bg-surface border border-border/40 px-6 py-3 text-sm font-bold text-foreground hover:bg-white/5 transition-all">
-                  Ver Documentação
-               </button>
-            </div>
-          </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <button className="h-11 px-6 rounded-xl bg-white/5 border border-white/5 text-[11px] font-black uppercase tracking-widest text-white flex items-center gap-2 hover:bg-white/10 transition-all active:scale-95">
+             Últimos 30 dias <ChevronDown className="size-4 opacity-40" />
+          </button>
+          <button className="h-11 px-8 rounded-xl bg-brand-blue text-[11px] font-black uppercase tracking-widest text-white shadow-xl shadow-brand-blue/30 hover:opacity-90 transition-all active:scale-95 flex items-center gap-2">
+            Relatório PDF
+          </button>
         </div>
-      </section>
+      </header>
 
-      {/* Seções da Home — ordem e visibilidade controladas em /admin/home */}
-      <div className="space-y-12">
-        {homeSections.map((slug) => {
-          const render = HOME_SECTION_RENDERERS[slug];
-          return render ? render() : null;
-        })}
+      {/* Main KPI Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpis.map((kpi) => (
+          <div key={kpi.label} className="glass-strong p-5 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-brand-blue/30 transition-all duration-300">
+             <div className="absolute top-0 right-0 w-24 h-24 bg-brand-blue/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+             
+             <div className="flex items-center justify-between mb-3 relative z-10">
+                <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">{kpi.label}</span>
+                <div className={cn("size-8 rounded-xl grid place-items-center bg-white/5")}>
+                   <kpi.icon className={cn("size-4", kpi.color === "var(--brand-blue)" ? "text-brand-blue" : kpi.color === "var(--brand-cyan)" ? "text-brand-cyan" : kpi.color === "var(--brand-violet)" ? "text-brand-violet" : "text-brand-magenta")} />
+                </div>
+             </div>
+
+             <div className="flex items-end justify-between relative z-10">
+                <div className="space-y-0.5">
+                   <div className="text-2xl font-black text-white tracking-tight">{kpi.value}</div>
+                   <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold text-brand-emerald">+12.5%</span>
+                      <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">vs mês anterior</span>
+                   </div>
+                </div>
+                <div className="w-20 h-8 opacity-40 group-hover:opacity-80 transition-opacity">
+                   <Sparkline data={kpi.sparkline} color={kpi.color === "var(--brand-blue)" ? "#145BFF" : kpi.color === "var(--brand-cyan)" ? "#00C8FF" : kpi.color === "var(--brand-violet)" ? "#7A00FF" : "#D600FF"} />
+                </div>
+             </div>
+          </div>
+        ))}
       </div>
 
-      {/* Métricas — cabeçalho + 4 KPI cards */}
-      <section className="space-y-4">
-        <div className="section-title">
-          <span aria-hidden className="section-title-bar" />
-          Métricas em tempo real
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {kpis.map((kpi) => (
-            <KpiCard key={kpi.label} kpi={kpi} />
-          ))}
-        </div>
-      </section>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Gráfico Principal */}
+        <div className="xl:col-span-2 glass-strong rounded-3xl border border-white/5 p-6 space-y-6">
+           <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                 <h3 className="text-sm font-black uppercase tracking-widest text-white">Fluxo de Receita</h3>
+                 <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">Análise de vendas semanais</p>
+              </div>
+              <div className="flex items-center gap-4">
+                 <div className="flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-brand-blue" />
+                    <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">Aprovadas</span>
+                 </div>
+                 <div className="flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-white/10" />
+                    <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">Pendentes</span>
+                 </div>
+              </div>
+           </div>
 
-      {/* Bottom 3-column row */}
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
-        <ActivityCard items={activity} />
-        <ChartCard days={metrics?.chartDays ?? []} values={metrics?.chartValues ?? []} />
-        <RecentSalesCard sales={sales} />
-      </section>
+           <div className="h-[280px] w-full mt-4">
+              <BigChart days={metrics.chartDays} values={metrics.chartValues} />
+           </div>
+        </div>
+
+        {/* Sidebar Contextual do Dashboard */}
+        <div className="space-y-6">
+           <div className="glass-strong rounded-3xl border border-white/5 p-6">
+              <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6">Atividades Recentes</h3>
+              <div className="space-y-5">
+                 {activity.slice(0, 5).map((act) => {
+                    const info = eventInfo(act.event);
+                    return (
+                       <div key={act.id} className="flex gap-4 group">
+                          <div className="relative">
+                             <div className={cn("size-9 rounded-xl grid place-items-center bg-white/5 relative z-10 border border-white/5 group-hover:border-white/10 transition-colors")} style={{ color: info.color }}>
+                                <info.icon className="size-4" />
+                             </div>
+                             {/* Linha conectora — simplificada */}
+                          </div>
+                          <div className="flex flex-col min-w-0 flex-1 py-1">
+                             <p className="text-xs font-bold text-white leading-snug truncate">{info.label}</p>
+                             <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+                                   {new Date(act.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                                </span>
+                                {act.metadata?.email && (
+                                   <span className="text-[10px] font-bold text-brand-blue/60 truncate max-w-[120px]">
+                                      {String(act.metadata.email)}
+                                   </span>
+                                )}
+                             </div>
+                          </div>
+                       </div>
+                    );
+                 })}
+                 <button className="w-full py-3 rounded-xl border border-white/5 bg-white/5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-white transition-colors">
+                    Ver todo histórico
+                 </button>
+              </div>
+           </div>
+
+           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-blue to-brand-violet p-6 shadow-2xl shadow-brand-blue/20">
+              <div className="absolute -right-4 -bottom-4 opacity-20 rotate-12">
+                 <Target className="size-24 text-white" />
+              </div>
+              <div className="relative z-10 space-y-4">
+                 <div className="space-y-1">
+                    <h4 className="text-sm font-black uppercase tracking-wider text-white">Meta Mensal</h4>
+                    <p className="text-[10px] text-white/60 font-bold uppercase tracking-widest">Faltam R$ 12.400,00</p>
+                 </div>
+                 
+                 <div className="space-y-2">
+                    <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                       <div className="h-full bg-white rounded-full" style={{ width: "65%" }} />
+                    </div>
+                    <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-white/80">
+                       <span>65% Concluído</span>
+                       <span>Alvo: R$ 50k</span>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
     </PageContainer>
   );
 }
+
 
 
 function KpiCard({ kpi }: { kpi: Kpi }) {
