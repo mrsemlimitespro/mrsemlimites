@@ -126,17 +126,18 @@ export function AppSidebar({
   }, []);
 
   const navItems: NavItem[] = (() => {
-    if (authed !== true) return publicItems;
-    if (role === "admin") return [...publicItems, ...revendedorItems, ...adminItems];
-    if (isPrivilegedRole(role)) return [...publicItems, ...revendedorItems];
-    return [...publicItems, ...clienteItems];
+    if (!authed) return [];
+    if (role === "admin") return [...baseItems, ...adminItems];
+    if (role === "revendedor") return baseItems;
+    if (role === "cliente") return clienteItems;
+    return [];
   })();
 
   const footerItems: FooterItem[] = authed === true ? authedFooterItems : anonFooterItems;
 
   // Group items
   const groupedItems = navItems.reduce((acc, item) => {
-    const group = item.group || GROUPS.CORE;
+    const group = item.group || GROUPS.VISAO_GERAL;
     if (!acc[group]) acc[group] = [];
     acc[group].push(item);
     return acc;
