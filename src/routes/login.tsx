@@ -227,15 +227,15 @@ function LoginPage() {
 }
 
 export const inputCls =
-  "w-full rounded-2xl border border-border/40 bg-surface/30 px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground/40 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all";
+  "w-full rounded-2xl border border-white/5 bg-white/5 px-4 py-3.5 text-sm text-foreground outline-none placeholder:text-muted-foreground/30 focus:border-brand-blue/50 focus:ring-4 focus:ring-brand-blue/10 transition-all";
 
 export const primaryBtn =
-  "relative w-full rounded-2xl px-4 py-3.5 text-sm font-bold text-white gradient-primary shadow-xl shadow-primary/20 active:scale-[0.98] transition-all disabled:opacity-60";
+  "relative w-full h-12 rounded-2xl text-xs font-black uppercase tracking-widest text-white bg-brand-blue shadow-xl shadow-brand-blue/30 active:scale-[0.98] transition-all disabled:opacity-60";
 
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block space-y-2">
-      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{label}</span>
+      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 ml-1">{label}</span>
       {children}
     </label>
   );
@@ -243,15 +243,21 @@ export function Field({ label, children }: { label: string; children: React.Reac
 
 export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center bg-background overflow-hidden">
+    <div className="relative min-h-screen w-full flex items-center justify-center bg-[#03050B] overflow-hidden">
        {/* Ambient glow backgrounds */}
-       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none opacity-50" />
-       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-violet/10 rounded-full blur-[120px] pointer-events-none opacity-50" />
+       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(20,91,255,0.08)_0%,transparent_50%)]" />
        
-      <div className="relative z-10 w-full max-w-[420px] flex flex-col items-center gap-8 px-6 py-12">
+      <div className="relative z-10 w-full max-w-[420px] flex flex-col items-center gap-10 px-6 py-12">
         <BrandLogo className="h-16 w-48 mb-2" />
-        <div className="w-full rounded-[2.5rem] border border-border/40 bg-surface/30 backdrop-blur-xl p-8 shadow-2xl shadow-black/50">{children}</div>
+        <div className="w-full rounded-[2.5rem] border border-white/5 bg-[#070D1B]/80 backdrop-blur-2xl p-8 lg:p-10 shadow-2xl shadow-black/80">
+          <div className="space-y-1 mb-8 text-center">
+             <h2 className="text-xl font-black text-white uppercase tracking-tight">Portal <span className="text-brand-cyan">Membro</span></h2>
+             <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em]">Automação • Produtividade • Resultados</p>
+          </div>
+          {children}
+        </div>
       </div>
     </div>
   );
 }
+
