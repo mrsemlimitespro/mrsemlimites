@@ -392,8 +392,6 @@ function LicencasPage() {
     toast.success("Licença excluída");
     reload();
   }
-  const role = useUserRole();
-  const isAdmin = role === "admin";
 
   const KpiCard = ({ title, value, color }: { title: string; value: number | string; color: string }) => (
     <div className="glass-strong p-4 rounded-2xl flex flex-col gap-2 border border-white/5 relative overflow-hidden group">
