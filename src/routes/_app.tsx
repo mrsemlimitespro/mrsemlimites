@@ -28,12 +28,6 @@ import { WhatsappZapButton } from "@/components/whatsapp-zap-button";
 import { useIsAuthed } from "@/hooks/useIsAuthed";
 import { useUserRole } from "@/hooks/useUserRole";
 
-import { NetworkStatusWatcher } from "@/components/network-status-watcher";
-import { PushBootstrapper } from "@/components/push-bootstrapper";
-import { WhatsappZapButton } from "@/components/whatsapp-zap-button";
-import { InstagramFollowButton } from "@/components/instagram-follow-button";
-import { ImpersonationBanner } from "@/components/impersonation-banner";
-import { MustChangePasswordGuard } from "@/components/must-change-password-guard";
 
 // Decorativo: canvas de partículas só monta em telas médias+ (evita CPU/bateria no mobile).
 const SoftParticles = lazy(() =>
