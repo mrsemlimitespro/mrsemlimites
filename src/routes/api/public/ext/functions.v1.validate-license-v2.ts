@@ -205,17 +205,25 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         const days_remaining = remainingMs !== null ? Math.floor(remainingMs / 86400000) : 9999;
         const hours_remaining = remainingMs !== null ? Math.floor(remainingMs / 3600000) : 9999 * 24;
 
+        // Resposta padrão compatível com Motor v17.0 e Sidepanel
         return new Response(
           JSON.stringify({
+            valid: true,
+            ok: true,
             status: "valid",
-            session_token: signSessionToken(lic.id, hwid),
-            days_remaining,
-            hours_remaining,
-            license_id: lic.id,
-            plan: lic.tipo === "premium" ? "premium" : "trial",
-            expires_at: expira_em,
+            user_name: cliente_nome || "MR Sem Limites User",
             cliente_nome,
             cliente_email,
+            expires_at: expira_em || "2099-12-31T23:59:59Z",
+            expires_in: remainingMs !== null ? Math.floor(remainingMs / 1000) : 31536000,
+            days_remaining,
+            hours_remaining,
+            session_id: "session-active-01",
+            session_token: signSessionToken(lic.id, hwid),
+            device_id: hwid || "hwid-verified",
+            license_id: lic.id,
+            license_key: key,
+            plan: lic.tipo === "premium" ? "premium" : "trial",
           }),
           { status: 200, headers: cors },
         );
