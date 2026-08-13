@@ -13,6 +13,7 @@ import {
   Bell,
   Activity,
   ArrowRight,
+  ChevronRight,
   Clock,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
@@ -76,7 +77,7 @@ const KPIS: KpiCfg[] = [
     key: "clientes",
     label: "Clientes",
     icon: Users,
-    color: "var(--brand-emerald, oklch(0.75 0.16 155))",
+    color: "var(--brand-emerald)",
     to: "/admin/clientes",
     compute: async () => ({ value: await countTable("clientes") }),
   },
@@ -92,7 +93,7 @@ const KPIS: KpiCfg[] = [
     key: "visitantes",
     label: "Visitantes (30d)",
     icon: Globe2,
-    color: "oklch(0.75 0.02 260)",
+    color: "var(--brand-cyan)",
     to: "/admin",
     compute: async () => ({ value: "—", hint: "somente leitura" }),
   },
@@ -100,7 +101,7 @@ const KPIS: KpiCfg[] = [
     key: "licencas",
     label: "Licenças",
     icon: KeyRound,
-    color: "var(--brand-magenta)",
+    color: "var(--brand-violet)",
     to: "/admin/licencas",
     compute: async () => ({ value: await countTable("licencas") }),
   },
@@ -116,7 +117,7 @@ const KPIS: KpiCfg[] = [
     key: "receita-hoje",
     label: "Receita hoje",
     icon: DollarSign,
-    color: "var(--brand-emerald, oklch(0.75 0.16 155))",
+    color: "var(--brand-emerald)",
     to: "/admin/pagamentos",
     compute: async () => {
       const v = await sumField("pagamentos", "valor", (q) =>
@@ -152,7 +153,7 @@ const KPIS: KpiCfg[] = [
     key: "expirando",
     label: "Licenças expirando",
     icon: AlertTriangle,
-    color: "oklch(0.78 0.19 75)",
+    color: "var(--brand-orange)",
     to: "/admin/licencas",
     compute: async () => {
       const in7 = new Date();
@@ -169,7 +170,7 @@ const KPIS: KpiCfg[] = [
     key: "alertas",
     label: "Alertas",
     icon: Bell,
-    color: "oklch(0.72 0.2 25)",
+    color: "var(--brand-red)",
     to: "/admin/notificacoes",
     compute: async () => ({
       value: await countTable("notificacoes", (q) => q.is("lida_em", null)),
@@ -325,19 +326,19 @@ function AdminControlCenter() {
   const licencas = useLatest<any>("licencas", "id, chave, plano, status, created_at");
 
   return (
-    <PageContainer className="space-y-8 pb-32">
+    <PageContainer className="space-y-6 pb-24">
       <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
-            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-            Infraestrutura
+          <div className="flex items-center gap-2">
+            <div className="section-title-bar" />
+            <h1 className="text-2xl font-black tracking-tight text-white uppercase">
+               Central de <span className="text-brand-cyan">Controle</span>
+            </h1>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-            Central de <span className="text-primary">Controle</span>
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-lg">
-            Visão consolidada de usuários, receita, licenças e atividade global do sistema.
-          </p>
+          <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+            <ChevronRight className="size-3 text-brand-blue" />
+            Home / Sistema / <span className="text-brand-blue">Infraestrutura</span>
+          </div>
         </div>
       </header>
 

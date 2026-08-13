@@ -15,7 +15,9 @@ import {
   Sparkles,
   CalendarClock,
   Radio,
+  ChevronRight,
 } from "lucide-react";
+import { PageContainer } from "@/components/page-container";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -86,37 +88,39 @@ function BaixarExtensaoPage() {
   const [activeTab, setActiveTab] = useState<"extensao" | "backend">("extensao");
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] space-y-8 pb-32">
+    <PageContainer className="space-y-6 pb-24">
       <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
-            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-            Distribuição
+          <div className="flex items-center gap-2">
+            <div className="section-title-bar" />
+            <h1 className="text-2xl font-black tracking-tight text-white uppercase">
+               Central de <span className="text-brand-cyan">Downloads</span>
+            </h1>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-            Central de <span className="text-primary">Downloads</span>
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-lg">
-            Versões oficiais das extensões e ferramentas para administradores.
-          </p>
+          <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+            <ChevronRight className="size-3 text-brand-blue" />
+            Home / Operação / <span className="text-brand-blue">Baixar Extensão</span>
+          </div>
         </div>
       </header>
 
       {/* Tabs */}
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-           <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Categoria de Arquivos</h3>
+        <div className="flex items-center justify-between px-1">
+           <h3 className="section-title">Categoria de Arquivos</h3>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        
+        <div className="glass-strong p-1.5 rounded-2xl flex flex-wrap items-center gap-1.5 border border-white/5 max-w-fit">
           <button
             onClick={() => setActiveTab("extensao")}
             className={cn(
-              "flex items-center gap-3 rounded-2xl px-5 py-3 text-xs font-bold transition-all border",
+              "flex items-center gap-3 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all",
               activeTab === "extensao"
-                ? "bg-primary/10 text-primary border-primary/30 shadow-lg shadow-primary/5"
-                : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
+                ? "bg-brand-blue text-white shadow-lg shadow-brand-blue/20"
+                : "text-muted-foreground/60 hover:text-white hover:bg-white/5",
             )}
           >
+            <Download className="size-3.5" />
             <span>Extensões</span>
           </button>
           
@@ -124,17 +128,19 @@ function BaixarExtensaoPage() {
             <button
               onClick={() => setActiveTab("backend")}
               className={cn(
-                "flex items-center gap-3 rounded-2xl px-5 py-3 text-xs font-bold transition-all border",
+                "flex items-center gap-3 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all",
                 activeTab === "backend"
-                  ? "bg-brand-magenta/10 text-brand-magenta border-brand-magenta/30 shadow-lg shadow-brand-magenta/5"
-                  : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
+                  ? "bg-brand-magenta text-white shadow-lg shadow-brand-magenta/20"
+                  : "text-muted-foreground/60 hover:text-white hover:bg-white/5",
               )}
             >
+              <Package className="size-3.5" />
               <span>ZIP Backend</span>
             </button>
           )}
         </div>
       </div>
+
 
       {activeTab === "extensao" ? (
         <div className="space-y-8">
@@ -154,7 +160,7 @@ function BaixarExtensaoPage() {
           <BackendZipCard />
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

@@ -51,39 +51,37 @@ type NavItem = {
 
 // Groups
 const GROUPS = {
-  CORE: "Essencial",
-  COMERCIAL: "Comercial",
-  IA: "Inteligência Artificial",
-  GESTAO: "Gestão & CRM",
-  SISTEMA: "Sistema",
+  VISAO_GERAL: "VISÃO GERAL",
+  COMERCIAL: "COMERCIAL",
+  REVENDA: "REVENDA",
+  CONTEUDO: "CONTEÚDO",
+  OPERACAO: "OPERAÇÃO",
+  SISTEMA: "SISTEMA",
 };
 
-// Público
-const publicItems: NavItem[] = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.CORE },
-  { title: "Agentes IA", url: "/agents", icon: Bot, group: GROUPS.IA },
-  { title: "Prompts IA", url: "/prompts", icon: Wand2, group: GROUPS.IA },
-];
-
-// Cliente
-const clienteItems: NavItem[] = [
-  { title: "Meus Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CORE },
-];
-
-// Revendedor / Admin
-const revendedorItems: NavItem[] = [
+// Itens base (Admin e Revendedores)
+const baseItems: NavItem[] = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.VISAO_GERAL },
   { title: "Minhas Licenças", url: "/licencas", icon: KeyRound, group: GROUPS.COMERCIAL },
-  { title: "Base de Clientes", url: "/clientes", icon: Users, group: GROUPS.GESTAO },
-  { title: "Loja de Revenda", url: "/revendedor", icon: Store, group: GROUPS.COMERCIAL },
-  { title: "Carteira / Saldo", url: "/creditos", icon: Coins, group: GROUPS.COMERCIAL },
-  { title: "Biblioteca Pro", url: "/aulas", icon: GraduationCap, group: GROUPS.CORE },
+  { title: "Vincular Cliente", url: "/clientes", icon: Users, group: GROUPS.COMERCIAL },
+  { title: "Quero Revender", url: "/revendedor", icon: Store, group: GROUPS.REVENDA },
+  { title: "Saldo & Créditos", url: "/creditos", icon: Coins, group: GROUPS.REVENDA },
+  { title: "Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CONTEUDO },
+  { title: "Biblioteca Pro", url: "/prompts", icon: Wand2, group: GROUPS.CONTEUDO },
+  { title: "Histórico", url: "/historico", icon: History, group: GROUPS.OPERACAO },
 ];
 
 // Admin Only
 const adminItems: NavItem[] = [
-  { title: "Gestão de Parceiros", url: "/admin/revendedores-gestao", icon: ShieldCheck, group: GROUPS.GESTAO },
-  { title: "Status da API", url: "/admin/api-dashboard", icon: Server, group: GROUPS.SISTEMA },
+  { title: "Infraestrutura", url: "/admin", icon: Server, group: GROUPS.SISTEMA },
+  { title: "Gestão Global", url: "/admin/revendedores-gestao", icon: ShieldCheck, group: GROUPS.SISTEMA },
   { title: "Configurações", url: "/admin/configuracoes", icon: Settings, group: GROUPS.SISTEMA },
+];
+
+// Cliente (Simplified)
+const clienteItems: NavItem[] = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.VISAO_GERAL },
+  { title: "Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CONTEUDO },
 ];
 
 type FooterItem = NavItem | { title: string; action: "logout"; icon: IconType };
@@ -128,17 +126,18 @@ export function AppSidebar({
   }, []);
 
   const navItems: NavItem[] = (() => {
-    if (authed !== true) return publicItems;
-    if (role === "admin") return [...publicItems, ...revendedorItems, ...adminItems];
-    if (isPrivilegedRole(role)) return [...publicItems, ...revendedorItems];
-    return [...publicItems, ...clienteItems];
+    if (!authed) return [];
+    if (role === "admin") return [...baseItems, ...adminItems];
+    if (role === "revendedor") return baseItems;
+    if (role === "cliente") return clienteItems;
+    return [];
   })();
 
   const footerItems: FooterItem[] = authed === true ? authedFooterItems : anonFooterItems;
 
   // Group items
   const groupedItems = navItems.reduce((acc, item) => {
-    const group = item.group || GROUPS.CORE;
+    const group = item.group || GROUPS.VISAO_GERAL;
     if (!acc[group]) acc[group] = [];
     acc[group].push(item);
     return acc;
@@ -151,8 +150,8 @@ export function AppSidebar({
           aria-label="Navegação principal"
           className={cn(
             "relative z-40 hidden md:flex flex-col transition-all duration-300 ease-in-out shrink-0",
-            "border-r border-border/50 bg-background/80 backdrop-blur-xl",
-            isExpanded ? "w-64" : "w-20"
+            "border-r border-white/5 bg-[#03050B]",
+            isExpanded ? "w-[204px]" : "w-20"
           )}
         >
           {/* Header & Logo */}
@@ -175,7 +174,7 @@ export function AppSidebar({
             {Object.entries(groupedItems).map(([group, items]) => (
               <div key={group} className="space-y-1">
                 {isExpanded && (
-                  <h3 className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+                  <h3 className="px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#8E99B5]/60 mb-2">
                     {group}
                   </h3>
                 )}
@@ -243,8 +242,8 @@ function NavItemLink({ item, active, isExpanded }: { item: NavItem; active: bool
       className={cn(
         "group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 relative overflow-hidden",
         active 
-          ? "bg-primary/10 text-primary" 
-          : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+          ? "bg-gradient-to-r from-brand-blue to-brand-violet text-white neon-glow-blue" 
+          : "text-[#8E99B5] hover:text-white hover:bg-white/5"
       )}
     >
       <div className={cn(
@@ -325,7 +324,7 @@ function ActionLink({ item, isExpanded, onClick, userEmail }: { item: any, isExp
 function PanelBadge({ authed, role, isExpanded }: { authed: boolean | null, role: string | null, isExpanded: boolean }) {
   const cfg = (() => {
     if (authed !== true) return { emoji: "🌐", label: "Visitante", color: "gray" as const };
-    if (role === "admin") return { emoji: "⚡", label: "Administrador", color: "amber" as const };
+    if (role === "admin") return { emoji: "⭐", label: "Ultra Administrador", color: "amber" as const };
     if (role === "revendedor") return { emoji: "🏪", label: "Revendedor", color: "blue" as const };
     if (role === "cliente") return { emoji: "👤", label: "Cliente", color: "emerald" as const };
     return { emoji: "•", label: "Conectando...", color: "gray" as const };
@@ -342,21 +341,25 @@ function PanelBadge({ authed, role, isExpanded }: { authed: boolean | null, role
 
   return (
     <div className={cn(
-      "flex items-center gap-3 px-3 py-2 rounded-2xl border bg-surface/50 transition-all duration-300",
+      "flex items-center gap-3 px-3 py-3 rounded-2xl border border-white/5 bg-white/5 transition-all duration-300",
       !isExpanded && "px-2 py-2 justify-center border-transparent bg-transparent"
     )}>
       <div className={cn(
-        "shrink-0 size-8 grid place-items-center rounded-lg text-lg border",
-        activeColorClass
+        "shrink-0 size-10 grid place-items-center rounded-full text-lg shadow-lg",
+        activeColorClass,
+        cfg.color === 'amber' && "bg-gradient-to-br from-brand-yellow to-brand-orange text-white border-transparent"
       )}>
-        {cfg.emoji}
+        {cfg.emoji === '⭐' ? <div className="text-xl">👤</div> : cfg.emoji}
       </div>
       <div className={cn(
         "flex flex-col min-w-0 transition-all duration-300",
         !isExpanded && "opacity-0 w-0 pointer-events-none"
       )}>
-        <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">Status</span>
-        <span className="text-xs font-bold truncate">{cfg.label}</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#8E99B5]">MARIO ROGERIO</span>
+        <span className="text-xs font-bold truncate flex items-center gap-1">
+          {cfg.label}
+          {cfg.color === 'amber' && <span className="text-brand-yellow">👑</span>}
+        </span>
       </div>
     </div>
   );
