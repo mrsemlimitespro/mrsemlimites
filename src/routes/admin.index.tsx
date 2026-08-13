@@ -13,6 +13,7 @@ import {
   Bell,
   Activity,
   ArrowRight,
+  ChevronRight,
   Clock,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
