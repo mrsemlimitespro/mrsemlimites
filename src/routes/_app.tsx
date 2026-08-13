@@ -117,8 +117,8 @@ function RightContextSidebar() {
         <section className="space-y-3">
           <h3 className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] px-1">Conta Administrativa</h3>
           <div className="glass-strong rounded-2xl p-4 flex flex-col items-center gap-3 text-center">
-            <div className="size-12 rounded-xl bg-white/5 p-2">
-               <img src="/src/assets/mr-sem-limites-logo.png" alt="Logo" className="w-full h-full object-contain" />
+            <div className="size-12 rounded-xl bg-white/5 p-2 overflow-hidden flex items-center justify-center">
+               <BrandLogo className="w-full h-full" />
             </div>
             <div className="space-y-1">
               <p className="text-xs font-bold">MR SEM LIMITES</p>
