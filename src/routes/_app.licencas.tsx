@@ -394,40 +394,19 @@ function LicencasPage() {
 
 
   return (
-    <PageContainer className="space-y-8 pb-32">
+    <PageContainer className="space-y-6 pb-32">
       {/* Page Header */}
       <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-[0.2em]">
-            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-            Infraestrutura
+          <div className="flex items-center gap-2">
+            <div className="section-title-bar" />
+            <h1 className="text-2xl font-black tracking-tight text-white uppercase">
+               Gestão de <span className="text-brand-cyan">Licenças</span>
+            </h1>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-            Gestão de <span className="text-primary">Licenças</span>
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-lg">
-            Emissão, controle e auditoria de chaves de acesso para a rede MR SEM LIMITES.
-          </p>
-          
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border/40">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Disponíveis</span>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-xl font-bold text-primary">
-                  {isAdmin ? "♾️" : available}
-                </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
-                  READY
-                </span>
-              </div>
-            </div>
-            <div className="w-px h-8 bg-border/40" />
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total Criadas</span>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-xl font-bold">{total}</span>
-              </div>
-            </div>
+          <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+            <ChevronRight className="size-3 text-brand-blue" />
+            Home / Operação / <span className="text-brand-blue">Licenças</span>
           </div>
         </div>
 
@@ -435,21 +414,22 @@ function LicencasPage() {
           {canTeste && (
             <button
               onClick={() => setOpenEnviarTeste(true)}
-              className="group relative flex items-center gap-2 overflow-hidden rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-3 text-sm font-bold text-amber-200 transition-all hover:bg-amber-500/10 active:scale-95"
+              className="group h-11 px-6 rounded-xl bg-white/5 border border-white/5 text-[11px] font-black uppercase tracking-widest text-brand-orange flex items-center gap-2 hover:bg-white/10 transition-all active:scale-95 shadow-lg shadow-brand-orange/5"
             >
-              <Send className="size-4" />
+              <Zap className="size-4 animate-pulse" />
               <span>Express Trial (1h)</span>
             </button>
           )}
           <button
             onClick={() => setOpenTeste(true)}
-            className="rounded-2xl border border-border/40 bg-surface/30 px-5 py-3 text-sm font-bold text-foreground hover:bg-surface/50 transition-all active:scale-95"
+            className="h-11 px-6 rounded-xl bg-white/5 border border-white/5 text-[11px] font-black uppercase tracking-widest text-white flex items-center gap-2 hover:bg-white/10 transition-all active:scale-95"
           >
+            <Users className="size-4 text-brand-blue" />
             Vincular Cliente
           </button>
           <button
             onClick={() => setOpenNova(true)}
-            className="rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xl shadow-primary/20 hover:opacity-90 transition-all active:scale-95 flex items-center gap-2"
+            className="h-11 px-8 rounded-xl bg-brand-blue text-[11px] font-black uppercase tracking-widest text-white shadow-xl shadow-brand-blue/30 hover:opacity-90 transition-all active:scale-95 flex items-center gap-2"
           >
             <Plus className="size-4" strokeWidth={3} />
             Gerar Licença
@@ -457,17 +437,34 @@ function LicencasPage() {
         </div>
       </header>
 
+      {/* 7 KPI Cards Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <KpiCard title="Mensais" value={bucketCounts["mensal"] ?? 0} color="text-brand-blue" />
+        <KpiCard title="Trimestrais" value={bucketCounts["trimestral"] ?? 0} color="text-brand-cyan" />
+        <KpiCard title="Semestrais" value={bucketCounts["semestral"] ?? 0} color="text-brand-violet" />
+        <KpiCard title="Anuais" value={bucketCounts["anual"] ?? 0} color="text-brand-magenta" />
+        <KpiCard title="Vitalícias" value={bucketCounts["vitalicio"] ?? 0} color="text-brand-yellow" />
+        <KpiCard title="Trials (1h)" value={bucketCounts["teste"] ?? 0} color="text-brand-orange" />
+        <KpiCard title="Ativas Hoje" value={total} color="text-brand-emerald" />
+      </div>
 
       {/* Bucket Filter Hub */}
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-           <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Filtrar por Período</h3>
-           <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-emerald-500" />
-              <span className="text-[10px] font-bold text-muted-foreground/80 uppercase">Ativas em destaque</span>
+        <div className="flex items-center justify-between px-1">
+           <h3 className="section-title">Período Selecionado</h3>
+           <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                 <span className="size-1.5 rounded-full bg-brand-emerald shadow-[0_0_8px_#00E676]" />
+                 <span className="text-[10px] font-black text-muted-foreground/80 uppercase tracking-widest">Ativas</span>
+              </div>
+              <div className="flex items-center gap-2">
+                 <span className="size-1.5 rounded-full bg-brand-red shadow-[0_0_8px_#FF1744]" />
+                 <span className="text-[10px] font-black text-muted-foreground/80 uppercase tracking-widest">Expiradas</span>
+              </div>
            </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        
+        <div className="glass-strong p-1.5 rounded-2xl flex flex-wrap items-center gap-1.5 border border-white/5">
           {BUCKETS.map((b) => {
             const active = bucket === b.id;
             const count = bucketCounts[b.id] ?? 0;
@@ -476,16 +473,16 @@ function LicencasPage() {
                 key={b.id}
                 onClick={() => setBucket(b.id)}
                 className={cn(
-                  "flex items-center gap-3 rounded-2xl px-5 py-3 text-xs font-bold transition-all border",
+                  "flex items-center gap-3 rounded-xl px-4 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all",
                   active
-                    ? "bg-primary/10 text-primary border-primary/30 shadow-lg shadow-primary/5"
-                    : "bg-surface/30 text-muted-foreground border-border/40 hover:bg-surface/50 hover:text-foreground",
+                    ? "bg-brand-blue text-white shadow-lg shadow-brand-blue/20"
+                    : "text-muted-foreground/60 hover:text-white hover:bg-white/5",
                 )}
               >
                 <span>{b.label}</span>
                 <span className={cn(
-                  "size-5 rounded-lg grid place-items-center text-[9px] font-black",
-                  active ? "bg-primary text-white" : "bg-white/10 text-muted-foreground/60"
+                  "px-1.5 py-0.5 rounded-md text-[9px]",
+                  active ? "bg-white/20 text-white" : "bg-white/5 text-muted-foreground/40"
                 )}>
                   {count}
                 </span>
@@ -495,18 +492,6 @@ function LicencasPage() {
         </div>
       </div>
 
-      {/* Stats/Summary Row (Optional, adding for depth) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded-[1.5rem] border border-border/40 bg-surface/30 p-4 flex items-center gap-4">
-          <div className="size-10 rounded-xl bg-primary/10 text-primary grid place-items-center">
-            <KeyRound className="size-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Sessão Atual</span>
-            <span className="text-sm font-bold">{bucket === "teste" ? "Trials de 1h" : `${bucket} Premium`}</span>
-          </div>
-        </div>
-      </div>
 
       {/* Search + filter */}
       <div className="flex flex-col gap-3 md:flex-row">
