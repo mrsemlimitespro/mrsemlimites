@@ -12,6 +12,7 @@ import {
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { BrandWatermark } from "@/components/brand-watermark";
+import { BrandLogo } from "@/components/brand-logo";
 import { FirePromosButton } from "@/components/fire-promos-button";
 import { ImpersonationBanner } from "@/components/impersonation-banner";
 import { InnerPillMenu } from "@/components/inner-pill-menu";
