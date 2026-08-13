@@ -13,6 +13,7 @@ import {
   XCircle,
   Settings,
   ChevronDown,
+  ChevronRight,
   Coins,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
@@ -428,8 +429,8 @@ function DashboardPage() {
                     return (
                        <div key={act.id} className="flex gap-4 group">
                           <div className="relative">
-                             <div className={cn("size-9 rounded-xl grid place-items-center bg-white/5 relative z-10 border border-white/5 group-hover:border-white/10 transition-colors")} style={{ color: info.color }}>
-                                <info.icon className="size-4" />
+                          <div className={cn("size-9 rounded-xl grid place-items-center bg-white/5 relative z-10 border border-white/5 group-hover:border-white/10 transition-colors")}>
+                                <info.icon className="size-4" style={{ color: info.color }} />
                              </div>
                              {/* Linha conectora — simplificada */}
                           </div>
