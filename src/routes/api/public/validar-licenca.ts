@@ -19,18 +19,24 @@ import { createClient } from "@supabase/supabase-js";
 export const Route = createFileRoute("/api/public/validar-licenca")({
   server: {
     handlers: {
-      OPTIONS: async () =>
+      OPTIONS: async ({ request }) =>
         new Response(null, {
           status: 204,
           headers: {
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": request.headers.get("origin")?.startsWith("chrome-extension://") 
+              ? request.headers.get("origin")! 
+              : "*",
             "Access-Control-Allow-Methods": "POST, OPTIONS",
             "Access-Control-Allow-Headers": "content-type",
           },
         }),
       POST: async ({ request }) => {
         const cors = {
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": request.headers.get("origin")?.startsWith("chrome-extension://") 
+            ? request.headers.get("origin")! 
+            : "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "content-type",
           "content-type": "application/json",
         };
 
