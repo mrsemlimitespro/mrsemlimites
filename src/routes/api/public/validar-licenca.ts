@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
+import { normalizeLicenseKey, isValidLicenseFormat } from "@/lib/licenca/utils";
 
 /**
  * Endpoint público de validação de licenças da MR Sem Limites.
