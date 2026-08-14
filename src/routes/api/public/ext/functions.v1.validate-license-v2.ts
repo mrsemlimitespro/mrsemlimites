@@ -40,8 +40,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         } catch {
           /* noop */
         }
-        const key = String(body?.license_key ?? "").trim();
-        const hwid = body?.hwid ? String(body.hwid).trim() : null;
+        const key = normalizeLicenseKey(body?.license_key || body?.chave);
+        const hwid = body?.hwid ? String(body.hwid).trim() : (body?.device_id ? String(body.device_id).trim() : null);
         const deviceInfo = body?.device_info ?? null;
         // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
         // Sem alterar validação nem retorno. Se ausente, comportamento 100% idêntico.
@@ -50,17 +50,17 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
 
         if (!key) {
           return new Response(
-            JSON.stringify({ status: "invalid", message: "Licença inválida" }),
+            JSON.stringify({ status: "invalid", ok: false, valid: false, message: "Licença inválida" }),
             { status: 200, headers: cors },
           );
         }
 
-        // Validação de formato flexível: aceita qualquer formato para não bloquear o usuário
-        const keyPattern = /^([A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|MR-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|[A-Z0-9-]+)$/;
-        if (!keyPattern.test(key)) {
+        if (!isValidLicenseFormat(key)) {
           return new Response(
             JSON.stringify({ 
               status: "invalid", 
+              ok: false,
+              valid: false,
               message: "Formato de licença inválido" 
             }),
             { status: 200, headers: cors },
