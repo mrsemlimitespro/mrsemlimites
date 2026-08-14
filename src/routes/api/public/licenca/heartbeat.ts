@@ -1,18 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
-const cors = {
-  "Access-Control-Allow-Origin": "*",
+const getCorsHeaders = (request: Request) => ({
+  "Access-Control-Allow-Origin": request.headers.get("origin")?.startsWith("chrome-extension://") 
+    ? request.headers.get("origin")! 
+    : "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "content-type, authorization",
   "content-type": "application/json",
-};
+});
 
 export const Route = createFileRoute("/api/public/licenca/heartbeat")({
   server: {
     handlers: {
-      OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
+      OPTIONS: async ({ request }) => new Response(null, { status: 204, headers: getCorsHeaders(request) }),
       POST: async ({ request }) => {
+        const cors = getCorsHeaders(request);
         let body: any = {};
         try {
           body = await request.json();
@@ -50,7 +53,14 @@ export const Route = createFileRoute("/api/public/licenca/heartbeat")({
             { status: 200, headers: cors },
           );
         }
-        return new Response(JSON.stringify(data), { status: 200, headers: cors });
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            estado: data?.estado?.toLowerCase() || "ativa",
+            expira_em: data?.expira_em || null,
+          }), 
+          { status: 200, headers: cors }
+        );
       },
     },
   },
