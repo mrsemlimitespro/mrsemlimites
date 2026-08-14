@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { createHmac } from "crypto";
+import { normalizeLicenseKey, isValidLicenseFormat } from "@/lib/licenca/utils";
 
 /**
  * Compat: /functions/v1/validate-license-v2 — usado pelo sidepanel.
@@ -8,14 +9,17 @@ import { createHmac } from "crypto";
  * ok  : {status:'valid', session_token, days_remaining, hours_remaining, license_id}
  * err : {status:'invalid'|'expired'|'device_mismatch'|'error', message}
  */
-const getCorsHeaders = (request: Request) => ({
-  "Access-Control-Allow-Origin": request.headers.get("origin")?.startsWith("chrome-extension://") 
-    ? request.headers.get("origin")! 
-    : "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "content-type, authorization, apikey, x-client-info",
-  "content-type": "application/json",
-});
+const getCorsHeaders = (request: Request) => {
+  const origin = request.headers.get("origin");
+  return {
+    "Access-Control-Allow-Origin": (origin?.startsWith("chrome-extension://") || origin?.includes("localhost"))
+      ? origin! 
+      : "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "content-type, authorization, apikey, x-client-info",
+    "content-type": "application/json",
+  };
+};
 
 function signSessionToken(licencaId: string, hwid: string | null): string {
   const secret = process.env.EXT_SESSION_SECRET ?? "dev-secret";
