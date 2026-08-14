@@ -171,8 +171,8 @@ function BackendZipCard() {
     setDownloading(true);
     playSfx("swipe");
     const a = document.createElement("a");
-    a.href = "/master.zip";
-    a.download = "master.zip";
+    a.href = "/mr-social-glow-backend-kit.zip";
+    a.download = "mr-social-glow-backend-kit.zip";
     document.body.appendChild(a);
     a.click();
     a.remove();
