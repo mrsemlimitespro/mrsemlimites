@@ -1,20 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
+import { normalizeLicenseKey } from "@/lib/licenca/utils";
 
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "content-type",
-  "content-type": "application/json",
+const getCorsHeaders = (request: Request) => {
+  const origin = request.headers.get("origin");
+  return {
+    "Access-Control-Allow-Origin": (origin?.startsWith("chrome-extension://") || origin?.includes("localhost"))
+      ? origin! 
+      : "*",
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "content-type",
+    "content-type": "application/json",
+  };
 };
 
 export const Route = createFileRoute("/api/public/licenca/consulta")({
   server: {
     handlers: {
-      OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
+      OPTIONS: async ({ request }) => new Response(null, { status: 204, headers: getCorsHeaders(request) }),
       GET: async ({ request }) => {
+        const corsHeaders = getCorsHeaders(request);
         const url = new URL(request.url);
-        const chave = (url.searchParams.get("chave") ?? "").trim();
+        const chave = normalizeLicenseKey(url.searchParams.get("chave") || url.searchParams.get("license_key"));
         // FASE 2 (multi-extensão): leitura opcional de `extension_id` (query param). Reservado para uso futuro.
         // Não é passado à RPC `consulta_licenca_publica`; comportamento inalterado se ausente.
         const extension_id = (url.searchParams.get("extension_id") ?? "").slice(0, 80) || null;
@@ -22,7 +29,7 @@ export const Route = createFileRoute("/api/public/licenca/consulta")({
         if (!chave) {
           return new Response(JSON.stringify({ ok: false, error: "missing_chave" }), {
             status: 200,
-            headers: cors,
+            headers: corsHeaders,
           });
         }
         const sb = createClient(
@@ -34,10 +41,10 @@ export const Route = createFileRoute("/api/public/licenca/consulta")({
         if (error) {
           return new Response(JSON.stringify({ ok: false, error: "rpc_failed" }), {
             status: 200,
-            headers: cors,
+            headers: corsHeaders,
           });
         }
-        return new Response(JSON.stringify(data), { status: 200, headers: cors });
+        return new Response(JSON.stringify(data), { status: 200, headers: corsHeaders });
       },
     },
   },

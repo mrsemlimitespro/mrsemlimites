@@ -1,11 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
+import { normalizeLicenseKey } from "@/lib/licenca/utils";
 
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "content-type",
-  "content-type": "application/json",
+const getCorsHeaders = (request: Request) => {
+  const origin = request.headers.get("origin");
+  return {
+    "Access-Control-Allow-Origin": (origin?.startsWith("chrome-extension://") || origin?.includes("localhost"))
+      ? origin! 
+      : "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "content-type",
+    "content-type": "application/json",
+  };
 };
 
 /**
@@ -15,20 +21,21 @@ const cors = {
 export const Route = createFileRoute("/api/public/licenca/reset-hwid")({
   server: {
     handlers: {
-      OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
+      OPTIONS: async ({ request }) => new Response(null, { status: 204, headers: getCorsHeaders(request) }),
       POST: async ({ request }) => {
+        const corsHeaders = getCorsHeaders(request);
         let body: any = {};
         try {
           body = await request.json();
         } catch {
           /* noop */
         }
-        const chave = String(body?.chave ?? "").trim();
+        const chave = normalizeLicenseKey(body?.chave || body?.license_key);
         const motivo = body?.motivo ? String(body.motivo).slice(0, 300) : null;
         if (!chave) {
           return new Response(JSON.stringify({ ok: false, error: "missing_chave" }), {
             status: 200,
-            headers: cors,
+            headers: corsHeaders,
           });
         }
         const sb = createClient(
@@ -45,7 +52,7 @@ export const Route = createFileRoute("/api/public/licenca/reset-hwid")({
         if (!lic) {
           return new Response(JSON.stringify({ ok: false, error: "not_found" }), {
             status: 200,
-            headers: cors,
+            headers: corsHeaders,
           });
         }
 
@@ -70,7 +77,7 @@ export const Route = createFileRoute("/api/public/licenca/reset-hwid")({
             estado: "PENDING",
             mensagem: "Solicitação registrada. Aguarde aprovação do administrador.",
           }),
-          { status: 200, headers: cors },
+          { status: 200, headers: corsHeaders },
         );
       },
     },

@@ -1,14 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
+import { normalizeLicenseKey } from "@/lib/licenca/utils";
 
-const getCorsHeaders = (request: Request) => ({
-  "Access-Control-Allow-Origin": request.headers.get("origin")?.startsWith("chrome-extension://") 
-    ? request.headers.get("origin")! 
-    : "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "content-type, authorization",
-  "content-type": "application/json",
-});
+const getCorsHeaders = (request: Request) => {
+  const origin = request.headers.get("origin");
+  return {
+    "Access-Control-Allow-Origin": (origin?.startsWith("chrome-extension://") || origin?.includes("localhost"))
+      ? origin! 
+      : "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "content-type, authorization",
+    "content-type": "application/json",
+  };
+};
 
 export const Route = createFileRoute("/api/public/licenca/heartbeat")({
   server: {
@@ -22,8 +26,8 @@ export const Route = createFileRoute("/api/public/licenca/heartbeat")({
         } catch {
           /* noop */
         }
-        const chave = String(body?.chave ?? "").trim();
-        const device_id = body?.device_id ? String(body.device_id).trim() : null;
+        const chave = normalizeLicenseKey(body?.chave || body?.license_key);
+        const device_id = body?.device_id ? String(body.device_id).trim() : (body?.hwid ? String(body.hwid).trim() : null);
         // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
         // Não passado à RPC `heartbeat_licenca`; comportamento inalterado.
         const extension_id = body?.extension_id ? String(body.extension_id).slice(0, 80) : null;

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
+import { normalizeLicenseKey, isValidLicenseFormat } from "@/lib/licenca/utils";
 
 /**
  * Endpoint público de validação de licenças da MR Sem Limites.
@@ -19,21 +20,24 @@ import { createClient } from "@supabase/supabase-js";
 export const Route = createFileRoute("/api/public/validar-licenca")({
   server: {
     handlers: {
-      OPTIONS: async ({ request }) =>
-        new Response(null, {
+      OPTIONS: async ({ request }) => {
+        const origin = request.headers.get("origin");
+        return new Response(null, {
           status: 204,
           headers: {
-            "Access-Control-Allow-Origin": request.headers.get("origin")?.startsWith("chrome-extension://") 
-              ? request.headers.get("origin")! 
+            "Access-Control-Allow-Origin": (origin?.startsWith("chrome-extension://") || origin?.includes("localhost"))
+              ? origin! 
               : "*",
             "Access-Control-Allow-Methods": "POST, OPTIONS",
             "Access-Control-Allow-Headers": "content-type",
           },
-        }),
+        });
+      },
       POST: async ({ request }) => {
+        const origin = request.headers.get("origin");
         const cors = {
-          "Access-Control-Allow-Origin": request.headers.get("origin")?.startsWith("chrome-extension://") 
-            ? request.headers.get("origin")! 
+          "Access-Control-Allow-Origin": (origin?.startsWith("chrome-extension://") || origin?.includes("localhost"))
+            ? origin! 
             : "*",
           "Access-Control-Allow-Methods": "POST, OPTIONS",
           "Access-Control-Allow-Headers": "content-type",
@@ -48,8 +52,8 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
         }
 
         const email = String(body?.email ?? "").trim();
-        const chave = String(body?.chave ?? "").trim();
-        const device_id = body?.device_id ? String(body.device_id).trim() : null;
+        const chave = normalizeLicenseKey(body?.chave || body?.license_key);
+        const device_id = body?.device_id ? String(body.device_id).trim() : (body?.hwid ? String(body.hwid).trim() : null);
         const device_nome = body?.device_nome ? String(body.device_nome).slice(0, 120) : null;
         const versao = body?.versao ? String(body.versao).slice(0, 40) : null;
         const ip =
@@ -62,11 +66,14 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
         const extension_id = body?.extension_id ? String(body.extension_id).slice(0, 80) : null;
         void extension_id;
 
-        if (!chave) return fail(cors, "Licença inválida ou expirada.");
-
         const sb = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
           auth: { persistSession: false, autoRefreshToken: false },
         });
+
+        if (!chave || !isValidLicenseFormat(chave)) {
+          await logAcesso(sb, null, chave, device_id, ip, user_agent, versao, "invalid_format");
+          return fail(cors, "Licença inválida ou expirada.");
+        }
 
         // Expira quaisquer trials vencidos (lazy)
         try {

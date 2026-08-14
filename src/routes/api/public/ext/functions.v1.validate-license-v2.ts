@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { createHmac } from "crypto";
+import { normalizeLicenseKey, isValidLicenseFormat } from "@/lib/licenca/utils";
 
 /**
  * Compat: /functions/v1/validate-license-v2 — usado pelo sidepanel.
@@ -8,14 +9,17 @@ import { createHmac } from "crypto";
  * ok  : {status:'valid', session_token, days_remaining, hours_remaining, license_id}
  * err : {status:'invalid'|'expired'|'device_mismatch'|'error', message}
  */
-const getCorsHeaders = (request: Request) => ({
-  "Access-Control-Allow-Origin": request.headers.get("origin")?.startsWith("chrome-extension://") 
-    ? request.headers.get("origin")! 
-    : "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "content-type, authorization, apikey, x-client-info",
-  "content-type": "application/json",
-});
+const getCorsHeaders = (request: Request) => {
+  const origin = request.headers.get("origin");
+  return {
+    "Access-Control-Allow-Origin": (origin?.startsWith("chrome-extension://") || origin?.includes("localhost"))
+      ? origin! 
+      : "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "content-type, authorization, apikey, x-client-info",
+    "content-type": "application/json",
+  };
+};
 
 function signSessionToken(licencaId: string, hwid: string | null): string {
   const secret = process.env.EXT_SESSION_SECRET ?? "dev-secret";
@@ -36,8 +40,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         } catch {
           /* noop */
         }
-        const key = String(body?.license_key ?? "").trim();
-        const hwid = body?.hwid ? String(body.hwid).trim() : null;
+        const key = normalizeLicenseKey(body?.license_key || body?.chave);
+        const hwid = body?.hwid ? String(body.hwid).trim() : (body?.device_id ? String(body.device_id).trim() : null);
         const deviceInfo = body?.device_info ?? null;
         // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
         // Sem alterar validação nem retorno. Se ausente, comportamento 100% idêntico.
@@ -46,17 +50,17 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
 
         if (!key) {
           return new Response(
-            JSON.stringify({ status: "invalid", message: "Licença inválida" }),
+            JSON.stringify({ status: "invalid", ok: false, valid: false, message: "Licença inválida" }),
             { status: 200, headers: cors },
           );
         }
 
-        // Validação de formato flexível: aceita qualquer formato para não bloquear o usuário
-        const keyPattern = /^([A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|MR-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|[A-Z0-9-]+)$/;
-        if (!keyPattern.test(key)) {
+        if (!isValidLicenseFormat(key)) {
           return new Response(
             JSON.stringify({ 
               status: "invalid", 
+              ok: false,
+              valid: false,
               message: "Formato de licença inválido" 
             }),
             { status: 200, headers: cors },
