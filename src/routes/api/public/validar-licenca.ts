@@ -66,14 +66,14 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
         const extension_id = body?.extension_id ? String(body.extension_id).slice(0, 80) : null;
         void extension_id;
 
+        const sb = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+          auth: { persistSession: false, autoRefreshToken: false },
+        });
+
         if (!chave || !isValidLicenseFormat(chave)) {
           await logAcesso(sb, null, chave, device_id, ip, user_agent, versao, "invalid_format");
           return fail(cors, "Licença inválida ou expirada.");
         }
-
-        const sb = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-          auth: { persistSession: false, autoRefreshToken: false },
-        });
 
         // Expira quaisquer trials vencidos (lazy)
         try {
