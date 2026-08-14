@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS licencas_chave_unique_idx ON public.licencas (chave);
