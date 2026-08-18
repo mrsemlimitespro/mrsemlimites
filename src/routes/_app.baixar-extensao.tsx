@@ -725,6 +725,14 @@ function LicencaChipsRow({
 
   // Status
   chips.push({
+    key: "version",
+    icon: <Sparkles className="size-4" />,
+    label: "Versão Atual",
+    value: "2.2.8 (Fixed)",
+    tone: "ok",
+  });
+
+  chips.push({
     key: "status",
     icon: ativa ? <ShieldCheck className="size-4" /> : <ShieldAlert className="size-4" />,
     label: "Extensão",
