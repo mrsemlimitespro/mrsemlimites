@@ -169,13 +169,14 @@ function BackendZipCard() {
   const handleDownload = () => {
     setDownloading(true);
     playSfx("swipe");
+    
+    // Agora usamos a rota de API para download seguro via Storage
     const a = document.createElement("a");
-    // Link direto para o arquivo v17.0 completo solicitado pelo usuário
-    a.href = "/mr-sem-limites-backend-extension-v17-completo.zip?v=" + new Date().getTime();
-    a.download = "mr-sem-limites-backend-extension-v17-completo.zip";
+    a.href = "/api/public/ext-v17/download-zip";
     document.body.appendChild(a);
     a.click();
     a.remove();
+    
     setTimeout(() => {
       setDownloading(false);
       toast.success("Download do Backend Completo v17.0 iniciado");
