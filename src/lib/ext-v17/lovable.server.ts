@@ -11,6 +11,9 @@ export type LovableChatPayload = {
   current_viewport_dpr?: number;
   session_replay?: string;
   ai_message_id?: string;
+  model?: string | null;
+  client_id?: string;
+  integration_metadata?: any;
   [key: string]: any;
 };
 
@@ -20,29 +23,50 @@ export async function proxyLovableChat(
   lastPayload: LovableChatPayload
 ) {
   const url = `${LOVABLE_BASE_URL}/projects/${projectId}/chat`;
-  const rawToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+  const rawToken = token.replace(/^Bearer\s+/i, "");
 
-  // Rule: ai_message_id must be preserved from original payload if it exists.
-  // Never create artificial ai_message_id.
-  if (lastPayload.ai_message_id === undefined) {
-    // If Lovable requires it and it's missing, we could fail here, 
-    // but we'll let the upstream Lovable API decide if it can handle missing ID.
-    // However, the instructions say: "If Lovable requires ai_message_id and it doesn't exist, return 400".
-    // Since we are proxying, we'll check if the engine normally sends it.
-  }
+  // Rule: Preserve all fields from lastPayload
+  // ai_message_id must be preserved if it exists
+  
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${rawToken}`,
+    "Accept": "*/*",
+    "Origin": "https://lovable.dev",
+    "Referer": "https://lovable.dev/",
+    "x-lovable-project-id": projectId,
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(lastPayload),
+  });
+
+  return response;
+}
+
+export async function proxyLovableCommand(
+  projectId: string,
+  token: string,
+  payload: any
+) {
+  // O motor v17.0 às vezes usa send-command para operações que também batem no /chat
+  // ou em rotas específicas se documentado. Por padrão, usamos a mesma lógica de transporte.
+  const url = `${LOVABLE_BASE_URL}/projects/${projectId}/chat`;
+  const rawToken = token.replace(/^Bearer\s+/i, "");
 
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${rawToken}`,
-      "Accept": "*/*",
+      "x-lovable-project-id": projectId,
       "Origin": "https://lovable.dev",
       "Referer": "https://lovable.dev/",
-      "x-lovable-project-id": projectId,
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
     },
-    body: JSON.stringify(lastPayload),
+    body: JSON.stringify(payload),
   });
 
   return response;
