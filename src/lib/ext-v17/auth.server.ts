@@ -120,6 +120,7 @@ export async function validateExtensionLicense(
     valid: true,
     status: "active",
     license_key: key,
+    licenca_id: lic.id,
     user_name: lic.email?.split('@')[0] || "Usuário MR",
     expires_at: lic.expira_em || undefined,
     session_id: finalSessionId,
