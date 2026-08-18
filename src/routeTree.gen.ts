@@ -85,6 +85,7 @@ import { Route as ApiPublicExtV17ProxyCommandRouteImport } from './routes/api/pu
 import { Route as ApiPublicExtV17ProcessPaymentRouteImport } from './routes/api/public/ext-v17/process-payment'
 import { Route as ApiPublicExtV17HeartbeatRouteImport } from './routes/api/public/ext-v17/heartbeat'
 import { Route as ApiPublicExtV17FixStreamRouteImport } from './routes/api/public/ext-v17/fix-stream'
+import { Route as ApiPublicExtV17DownloadZipRouteImport } from './routes/api/public/ext-v17/download-zip'
 import { Route as ApiPublicExtV17CreateProjectRouteImport } from './routes/api/public/ext-v17/create-project'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
@@ -491,6 +492,12 @@ const ApiPublicExtV17FixStreamRoute =
     path: '/api/public/ext-v17/fix-stream',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtV17DownloadZipRoute =
+  ApiPublicExtV17DownloadZipRouteImport.update({
+    id: '/api/public/ext-v17/download-zip',
+    path: '/api/public/ext-v17/download-zip',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtV17CreateProjectRoute =
   ApiPublicExtV17CreateProjectRouteImport.update({
     id: '/api/public/ext-v17/create-project',
@@ -599,6 +606,7 @@ export interface FileRoutesByFullPath {
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/ext-v17/create-project': typeof ApiPublicExtV17CreateProjectRoute
+  '/api/public/ext-v17/download-zip': typeof ApiPublicExtV17DownloadZipRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
   '/api/public/ext-v17/process-payment': typeof ApiPublicExtV17ProcessPaymentRoute
@@ -684,6 +692,7 @@ export interface FileRoutesByTo {
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/ext-v17/create-project': typeof ApiPublicExtV17CreateProjectRoute
+  '/api/public/ext-v17/download-zip': typeof ApiPublicExtV17DownloadZipRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
   '/api/public/ext-v17/process-payment': typeof ApiPublicExtV17ProcessPaymentRoute
@@ -772,6 +781,7 @@ export interface FileRoutesById {
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/ext-v17/create-project': typeof ApiPublicExtV17CreateProjectRoute
+  '/api/public/ext-v17/download-zip': typeof ApiPublicExtV17DownloadZipRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
   '/api/public/ext-v17/process-payment': typeof ApiPublicExtV17ProcessPaymentRoute
@@ -860,6 +870,7 @@ export interface FileRouteTypes {
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/ext-v17/create-project'
+    | '/api/public/ext-v17/download-zip'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
     | '/api/public/ext-v17/process-payment'
@@ -945,6 +956,7 @@ export interface FileRouteTypes {
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/ext-v17/create-project'
+    | '/api/public/ext-v17/download-zip'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
     | '/api/public/ext-v17/process-payment'
@@ -1032,6 +1044,7 @@ export interface FileRouteTypes {
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
     | '/api/public/ext-v17/create-project'
+    | '/api/public/ext-v17/download-zip'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
     | '/api/public/ext-v17/process-payment'
@@ -1077,6 +1090,7 @@ export interface RootRouteChildren {
   ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
   ApiPublicExtV17CreateProjectRoute: typeof ApiPublicExtV17CreateProjectRoute
+  ApiPublicExtV17DownloadZipRoute: typeof ApiPublicExtV17DownloadZipRoute
   ApiPublicExtV17FixStreamRoute: typeof ApiPublicExtV17FixStreamRoute
   ApiPublicExtV17HeartbeatRoute: typeof ApiPublicExtV17HeartbeatRoute
   ApiPublicExtV17ProcessPaymentRoute: typeof ApiPublicExtV17ProcessPaymentRoute
@@ -1645,6 +1659,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtV17FixStreamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext-v17/download-zip': {
+      id: '/api/public/ext-v17/download-zip'
+      path: '/api/public/ext-v17/download-zip'
+      fullPath: '/api/public/ext-v17/download-zip'
+      preLoaderRoute: typeof ApiPublicExtV17DownloadZipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext-v17/create-project': {
       id: '/api/public/ext-v17/create-project'
       path: '/api/public/ext-v17/create-project'
@@ -1844,6 +1865,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
   ApiPublicExtV17CreateProjectRoute: ApiPublicExtV17CreateProjectRoute,
+  ApiPublicExtV17DownloadZipRoute: ApiPublicExtV17DownloadZipRoute,
   ApiPublicExtV17FixStreamRoute: ApiPublicExtV17FixStreamRoute,
   ApiPublicExtV17HeartbeatRoute: ApiPublicExtV17HeartbeatRoute,
   ApiPublicExtV17ProcessPaymentRoute: ApiPublicExtV17ProcessPaymentRoute,
