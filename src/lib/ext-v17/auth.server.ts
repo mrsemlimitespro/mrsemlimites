@@ -18,6 +18,7 @@ export type LicenseValidationResult = {
   valid: boolean;
   status: "active" | "expired" | "revoked" | "not_found" | "invalid_format" | "hwid_mismatch" | "session_conflict";
   license_key: string;
+  licenca_id?: string; // UUID from public.licencas
   user_name?: string;
   expires_at?: string;
   session_id?: string;
