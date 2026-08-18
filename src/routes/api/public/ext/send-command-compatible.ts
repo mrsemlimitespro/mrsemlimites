@@ -163,8 +163,8 @@ export const Route = createFileRoute("/api/public/ext/send-command-compatible")(
               "Accept": "*/*",
               "Origin": "https://lovable.dev",
               "Referer": "https://lovable.dev/",
-              "x-lovable-project-id": projectId,
               "User-Agent": "Mozilla/5.0 Chrome Extension",
+              "x-lovable-project-id": projectId,
             },
             body: JSON.stringify(chatPayload),
             signal: controller.signal
