@@ -122,15 +122,15 @@ type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
 type Bucket = "teste" | "1d" | "2d" | "3d" | "30d" | "60d" | "90d" | "180d" | "1ano" | "outros";
 
 const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
-  { id: "teste", label: "1 hora", sub: "teste" },
+  { id: "teste", label: "Trial (1h)", sub: "teste" },
   { id: "1d", label: "1 dia", sub: "premium" },
   { id: "2d", label: "2 dias", sub: "premium" },
   { id: "3d", label: "3 dias", sub: "premium" },
-  { id: "30d", label: "30 dias", sub: "premium" },
-  { id: "60d", label: "60 dias", sub: "premium" },
-  { id: "90d", label: "90 dias", sub: "premium" },
-  { id: "180d", label: "180 dias", sub: "premium" },
-  { id: "1ano", label: "1 ano", sub: "premium" },
+  { id: "30d", label: "Mensal", sub: "premium" },
+  { id: "60d", label: "Bimestral", sub: "premium" },
+  { id: "90d", label: "Trimestral", sub: "premium" },
+  { id: "180d", label: "Semestral", sub: "premium" },
+  { id: "1ano", label: "Anual", sub: "premium" },
 ];
 
 function bucketOfRow(row: LicencaRow): Bucket {
@@ -453,12 +453,12 @@ function LicencasPage() {
 
       {/* 7 KPI Cards Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <KpiCard title="Mensais" value={bucketCounts["mensal"] ?? 0} color="text-brand-blue" />
-        <KpiCard title="Trimestrais" value={bucketCounts["trimestral"] ?? 0} color="text-brand-cyan" />
-        <KpiCard title="Semestrais" value={bucketCounts["semestral"] ?? 0} color="text-brand-violet" />
-        <KpiCard title="Anuais" value={bucketCounts["anual"] ?? 0} color="text-brand-magenta" />
-        <KpiCard title="Vitalícias" value={bucketCounts["vitalicio"] ?? 0} color="text-brand-yellow" />
-        <KpiCard title="Trials (1h)" value={bucketCounts["teste"] ?? 0} color="text-brand-orange" />
+        <KpiCard title="Mensais" value={bucketCounts["30d"] ?? 0} color="text-brand-blue" />
+        <KpiCard title="Trimestrais" value={bucketCounts["90d"] ?? 0} color="text-brand-cyan" />
+        <KpiCard title="Semestrais" value={bucketCounts["180d"] ?? 0} color="text-brand-violet" />
+        <KpiCard title="Anuais" value={bucketCounts["1ano"] ?? 0} color="text-brand-magenta" />
+        <KpiCard title="Vitalícias" value={bucketCounts["outros"] ?? 0} color="text-brand-yellow" />
+        <KpiCard title="Trials" value={bucketCounts["teste"] ?? 0} color="text-brand-orange" />
         <KpiCard title="Ativas Hoje" value={total} color="text-brand-emerald" />
       </div>
 

@@ -52,28 +52,27 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
-    version: "2.3.3 (v21.2 - Rebuild)",
-    date: "05/08/2026",
-    filename: "mr-sem-limites-v21-final.zip",
-    downloadPath: currentExtensionAsset.url,
-    size: "690 KB",
+    version: "2.2.8 (Fixed)",
+    date: "19/08/2026",
+    filename: "mr-sem-limites-2.2.8.zip",
+    downloadPath: "/mr-sem-limites-2.2.7.zip", // Aponta para a estável
+    size: "749 KB",
     latest: true,
     changelog: [
-      "Hotfix Crítico: Corrigido erro de sintaxe nos nomes de funções internas que impedia a extensão de inicializar.",
-      "Forçar Abertura: Injetado comando para obrigar o Painel Lateral a abrir imediatamente ao clicar no ícone da extensão.",
-      "Visual: Refinamento do Azul Neon (#00f2ff) nas bordas com brilho aprimorado.",
-      "Limpeza: Removido definitivamente qualquer rastro de branding antigo.",
+      "Versão 2.2.8 Final: Estabilidade total para v17.0 API.",
+      "Sync: Resposta imediata do motor de comandos (Fixed-2).",
+      "Segurança: Normalização global de chaves MR-XXXX.",
     ],
   },
   {
-    version: "2.3.2 (v21.1)",
-    date: "05/08/2026",
-    filename: "mr-sem-limites-v21-final.zip",
-    downloadPath: currentExtensionAsset.url,
-    size: "688 KB",
+    version: "2.2.7",
+    date: "18/08/2026",
+    filename: "mr-sem-limites-2.2.7.zip",
+    downloadPath: "/mr-sem-limites-2.2.7.zip",
+    size: "749 KB",
     changelog: [
-      "Visual: Bordas e brilho Azul Neon.",
-      "Branding: Remoção completa de termos antigos.",
+      "Compatibilidade: Ajustada para as novas rotas de API v17.0.",
+      "Visual: Refinamento do Azul Neon (#00f2ff).",
     ],
   },
 ];
@@ -171,8 +170,8 @@ function BackendZipCard() {
     setDownloading(true);
     playSfx("swipe");
     const a = document.createElement("a");
-    a.href = "/mr-social-glow-backend-kit.zip";
-    a.download = "mr-social-glow-backend-kit.zip";
+    a.href = "/mr-central-extension-route-kit-v17-1-fixed-2.zip";
+    a.download = "mr-central-extension-route-kit-v17-1-fixed-2.zip";
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -725,6 +724,14 @@ function LicencaChipsRow({
   }> = [];
 
   // Status
+  chips.push({
+    key: "version",
+    icon: <Sparkles className="size-4" />,
+    label: "Versão Atual",
+    value: "2.2.8 (Fixed)",
+    tone: "ok",
+  });
+
   chips.push({
     key: "status",
     icon: ativa ? <ShieldCheck className="size-4" /> : <ShieldAlert className="size-4" />,
