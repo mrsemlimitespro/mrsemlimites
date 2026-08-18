@@ -4,13 +4,19 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('@/integrations/supabase/client.server', () => ({
   supabaseAdmin: {
     rpc: vi.fn().mockResolvedValue({ error: null }),
-    from: vi.fn().mockReturnThis(),
-    select: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
-    maybeSingle: vi.fn(),
-    upsert: vi.fn().mockResolvedValue({ error: null }),
-    insert: vi.fn().mockResolvedValue({ error: null }),
-    update: vi.fn().mockReturnThis(),
+    from: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn(),
+      upsert: vi.fn().mockResolvedValue({ error: null }),
+      insert: vi.fn().mockResolvedValue({ error: null }),
+      update: vi.fn().mockReturnThis(),
+    }),
+    storage: {
+      from: vi.fn().mockReturnThis(),
+      upload: vi.fn().mockResolvedValue({ data: {}, error: null }),
+      getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'http://test.com' } }),
+    }
   }
 }));
 
@@ -36,26 +42,43 @@ describe('V17.0 Backend Integration Tests', () => {
   });
 
   it('deve validar licença ativa e retornar user_name', async () => {
-    (supabaseAdmin.maybeSingle as any).mockResolvedValue({ 
-      data: { 
-        id: '123', 
-        status: 'ativa', 
-        email: 'teste@exemplo.com', 
-        max_dispositivos: 5 
-      }, 
-      error: null 
+    (supabaseAdmin.from as any).mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({ 
+        data: { 
+          id: '123', 
+          status: 'ativa', 
+          email: 'teste@exemplo.com', 
+          max_dispositivos: 5 
+        }, 
+        error: null 
+      }),
+      upsert: vi.fn().mockResolvedValue({ error: null }),
+      insert: vi.fn().mockResolvedValue({ error: null }),
+      update: vi.fn().mockReturnThis(),
     });
-    
-    // Mock devices count
-    (supabaseAdmin.from as any).mockImplementation((table: string) => {
+
+    // Sub-mock para contagem de dispositivos
+    vi.spyOn(supabaseAdmin, 'from').mockImplementation((table: string) => {
       if (table === 'licenca_dispositivos') {
         return {
-          select: () => ({
-            eq: () => Promise.resolve({ data: [], error: null })
-          })
-        };
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockResolvedValue({ data: [], error: null }),
+          insert: vi.fn().mockResolvedValue({ error: null })
+        } as any;
       }
-      return supabaseAdmin;
+      return {
+        select: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        maybeSingle: vi.fn().mockResolvedValue({ 
+          data: { id: '123', status: 'ativa', email: 'teste@exemplo.com' }, 
+          error: null 
+        }),
+        update: vi.fn().mockReturnThis(),
+        upsert: vi.fn().mockResolvedValue({ error: null }),
+        insert: vi.fn().mockResolvedValue({ error: null })
+      } as any;
     });
 
     const result = await validateExtensionLicense({ key: 'MR-AW38-STAB-ZTL7', hwid: 'hw123' });
