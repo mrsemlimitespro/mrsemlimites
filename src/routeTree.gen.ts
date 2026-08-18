@@ -77,11 +77,15 @@ import { Route as ApiPublicExtSendCommandCompatibleRouteImport } from './routes/
 import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public/ext/send-command'
 import { Route as ApiPublicExtV17ValidateLicenseRouteImport } from './routes/api/public/ext-v17/validate-license'
 import { Route as ApiPublicExtV17UploadRouteImport } from './routes/api/public/ext-v17/upload'
+import { Route as ApiPublicExtV17SendLovableMessageRouteImport } from './routes/api/public/ext-v17/send-lovable-message'
 import { Route as ApiPublicExtV17SendCommandRouteImport } from './routes/api/public/ext-v17/send-command'
 import { Route as ApiPublicExtV17SendChatRouteImport } from './routes/api/public/ext-v17/send-chat'
+import { Route as ApiPublicExtV17PublishProjectRouteImport } from './routes/api/public/ext-v17/publish-project'
 import { Route as ApiPublicExtV17ProxyCommandRouteImport } from './routes/api/public/ext-v17/proxy-command'
+import { Route as ApiPublicExtV17ProcessPaymentRouteImport } from './routes/api/public/ext-v17/process-payment'
 import { Route as ApiPublicExtV17HeartbeatRouteImport } from './routes/api/public/ext-v17/heartbeat'
 import { Route as ApiPublicExtV17FixStreamRouteImport } from './routes/api/public/ext-v17/fix-stream'
+import { Route as ApiPublicExtV17CreateProjectRouteImport } from './routes/api/public/ext-v17/create-project'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
 import { Route as ApiPublicExtFunctionsV1ReportTamperRouteImport } from './routes/api/public/ext/functions.v1.report-tamper'
@@ -440,6 +444,12 @@ const ApiPublicExtV17UploadRoute = ApiPublicExtV17UploadRouteImport.update({
   path: '/api/public/ext-v17/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicExtV17SendLovableMessageRoute =
+  ApiPublicExtV17SendLovableMessageRouteImport.update({
+    id: '/api/public/ext-v17/send-lovable-message',
+    path: '/api/public/ext-v17/send-lovable-message',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtV17SendCommandRoute =
   ApiPublicExtV17SendCommandRouteImport.update({
     id: '/api/public/ext-v17/send-command',
@@ -451,10 +461,22 @@ const ApiPublicExtV17SendChatRoute = ApiPublicExtV17SendChatRouteImport.update({
   path: '/api/public/ext-v17/send-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicExtV17PublishProjectRoute =
+  ApiPublicExtV17PublishProjectRouteImport.update({
+    id: '/api/public/ext-v17/publish-project',
+    path: '/api/public/ext-v17/publish-project',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtV17ProxyCommandRoute =
   ApiPublicExtV17ProxyCommandRouteImport.update({
     id: '/api/public/ext-v17/proxy-command',
     path: '/api/public/ext-v17/proxy-command',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17ProcessPaymentRoute =
+  ApiPublicExtV17ProcessPaymentRouteImport.update({
+    id: '/api/public/ext-v17/process-payment',
+    path: '/api/public/ext-v17/process-payment',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicExtV17HeartbeatRoute =
@@ -467,6 +489,12 @@ const ApiPublicExtV17FixStreamRoute =
   ApiPublicExtV17FixStreamRouteImport.update({
     id: '/api/public/ext-v17/fix-stream',
     path: '/api/public/ext-v17/fix-stream',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17CreateProjectRoute =
+  ApiPublicExtV17CreateProjectRouteImport.update({
+    id: '/api/public/ext-v17/create-project',
+    path: '/api/public/ext-v17/create-project',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
@@ -570,11 +598,15 @@ export interface FileRoutesByFullPath {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext-v17/create-project': typeof ApiPublicExtV17CreateProjectRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
+  '/api/public/ext-v17/process-payment': typeof ApiPublicExtV17ProcessPaymentRoute
   '/api/public/ext-v17/proxy-command': typeof ApiPublicExtV17ProxyCommandRoute
+  '/api/public/ext-v17/publish-project': typeof ApiPublicExtV17PublishProjectRoute
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
+  '/api/public/ext-v17/send-lovable-message': typeof ApiPublicExtV17SendLovableMessageRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
@@ -651,11 +683,15 @@ export interface FileRoutesByTo {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext-v17/create-project': typeof ApiPublicExtV17CreateProjectRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
+  '/api/public/ext-v17/process-payment': typeof ApiPublicExtV17ProcessPaymentRoute
   '/api/public/ext-v17/proxy-command': typeof ApiPublicExtV17ProxyCommandRoute
+  '/api/public/ext-v17/publish-project': typeof ApiPublicExtV17PublishProjectRoute
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
+  '/api/public/ext-v17/send-lovable-message': typeof ApiPublicExtV17SendLovableMessageRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
@@ -735,11 +771,15 @@ export interface FileRoutesById {
   '/admin/clientes/$id': typeof AdminClientesIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
+  '/api/public/ext-v17/create-project': typeof ApiPublicExtV17CreateProjectRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
+  '/api/public/ext-v17/process-payment': typeof ApiPublicExtV17ProcessPaymentRoute
   '/api/public/ext-v17/proxy-command': typeof ApiPublicExtV17ProxyCommandRoute
+  '/api/public/ext-v17/publish-project': typeof ApiPublicExtV17PublishProjectRoute
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
+  '/api/public/ext-v17/send-lovable-message': typeof ApiPublicExtV17SendLovableMessageRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
@@ -819,11 +859,15 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext-v17/create-project'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
+    | '/api/public/ext-v17/process-payment'
     | '/api/public/ext-v17/proxy-command'
+    | '/api/public/ext-v17/publish-project'
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
+    | '/api/public/ext-v17/send-lovable-message'
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/ext/send-command'
@@ -900,11 +944,15 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext-v17/create-project'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
+    | '/api/public/ext-v17/process-payment'
     | '/api/public/ext-v17/proxy-command'
+    | '/api/public/ext-v17/publish-project'
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
+    | '/api/public/ext-v17/send-lovable-message'
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/ext/send-command'
@@ -983,11 +1031,15 @@ export interface FileRouteTypes {
     | '/admin/clientes/$id'
     | '/api/public/download-extensao'
     | '/api/public/validar-licenca'
+    | '/api/public/ext-v17/create-project'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
+    | '/api/public/ext-v17/process-payment'
     | '/api/public/ext-v17/proxy-command'
+    | '/api/public/ext-v17/publish-project'
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
+    | '/api/public/ext-v17/send-lovable-message'
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/ext/send-command'
@@ -1024,11 +1076,15 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
+  ApiPublicExtV17CreateProjectRoute: typeof ApiPublicExtV17CreateProjectRoute
   ApiPublicExtV17FixStreamRoute: typeof ApiPublicExtV17FixStreamRoute
   ApiPublicExtV17HeartbeatRoute: typeof ApiPublicExtV17HeartbeatRoute
+  ApiPublicExtV17ProcessPaymentRoute: typeof ApiPublicExtV17ProcessPaymentRoute
   ApiPublicExtV17ProxyCommandRoute: typeof ApiPublicExtV17ProxyCommandRoute
+  ApiPublicExtV17PublishProjectRoute: typeof ApiPublicExtV17PublishProjectRoute
   ApiPublicExtV17SendChatRoute: typeof ApiPublicExtV17SendChatRoute
   ApiPublicExtV17SendCommandRoute: typeof ApiPublicExtV17SendCommandRoute
+  ApiPublicExtV17SendLovableMessageRoute: typeof ApiPublicExtV17SendLovableMessageRoute
   ApiPublicExtV17UploadRoute: typeof ApiPublicExtV17UploadRoute
   ApiPublicExtV17ValidateLicenseRoute: typeof ApiPublicExtV17ValidateLicenseRoute
   ApiPublicExtSendCommandRoute: typeof ApiPublicExtSendCommandRoute
@@ -1533,6 +1589,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtV17UploadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext-v17/send-lovable-message': {
+      id: '/api/public/ext-v17/send-lovable-message'
+      path: '/api/public/ext-v17/send-lovable-message'
+      fullPath: '/api/public/ext-v17/send-lovable-message'
+      preLoaderRoute: typeof ApiPublicExtV17SendLovableMessageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext-v17/send-command': {
       id: '/api/public/ext-v17/send-command'
       path: '/api/public/ext-v17/send-command'
@@ -1547,11 +1610,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtV17SendChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext-v17/publish-project': {
+      id: '/api/public/ext-v17/publish-project'
+      path: '/api/public/ext-v17/publish-project'
+      fullPath: '/api/public/ext-v17/publish-project'
+      preLoaderRoute: typeof ApiPublicExtV17PublishProjectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext-v17/proxy-command': {
       id: '/api/public/ext-v17/proxy-command'
       path: '/api/public/ext-v17/proxy-command'
       fullPath: '/api/public/ext-v17/proxy-command'
       preLoaderRoute: typeof ApiPublicExtV17ProxyCommandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/process-payment': {
+      id: '/api/public/ext-v17/process-payment'
+      path: '/api/public/ext-v17/process-payment'
+      fullPath: '/api/public/ext-v17/process-payment'
+      preLoaderRoute: typeof ApiPublicExtV17ProcessPaymentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/ext-v17/heartbeat': {
@@ -1566,6 +1643,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/ext-v17/fix-stream'
       fullPath: '/api/public/ext-v17/fix-stream'
       preLoaderRoute: typeof ApiPublicExtV17FixStreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/create-project': {
+      id: '/api/public/ext-v17/create-project'
+      path: '/api/public/ext-v17/create-project'
+      fullPath: '/api/public/ext-v17/create-project'
+      preLoaderRoute: typeof ApiPublicExtV17CreateProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/ext/functions/v1/validate-license-v2': {
@@ -1759,11 +1843,16 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
+  ApiPublicExtV17CreateProjectRoute: ApiPublicExtV17CreateProjectRoute,
   ApiPublicExtV17FixStreamRoute: ApiPublicExtV17FixStreamRoute,
   ApiPublicExtV17HeartbeatRoute: ApiPublicExtV17HeartbeatRoute,
+  ApiPublicExtV17ProcessPaymentRoute: ApiPublicExtV17ProcessPaymentRoute,
   ApiPublicExtV17ProxyCommandRoute: ApiPublicExtV17ProxyCommandRoute,
+  ApiPublicExtV17PublishProjectRoute: ApiPublicExtV17PublishProjectRoute,
   ApiPublicExtV17SendChatRoute: ApiPublicExtV17SendChatRoute,
   ApiPublicExtV17SendCommandRoute: ApiPublicExtV17SendCommandRoute,
+  ApiPublicExtV17SendLovableMessageRoute:
+    ApiPublicExtV17SendLovableMessageRoute,
   ApiPublicExtV17UploadRoute: ApiPublicExtV17UploadRoute,
   ApiPublicExtV17ValidateLicenseRoute: ApiPublicExtV17ValidateLicenseRoute,
   ApiPublicExtSendCommandRoute: ApiPublicExtSendCommandRoute,
