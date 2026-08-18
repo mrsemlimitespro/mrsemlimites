@@ -66,7 +66,7 @@ async function testRoute() {
   };
 
   // Simulação da montagem do chatPayload conforme o código da rota
-  const motorPayload = testPayload.lastPayload;
+  const motorPayload: any = testPayload.lastPayload;
   const chatPayload: any = {
     ...motorPayload,
     id: motorPayload.id || `umsg_uuid`,
