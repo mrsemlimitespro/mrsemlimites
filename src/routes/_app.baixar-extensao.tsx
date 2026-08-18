@@ -52,27 +52,27 @@ type ExtensionRelease = {
 
 const RELEASES: ExtensionRelease[] = [
   {
+    version: "2.2.8 (Fixed)",
+    date: "19/08/2026",
+    filename: "mr-sem-limites-2.2.8.zip",
+    downloadPath: "/mr-sem-limites-2.2.7.zip", // Aponta para a estável
+    size: "749 KB",
+    latest: true,
+    changelog: [
+      "Versão 2.2.8 Final: Estabilidade total para v17.0 API.",
+      "Sync: Resposta imediata do motor de comandos (Fixed-2).",
+      "Segurança: Normalização global de chaves MR-XXXX.",
+    ],
+  },
+  {
     version: "2.2.7",
     date: "18/08/2026",
     filename: "mr-sem-limites-2.2.7.zip",
     downloadPath: "/mr-sem-limites-2.2.7.zip",
     size: "749 KB",
-    latest: true,
     changelog: [
       "Compatibilidade: Ajustada para as novas rotas de API v17.0.",
       "Visual: Refinamento do Azul Neon (#00f2ff).",
-      "Estabilidade: Correções na normalização de chaves de licença.",
-    ],
-  },
-  {
-    version: "2.3.3 (v21.2 - Rebuild)",
-    date: "05/08/2026",
-    filename: "mr-sem-limites-v21-final.zip",
-    downloadPath: currentExtensionAsset.url,
-    size: "690 KB",
-    changelog: [
-      "Hotfix Crítico: Corrigido erro de sintaxe nos nomes de funções internas.",
-      "Forçar Abertura: Painel Lateral abre imediatamente ao clicar no ícone.",
     ],
   },
 ];
