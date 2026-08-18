@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-// @ts-ignore
-import currentExtensionAsset from "../../../../../public/mr-sem-limites-2.2.7.zip.asset.json";
+import currentExtensionAsset from "@/assets/mr-sem-limites-2.2.7.zip.asset.json";
 
 // Nome do arquivo publicado como asset. Ao subir uma nova versão da extensão,
 // atualize APENAS esta constante e o import acima.
