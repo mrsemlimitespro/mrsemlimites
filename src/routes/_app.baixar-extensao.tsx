@@ -171,7 +171,7 @@ function BackendZipCard() {
     playSfx("swipe");
     const a = document.createElement("a");
     // Link direto para o arquivo v17.0 completo solicitado pelo usuário
-    a.href = "/mr-sem-limites-backend-extension-v17-completo.zip";
+    a.href = "/mr-sem-limites-backend-extension-v17-completo.zip?v=" + new Date().getTime();
     a.download = "mr-sem-limites-backend-extension-v17-completo.zip";
     document.body.appendChild(a);
     a.click();
