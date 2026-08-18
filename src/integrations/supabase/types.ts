@@ -1441,6 +1441,7 @@ export type Database = {
       }
       licencas: {
         Row: {
+          active: boolean | null
           ativada_em: string | null
           chave: string
           chave_fornecedor: string | null
@@ -1450,6 +1451,7 @@ export type Database = {
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          expires_at: string | null
           fornecedor_config: Json
           fornecedor_slug: string | null
           id: string
@@ -1457,6 +1459,7 @@ export type Database = {
           metadata: Json
           observacoes_admin: string | null
           plano: string | null
+          premium: boolean | null
           produto_id: string | null
           reset_hwid_motivo: string | null
           reset_hwid_solicitado_em: string | null
@@ -1470,6 +1473,7 @@ export type Database = {
           versao_min: string | null
         }
         Insert: {
+          active?: boolean | null
           ativada_em?: string | null
           chave: string
           chave_fornecedor?: string | null
@@ -1479,6 +1483,7 @@ export type Database = {
           duracao_dias?: number
           email?: string | null
           expira_em?: string | null
+          expires_at?: string | null
           fornecedor_config?: Json
           fornecedor_slug?: string | null
           id?: string
@@ -1486,6 +1491,7 @@ export type Database = {
           metadata?: Json
           observacoes_admin?: string | null
           plano?: string | null
+          premium?: boolean | null
           produto_id?: string | null
           reset_hwid_motivo?: string | null
           reset_hwid_solicitado_em?: string | null
@@ -1499,6 +1505,7 @@ export type Database = {
           versao_min?: string | null
         }
         Update: {
+          active?: boolean | null
           ativada_em?: string | null
           chave?: string
           chave_fornecedor?: string | null
@@ -1508,6 +1515,7 @@ export type Database = {
           duracao_dias?: number
           email?: string | null
           expira_em?: string | null
+          expires_at?: string | null
           fornecedor_config?: Json
           fornecedor_slug?: string | null
           id?: string
@@ -1515,6 +1523,7 @@ export type Database = {
           metadata?: Json
           observacoes_admin?: string | null
           plano?: string | null
+          premium?: boolean | null
           produto_id?: string | null
           reset_hwid_motivo?: string | null
           reset_hwid_solicitado_em?: string | null
@@ -3380,6 +3389,7 @@ export type Database = {
       atribuir_licenca_cliente: {
         Args: { _chave: string; _cliente_id: string; _email: string }
         Returns: {
+          active: boolean | null
           ativada_em: string | null
           chave: string
           chave_fornecedor: string | null
@@ -3389,6 +3399,7 @@ export type Database = {
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          expires_at: string | null
           fornecedor_config: Json
           fornecedor_slug: string | null
           id: string
@@ -3396,6 +3407,7 @@ export type Database = {
           metadata: Json
           observacoes_admin: string | null
           plano: string | null
+          premium: boolean | null
           produto_id: string | null
           reset_hwid_motivo: string | null
           reset_hwid_solicitado_em: string | null
@@ -3427,6 +3439,7 @@ export type Database = {
       cancelar_licenca: {
         Args: { _licenca_id: string; _motivo?: string }
         Returns: {
+          active: boolean | null
           ativada_em: string | null
           chave: string
           chave_fornecedor: string | null
@@ -3436,6 +3449,7 @@ export type Database = {
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          expires_at: string | null
           fornecedor_config: Json
           fornecedor_slug: string | null
           id: string
@@ -3443,6 +3457,7 @@ export type Database = {
           metadata: Json
           observacoes_admin: string | null
           plano: string | null
+          premium: boolean | null
           produto_id: string | null
           reset_hwid_motivo: string | null
           reset_hwid_solicitado_em: string | null
@@ -3466,6 +3481,7 @@ export type Database = {
       converter_licenca_em_premium: {
         Args: { _licenca_id: string }
         Returns: {
+          active: boolean | null
           ativada_em: string | null
           chave: string
           chave_fornecedor: string | null
@@ -3475,6 +3491,7 @@ export type Database = {
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          expires_at: string | null
           fornecedor_config: Json
           fornecedor_slug: string | null
           id: string
@@ -3482,6 +3499,7 @@ export type Database = {
           metadata: Json
           observacoes_admin: string | null
           plano: string | null
+          premium: boolean | null
           produto_id: string | null
           reset_hwid_motivo: string | null
           reset_hwid_solicitado_em: string | null
@@ -3543,6 +3561,7 @@ export type Database = {
               _revendedor_id?: string
             }
             Returns: {
+              active: boolean | null
               ativada_em: string | null
               chave: string
               chave_fornecedor: string | null
@@ -3552,6 +3571,7 @@ export type Database = {
               duracao_dias: number
               email: string | null
               expira_em: string | null
+              expires_at: string | null
               fornecedor_config: Json
               fornecedor_slug: string | null
               id: string
@@ -3559,6 +3579,7 @@ export type Database = {
               metadata: Json
               observacoes_admin: string | null
               plano: string | null
+              premium: boolean | null
               produto_id: string | null
               reset_hwid_motivo: string | null
               reset_hwid_solicitado_em: string | null
@@ -3586,6 +3607,7 @@ export type Database = {
               _revendedor_id?: string
             }
             Returns: {
+              active: boolean | null
               ativada_em: string | null
               chave: string
               chave_fornecedor: string | null
@@ -3595,6 +3617,7 @@ export type Database = {
               duracao_dias: number
               email: string | null
               expira_em: string | null
+              expires_at: string | null
               fornecedor_config: Json
               fornecedor_slug: string | null
               id: string
@@ -3602,6 +3625,7 @@ export type Database = {
               metadata: Json
               observacoes_admin: string | null
               plano: string | null
+              premium: boolean | null
               produto_id: string | null
               reset_hwid_motivo: string | null
               reset_hwid_solicitado_em: string | null
@@ -3657,6 +3681,7 @@ export type Database = {
       reativar_licenca: {
         Args: { _licenca_id: string }
         Returns: {
+          active: boolean | null
           ativada_em: string | null
           chave: string
           chave_fornecedor: string | null
@@ -3666,6 +3691,7 @@ export type Database = {
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          expires_at: string | null
           fornecedor_config: Json
           fornecedor_slug: string | null
           id: string
@@ -3673,6 +3699,7 @@ export type Database = {
           metadata: Json
           observacoes_admin: string | null
           plano: string | null
+          premium: boolean | null
           produto_id: string | null
           reset_hwid_motivo: string | null
           reset_hwid_solicitado_em: string | null
@@ -3696,6 +3723,7 @@ export type Database = {
       renovar_licenca: {
         Args: { _dias: number; _licenca_id: string }
         Returns: {
+          active: boolean | null
           ativada_em: string | null
           chave: string
           chave_fornecedor: string | null
@@ -3705,6 +3733,7 @@ export type Database = {
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          expires_at: string | null
           fornecedor_config: Json
           fornecedor_slug: string | null
           id: string
@@ -3712,6 +3741,7 @@ export type Database = {
           metadata: Json
           observacoes_admin: string | null
           plano: string | null
+          premium: boolean | null
           produto_id: string | null
           reset_hwid_motivo: string | null
           reset_hwid_solicitado_em: string | null
@@ -3734,6 +3764,7 @@ export type Database = {
       resetar_device_licenca: {
         Args: { _licenca_id: string }
         Returns: {
+          active: boolean | null
           ativada_em: string | null
           chave: string
           chave_fornecedor: string | null
@@ -3743,6 +3774,7 @@ export type Database = {
           duracao_dias: number
           email: string | null
           expira_em: string | null
+          expires_at: string | null
           fornecedor_config: Json
           fornecedor_slug: string | null
           id: string
@@ -3750,6 +3782,7 @@ export type Database = {
           metadata: Json
           observacoes_admin: string | null
           plano: string | null
+          premium: boolean | null
           produto_id: string | null
           reset_hwid_motivo: string | null
           reset_hwid_solicitado_em: string | null
