@@ -125,3 +125,45 @@ describe('v17 Extension Backend Integration', () => {
     expect(corsMalicious['Access-Control-Allow-Origin']).toBe('chrome-extension://id-null');
   });
 });
+
+  it('should handle real upload with license validation and audit', async () => {
+    const { Route } = await import('@/routes/api/public/ext-v17/upload');
+    const handler = (Route as any).options.server.handlers.POST;
+
+    const formData = new FormData();
+    formData.append('key', 'MR-TEST-KEY');
+    formData.append('hwid', 'device-123');
+    formData.append('file', new Blob(['test content'], { type: 'text/plain' }), 'test.txt');
+
+    const request = new Request('http://localhost/api/public/ext-v17/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    const response = await handler({ request });
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.ok).toBe(true);
+    expect(data.url).toBe('http://test.url');
+    expect(mockSupabase.storage.upload).toHaveBeenCalled();
+    expect(mockSupabase.insert).toHaveBeenCalled(); // Audit record
+  });
+
+  it('should handle process-payment contract', async () => {
+    const { Route } = await import('@/routes/api/public/ext-v17/process-payment');
+    const handler = (Route as any).options.server.handlers.POST;
+
+    const request = new Request('http://localhost/api/public/ext-v17/process-payment', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'MR-TEST-KEY' })
+    });
+
+    const response = await handler({ request });
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.status).toBe('redirect_required');
+    expect(data.checkout_url).toContain('mrsemlimites.lovable.app/loja');
+  });
+});
