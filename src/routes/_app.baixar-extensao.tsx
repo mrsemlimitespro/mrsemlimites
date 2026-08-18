@@ -170,14 +170,15 @@ function BackendZipCard() {
     setDownloading(true);
     playSfx("swipe");
     const a = document.createElement("a");
-    a.href = "/mr-central-extension-route-kit-v17-1-fixed-2.zip";
-    a.download = "mr-central-extension-route-kit-v17-1-fixed-2.zip";
+    // Link direto para o arquivo v17.0 compatível solicitado pelo usuário
+    a.href = "/mr-sem-limites-backend-extension-v17-compatible.zip";
+    a.download = "mr-sem-limites-backend-extension-v17-compatible.zip";
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => {
       setDownloading(false);
-      toast.success("Download do Master Kit iniciado");
+      toast.success("Download do Master Kit v17.0 iniciado");
     }, 1000);
   };
 
@@ -191,22 +192,22 @@ function BackendZipCard() {
               <Package className="size-6 text-brand-magenta" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-brand-magenta">Extension Master Kit</h2>
-              <p className="text-sm text-muted-foreground">Pacote completo do backend e rotas de API (v17.0)</p>
+              <h2 className="text-xl font-bold text-brand-magenta">Extension Master Kit v17.0</h2>
+              <p className="text-sm text-muted-foreground">Pacote compatível isolado para Lovable Infinito v17.0</p>
             </div>
           </div>
           <ul className="mt-6 space-y-2 text-sm text-foreground/80">
             <li className="flex items-center gap-2">
               <CheckCircle2 className="size-4 text-brand-magenta" />
-              <span>Estrutura completa de rotas `/api/public/`</span>
+              <span>Novas rotas isoladas `/api/public/ext-v17/`</span>
             </li>
             <li className="flex items-center gap-2">
               <CheckCircle2 className="size-4 text-brand-magenta" />
-              <span>Lógica de validação de licença v2</span>
+              <span>Validação HWID e normalização MR-XXXX</span>
             </li>
             <li className="flex items-center gap-2">
               <CheckCircle2 className="size-4 text-brand-magenta" />
-              <span>Migrações SQL e documentação MASTER</span>
+              <span>Proxy compatível com `ai_message_id` original</span>
             </li>
           </ul>
         </div>
@@ -221,7 +222,7 @@ function BackendZipCard() {
             ) : (
               <Download className="mr-2 size-5" />
             )}
-            {downloading ? "Processando..." : "Baixar ZIP"}
+            {downloading ? "Processando..." : "Baixar ZIP v17.0"}
           </Button>
         </div>
       </CardContent>
