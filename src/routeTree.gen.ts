@@ -79,6 +79,7 @@ import { Route as ApiPublicExtV17ValidateLicenseRouteImport } from './routes/api
 import { Route as ApiPublicExtV17UploadRouteImport } from './routes/api/public/ext-v17/upload'
 import { Route as ApiPublicExtV17SendCommandRouteImport } from './routes/api/public/ext-v17/send-command'
 import { Route as ApiPublicExtV17SendChatRouteImport } from './routes/api/public/ext-v17/send-chat'
+import { Route as ApiPublicExtV17ProxyCommandRouteImport } from './routes/api/public/ext-v17/proxy-command'
 import { Route as ApiPublicExtV17HeartbeatRouteImport } from './routes/api/public/ext-v17/heartbeat'
 import { Route as ApiPublicExtV17FixStreamRouteImport } from './routes/api/public/ext-v17/fix-stream'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
@@ -450,6 +451,12 @@ const ApiPublicExtV17SendChatRoute = ApiPublicExtV17SendChatRouteImport.update({
   path: '/api/public/ext-v17/send-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicExtV17ProxyCommandRoute =
+  ApiPublicExtV17ProxyCommandRouteImport.update({
+    id: '/api/public/ext-v17/proxy-command',
+    path: '/api/public/ext-v17/proxy-command',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtV17HeartbeatRoute =
   ApiPublicExtV17HeartbeatRouteImport.update({
     id: '/api/public/ext-v17/heartbeat',
@@ -565,6 +572,7 @@ export interface FileRoutesByFullPath {
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
+  '/api/public/ext-v17/proxy-command': typeof ApiPublicExtV17ProxyCommandRoute
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
@@ -645,6 +653,7 @@ export interface FileRoutesByTo {
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
+  '/api/public/ext-v17/proxy-command': typeof ApiPublicExtV17ProxyCommandRoute
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
@@ -728,6 +737,7 @@ export interface FileRoutesById {
   '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/ext-v17/fix-stream': typeof ApiPublicExtV17FixStreamRoute
   '/api/public/ext-v17/heartbeat': typeof ApiPublicExtV17HeartbeatRoute
+  '/api/public/ext-v17/proxy-command': typeof ApiPublicExtV17ProxyCommandRoute
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
@@ -811,6 +821,7 @@ export interface FileRouteTypes {
     | '/api/public/validar-licenca'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
+    | '/api/public/ext-v17/proxy-command'
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
     | '/api/public/ext-v17/upload'
@@ -891,6 +902,7 @@ export interface FileRouteTypes {
     | '/api/public/validar-licenca'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
+    | '/api/public/ext-v17/proxy-command'
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
     | '/api/public/ext-v17/upload'
@@ -973,6 +985,7 @@ export interface FileRouteTypes {
     | '/api/public/validar-licenca'
     | '/api/public/ext-v17/fix-stream'
     | '/api/public/ext-v17/heartbeat'
+    | '/api/public/ext-v17/proxy-command'
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
     | '/api/public/ext-v17/upload'
@@ -1013,6 +1026,7 @@ export interface RootRouteChildren {
   ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
   ApiPublicExtV17FixStreamRoute: typeof ApiPublicExtV17FixStreamRoute
   ApiPublicExtV17HeartbeatRoute: typeof ApiPublicExtV17HeartbeatRoute
+  ApiPublicExtV17ProxyCommandRoute: typeof ApiPublicExtV17ProxyCommandRoute
   ApiPublicExtV17SendChatRoute: typeof ApiPublicExtV17SendChatRoute
   ApiPublicExtV17SendCommandRoute: typeof ApiPublicExtV17SendCommandRoute
   ApiPublicExtV17UploadRoute: typeof ApiPublicExtV17UploadRoute
@@ -1533,6 +1547,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtV17SendChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext-v17/proxy-command': {
+      id: '/api/public/ext-v17/proxy-command'
+      path: '/api/public/ext-v17/proxy-command'
+      fullPath: '/api/public/ext-v17/proxy-command'
+      preLoaderRoute: typeof ApiPublicExtV17ProxyCommandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext-v17/heartbeat': {
       id: '/api/public/ext-v17/heartbeat'
       path: '/api/public/ext-v17/heartbeat'
@@ -1740,6 +1761,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
   ApiPublicExtV17FixStreamRoute: ApiPublicExtV17FixStreamRoute,
   ApiPublicExtV17HeartbeatRoute: ApiPublicExtV17HeartbeatRoute,
+  ApiPublicExtV17ProxyCommandRoute: ApiPublicExtV17ProxyCommandRoute,
   ApiPublicExtV17SendChatRoute: ApiPublicExtV17SendChatRoute,
   ApiPublicExtV17SendCommandRoute: ApiPublicExtV17SendCommandRoute,
   ApiPublicExtV17UploadRoute: ApiPublicExtV17UploadRoute,
