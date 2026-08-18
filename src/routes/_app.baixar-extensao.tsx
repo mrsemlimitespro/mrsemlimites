@@ -170,15 +170,15 @@ function BackendZipCard() {
     setDownloading(true);
     playSfx("swipe");
     const a = document.createElement("a");
-    // Link direto para o arquivo v17.0 compatível solicitado pelo usuário
-    a.href = "/mr-sem-limites-backend-extension-v17-compatible.zip";
-    a.download = "mr-sem-limites-backend-extension-v17-compatible.zip";
+    // Link direto para o arquivo v17.0 completo solicitado pelo usuário
+    a.href = "/mr-sem-limites-backend-extension-v17-completo.zip";
+    a.download = "mr-sem-limites-backend-extension-v17-completo.zip";
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => {
       setDownloading(false);
-      toast.success("Download do Master Kit v17.0 iniciado");
+      toast.success("Download do Backend Completo v17.0 iniciado");
     }, 1000);
   };
 
@@ -192,22 +192,26 @@ function BackendZipCard() {
               <Package className="size-6 text-brand-magenta" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-brand-magenta">Extension Master Kit v17.0</h2>
-              <p className="text-sm text-muted-foreground">Pacote compatível isolado para Lovable Infinito v17.0</p>
+              <h2 className="text-xl font-bold text-brand-magenta">Backend Completo v17.0</h2>
+              <p className="text-sm text-muted-foreground">Pacote funcional completo com proxy, upload e auditoria</p>
             </div>
           </div>
           <ul className="mt-6 space-y-2 text-sm text-foreground/80">
             <li className="flex items-center gap-2">
               <CheckCircle2 className="size-4 text-brand-magenta" />
-              <span>Novas rotas isoladas `/api/public/ext-v17/`</span>
+              <span>Rotas isoladas em `/api/public/ext-v17/` (Completo)</span>
             </li>
             <li className="flex items-center gap-2">
               <CheckCircle2 className="size-4 text-brand-magenta" />
-              <span>Validação HWID e normalização MR-XXXX</span>
+              <span>Proxy real para Lovable preservando `ai_message_id`</span>
             </li>
             <li className="flex items-center gap-2">
               <CheckCircle2 className="size-4 text-brand-magenta" />
-              <span>Proxy compatível com `ai_message_id` original</span>
+              <span>Sistema de Upload real via Storage Supabase</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle2 className="size-4 text-brand-magenta" />
+              <span>Tabelas de Auditoria e Sessão (`ext_v17_*`)</span>
             </li>
           </ul>
         </div>
@@ -222,7 +226,7 @@ function BackendZipCard() {
             ) : (
               <Download className="mr-2 size-5" />
             )}
-            {downloading ? "Processando..." : "Baixar ZIP v17.0"}
+            {downloading ? "Processando..." : "Baixar Backend v17.0"}
           </Button>
         </div>
       </CardContent>
