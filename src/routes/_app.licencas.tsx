@@ -126,11 +126,12 @@ const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
   { id: "1d", label: "1 dia", sub: "premium" },
   { id: "2d", label: "2 dias", sub: "premium" },
   { id: "3d", label: "3 dias", sub: "premium" },
-  { id: "30d", label: "30 dias", sub: "premium" },
+  { id: "30d", label: "Mensal", sub: "premium" },
   { id: "60d", label: "60 dias", sub: "premium" },
-  { id: "90d", label: "90 dias", sub: "premium" },
-  { id: "180d", label: "180 dias", sub: "premium" },
-  { id: "1ano", label: "1 ano", sub: "premium" },
+  { id: "90d", label: "Trimestral", sub: "premium" },
+  { id: "180d", label: "Semestral", sub: "premium" },
+  { id: "1ano", label: "Anual", sub: "premium" },
+  { id: "outros", label: "Outros", sub: "premium" },
 ];
 
 function bucketOfRow(row: LicencaRow): Bucket {
