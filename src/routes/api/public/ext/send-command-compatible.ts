@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { normalizeLicenseKey, isValidLicenseFormat } from "@/lib/licenca/utils";
 
-const LOVABLE_API_URL = "https://api.lovable.dev/v1/send-command";
+const LOVABLE_BASE_URL = "https://api.lovable.dev";
 
 const getCorsHeaders = (request: Request) => {
   const origin = request.headers.get("origin");
@@ -122,50 +122,84 @@ export const Route = createFileRoute("/api/public/ext/send-command-compatible")(
           );
         }
 
-        // Montagem do payload para o Lovable (preservando campos)
-        const lovablePayload = {
-          message: body.message || body.mensagem,
-          projectId: projectId,
-          token: token,
-          git_sha: body.git_sha,
-          browser_session_id: body.browser_session_id || body.lovable_browser_session_id,
-          attachments: body.attachments || [],
-          fast_ack: body.fast_ack ?? true,
-          lastPayload: body.lastPayload || {},
-          client_id: body.client_id,
-          integration_metadata: body.integration_metadata || {},
+        // Montagem do payload original para o motor do Lovable
+        const chatUrl = `${LOVABLE_BASE_URL}/projects/${projectId}/chat`;
+        const rawToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+
+        // Se o lastPayload vier preenchido, usamos ele como base para garantir
+        // que todos os metadados do motor (threads, elementos selecionados, etc) sejam preservados.
+        const motorPayload = body.lastPayload && typeof body.lastPayload === 'object' 
+          ? { ...body.lastPayload } 
+          : {};
+
+        // Garantimos campos obrigatórios e fallback para prompt/files
+        const prompt = body.message || body.mensagem || motorPayload.message;
+        const chatPayload = {
+          id: motorPayload.id || `umsg_${crypto.randomUUID()}`,
+          message: prompt,
+          files: body.attachments || motorPayload.files || [],
+          selected_elements: motorPayload.selected_elements || [],
+          chat_only: motorPayload.chat_only ?? false,
+          view: motorPayload.view || "preview",
+          view_description: motorPayload.view_description || "The user is currently viewing the preview.",
+          optimisticImageUrls: motorPayload.optimisticImageUrls || [],
+          ai_message_id: motorPayload.ai_message_id || `aimsg_${crypto.randomUUID()}`,
+          thread_id: body.thread_id || motorPayload.thread_id || "main",
+          current_page: motorPayload.current_page || "/",
+          current_viewport_width: motorPayload.current_viewport_width || 648,
+          current_viewport_height: motorPayload.current_viewport_height || 549,
+          current_viewport_dpr: motorPayload.current_viewport_dpr || 1,
+          model: motorPayload.model || null,
+          session_replay: motorPayload.session_replay || "[]",
+          ...motorPayload // Preserva outros campos extras do motor
         };
 
         try {
-          const startTime = Date.now();
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+          const timeoutId = setTimeout(() => controller.abort(), 60000);
 
-          const lovableResponse = await fetch(LOVABLE_API_URL, {
+          const lovableResponse = await fetch(chatUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+              "Authorization": `Bearer ${rawToken}`,
+              "Accept": "*/*",
+              "x-lovable-project-id": projectId
             },
-            body: JSON.stringify(lovablePayload),
+            body: JSON.stringify(chatPayload),
             signal: controller.signal
           });
           
           clearTimeout(timeoutId);
 
-          const result = await lovableResponse.json();
+          const status = lovableResponse.status;
+          const isSuccess = status >= 200 && status < 300;
+          
+          let resultText = "";
+          try {
+            resultText = await lovableResponse.text();
+          } catch (e) {
+            resultText = "No response body";
+          }
 
-          // Atualiza último acesso
+          let resultJson: any = null;
+          try {
+            resultJson = JSON.parse(resultText);
+          } catch (e) {
+            // Not JSON
+          }
+
+          // Atualiza último acesso se a chamada ao Lovable não falhou miseravelmente (ex: 502/timeout)
           await supabaseAdmin.from("licencas").update({ ultimo_acesso: new Date().toISOString() }).eq("id", lic.id);
 
           return new Response(JSON.stringify({
-            ...result,
-            success: true,
-            ok: true,
-            status: 200,
-            cmd_count: result.cmd_count ?? 0
+            ...(resultJson || { message: resultText }),
+            success: isSuccess,
+            ok: isSuccess,
+            status: status,
+            proxy: "mr-central"
           }), {
-            status: 200,
+            status: status,
             headers: cors
           });
 
