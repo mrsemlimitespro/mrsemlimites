@@ -38,9 +38,11 @@ export const Route = createFileRoute("/api/public/ext-v17/send-command")({
           const lovableResp = await proxyLovableCommand(projectId, token, motorPayload, "chat");
           
           // Repassa headers relevantes (especialmente content-type para streams se houver)
-          const respHeaders = { ...cors };
+          const respHeaders = new Headers();
+          Object.entries(cors).forEach(([k, v]) => respHeaders.set(k, v));
+          
           const lovContentType = lovableResp.headers.get("content-type");
-          if (lovContentType) respHeaders["Content-Type"] = lovContentType;
+          if (lovContentType) respHeaders.set("Content-Type", lovContentType);
 
           // Se for stream, repassa o body diretamente
           if (lovContentType?.includes("text/event-stream")) {
