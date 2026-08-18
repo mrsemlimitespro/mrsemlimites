@@ -52,7 +52,7 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
         }
 
         const email = String(body?.email ?? "").trim();
-        const chave = normalizeLicenseKey(body?.chave || body?.license_key);
+        const chave = normalizeLicenseKey(body?.chave || body?.key || body?.license_key || body?.licenca);
         const device_id = body?.device_id ? String(body.device_id).trim() : (body?.hwid ? String(body.hwid).trim() : null);
         const device_nome = body?.device_nome ? String(body.device_nome).slice(0, 120) : null;
         const versao = body?.versao ? String(body.versao).slice(0, 40) : null;
