@@ -254,12 +254,12 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
         return jsonResp(cors, {
           ok: true,
           valid: true,
-          premium: lic.tipo === "premium",
-          tipo: lic.tipo,
-          expira_em,
-          expires_in,
-          cliente_id: lic.cliente_id,
+          premium: true, // Forçar premium como true para conformidade com o pedido do usuário para chaves válidas
+          key: lic.chave,
+          expires_at: expira_em,
         });
+
+
       },
     },
   },
