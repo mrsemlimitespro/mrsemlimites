@@ -24,7 +24,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/inject-config
         } catch {
           /* noop */
         }
-        const key = String(body?.key ?? "").trim();
+        const key = String(body?.key || body?.license_key || body?.chave || "").trim();
         const email = body?.email ? String(body.email).trim() : null;
         // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
         // Sem alterar validação, config retornada ou reason codes. Comportamento inalterado se ausente.
