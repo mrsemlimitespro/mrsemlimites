@@ -39,9 +39,11 @@ export const Route = createFileRoute("/api/public/ext-v17/fix-stream")({
             return new Response(errorText, { status: lovableResp.status, headers: cors });
           }
 
-          const respHeaders = { ...cors };
+          const respHeaders = new Headers();
+          Object.entries(cors).forEach(([k, v]) => respHeaders.set(k, v));
+          
           const lovContentType = lovableResp.headers.get("content-type");
-          if (lovContentType) respHeaders["Content-Type"] = lovContentType;
+          if (lovContentType) respHeaders.set("Content-Type", lovContentType);
 
           // Repassa o stream real
           return new Response(lovableResp.body, { 
