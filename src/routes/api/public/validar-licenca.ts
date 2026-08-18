@@ -255,11 +255,12 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           ok: true,
           valid: true,
           premium: lic.tipo === "premium",
-          tipo: lic.tipo,
-          expira_em,
+          key: lic.chave,
+          expires_at: expira_em,
           expires_in,
           cliente_id: lic.cliente_id,
         });
+
       },
     },
   },
