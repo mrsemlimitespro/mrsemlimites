@@ -13,19 +13,14 @@ export function normalizeLicenseKey(input: string | null | undefined): string {
 
 /**
  * Valida o formato de uma chave de licença.
- * Aceita:
- * - Formato MR: MR-XXXX-XXXX-XXXX (Regex: /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2}$/)
- * - Formato Tradicional: XXXXX-XXXXX-XXXXX-XXXXX (Regex: /^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){3}$/)
+ * Aceita exclusivamente o formato MR: MR-XXXX-XXXX-XXXX
  */
 export function isValidLicenseFormat(key: string): boolean {
-  const mrRegex = /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2}$/;
-  const traditionalRegex = /^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){3}$/;
-  return mrRegex.test(key) || traditionalRegex.test(key);
+  return /^MR-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(key);
 }
 
 /**
  * Regex para o gerador MR produzir exatamente MR-XXXX-XXXX-XXXX
- * Regex para o gerador tradicional produzir exatamente XXXXX-XXXXX-XXXXX-XXXXX
  */
-export const MR_KEY_REGEX = /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2}$/;
-export const TRADITIONAL_KEY_REGEX = /^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){3}$/;
+export const MR_KEY_REGEX = /^MR-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+
