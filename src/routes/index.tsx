@@ -1,5 +1,5 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/" as any)({
-  component: () => <Navigate to="/_app/" replace />,
+  component: () => <Navigate to={"/_app/" as any} replace />,
 });
