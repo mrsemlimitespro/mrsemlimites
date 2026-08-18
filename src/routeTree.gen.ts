@@ -73,7 +73,6 @@ import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/publi
 import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
 import { Route as ApiPublicHooksEmailWorkerRouteImport } from './routes/api/public/hooks/email-worker'
 import { Route as ApiPublicExtValidateLicenseRouteImport } from './routes/api/public/ext/validate-license'
-import { Route as ApiPublicExtSendCommandCompatibleRouteImport } from './routes/api/public/ext/send-command-compatible'
 import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public/ext/send-command'
 import { Route as ApiPublicExtV17ValidateLicenseRouteImport } from './routes/api/public/ext-v17/validate-license'
 import { Route as ApiPublicExtV17UploadRouteImport } from './routes/api/public/ext-v17/upload'
@@ -423,12 +422,6 @@ const ApiPublicExtValidateLicenseRoute =
     path: '/api/public/ext/validate-license',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicExtSendCommandCompatibleRoute =
-  ApiPublicExtSendCommandCompatibleRouteImport.update({
-    id: '/api/public/ext/send-command-compatible',
-    path: '/api/public/ext/send-command-compatible',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiPublicExtSendCommandRoute = ApiPublicExtSendCommandRouteImport.update({
   id: '/api/public/ext/send-command',
   path: '/api/public/ext/send-command',
@@ -618,7 +611,6 @@ export interface FileRoutesByFullPath {
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
-  '/api/public/ext/send-command-compatible': typeof ApiPublicExtSendCommandCompatibleRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
@@ -704,7 +696,6 @@ export interface FileRoutesByTo {
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
-  '/api/public/ext/send-command-compatible': typeof ApiPublicExtSendCommandCompatibleRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
@@ -793,7 +784,6 @@ export interface FileRoutesById {
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
-  '/api/public/ext/send-command-compatible': typeof ApiPublicExtSendCommandCompatibleRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
   '/api/public/licenca/config': typeof ApiPublicLicencaConfigRoute
@@ -882,7 +872,6 @@ export interface FileRouteTypes {
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/ext/send-command'
-    | '/api/public/ext/send-command-compatible'
     | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
@@ -968,7 +957,6 @@ export interface FileRouteTypes {
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/ext/send-command'
-    | '/api/public/ext/send-command-compatible'
     | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
@@ -1056,7 +1044,6 @@ export interface FileRouteTypes {
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/ext/send-command'
-    | '/api/public/ext/send-command-compatible'
     | '/api/public/ext/validate-license'
     | '/api/public/hooks/email-worker'
     | '/api/public/licenca/config'
@@ -1102,7 +1089,6 @@ export interface RootRouteChildren {
   ApiPublicExtV17UploadRoute: typeof ApiPublicExtV17UploadRoute
   ApiPublicExtV17ValidateLicenseRoute: typeof ApiPublicExtV17ValidateLicenseRoute
   ApiPublicExtSendCommandRoute: typeof ApiPublicExtSendCommandRoute
-  ApiPublicExtSendCommandCompatibleRoute: typeof ApiPublicExtSendCommandCompatibleRoute
   ApiPublicExtValidateLicenseRoute: typeof ApiPublicExtValidateLicenseRoute
   ApiPublicHooksEmailWorkerRoute: typeof ApiPublicHooksEmailWorkerRoute
   ApiPublicLicencaConfigRoute: typeof ApiPublicLicencaConfigRoute
@@ -1575,13 +1561,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtValidateLicenseRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/ext/send-command-compatible': {
-      id: '/api/public/ext/send-command-compatible'
-      path: '/api/public/ext/send-command-compatible'
-      fullPath: '/api/public/ext/send-command-compatible'
-      preLoaderRoute: typeof ApiPublicExtSendCommandCompatibleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/ext/send-command': {
       id: '/api/public/ext/send-command'
       path: '/api/public/ext/send-command'
@@ -1878,8 +1857,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicExtV17UploadRoute: ApiPublicExtV17UploadRoute,
   ApiPublicExtV17ValidateLicenseRoute: ApiPublicExtV17ValidateLicenseRoute,
   ApiPublicExtSendCommandRoute: ApiPublicExtSendCommandRoute,
-  ApiPublicExtSendCommandCompatibleRoute:
-    ApiPublicExtSendCommandCompatibleRoute,
   ApiPublicExtValidateLicenseRoute: ApiPublicExtValidateLicenseRoute,
   ApiPublicHooksEmailWorkerRoute: ApiPublicHooksEmailWorkerRoute,
   ApiPublicLicencaConfigRoute: ApiPublicLicencaConfigRoute,
