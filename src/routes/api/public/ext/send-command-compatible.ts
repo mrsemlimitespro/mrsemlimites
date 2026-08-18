@@ -126,32 +126,29 @@ export const Route = createFileRoute("/api/public/ext/send-command-compatible")(
         const chatUrl = `${LOVABLE_BASE_URL}/projects/${projectId}/chat`;
         const rawToken = token.startsWith("Bearer ") ? token.substring(7) : token;
 
-        // Se o lastPayload vier preenchido, usamos ele como base para garantir
-        // que todos os metadados do motor (threads, elementos selecionados, etc) sejam preservados.
-        const motorPayload = body.lastPayload && typeof body.lastPayload === 'object' 
-          ? { ...body.lastPayload } 
+        // 3. Montagem do payload seguro para o motor do Lovable
+        const motorPayload = body.lastPayload && typeof body.lastPayload === "object"
+          ? { ...body.lastPayload }
           : {};
 
-        // Garantimos campos obrigatórios e fallback para prompt/files
-        const prompt = body.message || body.mensagem || motorPayload.message;
         const chatPayload = {
+          ...motorPayload,
           id: motorPayload.id || `umsg_${crypto.randomUUID()}`,
-          message: prompt,
-          files: body.attachments || motorPayload.files || [],
-          selected_elements: motorPayload.selected_elements || [],
+          message: motorPayload.message || body.message || body.mensagem || "",
+          files: motorPayload.files ?? [],
+          selected_elements: motorPayload.selected_elements ?? [],
           chat_only: motorPayload.chat_only ?? false,
-          view: motorPayload.view || "preview",
-          view_description: motorPayload.view_description || "The user is currently viewing the preview.",
-          optimisticImageUrls: motorPayload.optimisticImageUrls || [],
+          view: motorPayload.view ?? "preview",
+          view_description: motorPayload.view_description ?? "The user is currently viewing the preview.",
+          optimisticImageUrls: motorPayload.optimisticImageUrls ?? [],
           ai_message_id: motorPayload.ai_message_id || `aimsg_${crypto.randomUUID()}`,
-          thread_id: body.thread_id || motorPayload.thread_id || "main",
-          current_page: motorPayload.current_page || "/",
-          current_viewport_width: motorPayload.current_viewport_width || 648,
-          current_viewport_height: motorPayload.current_viewport_height || 549,
-          current_viewport_dpr: motorPayload.current_viewport_dpr || 1,
-          model: motorPayload.model || null,
-          session_replay: motorPayload.session_replay || "[]",
-          ...motorPayload // Preserva outros campos extras do motor
+          thread_id: motorPayload.thread_id || body.thread_id || "main",
+          current_page: motorPayload.current_page ?? "/",
+          current_viewport_width: motorPayload.current_viewport_width ?? 648,
+          current_viewport_height: motorPayload.current_viewport_height ?? 549,
+          current_viewport_dpr: motorPayload.current_viewport_dpr ?? 1,
+          model: motorPayload.model ?? null,
+          session_replay: motorPayload.session_replay ?? "[]",
         };
 
         try {
@@ -164,7 +161,10 @@ export const Route = createFileRoute("/api/public/ext/send-command-compatible")(
               "Content-Type": "application/json",
               "Authorization": `Bearer ${rawToken}`,
               "Accept": "*/*",
-              "x-lovable-project-id": projectId
+              "Origin": "https://lovable.dev",
+              "Referer": "https://lovable.dev/",
+              "x-lovable-project-id": projectId,
+              "User-Agent": "Mozilla/5.0 Chrome Extension",
             },
             body: JSON.stringify(chatPayload),
             signal: controller.signal
