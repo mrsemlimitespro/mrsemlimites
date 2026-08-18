@@ -1170,6 +1170,147 @@ export type Database = {
           },
         ]
       }
+      ext_v17_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          ip: string | null
+          licenca_id: string | null
+          method: string
+          path: string
+          payload: Json | null
+          status_code: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          ip?: string | null
+          licenca_id?: string | null
+          method: string
+          path: string
+          payload?: Json | null
+          status_code?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          ip?: string | null
+          licenca_id?: string | null
+          method?: string
+          path?: string
+          payload?: Json | null
+          status_code?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ext_v17_requests_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ext_v17_requests_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ext_v17_sessions: {
+        Row: {
+          created_at: string | null
+          device_id: string
+          id: string
+          ip: string | null
+          last_heartbeat: string | null
+          licenca_id: string | null
+          session_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_id: string
+          id?: string
+          ip?: string | null
+          last_heartbeat?: string | null
+          licenca_id?: string | null
+          session_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_id?: string
+          id?: string
+          ip?: string | null
+          last_heartbeat?: string | null
+          licenca_id?: string | null
+          session_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ext_v17_sessions_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ext_v17_sessions_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ext_v17_uploads: {
+        Row: {
+          content_type: string | null
+          created_at: string | null
+          file_name: string
+          file_path: string
+          id: string
+          licenca_id: string | null
+          size_bytes: number | null
+        }
+        Insert: {
+          content_type?: string | null
+          created_at?: string | null
+          file_name: string
+          file_path: string
+          id?: string
+          licenca_id?: string | null
+          size_bytes?: number | null
+        }
+        Update: {
+          content_type?: string | null
+          created_at?: string | null
+          file_name?: string
+          file_path?: string
+          id?: string
+          licenca_id?: string | null
+          size_bytes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ext_v17_uploads_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ext_v17_uploads_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       extensao_configs: {
         Row: {
           created_at: string
