@@ -16,8 +16,15 @@ vi.mock('@/integrations/supabase/client.server', () => ({
   supabaseAdmin: mockSupabase
 }));
 
-// Mock do fetch global para testar proxy
-global.fetch = vi.fn();
+// Mock normalizeLicenseKey to match logic in auth.server.ts
+vi.mock("@/lib/licenca/utils", () => ({
+  normalizeLicenseKey: vi.fn((k) => k),
+  isValidLicenseFormat: vi.fn(() => true),
+}));
+
+// Mock global fetch properly for Vitest
+const fetchMock = vi.fn();
+global.fetch = fetchMock;
 
 describe('v17 Extension Backend Integration', () => {
   beforeEach(() => {
