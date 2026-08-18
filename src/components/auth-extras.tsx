@@ -48,17 +48,26 @@ export function SocialSignIn({ mode = "signin" }: { mode?: "signin" | "signup" }
   async function go(provider: "google" | "apple") {
     setBusy(provider);
     try {
+      console.log(`Iniciando OAuth com ${provider}...`);
       const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: window.location.origin,
+        redirect_uri: `${window.location.origin}/auth/callback`,
       });
+      
+      console.log("Resultado OAuth:", result);
+      
       if (result.error) {
         toast.error(result.error.message ?? "Falha no login social");
         setBusy(null);
         return;
       }
+      
+      // No Lovable Cloud, o redirecionamento é automático pelo navegador para o provedor
       if (result.redirected) return;
+      
+      // Caso não redirecione (raro em fluxos OAuth puros de client), tentamos forçar
       window.location.href = "/";
     } catch (err) {
+      console.error("Erro no SocialSignIn:", err);
       toast.error(err instanceof Error ? err.message : "Falha no login social");
       setBusy(null);
     }
