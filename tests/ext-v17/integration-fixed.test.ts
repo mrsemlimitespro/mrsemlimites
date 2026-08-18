@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mocks simples para simular o ambiente
+// Supabase chain mocking helper
 const mockSupabase = {
   from: vi.fn().mockReturnThis(),
   select: vi.fn().mockReturnThis(),
@@ -10,6 +10,11 @@ const mockSupabase = {
   upsert: vi.fn().mockReturnThis(),
   insert: vi.fn().mockReturnThis(),
   rpc: vi.fn().mockResolvedValue({}),
+  storage: {
+    from: vi.fn().mockReturnThis(),
+    upload: vi.fn().mockResolvedValue({ data: {}, error: null }),
+    getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'http://test.url' } })
+  }
 };
 
 vi.mock('@/integrations/supabase/client.server', () => ({
@@ -21,21 +26,43 @@ vi.mock("@/lib/licenca/utils", () => ({
   isValidLicenseFormat: vi.fn(() => true),
 }));
 
+// Use a more robust way to mock fetch for Vitest
 const fetchMock = vi.fn();
-global.fetch = fetchMock;
+vi.stubGlobal('fetch', fetchMock);
 
 describe('v17 Extension Backend Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset Supabase chain
+    mockSupabase.from.mockReturnThis();
+    mockSupabase.select.mockReturnThis();
+    mockSupabase.eq.mockReturnThis();
+    
     // Default valid license mock
     mockSupabase.maybeSingle.mockResolvedValue({ 
-      data: { id: 'test-lic-id', status: 'active', email: 'test@example.com', expira_em: null }, 
+      data: { id: 'test-lic-id', status: 'active', email: 'test@example.com', expira_em: null, max_dispositivos: 5 }, 
       error: null 
+    });
+    
+    // Mock devices check (empty)
+    mockSupabase.select.mockImplementation((columns) => {
+        if (columns === 'device_id') {
+            return { eq: () => Promise.resolve({ data: [], error: null }) };
+        }
+        return mockSupabase;
+    });
+
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      text: () => Promise.resolve(JSON.stringify({ text: 'Lovable Response' })),
+      json: () => Promise.resolve({ text: 'Lovable Response' }),
+      body: new ReadableStream()
     });
   });
 
   it('should preserve ai_message_id during send-command proxy', async () => {
-    // Payload da extensão com ai_message_id no lastPayload
     const payload = {
       projectId: 'proj-123',
       token: 'valid-token',
@@ -45,14 +72,6 @@ describe('v17 Extension Backend Integration', () => {
         thread_id: 'thread-456'
       }
     };
-
-    // Mock do retorno do Lovable
-    fetchMock.mockResolvedValue({
-      ok: true,
-      status: 200,
-      headers: new Headers({ 'content-type': 'application/json' }),
-      text: () => Promise.resolve(JSON.stringify({ text: 'Lovable Response' }))
-    });
 
     const { Route } = await import('@/routes/api/public/ext-v17/send-command');
     const handler = (Route as any).options.server.handlers.POST;
@@ -64,7 +83,6 @@ describe('v17 Extension Backend Integration', () => {
 
     await handler({ request });
 
-    // Verificar se o fetch para o Lovable preservou o ai_message_id
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('api.lovable.dev/projects/proj-123/chat'),
       expect.objectContaining({
@@ -110,5 +128,21 @@ describe('v17 Extension Backend Integration', () => {
     const reqMalicious = new Request('http://localhost', { headers: { origin: 'https://malicious.com' } });
     const corsMalicious = getCorsHeaders(reqMalicious);
     expect(corsMalicious['Access-Control-Allow-Origin']).toBe('chrome-extension://id-null');
+  });
+
+  it('should validate license and return real licenca_id', async () => {
+    const { Route } = await import('@/routes/api/public/ext-v17/validate-license');
+    const handler = (Route as any).options.server.handlers.POST;
+
+    const request = new Request('http://localhost/api/public/ext-v17/validate-license', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'MR-1234-5678-9012', hwid: 'device-abc' })
+    });
+
+    const response = await handler({ request });
+    const data = await response.json();
+    
+    expect(data.ok).toBe(true);
+    expect(data.licenca_id).toBe('test-lic-id');
   });
 });
