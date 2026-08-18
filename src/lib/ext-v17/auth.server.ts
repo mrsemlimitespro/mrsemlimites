@@ -5,10 +5,11 @@ export const getCorsHeaders = (request: Request) => {
   const isAllowed = origin?.startsWith("chrome-extension://") || origin?.includes("localhost");
   
   return {
-    "Access-Control-Allow-Origin": isAllowed ? origin! : "*",
+    "Access-Control-Allow-Origin": isAllowed ? origin! : "chrome-extension://id-null", // Never use * for authenticated routes
     "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
     "Access-Control-Allow-Headers": "content-type, authorization, x-lovable-project-id, x-extension-trace-id",
     "Access-Control-Max-Age": "86400",
+    "Access-Control-Allow-Credentials": "true",
   };
 };
 
@@ -17,6 +18,7 @@ export type LicenseValidationResult = {
   valid: boolean;
   status: "active" | "expired" | "revoked" | "not_found" | "invalid_format" | "hwid_mismatch" | "session_conflict";
   license_key: string;
+  licenca_id?: string; // UUID from public.licencas
   user_name?: string;
   expires_at?: string;
   session_id?: string;
@@ -118,6 +120,7 @@ export async function validateExtensionLicense(
     valid: true,
     status: "active",
     license_key: key,
+    licenca_id: lic.id,
     user_name: lic.email?.split('@')[0] || "Usuário MR",
     expires_at: lic.expira_em || undefined,
     session_id: finalSessionId,

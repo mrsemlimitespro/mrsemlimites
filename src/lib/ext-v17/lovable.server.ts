@@ -17,31 +17,33 @@ export type LovableChatPayload = {
   [key: string]: any;
 };
 
-export async function proxyLovableChat(
-  projectId: string,
-  token: string,
-  lastPayload: LovableChatPayload
-) {
-  const url = `${LOVABLE_BASE_URL}/projects/${projectId}/chat`;
+function getLovableHeaders(projectId: string, token: string) {
   const rawToken = token.replace(/^Bearer\s+/i, "");
-
-  // Rule: Preserve all fields from lastPayload
-  // ai_message_id must be preserved if it exists
-  
-  const headers: Record<string, string> = {
+  return {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${rawToken}`,
-    "Accept": "*/*",
+    "Accept": "text/event-stream, application/json",
     "Origin": "https://lovable.dev",
     "Referer": "https://lovable.dev/",
     "x-lovable-project-id": projectId,
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
   };
+}
+
+export async function proxyLovableChat(
+  projectId: string,
+  token: string,
+  payload: LovableChatPayload
+) {
+  const url = `${LOVABLE_BASE_URL}/projects/${projectId}/chat`;
+  
+  // Rule: Preserve all fields, especially ai_message_id if it exists
+  const headers = getLovableHeaders(projectId, token);
 
   const response = await fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify(lastPayload),
+    body: JSON.stringify(payload),
   });
 
   return response;
@@ -50,22 +52,36 @@ export async function proxyLovableChat(
 export async function proxyLovableCommand(
   projectId: string,
   token: string,
-  payload: any
+  payload: any,
+  endpoint: string = "chat"
 ) {
-  // O motor v17.0 às vezes usa send-command para operações que também batem no /chat
-  // ou em rotas específicas se documentado. Por padrão, usamos a mesma lógica de transporte.
-  const url = `${LOVABLE_BASE_URL}/projects/${projectId}/chat`;
-  const rawToken = token.replace(/^Bearer\s+/i, "");
+  // O motor v17.0 pode usar endpoints específicos se necessário
+  const url = `${LOVABLE_BASE_URL}/projects/${projectId}/${endpoint}`;
+  const headers = getLovableHeaders(projectId, token);
 
   const response = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${rawToken}`,
-      "x-lovable-project-id": projectId,
-      "Origin": "https://lovable.dev",
-      "Referer": "https://lovable.dev/",
-    },
+    headers,
+    body: JSON.stringify(payload),
+  });
+
+  return response;
+}
+
+export async function proxyLovableStream(
+  projectId: string,
+  token: string,
+  payload: any,
+  endpoint: string = "chat"
+) {
+  const url = `${LOVABLE_BASE_URL}/projects/${projectId}/${endpoint}`;
+  const headers = getLovableHeaders(projectId, token);
+  // Garante Accept para stream
+  headers["Accept"] = "text/event-stream";
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
     body: JSON.stringify(payload),
   });
 

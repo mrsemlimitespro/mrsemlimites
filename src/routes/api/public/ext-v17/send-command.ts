@@ -22,28 +22,41 @@ export const Route = createFileRoute("/api/public/ext-v17/send-command")({
           return new Response(JSON.stringify(authResult), { status: 403, headers: cors });
         }
 
-        const { projectId, token, payload } = body;
-        if (!projectId || !token || !payload) {
-          return new Response(JSON.stringify({ ok: false, error: "missing_params" }), { status: 400, headers: cors });
+        const projectId = body.projectId || body.project_id;
+        const token = body.token || body.Authorization || request.headers.get("Authorization");
+        
+        // Priority mandatory: motorPayload = body.lastPayload ?? body.payload ?? body
+        const motorPayload = body.lastPayload ?? body.payload ?? body;
+
+        if (!projectId || !token || !motorPayload) {
+          return new Response(JSON.stringify({ ok: false, error: "missing_params", details: "projectId, token or payload missing" }), { status: 400, headers: cors });
         }
 
         try {
-          // send-command-v8 geralmente é um alias para operações de edição no endpoint /chat
-          const lovableResp = await proxyLovableCommand(projectId, token, payload);
-          const resultText = await lovableResp.text();
+          // Encaminha uma única requisição real para o Lovable
+          // v17 costuma usar /chat para a maioria dos comandos
+          const lovableResp = await proxyLovableCommand(projectId, token, motorPayload, "chat");
           
-          let resultJson: any;
-          try {
-            resultJson = JSON.parse(resultText);
-          } catch {
-            resultJson = { message: resultText };
+          // Repassa headers relevantes (especialmente content-type para streams se houver)
+          const respHeaders = new Headers();
+          Object.entries(cors).forEach(([k, v]) => respHeaders.set(k, v));
+          
+          const lovContentType = lovableResp.headers.get("content-type");
+          if (lovContentType) respHeaders.set("Content-Type", lovContentType);
+
+          // Se for stream, repassa o body diretamente
+          if (lovContentType?.includes("text/event-stream")) {
+            return new Response(lovableResp.body, { 
+              status: lovableResp.status, 
+              headers: respHeaders 
+            });
           }
 
-          return new Response(JSON.stringify({
-            ...resultJson,
-            ok: lovableResp.ok,
-            status: lovableResp.status
-          }), { status: lovableResp.status, headers: cors });
+          const resultText = await lovableResp.text();
+          return new Response(resultText, { 
+            status: lovableResp.status, 
+            headers: respHeaders 
+          });
         } catch (err: any) {
           return new Response(JSON.stringify({ ok: false, error: "command_proxy_failed", details: err.message }), { status: 502, headers: cors });
         }

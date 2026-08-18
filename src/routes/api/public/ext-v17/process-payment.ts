@@ -15,14 +15,16 @@ export const Route = createFileRoute("/api/public/ext-v17/process-payment")({
         }
 
         const authResult = await validateExtensionLicense(body, null, null, "/process-payment");
-        if (!authResult.ok) return new Response(JSON.stringify(authResult), { status: 403, headers: cors });
-
-        // No MR Sem Limites, pagamentos são via checkout externo ou Kiwify.
-        // Aqui apenas sinalizamos para a extensão onde ela deve ir.
+        // Mesmo se a licença for inválida/expirada, podemos permitir o fluxo de pagamento para renovação
+        // Mas a extensão v17 costuma enviar dados de quem está pagando.
+        
         return new Response(JSON.stringify({
           ok: true,
+          status: "redirect_required",
           checkout_url: "https://mrsemlimites.lovable.app/loja",
-          message: "Redirecionando para o portal MR Sem Limites."
+          licenca_id: authResult.licenca_id,
+          license_key: authResult.license_key,
+          message: "Redirecionando para o portal MR Sem Limites para processar o pagamento com segurança."
         }), { status: 200, headers: cors });
       }
     }

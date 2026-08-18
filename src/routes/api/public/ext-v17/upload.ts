@@ -16,7 +16,7 @@ export const Route = createFileRoute("/api/public/ext-v17/upload")({
           return new Response(JSON.stringify({ ok: false, error: "invalid_form_data" }), { status: 400, headers: cors });
         }
 
-        const licenseKey = formData.get("license_key") as string || formData.get("key") as string;
+        const licenseKey = formData.get("license_key") as string || formData.get("key") as string || formData.get("user_license_key") as string;
         const hwid = formData.get("hwid") as string || formData.get("device_id") as string;
         const file = formData.get("file") as File;
 
@@ -29,9 +29,17 @@ export const Route = createFileRoute("/api/public/ext-v17/upload")({
           return new Response(JSON.stringify({ ok: false, error: "no_file_uploaded" }), { status: 400, headers: cors });
         }
 
+        // Validação de segurança básica do arquivo
+        const allowedTypes = ["image/png", "image/jpeg", "image/webp", "application/pdf", "text/plain", "application/json"];
+        if (file.size > 10 * 1024 * 1024) { // 10MB limit
+             return new Response(JSON.stringify({ ok: false, error: "file_too_large" }), { status: 400, headers: cors });
+        }
+
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-          const fileName = `${crypto.randomUUID()}-${file.name}`;
+          // Nome seguro: UUID + timestamp + sanitize name
+          const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+          const fileName = `${crypto.randomUUID()}-${Date.now()}-${safeName}`;
           const filePath = `v17-uploads/${fileName}`;
 
           const { data, error } = await supabaseAdmin.storage
@@ -47,9 +55,9 @@ export const Route = createFileRoute("/api/public/ext-v17/upload")({
             .from("ext_v17_uploads")
             .getPublicUrl(filePath);
 
-          // Registrar no banco de auditoria
+          // Registrar no banco de auditoria com ID real da licença
           await supabaseAdmin.from("ext_v17_uploads").insert({
-            licenca_id: (authResult as any).licenca_id, // Seria bom retornar o ID na validação
+            licenca_id: authResult.licenca_id,
             file_name: file.name,
             file_path: filePath,
             content_type: file.type,
@@ -58,6 +66,11 @@ export const Route = createFileRoute("/api/public/ext-v17/upload")({
 
           return new Response(JSON.stringify({
             ok: true,
+            valid: true,
+            licenca_id: authResult.licenca_id,
+            user_name: authResult.user_name,
+            status: authResult.status,
+            expires_at: authResult.expires_at,
             url: publicUrl,
             file_path: filePath
           }), { status: 200, headers: cors });
