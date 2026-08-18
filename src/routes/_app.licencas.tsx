@@ -122,16 +122,15 @@ type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
 type Bucket = "teste" | "1d" | "2d" | "3d" | "30d" | "60d" | "90d" | "180d" | "1ano" | "outros";
 
 const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
-  { id: "teste", label: "1 hora", sub: "teste" },
+  { id: "teste", label: "Trial (1h)", sub: "teste" },
   { id: "1d", label: "1 dia", sub: "premium" },
   { id: "2d", label: "2 dias", sub: "premium" },
   { id: "3d", label: "3 dias", sub: "premium" },
   { id: "30d", label: "Mensal", sub: "premium" },
-  { id: "60d", label: "60 dias", sub: "premium" },
+  { id: "60d", label: "Bimestral", sub: "premium" },
   { id: "90d", label: "Trimestral", sub: "premium" },
   { id: "180d", label: "Semestral", sub: "premium" },
   { id: "1ano", label: "Anual", sub: "premium" },
-  { id: "outros", label: "Outros", sub: "premium" },
 ];
 
 function bucketOfRow(row: LicencaRow): Bucket {
