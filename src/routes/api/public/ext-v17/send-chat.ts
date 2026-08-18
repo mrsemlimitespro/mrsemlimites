@@ -8,6 +8,7 @@ export const Route = createFileRoute("/api/public/ext-v17/send-chat")({
       OPTIONS: async ({ request }) => new Response(null, { status: 204, headers: getCorsHeaders(request) }),
       POST: async ({ request }) => {
         const cors = getCorsHeaders(request);
+        const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
         
         let body: any;
         try {
@@ -16,10 +17,13 @@ export const Route = createFileRoute("/api/public/ext-v17/send-chat")({
           return new Response(JSON.stringify({ ok: false, error: "invalid_json" }), { status: 400, headers: cors });
         }
 
-        // 1. Validar Licença
-        const licenseResult = await validateExtensionLicense(body);
+        // 1. Validar Licença e Sessão
+        const licenseResult = await validateExtensionLicense(body, ip, request.headers.get("user-agent"), "/send-chat");
         if (!licenseResult.ok) {
-          return new Response(JSON.stringify(licenseResult), { status: 403, headers: cors });
+          return new Response(JSON.stringify(licenseResult), { 
+            status: licenseResult.status === "hwid_mismatch" ? 403 : 401, 
+            headers: cors 
+          });
         }
 
         // 2. Extrair dados do Lovable
@@ -29,19 +33,30 @@ export const Route = createFileRoute("/api/public/ext-v17/send-chat")({
           return new Response(JSON.stringify({ ok: false, error: "missing_lovable_params" }), { status: 400, headers: cors });
         }
 
-        // 3. Regra estrita ai_message_id
+        // 3. Regra estrita ai_message_id (conforme contrato 2.5/2.6)
         if (lastPayload.ai_message_id === undefined) {
-          // A instrução diz que se for exigido e não existir, retorna 400.
-          // O motor original costuma enviar, mas se vier vazio bloqueamos para evitar erro no Lovable.
-          return new Response(JSON.stringify({ ok: false, error: "missing_original_ai_message_id" }), { status: 400, headers: cors });
+           return new Response(JSON.stringify({ ok: false, error: "ai_message_id_required" }), { status: 400, headers: cors });
         }
 
-        // 4. Proxying
+        // 4. Proxying real
         try {
           const lovableResp = await proxyLovableChat(projectId, token, lastPayload);
-          const status = lovableResp.status;
-          const resultText = await lovableResp.text();
           
+          // Preservar Stream ou Resposta JSON
+          const contentType = lovableResp.headers.get("content-type");
+          if (contentType?.includes("text/event-stream")) {
+            return new Response(lovableResp.body, {
+              status: lovableResp.status,
+              headers: {
+                ...cors,
+                "Content-Type": "text/event-stream",
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+              }
+            });
+          }
+
+          const resultText = await lovableResp.text();
           let resultJson: any;
           try {
             resultJson = JSON.parse(resultText);
@@ -51,12 +66,12 @@ export const Route = createFileRoute("/api/public/ext-v17/send-chat")({
 
           return new Response(JSON.stringify({
             ...resultJson,
-            ok: status >= 200 && status < 300,
-            status: status
-          }), { status, headers: cors });
+            ok: lovableResp.ok,
+            status: lovableResp.status
+          }), { status: lovableResp.status, headers: cors });
 
         } catch (err: any) {
-          return new Response(JSON.stringify({ ok: false, error: "proxy_error", details: err.message }), { status: 502, headers: cors });
+          return new Response(JSON.stringify({ ok: false, error: "lovable_proxy_failed", details: err.message }), { status: 502, headers: cors });
         }
       },
     },
