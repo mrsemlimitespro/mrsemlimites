@@ -49,7 +49,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/report-tamper
           /* noop */
         }
 
-        const key = String(body?.license_key ?? "").trim();
+        const key = String(body?.license_key || body?.key || body?.chave || "").trim();
         const rawSignal = String(body?.signal ?? "manual").trim().toLowerCase();
         const signal = KNOWN_SIGNALS.has(rawSignal) ? rawSignal : "manual";
         const hwid = body?.hwid ? String(body.hwid).slice(0, 200) : null;

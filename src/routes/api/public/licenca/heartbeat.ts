@@ -26,7 +26,7 @@ export const Route = createFileRoute("/api/public/licenca/heartbeat")({
         } catch {
           /* noop */
         }
-        const chave = normalizeLicenseKey(body?.chave || body?.license_key);
+        const chave = normalizeLicenseKey(body?.chave || body?.key || body?.license_key || body?.licenca);
         const device_id = body?.device_id ? String(body.device_id).trim() : (body?.hwid ? String(body.hwid).trim() : null);
         // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
         // Não passado à RPC `heartbeat_licenca`; comportamento inalterado.
