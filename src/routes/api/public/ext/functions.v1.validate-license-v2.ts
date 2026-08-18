@@ -40,7 +40,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         } catch {
           /* noop */
         }
-        const key = normalizeLicenseKey(body?.license_key || body?.chave);
+        const key = normalizeLicenseKey(body?.license_key || body?.chave || body?.key || body?.licenca);
         const hwid = body?.hwid ? String(body.hwid).trim() : (body?.device_id ? String(body.device_id).trim() : null);
         const deviceInfo = body?.device_info ?? null;
         // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
