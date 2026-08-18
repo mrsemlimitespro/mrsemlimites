@@ -17,7 +17,6 @@ export const Route = createFileRoute("/api/public/ext-v17/send-chat")({
           return new Response(JSON.stringify({ ok: false, error: "invalid_json" }), { status: 400, headers: cors });
         }
 
-        // 1. Validar Licença e Sessão
         const licenseResult = await validateExtensionLicense(body, ip, request.headers.get("user-agent"), "/send-chat");
         if (!licenseResult.ok) {
           return new Response(JSON.stringify(licenseResult), { 
@@ -26,49 +25,34 @@ export const Route = createFileRoute("/api/public/ext-v17/send-chat")({
           });
         }
 
-        // 2. Extrair dados do Lovable
-        const { projectId, token, lastPayload } = body;
+        const motorPayload = body.lastPayload ?? body.payload ?? body;
+        const projectId = body.projectId || body.project_id;
+        const token = body.token || body.Authorization || request.headers.get("Authorization");
         
-        if (!projectId || !token || !lastPayload) {
+        if (!projectId || !token || !motorPayload) {
           return new Response(JSON.stringify({ ok: false, error: "missing_lovable_params" }), { status: 400, headers: cors });
         }
 
-        // 3. Regra estrita ai_message_id (conforme contrato 2.5/2.6)
-        if (lastPayload.ai_message_id === undefined) {
-           return new Response(JSON.stringify({ ok: false, error: "ai_message_id_required" }), { status: 400, headers: cors });
-        }
-
-        // 4. Proxying real
         try {
-          const lovableResp = await proxyLovableChat(projectId, token, lastPayload);
+          const lovableResp = await proxyLovableChat(projectId, token, motorPayload);
           
-          // Preservar Stream ou Resposta JSON
+          const respHeaders = new Headers();
+          Object.entries(cors).forEach(([k, v]) => respHeaders.set(k, v));
+          
           const contentType = lovableResp.headers.get("content-type");
+          if (contentType) respHeaders.set("Content-Type", contentType);
+
           if (contentType?.includes("text/event-stream")) {
+            respHeaders.set("Cache-Control", "no-cache");
+            respHeaders.set("Connection", "keep-alive");
             return new Response(lovableResp.body, {
               status: lovableResp.status,
-              headers: {
-                ...cors,
-                "Content-Type": "text/event-stream",
-                "Cache-Control": "no-cache",
-                "Connection": "keep-alive",
-              }
+              headers: respHeaders
             });
           }
 
           const resultText = await lovableResp.text();
-          let resultJson: any;
-          try {
-            resultJson = JSON.parse(resultText);
-          } catch {
-            resultJson = { message: resultText };
-          }
-
-          return new Response(JSON.stringify({
-            ...resultJson,
-            ok: lovableResp.ok,
-            status: lovableResp.status
-          }), { status: lovableResp.status, headers: cors });
+          return new Response(resultText, { status: lovableResp.status, headers: respHeaders });
 
         } catch (err: any) {
           return new Response(JSON.stringify({ ok: false, error: "lovable_proxy_failed", details: err.message }), { status: 502, headers: cors });

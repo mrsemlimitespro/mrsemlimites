@@ -36,17 +36,13 @@ export async function proxyLovableChat(
   payload: LovableChatPayload
 ) {
   const url = `${LOVABLE_BASE_URL}/projects/${projectId}/chat`;
-  
-  // Rule: Preserve all fields, especially ai_message_id if it exists
   const headers = getLovableHeaders(projectId, token);
 
-  const response = await fetch(url, {
+  return await fetch(url, {
     method: "POST",
     headers,
     body: JSON.stringify(payload),
   });
-
-  return response;
 }
 
 export async function proxyLovableCommand(
@@ -55,17 +51,14 @@ export async function proxyLovableCommand(
   payload: any,
   endpoint: string = "chat"
 ) {
-  // O motor v17.0 pode usar endpoints específicos se necessário
   const url = `${LOVABLE_BASE_URL}/projects/${projectId}/${endpoint}`;
   const headers = getLovableHeaders(projectId, token);
 
-  const response = await fetch(url, {
+  return await fetch(url, {
     method: "POST",
     headers,
     body: JSON.stringify(payload),
   });
-
-  return response;
 }
 
 export async function proxyLovableStream(
@@ -76,14 +69,11 @@ export async function proxyLovableStream(
 ) {
   const url = `${LOVABLE_BASE_URL}/projects/${projectId}/${endpoint}`;
   const headers = getLovableHeaders(projectId, token);
-  // Garante Accept para stream
   headers["Accept"] = "text/event-stream";
 
-  const response = await fetch(url, {
+  return await fetch(url, {
     method: "POST",
     headers,
     body: JSON.stringify(payload),
   });
-
-  return response;
 }
