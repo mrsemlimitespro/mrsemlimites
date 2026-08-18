@@ -1,4 +1,4 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -185,9 +185,12 @@ function RightContextSidebar() {
                 <h4 className="text-xs font-black uppercase tracking-wider">Seja um Revendedor</h4>
                 <p className="text-[10px] opacity-80 leading-relaxed">Aumente seus ganhos revendendo nossas licenças exclusivas.</p>
               </div>
-              <button className="w-full h-9 rounded-lg bg-white text-brand-blue text-[10px] font-black uppercase tracking-widest hover:bg-opacity-90 transition-all">
+              <Link 
+                to="/quero-ser-revendedor"
+                className="w-full h-9 rounded-lg bg-white text-brand-blue text-[10px] font-black uppercase tracking-widest hover:bg-opacity-90 transition-all flex items-center justify-center"
+              >
                 Quero ser revendedor
-              </button>
+              </Link>
            </div>
         </div>
       </div>
