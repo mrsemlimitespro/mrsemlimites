@@ -48,11 +48,15 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
         try {
           body = await request.json();
         } catch {
-          return fail(cors, "Licença inválida ou expirada.");
+          return new Response(
+            JSON.stringify({ ok: false, valid: false, premium: false, error: "Requisição inválida. Use JSON." }),
+            { status: 400, headers: cors }
+          );
         }
 
         const email = String(body?.email ?? "").trim();
-        const chave = normalizeLicenseKey(body?.chave || body?.license_key);
+        const rawKey = body?.key || body?.license_key || body?.licenca || "";
+        const chave = normalizeLicenseKey(rawKey);
         const device_id = body?.device_id ? String(body.device_id).trim() : (body?.hwid ? String(body.hwid).trim() : null);
         const device_nome = body?.device_nome ? String(body.device_nome).slice(0, 120) : null;
         const versao = body?.versao ? String(body.versao).slice(0, 40) : null;
@@ -61,8 +65,6 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
           null;
         const user_agent = request.headers.get("user-agent")?.slice(0, 400) ?? null;
-        // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
-        // Enquanto ausente, o comportamento é idêntico ao atual. Nenhuma validação usa este campo aqui.
         const extension_id = body?.extension_id ? String(body.extension_id).slice(0, 80) : null;
         void extension_id;
 
@@ -72,8 +74,17 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
 
         if (!chave || !isValidLicenseFormat(chave)) {
           await logAcesso(sb, null, chave, device_id, ip, user_agent, versao, "invalid_format");
-          return fail(cors, "Licença inválida ou expirada.");
+          return new Response(
+            JSON.stringify({ 
+              ok: false, 
+              valid: false, 
+              premium: false, 
+              error: "Formato de chave inválido. Use MR-XXXX-XXXX-XXXX." 
+            }),
+            { status: 400, headers: cors }
+          );
         }
+
 
         // Expira quaisquer trials vencidos (lazy)
         try {
