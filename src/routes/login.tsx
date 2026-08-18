@@ -1,5 +1,4 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { Store } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -173,7 +172,7 @@ function LoginPage() {
             />
             Manter conectado
           </label>
-          <Link to="/esqueci-senha" data-testid="forgot-password" className="text-foreground/80 underline hover:text-foreground">
+          <Link to="/esqueci-senha" className="text-foreground/80 underline hover:text-foreground">
             Esqueci minha senha
           </Link>
         </div>
@@ -218,10 +217,9 @@ function LoginPage() {
 
         <Link
           to="/quero-ser-revendedor"
-          className="flex w-full items-center justify-center gap-2 rounded-2xl border border-brand-blue/40 bg-brand-blue/5 px-4 h-12 text-xs font-black uppercase tracking-widest text-white transition hover:bg-brand-blue/10 active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-primary/10"
         >
-          <Store className="size-4 text-brand-blue" />
-          Quero ser revendedor
+          🏪 Quero ser revendedor
         </Link>
       </form>
     </AuthShell>
