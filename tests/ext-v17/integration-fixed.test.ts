@@ -16,26 +16,26 @@ vi.mock('@/integrations/supabase/client.server', () => ({
   supabaseAdmin: mockSupabase
 }));
 
-// Mock normalizeLicenseKey to match logic in auth.server.ts
 vi.mock("@/lib/licenca/utils", () => ({
   normalizeLicenseKey: vi.fn((k) => k),
   isValidLicenseFormat: vi.fn(() => true),
 }));
 
-// Mock global fetch properly for Vitest
 const fetchMock = vi.fn();
 global.fetch = fetchMock;
 
 describe('v17 Extension Backend Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Default valid license mock
+    mockSupabase.maybeSingle.mockResolvedValue({ 
+      data: { id: 'test-lic-id', status: 'active', email: 'test@example.com', expira_em: null }, 
+      error: null 
+    });
   });
 
   it('should preserve ai_message_id during send-command proxy', async () => {
-    // Simulando que o validateExtensionLicense passa
-    mockSupabase.maybeSingle.mockResolvedValue({ data: { id: 'test-lic-id', status: 'active', email: 'test@example.com' }, error: null });
-    
-    // Payload da extensão com ai_message_id
+    // Payload da extensão com ai_message_id no lastPayload
     const payload = {
       projectId: 'proj-123',
       token: 'valid-token',
@@ -47,14 +47,13 @@ describe('v17 Extension Backend Integration', () => {
     };
 
     // Mock do retorno do Lovable
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       status: 200,
       headers: new Headers({ 'content-type': 'application/json' }),
       text: () => Promise.resolve(JSON.stringify({ text: 'Lovable Response' }))
     });
 
-    // Importar dinamicamente para garantir mocks
     const { Route } = await import('@/routes/api/public/ext-v17/send-command');
     const handler = (Route as any).options.server.handlers.POST;
 
@@ -66,7 +65,7 @@ describe('v17 Extension Backend Integration', () => {
     await handler({ request });
 
     // Verificar se o fetch para o Lovable preservou o ai_message_id
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('api.lovable.dev/projects/proj-123/chat'),
       expect.objectContaining({
         body: expect.stringContaining('"ai_message_id":"original-ai-msg-id-123"')
@@ -75,15 +74,13 @@ describe('v17 Extension Backend Integration', () => {
   });
 
   it('should handle fix-stream with real proxy', async () => {
-    mockSupabase.maybeSingle.mockResolvedValue({ data: { id: 'test-lic-id', status: 'active' }, error: null });
-    
     const payload = {
       projectId: 'proj-123',
       token: 'valid-token',
       lastPayload: { message: 'Continue' }
     };
 
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       status: 200,
       headers: new Headers({ 'content-type': 'text/event-stream' }),
@@ -101,5 +98,17 @@ describe('v17 Extension Backend Integration', () => {
     const response = await handler({ request });
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toContain('text/event-stream');
+  });
+
+  it('should restrict CORS to extension origins', async () => {
+    const { getCorsHeaders } = await import('@/lib/ext-v17/auth.server');
+    
+    const reqExt = new Request('http://localhost', { headers: { origin: 'chrome-extension://abc' } });
+    const corsExt = getCorsHeaders(reqExt);
+    expect(corsExt['Access-Control-Allow-Origin']).toBe('chrome-extension://abc');
+
+    const reqMalicious = new Request('http://localhost', { headers: { origin: 'https://malicious.com' } });
+    const corsMalicious = getCorsHeaders(reqMalicious);
+    expect(corsMalicious['Access-Control-Allow-Origin']).toBe('chrome-extension://id-null');
   });
 });
