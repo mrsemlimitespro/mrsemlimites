@@ -15,7 +15,7 @@ export const getCorsHeaders = (request: Request) => {
 export type LicenseValidationResult = {
   ok: boolean;
   valid: boolean;
-  status: "active" | "expired" | "revoked" | "not_found" | "invalid_format" | "hwid_mismatch";
+  status: "active" | "expired" | "revoked" | "not_found" | "invalid_format" | "hwid_mismatch" | "session_conflict";
   license_key: string;
   user_name?: string;
   expires_at?: string;
@@ -27,9 +27,10 @@ export type LicenseValidationResult = {
 export async function validateExtensionLicense(
   body: any,
   ip: string | null = null,
-  userAgent: string | null = null
+  userAgent: string | null = null,
+  path: string = "unknown"
 ): Promise<LicenseValidationResult> {
-  const rawKey = body?.license_key || body?.user_license_key || body?.key || body?.licenseKey;
+  const rawKey = body?.license_key || body?.user_license_key || body?.key || body?.licenseKey || body?.license_key_input;
   const hwid = body?.hwid || body?.device_id || body?.deviceId;
   const sessionId = body?.session_id;
 
@@ -41,11 +42,11 @@ export async function validateExtensionLicense(
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-  // Lazy expiration
+  // Trial expiration lazy check
   try {
     await supabaseAdmin.rpc("expirar_trials_vencidos");
   } catch (e) {
-    console.error("Trial expiration failed:", e);
+    // console.error("Trial expiration failed:", e);
   }
 
   const { data: lic, error: licError } = await supabaseAdmin
@@ -80,19 +81,37 @@ export async function validateExtensionLicense(
         return { ok: false, valid: false, status: "hwid_mismatch", license_key: key, error: "device_mismatch" };
       }
       
-      // Auto-registration
       await supabaseAdmin.from("licenca_dispositivos").insert({
         licenca_id: lic.id,
         device_id: hwid,
-        device_nome: "V17.0 Auto-Register",
+        device_nome: "V17.0 Extension",
         ip,
         user_agent: userAgent
       });
     }
   }
 
-  // Log access
-  await supabaseAdmin.from("licencas").update({ ultimo_acesso: new Date().toISOString() }).eq("id", lic.id);
+  // Session & Audit
+  const finalSessionId = sessionId || `sess_${crypto.randomUUID()}`;
+  
+  await Promise.all([
+    supabaseAdmin.from("licencas").update({ ultimo_acesso: new Date().toISOString() }).eq("id", lic.id),
+    supabaseAdmin.from("ext_v17_sessions").upsert({
+      licenca_id: lic.id,
+      session_id: finalSessionId,
+      device_id: hwid || "unknown",
+      last_heartbeat: new Date().toISOString(),
+      ip,
+      user_agent: userAgent
+    }, { onConflict: 'session_id' }),
+    supabaseAdmin.from("ext_v17_requests").insert({
+      licenca_id: lic.id,
+      path,
+      method: "POST",
+      payload: body,
+      ip
+    })
+  ]);
 
   return {
     ok: true,
@@ -101,7 +120,7 @@ export async function validateExtensionLicense(
     license_key: key,
     user_name: lic.email?.split('@')[0] || "Usuário MR",
     expires_at: lic.expira_em || undefined,
-    session_id: sessionId || `sess_${crypto.randomUUID()}`,
+    session_id: finalSessionId,
     device_id: hwid
   };
 }
