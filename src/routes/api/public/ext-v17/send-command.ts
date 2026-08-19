@@ -25,7 +25,6 @@ export const Route = createFileRoute("/api/public/ext-v17/send-command")({
         const projectId = body.projectId || body.project_id;
         const token = body.token || body.Authorization || request.headers.get("Authorization");
         
-        // Priority mandatory: motorPayload = body.lastPayload ?? body.payload ?? body
         const motorPayload = body.lastPayload ?? body.payload ?? body;
 
         if (!projectId || !token || !motorPayload) {
@@ -33,18 +32,20 @@ export const Route = createFileRoute("/api/public/ext-v17/send-command")({
         }
 
         try {
-          // Encaminha uma única requisição real para o Lovable
-          // v17 costuma usar /chat para a maioria dos comandos
-          const lovableResp = await proxyLovableCommand(projectId, token, motorPayload, "chat");
+          // Mapeamento dinâmico de endpoints baseado no motor v17.
+          // Se o payload indicar que não é um chat (ex: publish, reset), tentamos o endpoint correto.
+          let endpoint = "chat";
+          if (motorPayload.type === "publish") endpoint = "publish";
+          else if (motorPayload.type === "deploy") endpoint = "deploy";
           
-          // Repassa headers relevantes (especialmente content-type para streams se houver)
+          const lovableResp = await proxyLovableCommand(projectId, token, motorPayload, endpoint);
+          
           const respHeaders = new Headers();
           Object.entries(cors).forEach(([k, v]) => respHeaders.set(k, v));
           
           const lovContentType = lovableResp.headers.get("content-type");
           if (lovContentType) respHeaders.set("Content-Type", lovContentType);
 
-          // Se for stream, repassa o body diretamente
           if (lovContentType?.includes("text/event-stream")) {
             return new Response(lovableResp.body, { 
               status: lovableResp.status, 

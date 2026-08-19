@@ -21,14 +21,15 @@ export const Route = createFileRoute("/api/public/ext-v17/process-payment")({
            return new Response(JSON.stringify({ ok: false, error: "license_required" }), { status: 400, headers: cors });
         }
 
-        // v17 motor espera redirect_required ou erro explícito
+        // v17 motor espera redirect_required ou erro explícito.
+        // Implementação do Checkout Real MR Sem Limites.
         return new Response(JSON.stringify({
           ok: true,
           status: "redirect_required",
-          checkout_url: "https://mrsemlimites.lovable.app/loja",
+          checkout_url: `https://mrsemlimites.lovable.app/checkout?license_id=${authResult.licenca_id}&key=${authResult.license_key}`,
           licenca_id: authResult.licenca_id,
           license_key: authResult.license_key,
-          message: "Redirecionamento para o portal MR Sem Limites para processar o pagamento com segurança."
+          message: "Redirecionamento para o Checkout Seguro MR Sem Limites."
         }), { status: 200, headers: cors });
       }
     }

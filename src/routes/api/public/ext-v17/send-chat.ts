@@ -30,7 +30,11 @@ export const Route = createFileRoute("/api/public/ext-v17/send-chat")({
         const token = body.token || body.Authorization || request.headers.get("Authorization");
         
         if (!projectId || !token || !motorPayload) {
-          return new Response(JSON.stringify({ ok: false, error: "missing_lovable_params" }), { status: 400, headers: cors });
+          return new Response(JSON.stringify({ 
+            ok: false, 
+            error: "missing_lovable_params", 
+            details: "Project ID, Token or Payload missing" 
+          }), { status: 400, headers: cors });
         }
 
         try {

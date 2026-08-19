@@ -30,8 +30,21 @@ export const Route = createFileRoute("/api/public/ext-v17/upload")({
         }
 
         // Validação de segurança básica do arquivo
-        const allowedTypes = ["image/png", "image/jpeg", "image/webp", "application/pdf", "text/plain", "application/json"];
-        if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        const allowedTypes = [
+          "image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif",
+          "application/pdf", "text/plain", "application/json", "application/zip",
+          "video/mp4", "video/webm", "audio/mpeg", "audio/wav", "audio/ogg"
+        ];
+        
+        if (!allowedTypes.includes(file.type)) {
+          return new Response(JSON.stringify({ 
+            ok: false, 
+            error: "mime_type_not_allowed", 
+            details: `Type ${file.type} is not supported`
+          }), { status: 400, headers: cors });
+        }
+
+        if (file.size > 50 * 1024 * 1024) { // 50MB limit para vídeos
              return new Response(JSON.stringify({ ok: false, error: "file_too_large" }), { status: 400, headers: cors });
         }
 
