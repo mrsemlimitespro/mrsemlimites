@@ -36,21 +36,15 @@ export const Route = createFileRoute("/api/public/ext-v17/fix-stream")({
           
           if (!lovableResp.ok) {
             const errorText = await lovableResp.text();
-            try {
-              const errJson = JSON.parse(errorText);
-              // Se for um erro do Lovable sobre stream inexistente, retornamos um status de "fixed" amigável
-              // para o motor não entrar em loop, enquanto logamos o erro real.
-              if (errJson.error === "stream_not_found" || lovableResp.status === 404) {
-                return new Response(JSON.stringify({ 
-                  ok: true, 
-                  status: "stream_fixed",
-                  message: "Stream context synchronized",
-                  recovered: true
-                }), { status: 200, headers: cors });
-              }
-            } catch (e) {}
-            
-            return new Response(errorText, { status: lovableResp.status, headers: cors });
+            // NUNCA retornar sucesso falso (ok: true) para erros upstream.
+            // Repassamos o erro real para o motor da extensão tratar a falha de restauração.
+            return new Response(errorText, { 
+              status: lovableResp.status, 
+              headers: {
+                ...cors,
+                "Content-Type": lovableResp.headers.get("content-type") || "application/json"
+              } 
+            });
           }
 
           const respHeaders = new Headers();

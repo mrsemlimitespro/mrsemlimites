@@ -1,17 +1,36 @@
 import { normalizeLicenseKey, isValidLicenseFormat } from "@/lib/licenca/utils";
 
+const ALLOWED_EXTENSION_ID = "pbeoifjhgofkbcofabccbcffbpgkpkbk"; // ID oficial MR Sem Limites
+
 export const getCorsHeaders = (request: Request) => {
   const origin = request.headers.get("origin");
-  const isAllowed = origin?.startsWith("chrome-extension://") || origin?.includes("localhost");
+  const isAllowed = 
+    origin === `chrome-extension://${ALLOWED_EXTENSION_ID}` || 
+    (process.env.NODE_ENV === 'development' && origin?.includes("localhost"));
   
   return {
-    "Access-Control-Allow-Origin": isAllowed ? origin! : "chrome-extension://id-null", // Never use * for authenticated routes
+    "Access-Control-Allow-Origin": isAllowed ? origin! : `chrome-extension://${ALLOWED_EXTENSION_ID}`,
     "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
     "Access-Control-Allow-Headers": "content-type, authorization, x-lovable-project-id, x-extension-trace-id",
     "Access-Control-Max-Age": "86400",
     "Access-Control-Allow-Credentials": "true",
   };
 };
+
+function maskSensitiveData(data: any): any {
+  if (!data || typeof data !== 'object') return data;
+  const masked = { ...data };
+  const sensitiveKeys = ['Authorization', 'token', 'key', 'license_key', 'api_key', 'password', 'secret'];
+  
+  for (const k of Object.keys(masked)) {
+    if (sensitiveKeys.some(sk => k.toLowerCase().includes(sk.toLowerCase()))) {
+      masked[k] = '[MASKED]';
+    } else if (typeof masked[k] === 'object') {
+      masked[k] = maskSensitiveData(masked[k]);
+    }
+  }
+  return masked;
+}
 
 export type LicenseValidationResult = {
   ok: boolean;
@@ -110,7 +129,7 @@ export async function validateExtensionLicense(
       licenca_id: lic.id,
       path,
       method: "POST",
-      payload: body,
+      payload: maskSensitiveData(body),
       ip
     })
   ]);
