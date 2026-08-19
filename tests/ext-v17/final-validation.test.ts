@@ -39,7 +39,7 @@ describe('Auditoria Release 6 — Backend v17.0 MR Sem Limites', () => {
     });
   });
 
-  it('CORREÇÃO 1: Fix-stream não deve retornar ok: true em erro upstream', async () => {
+  it('CORREÇÃO 1: Fix-stream não deve retornar ok: true em erro upstream 404', async () => {
     fetchMock.mockResolvedValue({
       ok: false,
       status: 404,
@@ -68,18 +68,17 @@ describe('Auditoria Release 6 — Backend v17.0 MR Sem Limites', () => {
     expect(data.ok).toBeUndefined(); // COMPROVADO: SEM SUCESSO FALSO
   });
 
-  it('CORREÇÃO 2: Send-command deve mapear comandos avançados e preservar motorPayload', async () => {
+  it('CORREÇÃO 2: Send-command deve mapear comandos avançados (terminal) e preservar motorPayload', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       status: 200,
       headers: new Headers({ 'content-type': 'application/json' }),
-      text: () => Promise.resolve(JSON.stringify({ result: 'published' }))
+      text: () => Promise.resolve(JSON.stringify({ result: 'ok' }))
     });
 
     const { Route } = await import('@/routes/api/public/ext-v17/send-command');
     const handler = (Route as any).options.server.handlers.POST;
 
-    // Teste de mapeamento terminal
     const terminalPayload = { type: 'terminal_command', command: 'ls' };
     const request = new Request('http://localhost/api/public/ext-v17/send-command', {
       method: 'POST',
@@ -96,7 +95,7 @@ describe('Auditoria Release 6 — Backend v17.0 MR Sem Limites', () => {
     expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual(terminalPayload); // PRESERVAÇÃO TOTAL
   });
 
-  it('CORREÇÃO 3: Process-payment deve redirecionar com licenca_id vinculado', async () => {
+  it('CORREÇÃO 3: Process-payment deve redirecionar com licenca_id vinculado e status redirect_required', async () => {
     const { Route } = await import('@/routes/api/public/ext-v17/process-payment');
     const handler = (Route as any).options.server.handlers.POST;
 
