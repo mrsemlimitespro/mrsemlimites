@@ -1,5 +1,5 @@
 RELEASE: MR Sem Limites v17.0 - Release 10 (FINAL AUDITED)
-DATE: 2026-08-19 03:00 UTC
-SHA256: 8ed78f60b2ee0f1701d702c55006db15e0d394ebff0832b8ed3725782191d55c
+DATE: 2026-08-19 09:51 UTC
+SHA256: 4ac48b018fa045820a4099909d0af0c3df2c5272220aab2b3818efe56e4c575c
 STATUS: AUDITED_AND_VERIFIED
-REMARKS: fix-stream-proxy-repassed, upload-adapter-integrated
+REMARKS: fix-stream-proxy-repassed, upload-adapter-integrated, internal-hash-match
