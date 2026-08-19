@@ -3690,7 +3690,7 @@ export type Database = {
         Returns: string
       }
       expirar_licencas_vencidas: { Args: never; Returns: number }
-      expirar_trials_vencidos: { Args: never; Returns: number }
+      expirar_trials_vencidos: { Args: never; Returns: undefined }
       gerar_chave_licenca: { Args: never; Returns: string }
       gerar_chave_licenca_v1: { Args: never; Returns: string }
       gerar_chave_licenca_v2: { Args: never; Returns: string }
