@@ -1,42 +1,40 @@
 const fs = require("fs");
 const path = require("path");
-const archiver = require("archiver");
+const { execSync } = require("child_process");
 
 async function main() {
-  const outputPath = path.join(process.cwd(), "public/mr-sem-limites-backend-extension-v17-completo.zip");
-  const output = fs.createWriteStream(outputPath);
-  
-  // Archiver v8+ CJS usage seems to be different
-  const archive = new archiver.Archiver("zip", { zlib: { level: 9 } });
+  const zipPath = "public/mr-sem-limites-backend-extension-v17-completo.zip";
+  const tempDir = "/tmp/zip_build_" + Date.now();
+  fs.mkdirSync(tempDir, { recursive: true });
 
-  output.on("close", () => {
-    console.log("ZIP Final gerado com sucesso: " + archive.pointer() + " total bytes");
+  // Estrutura de pastas no ZIP
+  const folders = ["routes/ext-v17", "infra", "tests"];
+  folders.forEach(f => fs.mkdirSync(path.join(tempDir, f), { recursive: true }));
+
+  // Cópia de arquivos
+  fs.copyFileSync("src/lib/ext-v17/auth.server.ts", path.join(tempDir, "auth.server.ts"));
+  fs.copyFileSync("src/lib/ext-v17/lovable.server.ts", path.join(tempDir, "lovable.server.ts"));
+  fs.copyFileSync("src/lib/licenca/utils.ts", path.join(tempDir, "licenca-utils.ts"));
+  fs.copyFileSync("supabase/migrations/20260819000000_ext_v17_schema.sql", path.join(tempDir, "infra/migration.sql"));
+  fs.copyFileSync("tests/ext-v17/final-audit.test.ts", path.join(tempDir, "tests/final-audit.test.ts"));
+
+  const apiDir = "src/routes/api/public/ext-v17";
+  fs.readdirSync(apiDir).forEach(file => {
+    if (file.endsWith(".ts")) {
+      fs.copyFileSync(path.join(apiDir, file), path.join(tempDir, "routes/ext-v17", file));
+    }
   });
 
-  archive.on("error", (err) => { throw err; });
-  archive.pipe(output);
-
-  // Arquivos Core do Backend Isolado
-  archive.file("src/lib/ext-v17/auth.server.ts", { name: "auth.server.ts" });
-  archive.file("src/lib/ext-v17/lovable.server.ts", { name: "lovable.server.ts" });
-  archive.file("src/lib/licenca/utils.ts", { name: "licenca-utils.ts" });
-
-  // Rotas de API v17
-  const apiDir = "src/routes/api/public/ext-v17";
-  const apiFiles = fs.readdirSync(apiDir);
-  for (const file of apiFiles) {
-    if (file.endsWith(".ts")) {
-      archive.file(path.join(apiDir, file), { name: `routes/ext-v17/${file}` });
-    }
+  // Usar comando zip do sistema (nixpkgs#zip está disponível no ambiente shell se necessário, mas geralmente 'zip' existe)
+  try {
+    process.chdir(tempDir);
+    execSync(`zip -r ../backend.zip .`);
+    process.chdir("/dev-server");
+    fs.copyFileSync("/tmp/backend.zip", zipPath);
+    console.log("ZIP Final gerado com sucesso via sistema.");
+  } catch (e) {
+    console.error("Falha ao usar comando zip:", e.message);
   }
-
-  // Infra (SQL Migrations)
-  archive.file("supabase/migrations/20260819000000_ext_v17_schema.sql", { name: "infra/migration.sql" });
-
-  // Testes de Auditoria
-  archive.file("tests/ext-v17/final-audit.test.ts", { name: "tests/final-audit.test.ts" });
-
-  await archive.finalize();
 }
 
 main().catch(console.error);
