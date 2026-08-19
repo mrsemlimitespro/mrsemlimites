@@ -6,14 +6,8 @@ async function main() {
   const outputPath = path.join(process.cwd(), "public/mr-sem-limites-backend-extension-v17-completo.zip");
   const output = fs.createWriteStream(outputPath);
   
-  // Try the most standard way first
-  let archive;
-  try {
-    archive = archiver("zip", { zlib: { level: 9 } });
-  } catch (e) {
-    console.log("Standard archiver() failed, trying .default");
-    archive = archiver.default("zip", { zlib: { level: 9 } });
-  }
+  // Archiver v8+ CJS usage seems to be different
+  const archive = new archiver.Archiver("zip", { zlib: { level: 9 } });
 
   output.on("close", () => {
     console.log("ZIP Final gerado com sucesso: " + archive.pointer() + " total bytes");
