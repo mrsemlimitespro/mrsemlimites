@@ -32,12 +32,19 @@ export const Route = createFileRoute("/api/public/ext-v17/send-command")({
         }
 
         try {
-          // Mapeamento dinâmico baseado no contrato v17 real
+          // Mapeamento dinâmico baseado no contrato v17 real do motor
           let endpoint = "chat";
-          if (motorPayload.type === "publish") endpoint = "publish";
-          else if (motorPayload.type === "deploy") endpoint = "deploy";
-          else if (motorPayload.type === "preview") endpoint = "preview";
-          else if (motorPayload.type === "reset") endpoint = "reset";
+          const type = motorPayload.type;
+          
+          if (type === "publish") endpoint = "publish";
+          else if (type === "deploy") endpoint = "deploy";
+          else if (type === "preview") endpoint = "preview";
+          else if (type === "reset") endpoint = "reset";
+          else if (type === "undo") endpoint = "undo";
+          else if (type === "redo") endpoint = "redo";
+          else if (type === "terminal_command") endpoint = "terminal";
+          else if (type === "file_content") endpoint = "files";
+          else if (type === "project_config") endpoint = "config";
           
           // Preservação TOTAL do motorPayload (sem recriar)
           const lovableResp = await proxyLovableCommand(projectId, token, motorPayload, endpoint);
