@@ -16,7 +16,8 @@ export const Route = createFileRoute("/api/public/ext-v17/process-payment")({
 
         const authResult = await validateExtensionLicense(body, null, null, "/process-payment");
         
-        // v17 motor espera erro 403 se a licença for inválida/expirada
+        // Declaração explícita de redirecionamento (Opção B)
+        // O motor v17 espera erro 403 se a licença for inválida/expirada
         if (!authResult.ok) {
            return new Response(JSON.stringify(authResult), { status: 403, headers: cors });
         }
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/api/public/ext-v17/process-payment")({
           checkout_url: `https://mrsemlimites.lovable.app/checkout?licenca_id=${authResult.licenca_id}&key=${authResult.license_key}`,
           licenca_id: authResult.licenca_id,
           license_key: authResult.license_key,
-          message: "Aguardando conclusão do pagamento no portal seguro."
+          message: "Esta rota fornece redirecionamento para o portal de pagamento seguro."
         }), { status: 200, headers: cors });
       }
     }

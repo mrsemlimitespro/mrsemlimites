@@ -46,7 +46,7 @@ export const Route = createFileRoute("/api/public/ext-v17/send-command")({
           else if (type === "file_content") endpoint = "files";
           else if (type === "project_config") endpoint = "config";
           
-          // Preservação TOTAL do motorPayload (sem recriar)
+          // Chamada ÚNICA ao upstream preservando motorPayload integralmente
           const lovableResp = await proxyLovableCommand(projectId, token, motorPayload, endpoint);
           
           const respHeaders = new Headers();

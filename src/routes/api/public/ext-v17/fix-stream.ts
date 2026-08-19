@@ -35,9 +35,9 @@ export const Route = createFileRoute("/api/public/ext-v17/fix-stream")({
           const lovableResp = await proxyLovableStream(projectId, token, motorPayload, "chat");
           
           if (!lovableResp.ok) {
+            // Repassamos o erro real e status do upstream. NUNCA retornamos sucesso falso.
             const errorText = await lovableResp.text();
-            // NUNCA retornar sucesso falso (ok: true) para erros upstream.
-            // Repassamos o erro real para o motor da extensão tratar a falha de restauração.
+            
             return new Response(errorText, { 
               status: lovableResp.status, 
               headers: {
