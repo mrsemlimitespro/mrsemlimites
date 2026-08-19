@@ -4,7 +4,8 @@ const archiver = require("archiver");
 
 async function main() {
   const output = fs.createWriteStream("public/mr-sem-limites-backend-extension-v17-completo.zip");
-  const archive = archiver("zip", { zlib: { level: 9 } });
+  // @ts-ignore
+  const archive = (archiver.default || archiver)("zip", { zlib: { level: 9 } });
 
   output.on("close", () => {
     console.log("ZIP Final gerado com sucesso: " + archive.pointer() + " total bytes");
