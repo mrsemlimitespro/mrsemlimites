@@ -3,9 +3,17 @@ const path = require("path");
 const archiver = require("archiver");
 
 async function main() {
-  const output = fs.createWriteStream("public/mr-sem-limites-backend-extension-v17-completo.zip");
-  // @ts-ignore
-  const archive = (archiver.default || archiver)("zip", { zlib: { level: 9 } });
+  const outputPath = path.join(process.cwd(), "public/mr-sem-limites-backend-extension-v17-completo.zip");
+  const output = fs.createWriteStream(outputPath);
+  
+  // Try the most standard way first
+  let archive;
+  try {
+    archive = archiver("zip", { zlib: { level: 9 } });
+  } catch (e) {
+    console.log("Standard archiver() failed, trying .default");
+    archive = archiver.default("zip", { zlib: { level: 9 } });
+  }
 
   output.on("close", () => {
     console.log("ZIP Final gerado com sucesso: " + archive.pointer() + " total bytes");
