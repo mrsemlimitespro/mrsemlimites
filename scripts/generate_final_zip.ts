@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import archiver from "archiver";
+import archiver = require("archiver");
 
 async function main() {
   const output = fs.createWriteStream("public/mr-sem-limites-backend-extension-v17-completo.zip");
