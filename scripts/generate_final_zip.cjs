@@ -15,10 +15,10 @@ async function generateZip() {
     'src/routes/api/public/ext-v17/fix-stream.ts',
     'src/routes/api/public/ext-v17/send-command.ts',
     'src/routes/api/public/ext-v17/upload.ts',
-    'src/routes/api/public/ext-v17/process-heartbeat.ts',
+    'src/routes/api/public/ext-v17/heartbeat.ts',
     'src/routes/api/public/ext-v17/process-payment.ts',
     'src/routes/api/public/ext-v17/download-zip.ts',
-    'supabase/migrations/20260819000001_final_v17_infra.sql',
+    'supabase/migrations/20260819005829_6f793536-92e1-4a91-b82c-5ed676f47184.sql',
     'tests/ext-v17/final-validation.test.ts'
   ];
 
