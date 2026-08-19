@@ -8,7 +8,7 @@ async function generateZip() {
   
   console.log(`Gerando pacote final: ${zipName}`);
 
-  // Arquivos obrigatórios do backend v17
+  // Arquivos obrigatórios do backend v17 - nomes exatos do sistema de arquivos
   const files = [
     'src/lib/ext-v17/auth.server.ts',
     'src/lib/ext-v17/lovable.server.ts',
@@ -38,9 +38,10 @@ async function generateZip() {
 
   // Gera o ZIP
   try {
+    const currentCwd = process.cwd();
     process.chdir(tmpDir);
     execSync(`zip -r ${outputPath} .`);
-    process.chdir(process.cwd());
+    process.chdir(currentCwd);
     console.log(`Sucesso: ${zipName} gerado em public/`);
     
     const stats = fs.statSync(outputPath);
