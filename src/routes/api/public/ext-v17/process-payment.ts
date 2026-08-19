@@ -16,17 +16,16 @@ export const Route = createFileRoute("/api/public/ext-v17/process-payment")({
 
         const authResult = await validateExtensionLicense(body, null, null, "/process-payment");
         
-        // Verificação de resultado simulado vs real
-        if (!authResult.license_key) {
-           return new Response(JSON.stringify({ ok: false, error: "license_required" }), { status: 400, headers: cors });
+        // v17 motor espera erro 403 se a licença for inválida/expirada
+        if (!authResult.ok) {
+           return new Response(JSON.stringify(authResult), { status: 403, headers: cors });
         }
-
-        // v17 motor espera redirect_required ou erro explícito.
-        // Implementação do Checkout Real MR Sem Limites.
+        
+        // Implementação do Checkout Real MR Sem Limites com licença validada.
         return new Response(JSON.stringify({
           ok: true,
           status: "redirect_required",
-          checkout_url: `https://mrsemlimites.lovable.app/checkout?license_id=${authResult.licenca_id}&key=${authResult.license_key}`,
+          checkout_url: `https://mrsemlimites.lovable.app/checkout?licenca_id=${authResult.licenca_id}&key=${authResult.license_key}`,
           licenca_id: authResult.licenca_id,
           license_key: authResult.license_key,
           message: "Redirecionamento para o Checkout Seguro MR Sem Limites."

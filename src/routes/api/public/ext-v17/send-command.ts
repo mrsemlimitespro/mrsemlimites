@@ -32,12 +32,14 @@ export const Route = createFileRoute("/api/public/ext-v17/send-command")({
         }
 
         try {
-          // Mapeamento dinâmico de endpoints baseado no motor v17.
-          // Se o payload indicar que não é um chat (ex: publish, reset), tentamos o endpoint correto.
+          // Mapeamento dinâmico baseado no contrato v17 real
           let endpoint = "chat";
           if (motorPayload.type === "publish") endpoint = "publish";
           else if (motorPayload.type === "deploy") endpoint = "deploy";
+          else if (motorPayload.type === "preview") endpoint = "preview";
+          else if (motorPayload.type === "reset") endpoint = "reset";
           
+          // Preservação TOTAL do motorPayload (sem recriar)
           const lovableResp = await proxyLovableCommand(projectId, token, motorPayload, endpoint);
           
           const respHeaders = new Headers();
