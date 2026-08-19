@@ -34,7 +34,9 @@ export const Route = createFileRoute("/api/public/ext-v17/send-command")({
 
         try {
           // Encaminha uma única requisição real para o Lovable
-          // v17 costuma usar /chat para a maioria dos comandos
+          // v17 costuma usar /chat para a maioria dos comandos. 
+          // Se o payload indicar explicitamente um tipo de comando diferente, 
+          // poderíamos rotear aqui. Por enquanto, chat é o destino universal do motor.
           const lovableResp = await proxyLovableCommand(projectId, token, motorPayload, "chat");
           
           // Repassa headers relevantes (especialmente content-type para streams se houver)
