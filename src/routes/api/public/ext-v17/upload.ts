@@ -40,7 +40,7 @@ export const Route = createFileRoute("/api/public/ext-v17/upload")({
           return new Response(JSON.stringify({ 
             ok: false, 
             error: "mime_type_not_allowed", 
-            details: \`Type \${file.type} is not supported\` 
+            details: `Type ${file.type} is not supported`
           }), { status: 400, headers: cors });
         }
 
