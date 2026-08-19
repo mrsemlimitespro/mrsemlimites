@@ -14,7 +14,13 @@ export const Route = createFileRoute('/api/public/ext-v17/download-zip')({
 
           if (error || !data?.signedUrl) {
              console.error('Download error:', error);
-             return new Response('File not found in storage', { status: 404 });
+             // Fallback attempt to local public folder if storage fails
+             return new Response(null, {
+               status: 302,
+               headers: {
+                 'Location': '/mr-sem-limites-backend-extension-v17-completo.zip'
+               }
+             });
           }
 
           return new Response(null, {
