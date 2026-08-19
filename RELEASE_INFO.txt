@@ -1,0 +1,11 @@
+RELEASE: MR Sem Limites v17.0 - Release 10 (Audit Fix)
+DATE: 2026-08-19 03:00 UTC
+SHA256: 251e1bd900d329d3f3081514607eb9b618e6a49ba319e480443dcbaa26580f48
+STATUS: DEFINITIVE_AUDITED
+
+CHANGELOG:
+1. Fix-Stream: Removido retorno de sucesso simulado em erro 404 (Agora repassa erro real).
+2. Upload: Adaptador de upload integrado via src/lib/ext-v17/upload-adapter.js.
+3. Security: CORS restrito ao ID oficial pbeoifjhgofkbcofabccbcffbpgkpkbk.
+4. Sync: Hash de release sincronizado com o binário real.
+5. Send-Command: Mapeamento completo de comandos do motor v17.

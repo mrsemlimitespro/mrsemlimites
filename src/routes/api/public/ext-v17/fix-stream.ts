@@ -37,7 +37,6 @@ export const Route = createFileRoute("/api/public/ext-v17/fix-stream")({
           if (!lovableResp.ok) {
             // Repassamos o erro real e status do upstream. NUNCA retornamos sucesso falso.
             const errorText = await lovableResp.text();
-            
             return new Response(errorText, { 
               status: lovableResp.status, 
               headers: {
