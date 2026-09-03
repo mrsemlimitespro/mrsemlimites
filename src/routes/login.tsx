@@ -2,6 +2,8 @@ import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-r
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { isAdminEmail } from "@/hooks/useIsAdmin";
+
 import { BrandLogo } from "@/components/brand-logo";
 import { PasswordInput, SocialSignIn } from "@/components/auth-extras";
 import { NativeService } from "@/native/NativeService";
@@ -100,23 +102,40 @@ function LoginPage() {
     } catch {}
 
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
+      email: email.trim().toLowerCase(),
       password,
     });
     if (signInError || !data.user) {
-      setError(signInError?.message ?? "Falha ao entrar.");
+      const msg = signInError?.message ?? "";
+      setError(
+        /invalid login credentials/i.test(msg)
+          ? "E-mail ou senha incorretos. Use “Esqueci minha senha” para redefinir."
+          : /email not confirmed/i.test(msg)
+            ? "E-mail ainda não confirmado."
+            : msg || "Falha ao entrar.",
+      );
       setLoading(false);
       return;
     }
 
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: data.user.id,
-      _role: "admin",
-    });
+    // Admin: e-mail oficial sempre entra no painel, mesmo se a checagem de role falhar.
+    let isAdmin = isAdminEmail(data.user.email);
+    if (!isAdmin) {
+      try {
+        const { data: roleOk } = await supabase.rpc("has_role", {
+          _user_id: data.user.id,
+          _role: "admin",
+        });
+        isAdmin = roleOk === true;
+      } catch {
+        isAdmin = false;
+      }
+    }
 
     // Revalida cache global antes de navegar (perfil, role, promoções, clientes, permissões).
-    await Promise.all([qc.invalidateQueries(), router.invalidate()]);
-    console.log("[Revendedores] painel sincronizado após login");
+    try {
+      await Promise.all([qc.invalidateQueries(), router.invalidate()]);
+    } catch {}
 
     if (isAdmin) {
       navigate({ to: "/admin" });
@@ -125,12 +144,16 @@ function LoginPage() {
 
     // Revendedor → painel de revenda (/). Cliente final → também Home,
     // mas sem itens de revenda na sidebar (filtrado por useUserRole).
-    // Não bloqueia mais quem não é revendedor: o cadastro público cria clientes.
-    const { data: rev } = await supabase
-      .from("revendedores")
-      .select("id")
-      .eq("auth_user_id", data.user.id)
-      .maybeSingle();
+    let rev: { id: string } | null = null;
+    try {
+      const res = await supabase
+        .from("revendedores")
+        .select("id")
+        .eq("auth_user_id", data.user.id)
+        .maybeSingle();
+      rev = res.data ?? null;
+    } catch {}
+
 
     console.log(
       "[Auth] login concluído como",
