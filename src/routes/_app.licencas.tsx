@@ -931,7 +931,7 @@ function NovaLicencaModal({
   const [busy, setBusy] = useState(false);
   const preset = presets[presetIdx] ?? presets[0];
   const maxQtd = isAdmin ? 500 : 1;
-  const [usarModeloMR, setUsarModeloMR] = useState(false);
+  const [usarModeloMR, setUsarModeloMR] = useState(true);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

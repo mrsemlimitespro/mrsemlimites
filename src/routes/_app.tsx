@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { supabase } from "@/integrations/supabase/client";
 import { BrandWatermark } from "@/components/brand-watermark";
 import { BrandLogo } from "@/components/brand-logo";
 import { FirePromosButton } from "@/components/fire-promos-button";
