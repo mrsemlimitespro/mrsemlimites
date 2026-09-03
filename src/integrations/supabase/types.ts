@@ -3773,6 +3773,16 @@ export type Database = {
         Args: { _payment_id: string }
         Returns: string
       }
+      ranking_revendedores_semanal: {
+        Args: never
+        Returns: {
+          nome: string
+          posicao: number
+          receita: number
+          revendedor_id: string
+          vendas: number
+        }[]
+      }
       reativar_licenca: {
         Args: { _licenca_id: string }
         Returns: {
