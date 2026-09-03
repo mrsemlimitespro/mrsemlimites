@@ -119,9 +119,10 @@ type License = {
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
 
 /** Sub-abas por duração. */
-type Bucket = "teste" | "1d" | "2d" | "3d" | "30d" | "60d" | "90d" | "180d" | "1ano" | "outros";
+type Bucket = "todos" | "teste" | "1d" | "2d" | "3d" | "30d" | "60d" | "90d" | "180d" | "1ano" | "outros";
 
 const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
+  { id: "todos", label: "Todas", sub: "geral" },
   { id: "teste", label: "Trial (1h)", sub: "teste" },
   { id: "1d", label: "1 dia", sub: "premium" },
   { id: "2d", label: "2 dias", sub: "premium" },
@@ -242,7 +243,7 @@ function LicencasPage() {
   const canTeste = role === "revendedor" || role === "admin";
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("todos");
-  const [bucket, setBucket] = useState<Bucket>("teste");
+  const [bucket, setBucket] = useState<Bucket>("todos");
   const [activeTab, setActiveTab] = useState<"mr" | "outras">("mr");
   const [openNova, setOpenNova] = useState(false);
   const [openTeste, setOpenTeste] = useState(false);
@@ -327,7 +328,7 @@ function LicencasPage() {
       (filter === "expiradas" && l.status === "expirada") ||
       (filter === "revogadas" && l.status === "revogada") ||
       (filter === "bloqueadas" && l.status === "bloqueada");
-    const matchB = bucketOfId.get(l.id) === bucket;
+    const matchB = bucket === "todos" || bucketOfId.get(l.id) === bucket;
     const matchTab = activeTab === "mr" ? l.key.startsWith("MR-") : !l.key.startsWith("MR-");
     return matchQ && matchF && matchB && matchTab;
   });
@@ -931,7 +932,7 @@ function NovaLicencaModal({
   const [busy, setBusy] = useState(false);
   const preset = presets[presetIdx] ?? presets[0];
   const maxQtd = isAdmin ? 500 : 1;
-  const [usarModeloMR, setUsarModeloMR] = useState(false);
+  const [usarModeloMR, setUsarModeloMR] = useState(true);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

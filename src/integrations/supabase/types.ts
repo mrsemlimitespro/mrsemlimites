@@ -3694,98 +3694,52 @@ export type Database = {
       gerar_chave_licenca: { Args: never; Returns: string }
       gerar_chave_licenca_v1: { Args: never; Returns: string }
       gerar_chave_licenca_v2: { Args: never; Returns: string }
-      gerar_licencas:
-        | {
-            Args: {
-              _duracao_dias?: number
-              _quantidade: number
-              _revendedor_id?: string
-            }
-            Returns: {
-              active: boolean | null
-              ativada_em: string | null
-              chave: string
-              chave_fornecedor: string | null
-              cliente_id: string | null
-              created_at: string
-              device_id: string | null
-              duracao_dias: number
-              email: string | null
-              expira_em: string | null
-              expires_at: string | null
-              fornecedor_config: Json
-              fornecedor_slug: string | null
-              id: string
-              max_dispositivos: number
-              metadata: Json
-              observacoes_admin: string | null
-              plano: string | null
-              premium: boolean | null
-              produto_id: string | null
-              reset_hwid_motivo: string | null
-              reset_hwid_solicitado_em: string | null
-              revendedor_id: string | null
-              status: string
-              tipo: string
-              trial_duracao_minutos: number | null
-              trial_iniciado_em: string | null
-              ultimo_acesso: string | null
-              updated_at: string
-              versao_min: string | null
-            }[]
-            SetofOptions: {
-              from: "*"
-              to: "licencas"
-              isOneToOne: false
-              isSetofReturn: true
-            }
-          }
-        | {
-            Args: {
-              _duracao_dias?: number
-              _modelo_mr?: boolean
-              _quantidade: number
-              _revendedor_id?: string
-            }
-            Returns: {
-              active: boolean | null
-              ativada_em: string | null
-              chave: string
-              chave_fornecedor: string | null
-              cliente_id: string | null
-              created_at: string
-              device_id: string | null
-              duracao_dias: number
-              email: string | null
-              expira_em: string | null
-              expires_at: string | null
-              fornecedor_config: Json
-              fornecedor_slug: string | null
-              id: string
-              max_dispositivos: number
-              metadata: Json
-              observacoes_admin: string | null
-              plano: string | null
-              premium: boolean | null
-              produto_id: string | null
-              reset_hwid_motivo: string | null
-              reset_hwid_solicitado_em: string | null
-              revendedor_id: string | null
-              status: string
-              tipo: string
-              trial_duracao_minutos: number | null
-              trial_iniciado_em: string | null
-              ultimo_acesso: string | null
-              updated_at: string
-              versao_min: string | null
-            }[]
-            SetofOptions: {
-              from: "*"
-              to: "licencas"
-              isOneToOne: false
-              isSetofReturn: true
-            }
-          }
+      gerar_licencas: {
+        Args: {
+          _duracao_dias?: number
+          _modelo_mr?: boolean
+          _quantidade: number
+          _revendedor_id?: string
+        }
+        Returns: {
+          active: boolean | null
+          ativada_em: string | null
+          chave: string
+          chave_fornecedor: string | null
+          cliente_id: string | null
+          created_at: string
+          device_id: string | null
+          duracao_dias: number
+          email: string | null
+          expira_em: string | null
+          expires_at: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
+          id: string
+          max_dispositivos: number
+          metadata: Json
+          observacoes_admin: string | null
+          plano: string | null
+          premium: boolean | null
+          produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
+          revendedor_id: string | null
+          status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
+          ultimo_acesso: string | null
+          updated_at: string
+          versao_min: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "licencas"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -3818,6 +3772,16 @@ export type Database = {
       provisionar_revendedor_por_pagamento: {
         Args: { _payment_id: string }
         Returns: string
+      }
+      ranking_revendedores_semanal: {
+        Args: never
+        Returns: {
+          nome: string
+          posicao: number
+          receita: number
+          revendedor_id: string
+          vendas: number
+        }[]
       }
       reativar_licenca: {
         Args: { _licenca_id: string }

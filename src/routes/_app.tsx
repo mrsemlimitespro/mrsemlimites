@@ -1,5 +1,5 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { lazy, Suspense, useState } from "react";
+import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   BarChart3,
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { supabase } from "@/integrations/supabase/client";
 import { BrandWatermark } from "@/components/brand-watermark";
 import { BrandLogo } from "@/components/brand-logo";
 import { FirePromosButton } from "@/components/fire-promos-button";
@@ -96,6 +97,57 @@ function AppLayout() {
 function RightContextSidebar() {
   const role = useUserRole();
   const authed = useIsAuthed();
+  const [summary, setSummary] = useState({
+    name: "Conta MR",
+    email: "",
+    credits: 0,
+    activeLicenses: 0,
+    weeklySales: 0,
+  });
+
+  useEffect(() => {
+    if (!authed) return;
+    let alive = true;
+    void (async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const user = userData.user;
+      if (!user) return;
+
+      const [resellerResult, licenseResult, salesResult] = await Promise.all([
+        supabase
+          .from("revendedores")
+          .select("nome,email,saldo_creditos")
+          .eq("auth_user_id", user.id)
+          .maybeSingle(),
+        supabase.from("licencas").select("id", { count: "exact", head: true }).eq("status", "ativa"),
+        supabase
+          .from("payment_transactions")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "aprovado")
+          .gte("created_at", startOfWeekIso()),
+      ]);
+
+      if (!alive) return;
+      const reseller = resellerResult.data;
+      setSummary({
+        name: reseller?.nome || user.user_metadata?.full_name || user.email?.split("@")[0] || "Conta MR",
+        email: reseller?.email || user.email || "",
+        credits: reseller?.saldo_creditos ?? 0,
+        activeLicenses: licenseResult.count ?? 0,
+        weeklySales: salesResult.count ?? 0,
+      });
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [authed]);
+
+  const actions = [
+    { label: "Gerar Licença", icon: KeyRound, color: "text-brand-cyan", to: "/licencas" as const },
+    { label: "Minhas Licenças", icon: LayoutDashboard, color: "text-brand-violet", to: "/licencas" as const },
+    { label: "Vendas", icon: CreditCard, color: "text-brand-red", to: role === "admin" ? "/admin/pagamentos" as const : "/revendedor" as const },
+    { label: "Ranking Semanal", icon: BarChart3, color: "text-brand-yellow", to: "/ranking" as const },
+  ];
   
   return (
     <div className="flex flex-col gap-6 p-4 py-6">
@@ -106,10 +158,10 @@ function RightContextSidebar() {
         </div>
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-bold truncate">MARIO ROGERIO</span>
-            <span className="text-brand-yellow">👑</span>
+            <span className="text-sm font-bold truncate">{summary.name}</span>
+            {role === "admin" && <span className="text-brand-yellow">👑</span>}
           </div>
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Ultra Administrador</p>
+          <p className="truncate text-[10px] font-bold uppercase text-muted-foreground">{role === "admin" ? "Ultra Administrador" : role === "revendedor" ? "Revendedor" : summary.email}</p>
         </div>
       </div>
 
@@ -136,10 +188,10 @@ function RightContextSidebar() {
         <section className="space-y-3">
           <h3 className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] px-1">Saldo de Créditos</h3>
           <div className="glass-strong rounded-2xl p-4 flex flex-col gap-3">
-            <div className="text-2xl font-black tracking-tight text-white">R$ 30,00</div>
-            <button className="w-full h-10 rounded-xl bg-brand-blue text-white text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-90 transition-all">
+            <div className="text-2xl font-black tracking-tight text-foreground">{summary.credits} créditos</div>
+            <Link to="/creditos" className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-primary text-[11px] font-bold uppercase text-primary-foreground transition-opacity hover:opacity-90">
                <CreditCard className="size-4" /> Comprar Créditos
-            </button>
+            </Link>
           </div>
         </section>
 
@@ -147,19 +199,14 @@ function RightContextSidebar() {
         <section className="space-y-3">
           <h3 className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] px-1">Ações Rápidas</h3>
           <div className="space-y-2">
-            {[
-              { label: "Gerar Licença", icon: KeyRound, color: "text-brand-cyan" },
-              { label: "Minhas Licenças", icon: LayoutDashboard, color: "text-brand-violet" },
-              { label: "Vendas", icon: CreditCard, color: "text-brand-red" },
-              { label: "Ranking Semanal", icon: BarChart3, color: "text-brand-yellow" },
-            ].map((action) => (
-              <button key={action.label} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
+            {actions.map((action) => (
+              <Link key={action.label} to={action.to} className="group flex w-full items-center justify-between rounded-xl border border-border/50 bg-muted/40 p-3 transition-colors hover:bg-muted">
                 <div className="flex items-center gap-3">
                   <action.icon className={cn("size-4", action.color)} />
                   <span className="text-xs font-bold">{action.label}</span>
                 </div>
                 <ChevronRight className="size-3 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
-              </button>
+              </Link>
             ))}
           </div>
         </section>
@@ -168,10 +215,9 @@ function RightContextSidebar() {
         <section className="space-y-3">
            <h3 className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] px-1">Informações</h3>
            <div className="glass-strong rounded-2xl p-4 space-y-3">
-              <InfoRow label="Plano Atual" value="Ultra Premium" />
-              <InfoRow label="Validade" value="Vitalício" />
-              <InfoRow label="Licenças Ativas" value="1.350" />
-              <InfoRow label="Limite" value="Ilimitado" />
+               <InfoRow label="Perfil" value={role === "admin" ? "Administrador" : role === "revendedor" ? "Revendedor" : "Cliente"} />
+               <InfoRow label="Licenças Ativas" value={String(summary.activeLicenses)} />
+               <InfoRow label="Vendas na Semana" value={String(summary.weeklySales)} />
            </div>
         </section>
 
@@ -185,14 +231,22 @@ function RightContextSidebar() {
                 <h4 className="text-xs font-black uppercase tracking-wider">Seja um Revendedor</h4>
                 <p className="text-[10px] opacity-80 leading-relaxed">Aumente seus ganhos revendendo nossas licenças exclusivas.</p>
               </div>
-              <button className="w-full h-9 rounded-lg bg-white text-brand-blue text-[10px] font-black uppercase tracking-widest hover:bg-opacity-90 transition-all">
+               <Link to="/quero-ser-revendedor" className="flex h-9 w-full items-center justify-center rounded-lg bg-background text-[10px] font-black uppercase text-primary transition-opacity hover:opacity-90">
                 Quero ser revendedor
-              </button>
+               </Link>
            </div>
         </div>
       </div>
     </div>
   );
+}
+
+function startOfWeekIso() {
+  const date = new Date();
+  const day = date.getDay() || 7;
+  date.setDate(date.getDate() - day + 1);
+  date.setHours(0, 0, 0, 0);
+  return date.toISOString();
 }
 
 function InfoRow({ label, value }: { label: string; value: string }) {
