@@ -248,7 +248,11 @@ function LicencasPage() {
   const [filter, setFilter] = useState<Filter>("todos");
   const [bucket, setBucket] = useState<Bucket>("todos");
   const [activeTab, setActiveTab] = useState<"mr" | "outras">("mr");
-  const [openNova, setOpenNova] = useState(false);
+  const { novo } = Route.useSearch();
+  const [openNova, setOpenNova] = useState(Boolean(novo));
+  useEffect(() => {
+    if (novo) setOpenNova(true);
+  }, [novo]);
   const [openTeste, setOpenTeste] = useState(false);
   const [openEnviarTeste, setOpenEnviarTeste] = useState(false);
   const [rows, setRows] = useState<LicencaRow[]>([]);
