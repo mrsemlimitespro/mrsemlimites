@@ -246,7 +246,7 @@ function LicencasPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("todos");
   const [bucket, setBucket] = useState<Bucket>("todos");
-  const [activeTab, setActiveTab] = useState<"mr" | "outras">("mr");
+  
   const { novo } = Route.useSearch();
   const [openNova, setOpenNova] = useState(Boolean(novo));
   useEffect(() => {
@@ -335,8 +335,8 @@ function LicencasPage() {
       (filter === "revogadas" && l.status === "revogada") ||
       (filter === "bloqueadas" && l.status === "bloqueada");
     const matchB = bucket === "todos" || bucketOfId.get(l.id) === bucket;
-    const matchTab = activeTab === "mr" ? l.key.startsWith("MR-") : !l.key.startsWith("MR-");
-    return matchQ && matchF && matchB && matchTab;
+    return matchQ && matchF && matchB;
+
   });
 
   const available = licenses.filter((l) => l.status === "ativa" && !l.client).length;
@@ -469,31 +469,8 @@ function LicencasPage() {
         <KpiCard title="Ativas Hoje" value={total} color="text-brand-emerald" />
       </div>
 
-      {/* Category Tabs */}
-      <div className="flex items-center gap-2 p-1.5 glass-strong rounded-2xl border border-white/5 w-fit">
-        <button
-          onClick={() => setActiveTab("mr")}
-          className={cn(
-            "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-            activeTab === "mr" 
-              ? "bg-brand-blue text-white shadow-lg shadow-brand-blue/20" 
-              : "text-muted-foreground/60 hover:text-white hover:bg-white/5"
-          )}
-        >
-          Licenças MR
-        </button>
-        <button
-          onClick={() => setActiveTab("outras")}
-          className={cn(
-            "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-            activeTab === "outras" 
-              ? "bg-brand-blue text-white shadow-lg shadow-brand-blue/20" 
-              : "text-muted-foreground/60 hover:text-white hover:bg-white/5"
-          )}
-        >
-          Outras Licenças
-        </button>
-      </div>
+
+
 
       {/* Bucket Filter Hub */}
       <div className="flex flex-col gap-4">
@@ -1044,33 +1021,11 @@ function NovaLicencaModal({
           </Field>
 
           <Field label="Modelo da Chave">
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setUsarModeloMR(false)}
-                className={cn(
-                  "flex-1 rounded-xl border px-3 py-2 text-xs font-medium transition-all",
-                  !usarModeloMR
-                    ? "border-primary bg-primary/10 text-primary shadow-[0_0_12px_-4px_var(--primary)]"
-                    : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5"
-                )}
-              >
-                Padrão (XXXXX-...)
-              </button>
-              <button
-                type="button"
-                onClick={() => setUsarModeloMR(true)}
-                className={cn(
-                  "flex-1 rounded-xl border px-3 py-2 text-xs font-medium transition-all",
-                  usarModeloMR
-                    ? "border-primary bg-primary/10 text-primary shadow-[0_0_12px_-4px_var(--primary)]"
-                    : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5"
-                )}
-              >
-                MR (MR-XXXX-...)
-              </button>
+            <div className="rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-xs font-medium text-primary">
+              Padrão único: MR-XXXX-XXXX-XXXX
             </div>
           </Field>
+
 
           <Field label="Quantidade">
             <Input
