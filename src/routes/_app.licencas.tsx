@@ -71,9 +71,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/licencas")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    novo: search.novo === true || search.novo === "1" || search.novo === "true" ? true : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { novo?: boolean } =>
+    search.novo === true || search.novo === "1" || search.novo === "true" ? { novo: true } : {},
   head: () => ({
     meta: [
       { title: "Licenças — MR Sem Limites" },
