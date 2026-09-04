@@ -335,8 +335,8 @@ function LicencasPage() {
       (filter === "revogadas" && l.status === "revogada") ||
       (filter === "bloqueadas" && l.status === "bloqueada");
     const matchB = bucket === "todos" || bucketOfId.get(l.id) === bucket;
-    const matchTab = activeTab === "mr" ? l.key.startsWith("MR-") : !l.key.startsWith("MR-");
-    return matchQ && matchF && matchB && matchTab;
+    return matchQ && matchF && matchB;
+
   });
 
   const available = licenses.filter((l) => l.status === "ativa" && !l.client).length;
