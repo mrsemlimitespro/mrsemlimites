@@ -469,31 +469,8 @@ function LicencasPage() {
         <KpiCard title="Ativas Hoje" value={total} color="text-brand-emerald" />
       </div>
 
-      {/* Category Tabs */}
-      <div className="flex items-center gap-2 p-1.5 glass-strong rounded-2xl border border-white/5 w-fit">
-        <button
-          onClick={() => setActiveTab("mr")}
-          className={cn(
-            "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-            activeTab === "mr" 
-              ? "bg-brand-blue text-white shadow-lg shadow-brand-blue/20" 
-              : "text-muted-foreground/60 hover:text-white hover:bg-white/5"
-          )}
-        >
-          Licenças MR
-        </button>
-        <button
-          onClick={() => setActiveTab("outras")}
-          className={cn(
-            "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-            activeTab === "outras" 
-              ? "bg-brand-blue text-white shadow-lg shadow-brand-blue/20" 
-              : "text-muted-foreground/60 hover:text-white hover:bg-white/5"
-          )}
-        >
-          Outras Licenças
-        </button>
-      </div>
+
+
 
       {/* Bucket Filter Hub */}
       <div className="flex flex-col gap-4">
