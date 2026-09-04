@@ -143,7 +143,7 @@ function RightContextSidebar() {
   }, [authed]);
 
   const actions = [
-    { label: "Gerar Licença", icon: KeyRound, color: "text-brand-cyan", to: "/licencas" as const },
+    { label: "Gerar Licença", icon: KeyRound, color: "text-brand-cyan", to: "/licencas" as const, search: { novo: true } as const },
     { label: "Minhas Licenças", icon: LayoutDashboard, color: "text-brand-violet", to: "/licencas" as const },
     { label: "Vendas", icon: CreditCard, color: "text-brand-red", to: role === "admin" ? "/admin/pagamentos" as const : "/revendedor" as const },
     { label: "Ranking Semanal", icon: BarChart3, color: "text-brand-yellow", to: "/ranking" as const },
