@@ -71,6 +71,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/licencas")({
+  validateSearch: (search: Record<string, unknown>): { novo?: boolean } =>
+    search.novo === true || search.novo === "1" || search.novo === "true" ? { novo: true } : {},
   head: () => ({
     meta: [
       { title: "Licenças — MR Sem Limites" },
@@ -245,7 +247,11 @@ function LicencasPage() {
   const [filter, setFilter] = useState<Filter>("todos");
   const [bucket, setBucket] = useState<Bucket>("todos");
   const [activeTab, setActiveTab] = useState<"mr" | "outras">("mr");
-  const [openNova, setOpenNova] = useState(false);
+  const { novo } = Route.useSearch();
+  const [openNova, setOpenNova] = useState(Boolean(novo));
+  useEffect(() => {
+    if (novo) setOpenNova(true);
+  }, [novo]);
   const [openTeste, setOpenTeste] = useState(false);
   const [openEnviarTeste, setOpenEnviarTeste] = useState(false);
   const [rows, setRows] = useState<LicencaRow[]>([]);

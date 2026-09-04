@@ -143,7 +143,7 @@ function RightContextSidebar() {
   }, [authed]);
 
   const actions = [
-    { label: "Gerar Licença", icon: KeyRound, color: "text-brand-cyan", to: "/licencas" as const },
+    { label: "Gerar Licença", icon: KeyRound, color: "text-brand-cyan", to: "/licencas" as const, search: { novo: true } as const },
     { label: "Minhas Licenças", icon: LayoutDashboard, color: "text-brand-violet", to: "/licencas" as const },
     { label: "Vendas", icon: CreditCard, color: "text-brand-red", to: role === "admin" ? "/admin/pagamentos" as const : "/revendedor" as const },
     { label: "Ranking Semanal", icon: BarChart3, color: "text-brand-yellow", to: "/ranking" as const },
@@ -200,7 +200,7 @@ function RightContextSidebar() {
           <h3 className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] px-1">Ações Rápidas</h3>
           <div className="space-y-2">
             {actions.map((action) => (
-              <Link key={action.label} to={action.to} className="group flex w-full items-center justify-between rounded-xl border border-border/50 bg-muted/40 p-3 transition-colors hover:bg-muted">
+              <Link key={action.label} to={action.to} search={(action as { search?: Record<string, unknown> }).search as never} className="group flex w-full items-center justify-between rounded-xl border border-border/50 bg-muted/40 p-3 transition-colors hover:bg-muted">
                 <div className="flex items-center gap-3">
                   <action.icon className={cn("size-4", action.color)} />
                   <span className="text-xs font-bold">{action.label}</span>
