@@ -246,7 +246,7 @@ function LicencasPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("todos");
   const [bucket, setBucket] = useState<Bucket>("todos");
-  const [activeTab, setActiveTab] = useState<"mr" | "outras">("mr");
+  
   const { novo } = Route.useSearch();
   const [openNova, setOpenNova] = useState(Boolean(novo));
   useEffect(() => {
