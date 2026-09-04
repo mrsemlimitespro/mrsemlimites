@@ -1044,33 +1044,11 @@ function NovaLicencaModal({
           </Field>
 
           <Field label="Modelo da Chave">
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setUsarModeloMR(false)}
-                className={cn(
-                  "flex-1 rounded-xl border px-3 py-2 text-xs font-medium transition-all",
-                  !usarModeloMR
-                    ? "border-primary bg-primary/10 text-primary shadow-[0_0_12px_-4px_var(--primary)]"
-                    : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5"
-                )}
-              >
-                Padrão (XXXXX-...)
-              </button>
-              <button
-                type="button"
-                onClick={() => setUsarModeloMR(true)}
-                className={cn(
-                  "flex-1 rounded-xl border px-3 py-2 text-xs font-medium transition-all",
-                  usarModeloMR
-                    ? "border-primary bg-primary/10 text-primary shadow-[0_0_12px_-4px_var(--primary)]"
-                    : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5"
-                )}
-              >
-                MR (MR-XXXX-...)
-              </button>
+            <div className="rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-xs font-medium text-primary">
+              Padrão único: MR-XXXX-XXXX-XXXX
             </div>
           </Field>
+
 
           <Field label="Quantidade">
             <Input
