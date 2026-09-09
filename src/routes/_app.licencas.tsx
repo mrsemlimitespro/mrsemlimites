@@ -639,8 +639,8 @@ function LicencasPage() {
       )}
 
       {/* Table */}
-      <div className="glass overflow-hidden rounded-2xl">
-        <div className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="glass overflow-x-auto rounded-2xl">
+        <div className="grid min-w-[1020px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <div className="flex items-center">
             <Checkbox
               checked={filtered.length > 0 && filtered.every((l) => selected.has(l.id))}
@@ -678,7 +678,7 @@ function LicencasPage() {
             {filtered.map((l) => (
               <li
                 key={l.id}
-                className="grid grid-cols-[36px_minmax(220px,1.4fr)_1fr_1fr_120px_1fr_1fr_auto] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
+                className="grid min-w-[1020px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_auto] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
               >
                 <div className="flex items-center">
                   <Checkbox
@@ -715,7 +715,9 @@ function LicencasPage() {
                   </button>
                 </div>
                 <div className="text-muted-foreground truncate">{l.client ?? "—"}</div>
-                <div className="truncate text-foreground/85">{l.email}</div>
+                <div className="truncate text-foreground/85" title={l.email || undefined}>
+                  {l.email && l.email !== "estoque" ? l.email : "—"}
+                </div>
                 <div>
                   <StatusPill status={l.status} />
                 </div>
