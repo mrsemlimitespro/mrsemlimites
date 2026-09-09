@@ -418,18 +418,42 @@ function LicencasPage() {
     reload();
   }
 
-  const KpiCard = ({ title, value, color }: { title: string; value: number | string; color: string }) => (
-    <div className="glass-strong p-4 rounded-2xl flex flex-col gap-2 border border-white/5 relative overflow-hidden group">
-      <div className={cn("absolute top-0 right-0 w-16 h-16 bg-current opacity-[0.03] blur-2xl rounded-full translate-x-1/2 -translate-y-1/2", color)} />
-      <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">{title}</span>
-      <div className="flex items-end justify-between">
-        <span className="text-2xl font-black text-white">{value}</span>
-        <div className={cn("size-6 rounded-lg grid place-items-center bg-white/5", color)}>
-          <div className={cn("size-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]", color)} />
+  const KpiCard = ({
+    title,
+    value,
+    color,
+    target,
+  }: {
+    title: string;
+    value: number | string;
+    color: string;
+    target?: Bucket;
+  }) => {
+    const active = target !== undefined && bucket === target;
+    return (
+      <button
+        type="button"
+        onClick={() => target !== undefined && setBucket(active ? "todos" : target)}
+        className={cn(
+          "glass-strong p-4 rounded-2xl flex flex-col gap-2 border relative overflow-hidden group text-left transition-all",
+          active
+            ? "border-brand-blue/70 shadow-lg shadow-brand-blue/20"
+            : "border-white/5 hover:border-white/15",
+          target === undefined && "cursor-default",
+        )}
+      >
+        <div className={cn("absolute top-0 right-0 w-16 h-16 bg-current opacity-[0.03] blur-2xl rounded-full translate-x-1/2 -translate-y-1/2", color)} />
+        <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">{title}</span>
+        <div className="flex items-end justify-between">
+          <span className="text-2xl font-black text-white">{value}</span>
+          <div className={cn("size-6 rounded-lg grid place-items-center bg-white/5", color)}>
+            <div className={cn("size-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]", color)} />
+          </div>
         </div>
-      </div>
-    </div>
-  );
+      </button>
+    );
+  };
+
   return (
     <PageContainer className="space-y-6 pb-32">
       {/* Page Header */}
