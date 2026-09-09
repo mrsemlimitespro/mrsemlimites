@@ -281,15 +281,31 @@ function LicencasPage() {
   }
 
   useEffect(() => {
-    reload();
+    let alive = true;
+    let started = false;
+    const start = () => {
+      if (!alive || started) return;
+      started = true;
+      reload();
+    };
+    // Espera a sessão hidratar antes da primeira busca (RLS exige usuário autenticado)
+    supabase.auth.getSession().finally(start);
+    const { data: authSub } = supabase.auth.onAuthStateChange(() => {
+      if (!alive) return;
+      if (!started) start();
+      else reload();
+    });
     const ch = supabase
       .channel("licencas-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload())
       .subscribe();
     return () => {
+      alive = false;
+      authSub.subscription.unsubscribe();
       supabase.removeChannel(ch);
     };
   }, []);
+
 
   const licenses = rows.map(computeView);
 
