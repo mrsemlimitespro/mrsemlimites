@@ -325,6 +325,7 @@ function LicencasPage() {
 
   const bucketCounts = useMemo(() => {
     const c: Record<string, number> = {
+      todos: 0,
       teste: 0,
       "1d": 0,
       "2d": 0,
@@ -338,6 +339,7 @@ function LicencasPage() {
     };
     bucketOfId.forEach((b) => {
       c[b] = (c[b] ?? 0) + 1;
+      c.todos += 1;
     });
     return c;
   }, [bucketOfId]);
