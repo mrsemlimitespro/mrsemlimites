@@ -1033,43 +1033,23 @@ function NovaLicencaModal({
     setBusy(true);
     try {
       const em = email.trim().toLowerCase();
-      // 1) Gera as chaves no estoque
-      const { data: created, error } = await (supabase as any).rpc("gerar_licencas", {
+      // Gera as chaves já com tipo/duração corretos (uma única chamada atômica)
+      const { data: created, error } = await (supabase as any).rpc("gerar_licencas_v3", {
         _quantidade: quantidade,
-        _duracao_dias: preset.dias ?? 1,
+        _tipo: preset.kind,
+        _duracao_dias: preset.kind === "premium" ? (preset.dias ?? 30) : null,
+        _trial_minutos: preset.kind === "teste" ? (preset.minutos ?? 60) : null,
+        _email: em || null,
+        _metadata: {
+          cliente_nome: nome.trim() || null,
+          cliente_telefone: telefone.trim() || null,
+        },
         _revendedor_id: null,
         _modelo_mr: true,
       });
       if (error) throw error;
 
-      // 2) Aplica tipo / duração / dados do cliente nas chaves recém-criadas
-      const ids = (created ?? []).map((r: any) => r.id).filter(Boolean);
       const chaves = (created ?? []).map((r: any) => r.chave).filter(Boolean) as string[];
-      if (ids.length > 0) {
-        const patch: Record<string, unknown> = { tipo: preset.kind };
-        if (preset.kind === "teste") {
-          patch.trial_duracao_minutos = preset.minutos ?? 60;
-          patch.duracao_dias = null;
-        } else if ((preset.dias ?? 0) === 0 && preset.minutos) {
-          patch.trial_duracao_minutos = preset.minutos;
-          patch.duracao_dias = null;
-        } else {
-          patch.trial_duracao_minutos = null;
-          patch.duracao_dias = preset.dias ?? 30;
-        }
-        if (em) patch.email = em;
-        if (nome.trim() || telefone.trim()) {
-          patch.metadata = {
-            cliente_nome: nome.trim() || null,
-            cliente_telefone: telefone.trim() || null,
-          };
-        }
-        const { error: upErr } = await (supabase as any)
-          .from("licencas")
-          .update(patch)
-          .in("id", ids);
-        if (upErr) throw upErr;
-      }
 
       setResultado({
         chaves,
