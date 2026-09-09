@@ -715,7 +715,9 @@ function LicencasPage() {
                   </button>
                 </div>
                 <div className="text-muted-foreground truncate">{l.client ?? "—"}</div>
-                <div className="truncate text-foreground/85">{l.email}</div>
+                <div className="truncate text-foreground/85" title={l.email || undefined}>
+                  {l.email && l.email !== "estoque" ? l.email : "—"}
+                </div>
                 <div>
                   <StatusPill status={l.status} />
                 </div>
