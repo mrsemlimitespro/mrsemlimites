@@ -138,7 +138,13 @@ const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
 ];
 
 function bucketOfRow(row: LicencaRow): Bucket {
-  if ((row.tipo ?? "").toLowerCase() === "teste") return "teste";
+  const min = row.trial_duracao_minutos ?? null;
+  if ((row.tipo ?? "").toLowerCase() === "teste" || min) {
+    if (min === 60 * 24) return "1d";
+    if (min === 60 * 24 * 2) return "2d";
+    if (min === 60 * 24 * 3) return "3d";
+    return "teste";
+  }
   const dias = row.duracao_dias ?? null;
   if (dias === 1) return "1d";
   if (dias === 2) return "2d";
