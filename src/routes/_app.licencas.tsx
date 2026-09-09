@@ -956,35 +956,104 @@ function NovaLicencaModal({
   const [busy, setBusy] = useState(false);
   const preset = presets[presetIdx] ?? presets[0];
   const maxQtd = isAdmin ? 500 : 1;
-  const [usarModeloMR, setUsarModeloMR] = useState(true);
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [resultado, setResultado] = useState<{
+    chaves: string[];
+    validade: string;
+    nome: string;
+    email: string;
+    telefone: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      setNome("");
+      setEmail("");
+      setTelefone("");
+      setQuantidade(1);
+      setResultado(null);
+    }
+  }, [open]);
+
+  const validadeLabel =
+    preset.kind === "teste" || ((preset.dias ?? 0) === 0 && preset.minutos)
+      ? (preset.minutos ?? 60) < 60
+        ? `${preset.minutos} minutos`
+        : (preset.minutos ?? 60) < 60 * 24
+          ? `${Math.round((preset.minutos ?? 60) / 60)} hora(s)`
+          : `${Math.round((preset.minutos ?? 60) / (60 * 24))} dia(s)`
+      : (preset.dias ?? 30) >= 365
+        ? "1 ano"
+        : `${preset.dias} dias`;
+
+  function textoParaCliente() {
+    if (!resultado) return "";
+    const chaves = resultado.chaves.join("\n");
+    return [
+      `Olá${resultado.nome ? `, ${resultado.nome}` : ""}! 👋`,
+      "",
+      "Sua licença do MR Sem Limites está pronta:",
+      "",
+      `🔑 ${resultado.chaves.length > 1 ? "Chaves" : "Chave"}:`,
+      chaves,
+      "",
+      `⏳ Validade: ${resultado.validade} (contados a partir da ativação)`,
+      "",
+      "Como ativar:",
+      "1. Instale/abra a extensão MR Sem Limites no navegador.",
+      "2. Cole a chave no campo de ativação.",
+      "3. Clique em Ativar — pronto, acesso liberado!",
+      "",
+      "Qualquer dúvida, é só chamar. 🚀",
+    ].join("\n");
+  }
+
+  async function copiarParaCliente() {
+    try {
+      await navigator.clipboard.writeText(textoParaCliente());
+      toast.success("Mensagem copiada para enviar ao cliente");
+    } catch {
+      toast.error("Não foi possível copiar");
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     try {
-      // 1) Gera as chaves no estoque - agora passando o modelo de chave escolhido
+      const em = email.trim().toLowerCase();
+      // 1) Gera as chaves no estoque
       const { data: created, error } = await (supabase as any).rpc("gerar_licencas", {
         _quantidade: quantidade,
         _duracao_dias: preset.dias ?? 1,
         _revendedor_id: null,
-        _modelo_mr: usarModeloMR,
+        _modelo_mr: true,
       });
       if (error) throw error;
 
-      // 2) Aplica tipo / trial_duracao_minutos nas chaves recém-criadas
+      // 2) Aplica tipo / duração / dados do cliente nas chaves recém-criadas
       const ids = (created ?? []).map((r: any) => r.id).filter(Boolean);
+      const chaves = (created ?? []).map((r: any) => r.chave).filter(Boolean) as string[];
       if (ids.length > 0) {
         const patch: Record<string, unknown> = { tipo: preset.kind };
         if (preset.kind === "teste") {
           patch.trial_duracao_minutos = preset.minutos ?? 60;
           patch.duracao_dias = null;
         } else if ((preset.dias ?? 0) === 0 && preset.minutos) {
-          // Premium curto (ex.: 1 hora) → armazena minutos em trial_duracao_minutos
           patch.trial_duracao_minutos = preset.minutos;
           patch.duracao_dias = null;
         } else {
           patch.trial_duracao_minutos = null;
           patch.duracao_dias = preset.dias ?? 30;
+        }
+        if (em) patch.email = em;
+        if (nome.trim() || telefone.trim()) {
+          patch.metadata = {
+            cliente_nome: nome.trim() || null,
+            cliente_telefone: telefone.trim() || null,
+          };
         }
         const { error: upErr } = await (supabase as any)
           .from("licencas")
@@ -993,10 +1062,15 @@ function NovaLicencaModal({
         if (upErr) throw upErr;
       }
 
-
-      toast.success(`${quantidade} chave(s) ${preset.label} geradas`);
+      setResultado({
+        chaves,
+        validade: validadeLabel,
+        nome: nome.trim(),
+        email: em,
+        telefone: telefone.trim(),
+      });
+      toast.success(`${chaves.length} chave(s) ${preset.label} geradas`);
       onSaved();
-      onOpenChange(false);
     } catch (err: any) {
       toast.error(err?.message ?? "Falha ao gerar chaves");
     } finally {
@@ -1006,104 +1080,190 @@ function NovaLicencaModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-strong sm:max-w-md">
+      <DialogContent className="glass-strong sm:max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Criar Nova Licença</DialogTitle>
+          <DialogTitle>{resultado ? "Licença gerada com sucesso" : "Criar Nova Licença"}</DialogTitle>
           <DialogDescription>
-            Escolha o tempo de validade. O tempo definido aqui aparece direto na extensão do cliente.
+            {resultado
+              ? "Copie a mensagem pronta e envie para o cliente."
+              : "Preencha os dados do cliente e escolha o tempo de validade."}
           </DialogDescription>
         </DialogHeader>
 
-        <form className="space-y-4" onSubmit={submit}>
-          <Field label="Tipo / Duração">
-            <div className="grid grid-cols-2 gap-2">
-              {presets.map((p, i) => {
-                const active = presetIdx === i;
-                const isTeste = p.kind === "teste";
-                return (
-                  <button
-                    type="button"
-                    key={p.label}
-                    onClick={() => setPresetIdx(i)}
-                    className={cn(
-                      "rounded-xl border px-3 py-2.5 text-left text-sm font-medium transition-all",
-                      active
-                        ? isTeste
-                          ? "border-amber-400/70 bg-amber-500/10 text-amber-200 shadow-[0_0_18px_-4px_rgba(251,191,36,0.55)]"
-                          : "border-fuchsia-400/70 bg-fuchsia-500/10 text-fuchsia-200 shadow-[0_0_18px_-4px_rgba(217,70,239,0.55)]"
-                        : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5 hover:text-foreground",
-                    )}
-                  >
-                    <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] opacity-70">
-                      {isTeste ? "TESTE" : "PREMIUM"}
-                    </span>
-                    <span className="block text-sm">
-                      {isTeste
-                        ? p.minutos! < 60
-                          ? `${p.minutos} minutos`
-                          : p.minutos === 60
-                            ? "1 hora"
-                            : p.minutos === 60 * 24
-                              ? "1 dia"
-                              : `${Math.round((p.minutos ?? 0) / (60 * 24))} dias`
-                        : (p.dias ?? 0) === 0 && p.minutos
-                          ? p.minutos === 60
-                            ? "1 hora"
-                            : `${p.minutos} minutos`
-                          : p.dias! >= 365
-                            ? "1 ano"
-                            : `${p.dias} dias`}
-                    </span>
-
-                  </button>
-                );
-              })}
+        {resultado ? (
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-emerald-400/50 bg-emerald-500/10 p-4 space-y-3">
+              <div className="space-y-1">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-200/80">
+                  {resultado.chaves.length > 1 ? "Chaves" : "Chave"}
+                </span>
+                <div className="space-y-1">
+                  {resultado.chaves.map((c) => (
+                    <div
+                      key={c}
+                      className="flex items-center justify-between gap-2 rounded-lg bg-black/30 px-3 py-2 font-mono text-sm text-emerald-100"
+                    >
+                      <span className="truncate">{c}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(c);
+                          toast.success("Chave copiada");
+                        }}
+                        className="shrink-0 text-emerald-200 hover:text-white"
+                        aria-label="Copiar chave"
+                      >
+                        <Copy className="size-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <dl className="grid grid-cols-1 gap-1 text-sm text-emerald-50/90">
+                <div className="flex justify-between gap-3">
+                  <dt className="text-emerald-200/70">Validade</dt>
+                  <dd>{resultado.validade}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-emerald-200/70">Nome</dt>
+                  <dd className="truncate">{resultado.nome || "—"}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-emerald-200/70">E-mail</dt>
+                  <dd className="truncate">{resultado.email || "—"}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-emerald-200/70">Telefone</dt>
+                  <dd className="truncate">{resultado.telefone || "—"}</dd>
+                </div>
+              </dl>
             </div>
-          </Field>
 
-          <Field label="Modelo da Chave">
-            <div className="rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-xs font-medium text-primary">
-              Padrão único: MR-XXXX-XXXX-XXXX
-            </div>
-          </Field>
+            <Textarea readOnly rows={6} value={textoParaCliente()} className="text-xs" />
 
+            <DialogFooter className="pt-2">
+              <Button type="button" variant="ghost" onClick={() => setResultado(null)}>
+                Gerar outra
+              </Button>
+              <Button
+                type="button"
+                onClick={copiarParaCliente}
+                className="gradient-primary text-primary-foreground"
+              >
+                <Copy className="size-4" />
+                Copiar para o cliente
+              </Button>
+            </DialogFooter>
+          </div>
+        ) : (
+          <form className="space-y-4" onSubmit={submit}>
+            <Field label="Nome do cliente">
+              <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex.: João Silva" autoFocus />
+            </Field>
+            <Field label="E-mail do cliente (opcional)">
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="cliente@email.com"
+              />
+            </Field>
+            <Field label="Telefone do cliente (opcional)">
+              <Input
+                value={telefone}
+                onChange={(e) => setTelefone(e.target.value)}
+                placeholder="(11) 99999-9999"
+              />
+            </Field>
 
-          <Field label="Quantidade">
-            <Input
-              type="number"
-              min={1}
-              max={maxQtd}
-              value={quantidade}
-              onChange={(e) =>
-                setQuantidade(Math.min(maxQtd, Math.max(1, parseInt(e.target.value) || 1)))
-              }
-              disabled={!isAdmin}
-              autoFocus
-            />
-            {!isAdmin && (
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                Revendedores podem gerar apenas 1 chave de teste de 20 minutos por vez.
-              </p>
-            )}
-          </Field>
+            <Field label="Tipo / Duração">
+              <div className="grid grid-cols-2 gap-2">
+                {presets.map((p, i) => {
+                  const active = presetIdx === i;
+                  const isTeste = p.kind === "teste";
+                  return (
+                    <button
+                      type="button"
+                      key={p.label}
+                      onClick={() => setPresetIdx(i)}
+                      className={cn(
+                        "rounded-xl border px-3 py-2.5 text-left text-sm font-medium transition-all",
+                        active
+                          ? isTeste
+                            ? "border-amber-400/70 bg-amber-500/10 text-amber-200 shadow-[0_0_18px_-4px_rgba(251,191,36,0.55)]"
+                            : "border-fuchsia-400/70 bg-fuchsia-500/10 text-fuchsia-200 shadow-[0_0_18px_-4px_rgba(217,70,239,0.55)]"
+                          : "border-border/60 bg-surface/40 text-muted-foreground hover:bg-white/5 hover:text-foreground",
+                      )}
+                    >
+                      <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] opacity-70">
+                        {isTeste ? "TESTE" : "PREMIUM"}
+                      </span>
+                      <span className="block text-sm">
+                        {isTeste
+                          ? p.minutos! < 60
+                            ? `${p.minutos} minutos`
+                            : p.minutos === 60
+                              ? "1 hora"
+                              : p.minutos === 60 * 24
+                                ? "1 dia"
+                                : `${Math.round((p.minutos ?? 0) / (60 * 24))} dias`
+                          : (p.dias ?? 0) === 0 && p.minutos
+                            ? p.minutos === 60
+                              ? "1 hora"
+                              : `${p.minutos} minutos`
+                            : p.dias! >= 365
+                              ? "1 ano"
+                              : `${p.dias} dias`}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
 
-          <DialogFooter className="pt-2">
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              disabled={busy}
-              className="gradient-primary text-primary-foreground"
-            >
-              {busy ? <Loader2 className="size-4 animate-spin" /> : "Gerar chaves"}
-            </Button>
-          </DialogFooter>
-        </form>
+            <Field label="Modelo da Chave">
+              <div className="rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-xs font-medium text-primary">
+                Padrão único: MR-XXXX-XXXX-XXXX
+              </div>
+            </Field>
+
+            <Field label="Quantidade">
+              <Input
+                type="number"
+                min={1}
+                max={maxQtd}
+                value={quantidade}
+                onChange={(e) =>
+                  setQuantidade(Math.min(maxQtd, Math.max(1, parseInt(e.target.value) || 1)))
+                }
+                disabled={!isAdmin}
+              />
+              {!isAdmin && (
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  Revendedores podem gerar apenas 1 chave de teste por vez.
+                </p>
+              )}
+            </Field>
+
+            <DialogFooter className="pt-2">
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={busy}
+                className="gradient-primary text-primary-foreground"
+              >
+                {busy ? <Loader2 className="size-4 animate-spin" /> : "Gerar licença"}
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
 }
+
 
 
 function ChaveTesteModal({
