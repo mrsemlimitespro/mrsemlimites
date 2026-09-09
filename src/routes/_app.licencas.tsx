@@ -1678,28 +1678,20 @@ function EnviarTesteModal({
         );
       }
 
-      // 1) Gera 1 chave (fica com duração_dias default; ajustamos abaixo)
-      const { data: created, error } = await (supabase as any).rpc("gerar_licencas", {
+      // Gera 1 chave de teste (1 hora) já com tipo/duração corretos
+      const { data: created, error } = await (supabase as any).rpc("gerar_licencas_v3", {
         _quantidade: 1,
-        _duracao_dias: 1,
+        _tipo: "teste",
+        _duracao_dias: null,
+        _trial_minutos: 60,
+        _email: em,
+        _metadata: { cliente_nome: nome.trim() || null, cliente_telefone: whatsapp.trim() || null },
         _revendedor_id: null,
+        _modelo_mr: true,
       });
       if (error) throw error;
-      const novaId = created?.[0]?.id as string | undefined;
       const novaChave = created?.[0]?.chave as string | undefined;
-      if (!novaId || !novaChave) throw new Error("Falha ao gerar chave.");
-
-      // 2) Marca como teste 1h
-      const { error: upErr } = await (supabase as any)
-        .from("licencas")
-        .update({
-          tipo: "teste",
-          trial_duracao_minutos: 60,
-          duracao_dias: null,
-          email: em,
-        })
-        .eq("id", novaId);
-      if (upErr) throw upErr;
+      if (!novaChave) throw new Error("Falha ao gerar chave.");
 
       setChaveGerada(novaChave);
       setMsg((prev) => (prev.trim() ? prev : defaultMsg(novaChave)));
