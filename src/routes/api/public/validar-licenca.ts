@@ -29,7 +29,8 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
               ? origin! 
               : "*",
             "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "content-type",
+            "Access-Control-Allow-Headers": "content-type, authorization, apikey, x-client-info",
+            "Access-Control-Max-Age": "86400",
           },
         });
       },
