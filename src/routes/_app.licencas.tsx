@@ -500,13 +500,14 @@ function LicencasPage() {
 
       {/* 7 KPI Cards Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <KpiCard title="Mensais" value={bucketCounts["30d"] ?? 0} color="text-brand-blue" />
-        <KpiCard title="Trimestrais" value={bucketCounts["90d"] ?? 0} color="text-brand-cyan" />
-        <KpiCard title="Semestrais" value={bucketCounts["180d"] ?? 0} color="text-brand-violet" />
-        <KpiCard title="Anuais" value={bucketCounts["1ano"] ?? 0} color="text-brand-magenta" />
-        <KpiCard title="Vitalícias" value={bucketCounts["outros"] ?? 0} color="text-brand-yellow" />
-        <KpiCard title="Trials" value={bucketCounts["teste"] ?? 0} color="text-brand-orange" />
-        <KpiCard title="Ativas Hoje" value={total} color="text-brand-emerald" />
+        <KpiCard title="Mensais" value={bucketCounts["30d"] ?? 0} color="text-brand-blue" target="30d" />
+        <KpiCard title="Trimestrais" value={bucketCounts["90d"] ?? 0} color="text-brand-cyan" target="90d" />
+        <KpiCard title="Semestrais" value={bucketCounts["180d"] ?? 0} color="text-brand-violet" target="180d" />
+        <KpiCard title="Anuais" value={bucketCounts["1ano"] ?? 0} color="text-brand-magenta" target="1ano" />
+        <KpiCard title="Vitalícias" value={bucketCounts["outros"] ?? 0} color="text-brand-yellow" target="outros" />
+        <KpiCard title="Trials" value={bucketCounts["teste"] ?? 0} color="text-brand-orange" target="teste" />
+        <KpiCard title="Ativas Hoje" value={total} color="text-brand-emerald" target="todos" />
+
       </div>
 
 
