@@ -99,6 +99,7 @@ type LicencaRow = {
   trial_duracao_minutos: number | null;
   tipo: string | null;
   observacoes_admin: string | null;
+  metadata?: { cliente_nome?: string | null; cliente_telefone?: string | null } | null;
   clientes?: { nome: string | null } | null;
 };
 
