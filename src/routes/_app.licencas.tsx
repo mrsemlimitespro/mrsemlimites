@@ -807,6 +807,30 @@ function LicencasPage() {
                   >
                     <Copy className="size-4" strokeWidth={2} />
                   </button>
+                  <button
+                    type="button"
+                    aria-label="Copiar mensagem para o cliente"
+                    title="Copiar mensagem para o cliente"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(mensagemCliente(l));
+                      toast.success("Mensagem copiada");
+                    }}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                  >
+                    <ClipboardPaste className="size-4" strokeWidth={2} />
+                  </button>
+                  {waLink(l.telefone) && (
+                    <a
+                      href={waLink(l.telefone)!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Abrir WhatsApp do cliente"
+                      title="Abrir WhatsApp do cliente"
+                      className="rounded-md p-1.5 text-emerald-400 transition-colors hover:bg-emerald-500/15"
+                    >
+                      <MessageCircle className="size-4" strokeWidth={2} />
+                    </a>
+                  )}
                   {l.status === "revogada" || l.status === "bloqueada" ? (
                     <button
                       type="button"
