@@ -185,6 +185,46 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
 
 }
 
+/** Link do WhatsApp a partir do telefone salvo na licença. */
+function waLink(telefone: string | null): string | null {
+  const digits = (telefone ?? "").replace(/\D/g, "");
+  if (digits.length < 8) return null;
+  const withCountry = digits.startsWith("55") ? digits : `55${digits}`;
+  return `https://wa.me/${withCountry}`;
+}
+
+function validadeTexto(l: License): string {
+  if (l.expiraEm) {
+    return new Date(l.expiraEm).toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+  if (l.trialMinutos && l.trialMinutos > 0) {
+    return l.trialMinutos >= 1440
+      ? `${Math.round(l.trialMinutos / 1440)} dia(s) após a ativação`
+      : `${l.trialMinutos} minutos após a ativação`;
+  }
+  if (l.duracaoDias && l.duracaoDias > 0) return `${l.duracaoDias} dia(s) após a ativação`;
+  return "Vitalícia";
+}
+
+/** Mensagem pronta para enviar ao cliente. */
+function mensagemCliente(l: License): string {
+  const linhas = ["🔑 Sua licença MR Sem Limites está pronta!", ""];
+  if (l.client) linhas.push(`👤 Nome: ${l.client}`);
+  if (l.email && l.email !== "estoque") linhas.push(`📧 E-mail: ${l.email}`);
+  if (l.telefone) linhas.push(`📱 Telefone: ${l.telefone}`);
+  linhas.push(`🔑 Chave: ${l.key}`);
+  linhas.push(`⏳ Validade: ${validadeTexto(l)}`);
+  linhas.push("");
+  linhas.push("Ative a chave direto na extensão MR Sem Limites. Qualquer dúvida, é só chamar!");
+  return linhas.join("\n");
+}
+
 function formatCountdown(
   expiraEmIso: string | null,
   duracaoDias: number | null,
