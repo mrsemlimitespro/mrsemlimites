@@ -109,6 +109,7 @@ type License = {
   id: string;
   key: string;
   client: string | null;
+  telefone: string | null;
   email: string;
   status: ViewStatus;
   device: string | null;
@@ -171,6 +172,7 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
     id: row.id,
     key: row.chave,
     client: row.clientes?.nome ?? row.metadata?.cliente_nome ?? null,
+    telefone: row.metadata?.cliente_telefone ?? null,
     email: row.email ?? (row.cliente_id ? "" : "estoque"),
     status,
     device: row.device_id,
@@ -181,6 +183,46 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
     tipo: row.tipo ?? null,
   };
 
+}
+
+/** Link do WhatsApp a partir do telefone salvo na licença. */
+function waLink(telefone: string | null): string | null {
+  const digits = (telefone ?? "").replace(/\D/g, "");
+  if (digits.length < 8) return null;
+  const withCountry = digits.startsWith("55") ? digits : `55${digits}`;
+  return `https://wa.me/${withCountry}`;
+}
+
+function validadeTexto(l: License): string {
+  if (l.expiraEm) {
+    return new Date(l.expiraEm).toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+  if (l.trialMinutos && l.trialMinutos > 0) {
+    return l.trialMinutos >= 1440
+      ? `${Math.round(l.trialMinutos / 1440)} dia(s) após a ativação`
+      : `${l.trialMinutos} minutos após a ativação`;
+  }
+  if (l.duracaoDias && l.duracaoDias > 0) return `${l.duracaoDias} dia(s) após a ativação`;
+  return "Vitalícia";
+}
+
+/** Mensagem pronta para enviar ao cliente. */
+function mensagemCliente(l: License): string {
+  const linhas = ["🔑 Sua licença MR Sem Limites está pronta!", ""];
+  if (l.client) linhas.push(`👤 Nome: ${l.client}`);
+  if (l.email && l.email !== "estoque") linhas.push(`📧 E-mail: ${l.email}`);
+  if (l.telefone) linhas.push(`📱 Telefone: ${l.telefone}`);
+  linhas.push(`🔑 Chave: ${l.key}`);
+  linhas.push(`⏳ Validade: ${validadeTexto(l)}`);
+  linhas.push("");
+  linhas.push("Ative a chave direto na extensão MR Sem Limites. Qualquer dúvida, é só chamar!");
+  return linhas.join("\n");
 }
 
 function formatCountdown(
@@ -765,6 +807,30 @@ function LicencasPage() {
                   >
                     <Copy className="size-4" strokeWidth={2} />
                   </button>
+                  <button
+                    type="button"
+                    aria-label="Copiar mensagem para o cliente"
+                    title="Copiar mensagem para o cliente"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(mensagemCliente(l));
+                      toast.success("Mensagem copiada");
+                    }}
+                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                  >
+                    <ClipboardPaste className="size-4" strokeWidth={2} />
+                  </button>
+                  {waLink(l.telefone) && (
+                    <a
+                      href={waLink(l.telefone)!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Abrir WhatsApp do cliente"
+                      title="Abrir WhatsApp do cliente"
+                      className="rounded-md p-1.5 text-emerald-400 transition-colors hover:bg-emerald-500/15"
+                    >
+                      <MessageCircle className="size-4" strokeWidth={2} />
+                    </a>
+                  )}
                   {l.status === "revogada" || l.status === "bloqueada" ? (
                     <button
                       type="button"
