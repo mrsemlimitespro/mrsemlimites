@@ -109,6 +109,7 @@ type License = {
   id: string;
   key: string;
   client: string | null;
+  telefone: string | null;
   email: string;
   status: ViewStatus;
   device: string | null;
@@ -171,6 +172,7 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
     id: row.id,
     key: row.chave,
     client: row.clientes?.nome ?? row.metadata?.cliente_nome ?? null,
+    telefone: row.metadata?.cliente_telefone ?? null,
     email: row.email ?? (row.cliente_id ? "" : "estoque"),
     status,
     device: row.device_id,
