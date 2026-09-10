@@ -1129,6 +1129,8 @@ function NovaLicencaModal({
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [socialGrowth, setSocialGrowth] = useState(true);
+  const [semLimites, setSemLimites] = useState(true);
   const [resultado, setResultado] = useState<{
     chaves: string[];
     validade: string;
@@ -1142,6 +1144,8 @@ function NovaLicencaModal({
       setNome("");
       setEmail("");
       setTelefone("");
+      setSocialGrowth(true);
+      setSemLimites(true);
       setQuantidade(1);
       setResultado(null);
     }
@@ -1211,6 +1215,27 @@ function NovaLicencaModal({
       if (error) throw error;
 
       const chaves = (created ?? []).map((r: any) => r.chave).filter(Boolean) as string[];
+
+      // Aplica os interruptores de produto escolhidos (default é ligado nos dois).
+      if (!socialGrowth || !semLimites) {
+        const ids = (created ?? []).map((r: any) => r.id).filter(Boolean) as string[];
+        for (const id of ids) {
+          if (!socialGrowth) {
+            await (supabase as any).rpc("set_licenca_produto", {
+              _licenca_id: id,
+              _produto: "mr_social_growth",
+              _ativo: false,
+            });
+          }
+          if (!semLimites) {
+            await (supabase as any).rpc("set_licenca_produto", {
+              _licenca_id: id,
+              _produto: "mr_sem_limites",
+              _ativo: false,
+            });
+          }
+        }
+      }
 
       setResultado({
         chaves,
@@ -1325,6 +1350,28 @@ function NovaLicencaModal({
                 placeholder="(11) 99999-9999"
               />
             </Field>
+
+            <Field label="O que esta licença libera">
+              <div className="space-y-2 rounded-xl border border-border/60 bg-surface/40 p-3">
+                <label className="flex items-center justify-between gap-3 text-sm">
+                  <span>MR Social Growth</span>
+                  <Switch
+                    checked={socialGrowth}
+                    onCheckedChange={(v) => setSocialGrowth(Boolean(v))}
+                    aria-label="MR Social Growth nesta licença"
+                  />
+                </label>
+                <label className="flex items-center justify-between gap-3 text-sm">
+                  <span>MR Sem Limites</span>
+                  <Switch
+                    checked={semLimites}
+                    onCheckedChange={(v) => setSemLimites(Boolean(v))}
+                    aria-label="MR Sem Limites nesta licença"
+                  />
+                </label>
+              </div>
+            </Field>
+
 
             <Field label="Tipo / Duração">
               <div className="grid grid-cols-2 gap-2">
