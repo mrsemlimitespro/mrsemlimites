@@ -68,6 +68,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/licencas")({
@@ -99,6 +100,8 @@ type LicencaRow = {
   trial_duracao_minutos: number | null;
   tipo: string | null;
   observacoes_admin: string | null;
+  mr_social_growth_ativo?: boolean | null;
+  mr_sem_limites_ativo?: boolean | null;
   metadata?: { cliente_nome?: string | null; cliente_telefone?: string | null } | null;
   clientes?: { nome: string | null } | null;
 };
@@ -118,6 +121,8 @@ type License = {
   duracaoDias: number | null;
   trialMinutos: number | null;
   tipo: string | null;
+  socialGrowthAtivo: boolean;
+  semLimitesAtivo: boolean;
 };
 
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
@@ -181,6 +186,8 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
     duracaoDias: row.duracao_dias ?? null,
     trialMinutos: row.trial_duracao_minutos ?? null,
     tipo: row.tipo ?? null,
+    socialGrowthAtivo: row.mr_social_growth_ativo ?? true,
+    semLimitesAtivo: row.mr_sem_limites_ativo ?? true,
   };
 
 }
@@ -317,7 +324,7 @@ function LicencasPage() {
     const { data, error } = await (supabase as any)
       .from("licencas")
       .select(
-        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, clientes(nome)",
+        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, mr_social_growth_ativo, mr_sem_limites_ativo, clientes(nome)",
       )
       .order("created_at", { ascending: false });
     if (error) {
@@ -438,6 +445,39 @@ function LicencasPage() {
     toast.success("Dispositivo liberado");
 
     reload();
+  }
+
+  async function toggleProduto(
+    id: string,
+    produto: "mr_social_growth" | "mr_sem_limites",
+    ativo: boolean,
+  ) {
+    // Atualização otimista para o interruptor responder na hora.
+    setRows((prev) =>
+      prev.map((r) =>
+        r.id === id
+          ? {
+              ...r,
+              ...(produto === "mr_social_growth"
+                ? { mr_social_growth_ativo: ativo }
+                : { mr_sem_limites_ativo: ativo }),
+            }
+          : r,
+      ),
+    );
+    const { error } = await (supabase as any).rpc("set_licenca_produto", {
+      _licenca_id: id,
+      _produto: produto,
+      _ativo: ativo,
+    });
+    if (error) {
+      toast.error(error.message);
+      reload();
+      return;
+    }
+    toast.success(
+      `${produto === "mr_social_growth" ? "MR Social Growth" : "MR Sem Limites"} ${ativo ? "liberado" : "bloqueado"}`,
+    );
   }
 
   async function cancelar(id: string) {
@@ -703,7 +743,7 @@ function LicencasPage() {
 
       {/* Table */}
       <div className="glass overflow-x-auto rounded-2xl">
-        <div className="grid min-w-[1020px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="grid min-w-[1240px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_minmax(190px,0.9fr)_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <div className="flex items-center">
             <Checkbox
               checked={filtered.length > 0 && filtered.every((l) => selected.has(l.id))}
@@ -724,6 +764,7 @@ function LicencasPage() {
           <div>Status</div>
           <div>Device</div>
           <div>Expira</div>
+          <div>Produtos</div>
           <div className="text-right pr-1">Ações</div>
         </div>
 
@@ -741,7 +782,7 @@ function LicencasPage() {
             {filtered.map((l) => (
               <li
                 key={l.id}
-                className="grid min-w-[1020px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_auto] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
+                className="grid min-w-[1240px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_minmax(190px,0.9fr)_auto] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
               >
                 <div className="flex items-center">
                   <Checkbox
@@ -804,6 +845,37 @@ function LicencasPage() {
                   duracaoDias={l.duracaoDias}
                   trialMinutos={l.trialMinutos}
                 />
+
+                {/* Interruptores por produto — bloqueados em licença vencida */}
+                <div className="flex flex-col gap-1.5">
+                  {(
+                    [
+                      ["mr_social_growth", "MR Social Growth", l.socialGrowthAtivo],
+                      ["mr_sem_limites", "MR Sem Limites", l.semLimitesAtivo],
+                    ] as const
+                  ).map(([produto, label, ativo]) => (
+                    <label
+                      key={produto}
+                      className={cn(
+                        "flex items-center justify-between gap-2 text-xs",
+                        l.status !== "ativa" ? "opacity-50" : "text-foreground/85",
+                      )}
+                      title={
+                        l.status !== "ativa"
+                          ? "Disponível apenas em licença ativa"
+                          : `Ligar/desligar ${label}`
+                      }
+                    >
+                      <span className="truncate">{label}</span>
+                      <Switch
+                        checked={ativo}
+                        disabled={l.status !== "ativa"}
+                        onCheckedChange={(v) => toggleProduto(l.id, produto, Boolean(v))}
+                        aria-label={`${label} para ${l.key}`}
+                      />
+                    </label>
+                  ))}
+                </div>
 
                 {/* Ações rápidas: Reset • Copiar • Excluir */}
                 <div className="flex items-center justify-end gap-1">
@@ -1057,6 +1129,8 @@ function NovaLicencaModal({
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [socialGrowth, setSocialGrowth] = useState(true);
+  const [semLimites, setSemLimites] = useState(true);
   const [resultado, setResultado] = useState<{
     chaves: string[];
     validade: string;
@@ -1070,6 +1144,8 @@ function NovaLicencaModal({
       setNome("");
       setEmail("");
       setTelefone("");
+      setSocialGrowth(true);
+      setSemLimites(true);
       setQuantidade(1);
       setResultado(null);
     }
@@ -1139,6 +1215,27 @@ function NovaLicencaModal({
       if (error) throw error;
 
       const chaves = (created ?? []).map((r: any) => r.chave).filter(Boolean) as string[];
+
+      // Aplica os interruptores de produto escolhidos (default é ligado nos dois).
+      if (!socialGrowth || !semLimites) {
+        const ids = (created ?? []).map((r: any) => r.id).filter(Boolean) as string[];
+        for (const id of ids) {
+          if (!socialGrowth) {
+            await (supabase as any).rpc("set_licenca_produto", {
+              _licenca_id: id,
+              _produto: "mr_social_growth",
+              _ativo: false,
+            });
+          }
+          if (!semLimites) {
+            await (supabase as any).rpc("set_licenca_produto", {
+              _licenca_id: id,
+              _produto: "mr_sem_limites",
+              _ativo: false,
+            });
+          }
+        }
+      }
 
       setResultado({
         chaves,
@@ -1253,6 +1350,28 @@ function NovaLicencaModal({
                 placeholder="(11) 99999-9999"
               />
             </Field>
+
+            <Field label="O que esta licença libera">
+              <div className="space-y-2 rounded-xl border border-border/60 bg-surface/40 p-3">
+                <label className="flex items-center justify-between gap-3 text-sm">
+                  <span>MR Social Growth</span>
+                  <Switch
+                    checked={socialGrowth}
+                    onCheckedChange={(v) => setSocialGrowth(Boolean(v))}
+                    aria-label="MR Social Growth nesta licença"
+                  />
+                </label>
+                <label className="flex items-center justify-between gap-3 text-sm">
+                  <span>MR Sem Limites</span>
+                  <Switch
+                    checked={semLimites}
+                    onCheckedChange={(v) => setSemLimites(Boolean(v))}
+                    aria-label="MR Sem Limites nesta licença"
+                  />
+                </label>
+              </div>
+            </Field>
+
 
             <Field label="Tipo / Duração">
               <div className="grid grid-cols-2 gap-2">

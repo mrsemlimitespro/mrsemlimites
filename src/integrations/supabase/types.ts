@@ -1598,6 +1598,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -1630,6 +1632,8 @@ export type Database = {
           id?: string
           max_dispositivos?: number
           metadata?: Json
+          mr_sem_limites_ativo?: boolean
+          mr_social_growth_ativo?: boolean
           observacoes_admin?: string | null
           plano?: string | null
           premium?: boolean | null
@@ -1662,6 +1666,8 @@ export type Database = {
           id?: string
           max_dispositivos?: number
           metadata?: Json
+          mr_sem_limites_ativo?: boolean
+          mr_social_growth_ativo?: boolean
           observacoes_admin?: string | null
           plano?: string | null
           premium?: boolean | null
@@ -3546,6 +3552,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -3596,6 +3604,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -3638,6 +3648,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -3718,6 +3730,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -3768,6 +3782,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -3852,6 +3868,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -3894,6 +3912,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -3935,6 +3955,8 @@ export type Database = {
           id: string
           max_dispositivos: number
           metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
           observacoes_admin: string | null
           plano: string | null
           premium: boolean | null
@@ -3961,6 +3983,49 @@ export type Database = {
       set_admin_password: {
         Args: { _current_password?: string; _new_password: string }
         Returns: boolean
+      }
+      set_licenca_produto: {
+        Args: { _ativo: boolean; _licenca_id: string; _produto: string }
+        Returns: {
+          active: boolean | null
+          ativada_em: string | null
+          chave: string
+          chave_fornecedor: string | null
+          cliente_id: string | null
+          created_at: string
+          device_id: string | null
+          duracao_dias: number
+          email: string | null
+          expira_em: string | null
+          expires_at: string | null
+          fornecedor_config: Json
+          fornecedor_slug: string | null
+          id: string
+          max_dispositivos: number
+          metadata: Json
+          mr_sem_limites_ativo: boolean
+          mr_social_growth_ativo: boolean
+          observacoes_admin: string | null
+          plano: string | null
+          premium: boolean | null
+          produto_id: string | null
+          reset_hwid_motivo: string | null
+          reset_hwid_solicitado_em: string | null
+          revendedor_id: string | null
+          status: string
+          tipo: string
+          trial_duracao_minutos: number | null
+          trial_iniciado_em: string | null
+          ultimo_acesso: string | null
+          updated_at: string
+          versao_min: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "licencas"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       validar_licenca: {
         Args: { _chave: string; _device_id?: string; _email: string }
