@@ -743,7 +743,7 @@ function LicencasPage() {
 
       {/* Table */}
       <div className="glass overflow-x-auto rounded-2xl">
-        <div className="grid min-w-[1020px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="grid min-w-[1240px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_minmax(190px,0.9fr)_auto] gap-4 border-b border-border/60 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           <div className="flex items-center">
             <Checkbox
               checked={filtered.length > 0 && filtered.every((l) => selected.has(l.id))}
@@ -764,6 +764,7 @@ function LicencasPage() {
           <div>Status</div>
           <div>Device</div>
           <div>Expira</div>
+          <div>Produtos</div>
           <div className="text-right pr-1">Ações</div>
         </div>
 
@@ -781,7 +782,7 @@ function LicencasPage() {
             {filtered.map((l) => (
               <li
                 key={l.id}
-                className="grid min-w-[1020px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_auto] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
+                className="grid min-w-[1240px] grid-cols-[36px_minmax(200px,1.3fr)_minmax(110px,1fr)_minmax(150px,1.2fr)_110px_minmax(90px,0.8fr)_minmax(110px,1fr)_minmax(190px,0.9fr)_auto] items-center gap-4 border-b border-border/40 px-6 py-4 text-sm transition-colors last:border-0 hover:bg-white/[0.03]"
               >
                 <div className="flex items-center">
                   <Checkbox
@@ -844,6 +845,37 @@ function LicencasPage() {
                   duracaoDias={l.duracaoDias}
                   trialMinutos={l.trialMinutos}
                 />
+
+                {/* Interruptores por produto — bloqueados em licença vencida */}
+                <div className="flex flex-col gap-1.5">
+                  {(
+                    [
+                      ["mr_social_growth", "MR Social Growth", l.socialGrowthAtivo],
+                      ["mr_sem_limites", "MR Sem Limites", l.semLimitesAtivo],
+                    ] as const
+                  ).map(([produto, label, ativo]) => (
+                    <label
+                      key={produto}
+                      className={cn(
+                        "flex items-center justify-between gap-2 text-xs",
+                        l.status !== "ativa" ? "opacity-50" : "text-foreground/85",
+                      )}
+                      title={
+                        l.status !== "ativa"
+                          ? "Disponível apenas em licença ativa"
+                          : `Ligar/desligar ${label}`
+                      }
+                    >
+                      <span className="truncate">{label}</span>
+                      <Switch
+                        checked={ativo}
+                        disabled={l.status !== "ativa"}
+                        onCheckedChange={(v) => toggleProduto(l.id, produto, Boolean(v))}
+                        aria-label={`${label} para ${l.key}`}
+                      />
+                    </label>
+                  ))}
+                </div>
 
                 {/* Ações rápidas: Reset • Copiar • Excluir */}
                 <div className="flex items-center justify-end gap-1">
