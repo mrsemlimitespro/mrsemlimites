@@ -332,18 +332,38 @@ function LicencasPage() {
   useEffect(() => {
     let alive = true;
     let started = false;
-    const start = () => {
+
+    // A sessão pode demorar alguns ms para hidratar do storage; sem ela o RLS devolve vazio.
+    async function waitForSession(maxMs = 8000) {
+      const t0 = Date.now();
+      while (alive && Date.now() - t0 < maxMs) {
+        const { data } = await supabase.auth.getSession();
+        if (data.session) return data.session;
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      return null;
+    }
+
+    const start = async () => {
       if (!alive || started) return;
       started = true;
-      reload();
+      await waitForSession();
+      if (alive) await reload();
     };
-    // Espera a sessão hidratar antes da primeira busca (RLS exige usuário autenticado)
-    supabase.auth.getSession().finally(start);
+
+    void start();
+
     const { data: authSub } = supabase.auth.onAuthStateChange(() => {
       if (!alive) return;
-      if (!started) start();
-      else reload();
+      if (!started) void start();
+      else void reload();
     });
+
+    const onVisible = () => {
+      if (alive && started && document.visibilityState === "visible") void reload();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
     const ch = supabase
       .channel("licencas-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload())
@@ -351,6 +371,7 @@ function LicencasPage() {
     return () => {
       alive = false;
       authSub.subscription.unsubscribe();
+      document.removeEventListener("visibilitychange", onVisible);
       supabase.removeChannel(ch);
     };
   }, []);
