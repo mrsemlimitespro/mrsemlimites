@@ -99,6 +99,8 @@ type LicencaRow = {
   trial_duracao_minutos: number | null;
   tipo: string | null;
   observacoes_admin: string | null;
+  mr_social_growth_ativo?: boolean | null;
+  mr_sem_limites_ativo?: boolean | null;
   metadata?: { cliente_nome?: string | null; cliente_telefone?: string | null } | null;
   clientes?: { nome: string | null } | null;
 };
@@ -118,6 +120,8 @@ type License = {
   duracaoDias: number | null;
   trialMinutos: number | null;
   tipo: string | null;
+  socialGrowthAtivo: boolean;
+  semLimitesAtivo: boolean;
 };
 
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
@@ -181,6 +185,8 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
     duracaoDias: row.duracao_dias ?? null,
     trialMinutos: row.trial_duracao_minutos ?? null,
     tipo: row.tipo ?? null,
+    socialGrowthAtivo: row.mr_social_growth_ativo ?? true,
+    semLimitesAtivo: row.mr_sem_limites_ativo ?? true,
   };
 
 }
@@ -317,7 +323,7 @@ function LicencasPage() {
     const { data, error } = await (supabase as any)
       .from("licencas")
       .select(
-        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, clientes(nome)",
+        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, mr_social_growth_ativo, mr_sem_limites_ativo, clientes(nome)",
       )
       .order("created_at", { ascending: false });
     if (error) {
