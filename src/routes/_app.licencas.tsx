@@ -1585,10 +1585,56 @@ function RenovarLicencaModal({
 }) {
   const [dias, setDias] = useState(30);
   const [busy, setBusy] = useState(false);
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [email, setEmail] = useState("");
+  const [resultado, setResultado] = useState<{
+    chave: string;
+    validade: string;
+    nome: string;
+    telefone: string;
+    email: string;
+  } | null>(null);
 
   useEffect(() => {
-    if (licenca) setDias(licenca.duracao_dias ?? 30);
+    if (licenca) {
+      setDias(licenca.duracao_dias ?? 30);
+      setNome(licenca.metadata?.cliente_nome ?? licenca.clientes?.nome ?? "");
+      setTelefone(licenca.metadata?.cliente_telefone ?? "");
+      setEmail(licenca.email ?? "");
+      setResultado(null);
+    }
   }, [licenca]);
+
+  function textoParaCliente() {
+    if (!resultado) return "";
+    return [
+      `Olá${resultado.nome ? `, ${resultado.nome}` : ""}! 👋`,
+      "",
+      "Sua licença MR Sem Limites está ativa. 🚀",
+      "",
+      "🔑 Chave:",
+      resultado.chave,
+      "",
+      `⏳ Válida até: ${resultado.validade}`,
+      "",
+      "Como ativar:",
+      "1) Abra a extensão MR Sem Limites no navegador.",
+      "2) Cole a chave no campo de licença.",
+      "3) Clique em Ativar e pronto!",
+      "",
+      "Qualquer dúvida é só chamar. 💙",
+    ].join("\n");
+  }
+
+  async function copiar() {
+    try {
+      await navigator.clipboard.writeText(textoParaCliente());
+      toast.success("Mensagem copiada para enviar ao cliente");
+    } catch {
+      toast.error("Não foi possível copiar");
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -1598,43 +1644,120 @@ function RenovarLicencaModal({
       _licenca_id: licenca.id,
       _dias: dias,
     });
+    if (error) {
+      setBusy(false);
+      return toast.error(error.message);
+    }
+
+    // Salva os dados reais do cliente junto da licença
+    const meta = {
+      ...(licenca.metadata ?? {}),
+      cliente_nome: nome.trim() || null,
+      cliente_telefone: telefone.trim() || null,
+    };
+    await (supabase as any)
+      .from("licencas")
+      .update({ email: email.trim().toLowerCase() || null, metadata: meta })
+      .eq("id", licenca.id);
+
+    const { data: atual } = await (supabase as any)
+      .from("licencas")
+      .select("expira_em")
+      .eq("id", licenca.id)
+      .maybeSingle();
+
     setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success(`Licença renovada por ${dias} dias`);
+    setResultado({
+      chave: licenca.chave,
+      validade: atual?.expira_em
+        ? new Date(atual.expira_em).toLocaleString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : `${dias} dia(s) a partir da ativação`,
+      nome: nome.trim(),
+      telefone: telefone.trim(),
+      email: email.trim().toLowerCase(),
+    });
+    toast.success("Expiração atualizada");
     onSaved();
-    onOpenChange(false);
   }
 
   return (
     <Dialog open={!!licenca} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-strong sm:max-w-sm">
+      <DialogContent className="glass-strong sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Renovar licença</DialogTitle>
+          <DialogTitle>{resultado ? "Expiração atualizada" : "Renovar licença"}</DialogTitle>
           <DialogDescription className="font-mono text-xs">{licenca?.chave}</DialogDescription>
         </DialogHeader>
-        <form className="space-y-4" onSubmit={submit}>
-          <Field label="Dias a adicionar">
-            <Input
-              type="number"
-              min={1}
-              value={dias}
-              onChange={(e) => setDias(parseInt(e.target.value) || 1)}
-              autoFocus
-            />
-          </Field>
-          <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              disabled={busy}
-              className="gradient-primary text-primary-foreground"
-            >
-              {busy ? <Loader2 className="size-4 animate-spin" /> : "Renovar"}
-            </Button>
-          </DialogFooter>
-        </form>
+
+        {resultado ? (
+          <div className="space-y-4">
+            <div className="rounded-xl border border-brand-emerald/30 bg-brand-emerald/5 p-3 font-mono text-sm">
+              {resultado.chave}
+            </div>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+              <dt className="text-muted-foreground">Validade</dt>
+              <dd>{resultado.validade}</dd>
+              <dt className="text-muted-foreground">Nome</dt>
+              <dd className="truncate">{resultado.nome || "—"}</dd>
+              <dt className="text-muted-foreground">Telefone</dt>
+              <dd className="truncate">{resultado.telefone || "—"}</dd>
+              <dt className="text-muted-foreground">E-mail</dt>
+              <dd className="truncate">{resultado.email || "—"}</dd>
+            </dl>
+            <Textarea readOnly rows={6} value={textoParaCliente()} className="text-xs" />
+            <DialogFooter>
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+                Fechar
+              </Button>
+              <Button type="button" onClick={copiar} className="gradient-primary text-primary-foreground">
+                Copiar para o cliente
+              </Button>
+            </DialogFooter>
+          </div>
+        ) : (
+          <form className="space-y-4" onSubmit={submit}>
+            <Field label="Dias a adicionar">
+              <Input
+                type="number"
+                min={1}
+                value={dias}
+                onChange={(e) => setDias(parseInt(e.target.value) || 1)}
+                autoFocus
+              />
+            </Field>
+            <Field label="Nome do cliente">
+              <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome de quem recebe a chave" />
+            </Field>
+            <Field label="Telefone (opcional)">
+              <Input value={telefone} onChange={(e) => setTelefone(e.target.value)} placeholder="(11) 99999-9999" />
+            </Field>
+            <Field label="E-mail (opcional)">
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="cliente@email.com"
+              />
+            </Field>
+            <DialogFooter>
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={busy}
+                className="gradient-primary text-primary-foreground"
+              >
+                {busy ? <Loader2 className="size-4 animate-spin" /> : "Renovar"}
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
