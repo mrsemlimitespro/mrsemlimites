@@ -68,6 +68,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/licencas")({
@@ -444,6 +445,39 @@ function LicencasPage() {
     toast.success("Dispositivo liberado");
 
     reload();
+  }
+
+  async function toggleProduto(
+    id: string,
+    produto: "mr_social_growth" | "mr_sem_limites",
+    ativo: boolean,
+  ) {
+    // Atualização otimista para o interruptor responder na hora.
+    setRows((prev) =>
+      prev.map((r) =>
+        r.id === id
+          ? {
+              ...r,
+              ...(produto === "mr_social_growth"
+                ? { mr_social_growth_ativo: ativo }
+                : { mr_sem_limites_ativo: ativo }),
+            }
+          : r,
+      ),
+    );
+    const { error } = await (supabase as any).rpc("set_licenca_produto", {
+      _licenca_id: id,
+      _produto: produto,
+      _ativo: ativo,
+    });
+    if (error) {
+      toast.error(error.message);
+      reload();
+      return;
+    }
+    toast.success(
+      `${produto === "mr_social_growth" ? "MR Social Growth" : "MR Sem Limites"} ${ativo ? "liberado" : "bloqueado"}`,
+    );
   }
 
   async function cancelar(id: string) {
