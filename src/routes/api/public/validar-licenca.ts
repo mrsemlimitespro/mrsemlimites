@@ -87,7 +87,7 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
         const { data: lic, error: errLic } = await sb
           .from("licencas")
           .select(
-            "id, chave, email, status, tipo, trial_iniciado_em, trial_duracao_minutos, expira_em, ativada_em, duracao_dias, device_id, max_dispositivos, cliente_id, fornecedor_slug, chave_fornecedor, fornecedor_config, versao_min",
+            "id, chave, email, status, tipo, trial_iniciado_em, trial_duracao_minutos, expira_em, ativada_em, duracao_dias, device_id, max_dispositivos, cliente_id, fornecedor_slug, chave_fornecedor, fornecedor_config, versao_min, mr_sem_limites_ativo, mr_social_growth_ativo",
           )
           .eq("chave", chave)
           .maybeSingle();
@@ -241,6 +241,9 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           ? Math.max(0, Math.floor((new Date(expira_em).getTime() - Date.now()) / 1000))
           : null;
 
+        const mrSemLimitesAtivo = (lic as any).mr_sem_limites_ativo !== false;
+        const mrSocialAtivo = (lic as any).mr_social_growth_ativo !== false;
+
         return jsonResp(cors, {
           ok: true,
           valid: true,
@@ -249,6 +252,14 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           expira_em,
           expires_in,
           cliente_id: lic.cliente_id,
+          mr_sem_limites_ativo: mrSemLimitesAtivo,
+          mr_social_ativo: mrSocialAtivo,
+          // compat: nome da coluna no banco
+          mr_social_growth_ativo: mrSocialAtivo,
+          produtos: {
+            mr_sem_limites: mrSemLimitesAtivo,
+            mr_social: mrSocialAtivo,
+          },
         });
       },
     },
