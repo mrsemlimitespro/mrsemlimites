@@ -87,7 +87,7 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
         const { data: lic, error: errLic } = await sb
           .from("licencas")
           .select(
-            "id, chave, email, status, tipo, trial_iniciado_em, trial_duracao_minutos, expira_em, ativada_em, duracao_dias, device_id, max_dispositivos, cliente_id, fornecedor_slug, chave_fornecedor, fornecedor_config, versao_min",
+            "id, chave, email, status, tipo, trial_iniciado_em, trial_duracao_minutos, expira_em, ativada_em, duracao_dias, device_id, max_dispositivos, cliente_id, fornecedor_slug, chave_fornecedor, fornecedor_config, versao_min, mr_sem_limites_ativo, mr_social_growth_ativo",
           )
           .eq("chave", chave)
           .maybeSingle();
