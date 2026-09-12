@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789216982450,
+      "tag": "0000_device_lock_reset",
+      "breakpoints": true
+    }
+  ]
+}

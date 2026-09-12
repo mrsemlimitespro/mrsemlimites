@@ -167,9 +167,18 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           }
         }
 
-        // Controle de dispositivos
-        const maxDev = Number(lic.max_dispositivos ?? 1);
+        // Controle de dispositivo — conferido em TODA chamada (um computador por vez)
         if (device_id && device_id.length > 0) {
+          if (lic.device_id && lic.device_id !== device_id) {
+            await logAcesso(sb, lic.id, chave, device_id, ip, user_agent, versao, "device_limit");
+            return jsonResp(cors, {
+              ok: false,
+              valid: false,
+              reason: "device_limit",
+              error: "Licença já está em uso em outro dispositivo.",
+            });
+          }
+
           const { data: existing } = await sb
             .from("licenca_dispositivos")
             .select("id, device_id")
@@ -181,7 +190,9 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
               .update({ ultimo_acesso: new Date().toISOString(), ip, user_agent, device_nome })
               .eq("id", already.id);
           } else {
-            if (maxDev > 0 && (existing?.length ?? 0) >= maxDev) {
+            const outros = (existing ?? []).filter((d) => d.device_id !== device_id);
+            const maxDev = Number(lic.max_dispositivos ?? 1);
+            if (maxDev > 0 && outros.length >= maxDev) {
               await logAcesso(sb, lic.id, chave, device_id, ip, user_agent, versao, "device_limit");
               return jsonResp(cors, {
                 ok: false,
@@ -197,12 +208,15 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
               ip,
               user_agent,
             });
-            // Compat: manter campo antigo device_id na primeira ativação
-            if (!lic.device_id) {
-              await sb.from("licencas").update({ device_id }).eq("id", lic.id);
-            }
+          }
+          if (!lic.device_id) {
+            await sb
+              .from("licencas")
+              .update({ device_id, device_vinculado_em: new Date().toISOString() })
+              .eq("id", lic.id);
           }
         }
+
         await sb
           .from("licencas")
           .update({ ultimo_acesso: new Date().toISOString() })
