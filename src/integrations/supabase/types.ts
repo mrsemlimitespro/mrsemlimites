@@ -1589,6 +1589,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -1623,6 +1624,7 @@ export type Database = {
           cliente_id?: string | null
           created_at?: string
           device_id?: string | null
+          device_vinculado_em?: string | null
           duracao_dias?: number
           email?: string | null
           expira_em?: string | null
@@ -1657,6 +1659,7 @@ export type Database = {
           cliente_id?: string | null
           created_at?: string
           device_id?: string | null
+          device_vinculado_em?: string | null
           duracao_dias?: number
           email?: string | null
           expira_em?: string | null
@@ -3543,6 +3546,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -3595,6 +3599,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -3639,6 +3644,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -3721,6 +3727,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -3773,6 +3780,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -3859,6 +3867,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -3903,6 +3912,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -3946,6 +3956,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
@@ -3994,6 +4005,7 @@ export type Database = {
           cliente_id: string | null
           created_at: string
           device_id: string | null
+          device_vinculado_em: string | null
           duracao_dias: number
           email: string | null
           expira_em: string | null
