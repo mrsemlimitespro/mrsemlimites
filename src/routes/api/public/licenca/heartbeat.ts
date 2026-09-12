@@ -57,6 +57,17 @@ export const Route = createFileRoute("/api/public/licenca/heartbeat")({
             { status: 200, headers: cors },
           );
         }
+        if (String(data?.estado ?? "").toUpperCase() === "DEVICE_MISMATCH") {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              estado: "device_mismatch",
+              reason: "device_limit",
+              error: "Licença já está em uso em outro dispositivo.",
+            }),
+            { status: 200, headers: cors },
+          );
+        }
         return new Response(
           JSON.stringify({
             ok: true,
@@ -65,6 +76,7 @@ export const Route = createFileRoute("/api/public/licenca/heartbeat")({
           }), 
           { status: 200, headers: cors }
         );
+
       },
     },
   },
