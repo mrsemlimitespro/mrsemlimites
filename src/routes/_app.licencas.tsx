@@ -94,6 +94,7 @@ type LicencaRow = {
   email: string | null;
   status: string;
   device_id: string | null;
+  device_vinculado_em?: string | null;
   expira_em: string | null;
   ativada_em: string | null;
   duracao_dias: number | null;
@@ -116,6 +117,7 @@ type License = {
   email: string;
   status: ViewStatus;
   device: string | null;
+  deviceDesde: string | null;
   expiraEm: string | null;
   ativadaEm: string | null;
   duracaoDias: number | null;
@@ -165,6 +167,12 @@ function bucketOfRow(row: LicencaRow): Bucket {
 
 
 
+/** Mostra o identificador do computador encurtado (ex.: a1b2…f9). */
+function shortDevice(id: string): string {
+  if (id.length <= 10) return id;
+  return `${id.slice(0, 4)}…${id.slice(-2)}`;
+}
+
 function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }): License {
   const now = Date.now();
   const exp = row.expira_em ? new Date(row.expira_em).getTime() : null;
@@ -181,6 +189,7 @@ function computeView(row: LicencaRow & { trial_duracao_minutos?: number | null }
     email: row.email ?? (row.cliente_id ? "" : "estoque"),
     status,
     device: row.device_id,
+    deviceDesde: row.device_vinculado_em ?? null,
     expiraEm: row.expira_em,
     ativadaEm: row.ativada_em,
     duracaoDias: row.duracao_dias ?? null,
@@ -324,7 +333,7 @@ function LicencasPage() {
     const { data, error } = await (supabase as any)
       .from("licencas")
       .select(
-        "id, chave, cliente_id, email, status, device_id, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, mr_social_growth_ativo, mr_sem_limites_ativo, clientes(nome)",
+        "id, chave, cliente_id, email, status, device_id, device_vinculado_em, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, mr_social_growth_ativo, mr_sem_limites_ativo, clientes(nome)",
       )
       .order("created_at", { ascending: false });
     if (error) {
@@ -827,15 +836,28 @@ function LicencasPage() {
                 </div>
                 <div className="text-muted-foreground">
                   {l.device ? (
-                    <button
-                      type="button"
-                      onClick={() => resetDevice(l.id)}
-                      title="Resetar dispositivo"
-                      className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 hover:bg-white/5 hover:text-foreground"
-                    >
-                      <RotateCcw className="size-3" strokeWidth={2} />
-                      <span className="truncate max-w-[120px]">{l.device}</span>
-                    </button>
+                    <div className="flex flex-col gap-0.5">
+                      <span
+                        className="font-mono text-[11px] text-foreground/85"
+                        title={l.device}
+                      >
+                        {shortDevice(l.device)}
+                      </span>
+                      {l.deviceDesde && (
+                        <span className="text-[10px] opacity-60">
+                          desde {new Date(l.deviceDesde).toLocaleDateString("pt-BR")}
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => resetDevice(l.id)}
+                        title="Soltar dispositivo"
+                        className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 text-[10px] font-bold hover:bg-white/5 hover:text-foreground"
+                      >
+                        <RotateCcw className="size-3" strokeWidth={2} />
+                        Soltar dispositivo
+                      </button>
+                    </div>
                   ) : (
                     "—"
                   )}

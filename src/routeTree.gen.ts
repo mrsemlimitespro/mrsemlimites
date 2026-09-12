@@ -68,6 +68,7 @@ import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/
 import { Route as ApiPublicPremiumCoverSplatRouteImport } from './routes/api/public/premium-cover.$'
 import { Route as ApiPublicLicencaRevogarRouteImport } from './routes/api/public/licenca/revogar'
 import { Route as ApiPublicLicencaResetHwidRouteImport } from './routes/api/public/licenca/reset-hwid'
+import { Route as ApiPublicLicencaResetDispositivoRouteImport } from './routes/api/public/licenca/reset-dispositivo'
 import { Route as ApiPublicLicencaRenovarRouteImport } from './routes/api/public/licenca/renovar'
 import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/public/licenca/heartbeat'
 import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
@@ -384,6 +385,12 @@ const ApiPublicLicencaResetHwidRoute =
     path: '/api/public/licenca/reset-hwid',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicLicencaResetDispositivoRoute =
+  ApiPublicLicencaResetDispositivoRouteImport.update({
+    id: '/api/public/licenca/reset-dispositivo',
+    path: '/api/public/licenca/reset-dispositivo',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicLicencaRenovarRoute = ApiPublicLicencaRenovarRouteImport.update({
   id: '/api/public/licenca/renovar',
   path: '/api/public/licenca/renovar',
@@ -553,6 +560,7 @@ export interface FileRoutesByFullPath {
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
   '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
   '/api/public/licenca/renovar': typeof ApiPublicLicencaRenovarRoute
+  '/api/public/licenca/reset-dispositivo': typeof ApiPublicLicencaResetDispositivoRoute
   '/api/public/licenca/reset-hwid': typeof ApiPublicLicencaResetHwidRoute
   '/api/public/licenca/revogar': typeof ApiPublicLicencaRevogarRoute
   '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
@@ -629,6 +637,7 @@ export interface FileRoutesByTo {
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
   '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
   '/api/public/licenca/renovar': typeof ApiPublicLicencaRenovarRoute
+  '/api/public/licenca/reset-dispositivo': typeof ApiPublicLicencaResetDispositivoRoute
   '/api/public/licenca/reset-hwid': typeof ApiPublicLicencaResetHwidRoute
   '/api/public/licenca/revogar': typeof ApiPublicLicencaRevogarRoute
   '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
@@ -708,6 +717,7 @@ export interface FileRoutesById {
   '/api/public/licenca/consulta': typeof ApiPublicLicencaConsultaRoute
   '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
   '/api/public/licenca/renovar': typeof ApiPublicLicencaRenovarRoute
+  '/api/public/licenca/reset-dispositivo': typeof ApiPublicLicencaResetDispositivoRoute
   '/api/public/licenca/reset-hwid': typeof ApiPublicLicencaResetHwidRoute
   '/api/public/licenca/revogar': typeof ApiPublicLicencaRevogarRoute
   '/api/public/premium-cover/$': typeof ApiPublicPremiumCoverSplatRoute
@@ -787,6 +797,7 @@ export interface FileRouteTypes {
     | '/api/public/licenca/consulta'
     | '/api/public/licenca/heartbeat'
     | '/api/public/licenca/renovar'
+    | '/api/public/licenca/reset-dispositivo'
     | '/api/public/licenca/reset-hwid'
     | '/api/public/licenca/revogar'
     | '/api/public/premium-cover/$'
@@ -863,6 +874,7 @@ export interface FileRouteTypes {
     | '/api/public/licenca/consulta'
     | '/api/public/licenca/heartbeat'
     | '/api/public/licenca/renovar'
+    | '/api/public/licenca/reset-dispositivo'
     | '/api/public/licenca/reset-hwid'
     | '/api/public/licenca/revogar'
     | '/api/public/premium-cover/$'
@@ -941,6 +953,7 @@ export interface FileRouteTypes {
     | '/api/public/licenca/consulta'
     | '/api/public/licenca/heartbeat'
     | '/api/public/licenca/renovar'
+    | '/api/public/licenca/reset-dispositivo'
     | '/api/public/licenca/reset-hwid'
     | '/api/public/licenca/revogar'
     | '/api/public/premium-cover/$'
@@ -976,6 +989,7 @@ export interface RootRouteChildren {
   ApiPublicLicencaConsultaRoute: typeof ApiPublicLicencaConsultaRoute
   ApiPublicLicencaHeartbeatRoute: typeof ApiPublicLicencaHeartbeatRoute
   ApiPublicLicencaRenovarRoute: typeof ApiPublicLicencaRenovarRoute
+  ApiPublicLicencaResetDispositivoRoute: typeof ApiPublicLicencaResetDispositivoRoute
   ApiPublicLicencaResetHwidRoute: typeof ApiPublicLicencaResetHwidRoute
   ApiPublicLicencaRevogarRoute: typeof ApiPublicLicencaRevogarRoute
   ApiPublicPremiumCoverSplatRoute: typeof ApiPublicPremiumCoverSplatRoute
@@ -1399,6 +1413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLicencaResetHwidRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/licenca/reset-dispositivo': {
+      id: '/api/public/licenca/reset-dispositivo'
+      path: '/api/public/licenca/reset-dispositivo'
+      fullPath: '/api/public/licenca/reset-dispositivo'
+      preLoaderRoute: typeof ApiPublicLicencaResetDispositivoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/licenca/renovar': {
       id: '/api/public/licenca/renovar'
       path: '/api/public/licenca/renovar'
@@ -1673,6 +1694,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicLicencaConsultaRoute: ApiPublicLicencaConsultaRoute,
   ApiPublicLicencaHeartbeatRoute: ApiPublicLicencaHeartbeatRoute,
   ApiPublicLicencaRenovarRoute: ApiPublicLicencaRenovarRoute,
+  ApiPublicLicencaResetDispositivoRoute: ApiPublicLicencaResetDispositivoRoute,
   ApiPublicLicencaResetHwidRoute: ApiPublicLicencaResetHwidRoute,
   ApiPublicLicencaRevogarRoute: ApiPublicLicencaRevogarRoute,
   ApiPublicPremiumCoverSplatRoute: ApiPublicPremiumCoverSplatRoute,
