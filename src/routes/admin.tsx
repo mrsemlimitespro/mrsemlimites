@@ -36,6 +36,7 @@ import {
   clearAdminGate,
 } from "@/components/admin-password-gate";
 import { PageBackButton } from "@/components/page-back-button";
+import { isAdminEmail } from "@/hooks/useIsAdmin";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -54,10 +55,18 @@ function AdminLayout() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    const pass = adminGatePassed();
-    setUnlocked(pass);
-    setDialogOpen(!pass);
-    setChecking(false);
+    let alive = true;
+    void (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!alive) return;
+      const pass = isAdminEmail(data.user?.email) || adminGatePassed();
+      setUnlocked(pass);
+      setDialogOpen(!pass);
+      setChecking(false);
+    })();
+    return () => {
+      alive = false;
+    };
   }, []);
 
   if (checking) {
@@ -163,7 +172,11 @@ function AdminShell() {
       .eq("user_id", user.id)
       .eq("role", "admin")
       .maybeSingle();
-    setAuthState({ kind: "signed", email: user.email ?? "", isAdmin: !!role });
+    setAuthState({
+      kind: "signed",
+      email: user.email ?? "",
+      isAdmin: isAdminEmail(user.email) || !!role,
+    });
   }
 
   useEffect(() => {

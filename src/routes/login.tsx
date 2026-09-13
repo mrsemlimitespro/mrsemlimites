@@ -14,6 +14,9 @@ import {
   unlockWithBiometric,
 } from "@/lib/biometric-session";
 
+const REMEMBER_LOGIN_KEY = "mr_remember_me";
+const REMEMBERED_EMAIL_KEY = "mr_remembered_email";
+
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
@@ -37,6 +40,27 @@ function LoginPage() {
   const [bioLabel, setBioLabel] = useState("biometria");
   const [bioHint, setBioHint] = useState<string | null>(null);
   const [bioLoading, setBioLoading] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+
+    try {
+      const shouldRemember = window.localStorage.getItem(REMEMBER_LOGIN_KEY) !== "0";
+      setRemember(shouldRemember);
+      if (shouldRemember) {
+        setEmail(window.localStorage.getItem(REMEMBERED_EMAIL_KEY) ?? "");
+      }
+    } catch {}
+
+    void supabase.auth.getUser().then(({ data }) => {
+      if (!alive || !data.user) return;
+      navigate({ to: isAdminEmail(data.user.email) ? "/admin" : "/" });
+    });
+
+    return () => {
+      alive = false;
+    };
+  }, [navigate]);
 
   useEffect(() => {
     let alive = true;
@@ -97,7 +121,12 @@ function LoginPage() {
 
     try {
       if (typeof window !== "undefined") {
-        window.localStorage.setItem("mr_remember_me", remember ? "1" : "0");
+        window.localStorage.setItem(REMEMBER_LOGIN_KEY, remember ? "1" : "0");
+        if (remember) {
+          window.localStorage.setItem(REMEMBERED_EMAIL_KEY, email.trim().toLowerCase());
+        } else {
+          window.localStorage.removeItem(REMEMBERED_EMAIL_KEY);
+        }
       }
     } catch {}
 
