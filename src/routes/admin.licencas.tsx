@@ -388,6 +388,7 @@ function LicencasAdmin() {
 
 function LicencaRow({
   l,
+  onToggle,
   onReset,
   onRenovar,
   onCancelar,
@@ -395,6 +396,7 @@ function LicencaRow({
   onReenviar,
 }: {
   l: Licenca;
+  onToggle: (l: Licenca, p: "mr_sem_limites" | "mr_social_growth") => void;
   onReset: () => void;
   onRenovar: () => void;
   onCancelar: () => void;
@@ -419,6 +421,18 @@ function LicencaRow({
           >
             <Copy className="size-3" />
           </button>
+        </div>
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex gap-1">
+          {([["mr_sem_limites","Sem Limites",l.mr_sem_limites_ativo],["mr_social_growth","Social",l.mr_social_growth_ativo]] as const).map(([k,lab,on])=>(
+            <button key={k} disabled={encerrada} onClick={()=>onToggle(l,k)}
+              title={encerrada?"Licença encerrada":on?"Clique para bloquear":"Clique para liberar"}
+              className={cn("rounded-full border px-2 py-0.5 text-[10px] transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                on?"border-primary/50 bg-primary/15 text-primary":"border-border/60 text-muted-foreground line-through")}>
+              {lab}
+            </button>
+          ))}
         </div>
       </td>
       <td className="px-4 py-3">
