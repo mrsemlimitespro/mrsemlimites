@@ -16,9 +16,11 @@ import {
   Pencil,
   RefreshCw,
   Send,
+  Plus,
 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { NovaLicencaModal } from "./_app.licencas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,6 +63,8 @@ type Licenca = {
   observacoes_admin: string | null;
   duracao_dias: number;
   metadata: Record<string, unknown> | null;
+  mr_sem_limites_ativo: boolean;
+  mr_social_growth_ativo: boolean;
 };
 
 type TabKey = "todas" | "teste" | "premium" | "expiradas" | "canceladas" | "bloqueadas";
@@ -81,6 +85,7 @@ const TABS: { key: TabKey; label: string; icon: typeof KeyRound; desc: string }[
 function LicencasAdmin() {
   const [tab, setTab] = useState<TabKey>("todas");
   const [busca, setBusca] = useState("");
+  const [openNova, setOpenNova] = useState(false);
   const [resetTarget, setResetTarget] = useState<Licenca | null>(null);
   const [renovTarget, setRenovTarget] = useState<Licenca | null>(null);
   const qc = useQueryClient();
@@ -91,7 +96,7 @@ function LicencasAdmin() {
       const { data, error } = await supabase
         .from("licencas")
         .select(
-          "id,chave,status,tipo,email,cliente_id,revendedor_id,produto_id,device_id,ultimo_acesso,ativada_em,expira_em,created_at,reset_hwid_motivo,reset_hwid_solicitado_em,observacoes_admin,duracao_dias,metadata",
+          "id,chave,status,tipo,email,cliente_id,revendedor_id,produto_id,device_id,ultimo_acesso,ativada_em,expira_em,created_at,reset_hwid_motivo,reset_hwid_solicitado_em,observacoes_admin,duracao_dias,metadata,mr_sem_limites_ativo,mr_social_growth_ativo",
         )
         .order("created_at", { ascending: false })
         .limit(500);
@@ -224,6 +229,21 @@ function LicencasAdmin() {
     onError: (e: Error) => toast.error(e.message || "Falha ao reenviar"),
   });
 
+  async function toggleProduto(l: Licenca, produto: "mr_sem_limites" | "mr_social_growth") {
+    const atual = produto === "mr_sem_limites" ? l.mr_sem_limites_ativo : l.mr_social_growth_ativo;
+    const outro = produto === "mr_sem_limites" ? l.mr_social_growth_ativo : l.mr_sem_limites_ativo;
+    const novo = !atual;
+    if (!novo && !outro && !confirm("Com os dois desligados o cliente não consegue abrir nenhuma das ferramentas. Confirma?")) return;
+    const { error } = await (supabase as any).rpc("set_licenca_produto", {
+      _licenca_id: l.id,
+      _produto: produto,
+      _ativo: novo,
+    });
+    if (error) return toast.error(error.message);
+    toast.success(`${produto === "mr_sem_limites" ? "MR Sem Limites" : "MR Social Growth"} ${novo ? "liberado" : "bloqueado"}. O cliente vê na próxima abertura ou em até 15 min.`);
+    qc.invalidateQueries({ queryKey: ["admin-licencas"] });
+  }
+
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
@@ -237,6 +257,9 @@ function LicencasAdmin() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button size="sm" className="gradient-primary" onClick={() => setOpenNova(true)}>
+            <Plus className="mr-1 size-4" /> Criar licença
+          </Button>
           <Button variant="ghost" size="sm" onClick={() => refetch()}>
             <RefreshCw className="mr-1 size-4" /> Atualizar
           </Button>
@@ -306,6 +329,7 @@ function LicencasAdmin() {
               <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                 <tr className="border-b border-white/5">
                   <th className="px-4 py-3 font-medium">Chave</th>
+                  <th className="px-4 py-3 font-medium">Produtos</th>
                   <th className="px-4 py-3 font-medium">Nível</th>
                   <th className="px-4 py-3 font-medium">Tipo</th>
                   <th className="px-4 py-3 font-medium">Status</th>
@@ -320,6 +344,7 @@ function LicencasAdmin() {
                   <LicencaRow
                     key={l.id}
                     l={l}
+                    onToggle={toggleProduto}
                     onReset={() => setResetTarget(l)}
                     onRenovar={() => setRenovTarget(l)}
                     onCancelar={() => cancelar.mutate(l.id)}
@@ -334,6 +359,11 @@ function LicencasAdmin() {
       </div>
 
       {/* Modais */}
+      <NovaLicencaModal
+        open={openNova}
+        onOpenChange={setOpenNova}
+        onSaved={() => qc.invalidateQueries({ queryKey: ["admin-licencas"] })}
+      />
       <ResetDeviceDialog
         licenca={resetTarget}
         onClose={() => setResetTarget(null)}
