@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export const ADMIN_EMAILS = ["rogeriocftv.mr@gmail.com", "mariocftv@gmail.com"];
+export const ADMIN_EMAILS = ["rogeriocftv.mr@gmail.com"];
 
 export function isAdminEmail(email?: string | null): boolean {
   const e = (email ?? "").trim().toLowerCase();
