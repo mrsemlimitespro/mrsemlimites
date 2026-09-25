@@ -23,7 +23,6 @@ import { MustChangePasswordGuard } from "@/components/must-change-password-guard
 import { NetworkStatusWatcher } from "@/components/network-status-watcher";
 import { PageBackButton } from "@/components/page-back-button";
 import { PushBootstrapper } from "@/components/push-bootstrapper";
-import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { TopBar } from "@/components/top-bar";
 import { WatermarkFooter } from "@/components/watermark-footer";
 import { WhatsappZapButton } from "@/components/whatsapp-zap-button";
@@ -89,7 +88,6 @@ function AppLayout() {
       <InstagramFollowButton />
       <InnerPillMenu />
       <MobileBottomNav />
-      <PwaInstallPrompt />
     </div>
   );
 }

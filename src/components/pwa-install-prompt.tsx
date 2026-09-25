@@ -11,7 +11,7 @@ type BIPEvent = Event & {
 };
 
 const DISMISS_KEY = "mrsl_pwa_dismissed_at";
-const DISMISS_TTL_MS = 1000 * 60 * 60 * 24 * 3; // 3 dias
+const DISMISS_TTL_MS = 1000 * 60 * 60 * 24; // 1 dia
 
 function isStandalone() {
   if (typeof window === "undefined") return false;
@@ -25,7 +25,7 @@ function isStandalone() {
 function isIOS() {
   if (typeof navigator === "undefined") return false;
   const ua = navigator.userAgent;
-  return /iPhone|iPad|iPod/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
+  return (/iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
 }
 
 function recentlyDismissed() {
@@ -125,9 +125,9 @@ export function PwaInstallPrompt() {
           <Download className="size-5 text-primary-foreground" />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-semibold">Instalar mrsemlimites</div>
+          <div className="text-sm font-semibold">Instale o app na sua tela inicial</div>
           <div className="mt-0.5 text-xs text-muted-foreground">
-            Tenha o app na tela inicial, abertura rápida e experiência em tela cheia.
+            Abre mais rápido e em tela cheia, como um aplicativo.
           </div>
 
           {iosHint ? (
@@ -150,7 +150,7 @@ export function PwaInstallPrompt() {
                 onClick={install}
                 className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg gradient-primary px-3 py-2 text-sm font-medium text-primary-foreground"
               >
-                <Download className="size-4" /> Instalar agora
+                <Download className="size-4" /> Instalar
               </button>
               <button
                 type="button"
