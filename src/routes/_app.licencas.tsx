@@ -1146,7 +1146,7 @@ const LICENSE_PRESETS: Preset[] = [
 ];
 
 
-function NovaLicencaModal({
+export function NovaLicencaModal({
   open,
   onOpenChange,
   onSaved,
