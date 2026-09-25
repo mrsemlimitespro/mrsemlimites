@@ -2317,6 +2317,7 @@ function EditarLicencaModal({
               placeholder="cliente@email.com"
             />
           </Field>
+          {licenca && <ProdutosEditBlock licenca={licenca} onSaved={onSaved} />}
           <Field label="Observações (interno)">
             <Textarea
               value={observacoes}
@@ -2341,5 +2342,62 @@ function EditarLicencaModal({
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ProdutosEditBlock({ licenca, onSaved }: { licenca: LicencaRow; onSaved: () => void }) {
+  const [sem, setSem] = useState(licenca.mr_sem_limites_ativo !== false);
+  const [soc, setSoc] = useState(licenca.mr_social_growth_ativo !== false);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    setSem(licenca.mr_sem_limites_ativo !== false);
+    setSoc(licenca.mr_social_growth_ativo !== false);
+  }, [licenca]);
+  const encerrada =
+    ["expirada", "cancelada", "revogada", "bloqueada"].includes(String(licenca.status)) ||
+    (!!licenca.expira_em && new Date(licenca.expira_em).getTime() < Date.now());
+
+  async function toggle(produto: "mr_sem_limites" | "mr_social_growth", novo: boolean) {
+    const outro = produto === "mr_sem_limites" ? soc : sem;
+    if (!novo && !outro && !window.confirm("Com os dois desligados o cliente não consegue abrir nenhuma das ferramentas. Confirma?")) return;
+    setBusy(true);
+    const { error } = await (supabase as any).rpc("set_licenca_produto", {
+      _licenca_id: licenca.id,
+      _produto: produto,
+      _ativo: novo,
+    });
+    setBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (produto === "mr_sem_limites") setSem(novo);
+    else setSoc(novo);
+    toast.success("Produto atualizado");
+    onSaved();
+  }
+
+  const itens = [
+    { k: "mr_sem_limites" as const, t: "MR Sem Limites", d: "IA · Lovable e GitHub", v: sem },
+    { k: "mr_social_growth" as const, t: "MR Social Growth", d: "WhatsApp · CRM e disparo", v: soc },
+  ];
+  return (
+    <div className="space-y-2 rounded-xl border border-border p-3">
+      <div className="text-xs font-medium">Produtos liberados nesta chave</div>
+      {itens.map((i) => (
+        <div key={i.k} className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-sm">{i.t}</div>
+            <div className="text-[11px] text-muted-foreground">{i.d}</div>
+          </div>
+          <Switch checked={i.v} disabled={busy || encerrada} onCheckedChange={(v) => toggle(i.k, v)} />
+        </div>
+      ))}
+      <p className="text-[11px] text-muted-foreground">
+        {encerrada
+          ? "Licença encerrada — renove ou reative para alterar os produtos."
+          : "O cliente vê a mudança na próxima vez que abrir a extensão, ou em até 15 minutos se ela já estiver aberta."}
+      </p>
+    </div>
   );
 }
