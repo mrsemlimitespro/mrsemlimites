@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { isAdminEmail } from "@/hooks/useIsAdmin";
+import { withTimeout, loginErrorPt } from "@/lib/with-timeout";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { PasswordInput, SocialSignIn } from "@/components/auth-extras";
@@ -130,70 +131,50 @@ function LoginPage() {
       }
     } catch {}
 
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
-      password,
-    });
-    if (signInError || !data.user) {
-      const msg = signInError?.message ?? "";
-      setError(
-        /invalid login credentials/i.test(msg)
-          ? "E-mail ou senha incorretos. Use “Esqueci minha senha” para redefinir."
-          : /email not confirmed/i.test(msg)
-            ? "E-mail ainda não confirmado."
-            : msg || "Falha ao entrar.",
+    try {
+      const { data, error: signInError } = await withTimeout(
+        supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password }),
+        20000,
       );
-      setLoading(false);
-      return;
-    }
-
-    // Admin: e-mail oficial sempre entra no painel, mesmo se a checagem de role falhar.
-    let isAdmin = isAdminEmail(data.user.email);
-    if (!isAdmin) {
-      try {
-        const { data: roleOk } = await supabase.rpc("has_role", {
-          _user_id: data.user.id,
-          _role: "admin",
-        });
-        isAdmin = roleOk === true;
-      } catch {
-        isAdmin = false;
+      if (signInError || !data.user) {
+        setError(loginErrorPt(signInError?.message ?? ""));
+        return;
       }
+
+      // Admin: e-mail oficial sempre entra no painel, mesmo se a checagem de role falhar.
+      let isAdmin = isAdminEmail(data.user.email);
+      if (!isAdmin) {
+        try {
+          const { data: roleOk } = await withTimeout(
+            supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" }),
+            8000,
+          );
+          isAdmin = roleOk === true;
+        } catch {
+          isAdmin = false;
+        }
+      }
+
+      // Revalida cache sem bloquear a navegação por mais de 3s.
+      try {
+        await withTimeout(Promise.all([qc.invalidateQueries(), router.invalidate()]), 3000);
+      } catch {}
+
+      if (isAdmin) {
+        navigate({ to: "/admin" });
+        return;
+      }
+
+      try {
+        await withTimeout(offerBiometricEnrollment(email), 15000);
+      } catch {}
+
+      navigate({ to: "/" });
+    } catch (err) {
+      setError(loginErrorPt(err instanceof Error ? err.message : ""));
+    } finally {
+      setLoading(false);
     }
-
-    // Revalida cache global antes de navegar (perfil, role, promoções, clientes, permissões).
-    try {
-      await Promise.all([qc.invalidateQueries(), router.invalidate()]);
-    } catch {}
-
-    if (isAdmin) {
-      navigate({ to: "/admin" });
-      return;
-    }
-
-    // Revendedor → painel de revenda (/). Cliente final → também Home,
-    // mas sem itens de revenda na sidebar (filtrado por useUserRole).
-    let rev: { id: string } | null = null;
-    try {
-      const res = await supabase
-        .from("revendedores")
-        .select("id")
-        .eq("auth_user_id", data.user.id)
-        .maybeSingle();
-      rev = res.data ?? null;
-    } catch {}
-
-
-    console.log(
-      "[Auth] login concluído como",
-      rev ? "revendedor" : "cliente",
-      "— redirecionando para Home",
-    );
-
-    // Oferece habilitar biometria após login bem-sucedido (só native, só 1x).
-    await offerBiometricEnrollment(email);
-
-    navigate({ to: "/" });
   }
 
 
