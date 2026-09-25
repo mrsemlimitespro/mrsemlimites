@@ -2317,6 +2317,7 @@ function EditarLicencaModal({
               placeholder="cliente@email.com"
             />
           </Field>
+          {licenca && <ProdutosEditBlock licenca={licenca} onSaved={onSaved} />}
           <Field label="Observações (interno)">
             <Textarea
               value={observacoes}
