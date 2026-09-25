@@ -8,6 +8,13 @@
       "when": 1789216982450,
       "tag": "0000_device_lock_reset",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790357877994,
+      "tag": "0001_single_admin_trigger",
+      "breakpoints": true
     }
   ]
 }
