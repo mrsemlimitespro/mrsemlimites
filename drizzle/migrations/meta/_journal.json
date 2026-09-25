@@ -15,6 +15,13 @@
       "when": 1790357877994,
       "tag": "0001_single_admin_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790359368696,
+      "tag": "0002_remove_auto_admin_trigger",
+      "breakpoints": true
     }
   ]
 }
