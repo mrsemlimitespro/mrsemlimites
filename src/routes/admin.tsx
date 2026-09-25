@@ -2,6 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-rout
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { withTimeout, loginErrorPt } from "@/lib/with-timeout";
 import { supabase } from "@/integrations/supabase/client";
 import { claimInitialAdmin, createInitialAdmin } from "@/lib/admin/admin.functions";
 import {
@@ -180,8 +181,13 @@ function AdminShell() {
   }
 
   useEffect(() => {
-    refreshAuth();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => refreshAuth());
+    refreshAuth().catch(() => setAuthState({ kind: "anon" }));
+    // Nunca aguardar consultas dentro do callback: isso trava o signIn (deadlock).
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      setTimeout(() => {
+        refreshAuth().catch(() => setAuthState({ kind: "anon" }));
+      }, 0);
+    });
     return () => sub.subscription.unsubscribe();
   }, []);
 
@@ -354,8 +360,11 @@ function SignInDialog({ onClose }: { onClose: () => void }) {
     setBusy(true);
     try {
       if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        const { error } = await withTimeout(
+          supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password }),
+          20000,
+        );
+        if (error) throw new Error(loginErrorPt(error.message));
       } else if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
@@ -373,7 +382,7 @@ function SignInDialog({ onClose }: { onClose: () => void }) {
       toast.success("OK");
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha");
+      toast.error(loginErrorPt(err instanceof Error ? err.message : ""));
     } finally {
       setBusy(false);
     }

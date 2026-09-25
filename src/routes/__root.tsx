@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 
 function NotFoundComponent() {
   return (
@@ -150,8 +151,13 @@ function RootComponent() {
     // Inicializa plugins nativos (splash, status bar, back button) quando
     // rodando dentro do Capacitor. No navegador web/PWA é no-op.
     void import("@/lib/native-init").then((m) => m.initNativePlatform());
-  }, []);
 
+    // Service worker para permitir "instalar app". Não roda dentro do editor (iframe).
+    const inIframe = window.self !== window.top;
+    if ("serviceWorker" in navigator && !inIframe && window.isSecureContext) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  }, []);
   useEffect(() => {
     // Revalida cache global e router quando a sessão muda (login, logout, refresh).
     let mounted = true;
@@ -183,6 +189,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <PwaInstallPrompt />
+
     </QueryClientProvider>
   );
 }
