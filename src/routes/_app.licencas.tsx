@@ -461,6 +461,20 @@ function LicencasPage() {
     produto: "mr_social_growth" | "mr_sem_limites",
     ativo: boolean,
   ) {
+    if (!ativo) {
+      const atual = rows.find((r) => r.id === id);
+      const outroAtivo =
+        produto === "mr_social_growth"
+          ? atual?.mr_sem_limites_ativo !== false
+          : atual?.mr_social_growth_ativo !== false;
+      if (
+        !outroAtivo &&
+        !confirm(
+          "Com os dois desligados o cliente não consegue abrir nenhuma das ferramentas. Confirma?",
+        )
+      )
+        return;
+    }
     // Atualização otimista para o interruptor responder na hora.
     setRows((prev) =>
       prev.map((r) =>
@@ -897,6 +911,9 @@ function LicencasPage() {
                       />
                     </label>
                   ))}
+                  <span className="text-[10px] leading-tight text-muted-foreground">
+                    O cliente vê a mudança na próxima vez que abrir a extensão, ou em até 15 minutos se ela já estiver aberta.
+                  </span>
                 </div>
 
                 {/* Ações rápidas: Reset • Copiar • Excluir */}
