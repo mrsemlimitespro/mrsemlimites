@@ -1,4 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+
+// Telas de recurso que continuam acessíveis; as demais redirecionam (escondidas, reversível).
+const ALLOWED_RESOURCES = new Set(["licencas", "clientes", "aulas", "imagens", "videos", "logos", "ai-agents", "ai-prompts"]);
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -50,6 +53,9 @@ import {
 import { resourceByKey, type Field, type Resource } from "@/lib/admin/resources";
 
 export const Route = createFileRoute("/admin/$resource")({
+  beforeLoad: ({ params }) => {
+    if (!ALLOWED_RESOURCES.has(params.resource)) throw redirect({ to: "/licencas" });
+  },
   component: ResourcePage,
 });
 

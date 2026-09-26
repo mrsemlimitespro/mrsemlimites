@@ -61,27 +61,24 @@ const GROUPS = {
 
 // Itens base (Admin e Revendedores)
 const baseItems: NavItem[] = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.VISAO_GERAL },
-  { title: "Minhas Licenças", url: "/licencas", icon: KeyRound, group: GROUPS.COMERCIAL },
-  { title: "Vincular Cliente", url: "/clientes", icon: Users, group: GROUPS.COMERCIAL },
-  { title: "Quero Revender", url: "/revendedor", icon: Store, group: GROUPS.REVENDA },
-  { title: "Saldo & Créditos", url: "/creditos", icon: Coins, group: GROUPS.REVENDA },
-  { title: "Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CONTEUDO },
-  { title: "Biblioteca Pro", url: "/prompts", icon: Wand2, group: GROUPS.CONTEUDO },
-  { title: "Histórico", url: "/historico", icon: History, group: GROUPS.OPERACAO },
+  { title: "Licenças", url: "/licencas", icon: KeyRound, group: GROUPS.COMERCIAL },
+  { title: "Clientes", url: "/clientes", icon: Users, group: GROUPS.COMERCIAL },
+  { title: "Prompts", url: "/prompts", icon: Wand2, group: GROUPS.CONTEUDO },
+  { title: "Agents", url: "/agents", icon: Wand2, group: GROUPS.CONTEUDO },
 ];
 
-// Admin Only
+// Admin Only (demais telas escondidas, não apagadas)
 const adminItems: NavItem[] = [
-  { title: "Infraestrutura", url: "/admin", icon: Server, group: GROUPS.SISTEMA },
-  { title: "Gestão Global", url: "/admin/revendedores-gestao", icon: ShieldCheck, group: GROUPS.SISTEMA },
-  { title: "Configurações", url: "/admin/configuracoes", icon: Settings, group: GROUPS.SISTEMA },
+  { title: "Administradores", url: "/admin/usuarios", icon: ShieldCheck, group: GROUPS.SISTEMA },
+  { title: "Biblioteca", url: "/admin/aulas", icon: GraduationCap, group: GROUPS.CONTEUDO },
+  { title: "Upload de Imagens", url: "/admin/imagens", icon: Server, group: GROUPS.CONTEUDO },
+  { title: "Upload de Vídeos", url: "/admin/videos", icon: Server, group: GROUPS.CONTEUDO },
+  { title: "Upload de Logos", url: "/admin/logos", icon: Server, group: GROUPS.CONTEUDO },
 ];
 
 // Cliente (Simplified)
 const clienteItems: NavItem[] = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: GROUPS.VISAO_GERAL },
-  { title: "Treinamentos", url: "/aulas", icon: GraduationCap, group: GROUPS.CONTEUDO },
+  { title: "Prompts", url: "/prompts", icon: Wand2, group: GROUPS.CONTEUDO },
 ];
 
 type FooterItem = NavItem | { title: string; action: "logout"; icon: IconType };
@@ -156,7 +153,7 @@ export function AppSidebar({
         >
           {/* Header & Logo */}
           <div className="flex h-16 items-center px-4 mb-2 overflow-hidden">
-            <Link to="/" className="flex items-center gap-3 w-full">
+            <Link to="/licencas" className="flex items-center gap-3 w-full">
               <BrandLogo 
                 className={cn("transition-all duration-300", isExpanded ? "w-40 h-10" : "w-12 h-10")} 
               />

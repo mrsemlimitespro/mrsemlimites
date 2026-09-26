@@ -1,9 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Bot, Package, Wand2, Download } from "lucide-react";
 
 import { HubTabs, type HubTab } from "@/components/hub-tabs";
 
 export const Route = createFileRoute("/_app/ferramentas")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "Ferramentas — MR Sem Limites" },

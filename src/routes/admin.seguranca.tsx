@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2, Save, ShieldAlert } from "lucide-react";
@@ -10,6 +10,10 @@ import { Label } from "@/components/ui/label";
 import { clearAdminGate } from "@/components/admin-password-gate";
 
 export const Route = createFileRoute("/admin/seguranca")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   component: SegurancaPage,
 });
 

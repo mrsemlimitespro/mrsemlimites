@@ -8,7 +8,7 @@
  *    Tornar Vitalício, Reenviar Magic Link, Ver clientes, Ver licenças
  *  - Zero comissão — modelo é apenas revenda de licenças
  */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -44,6 +44,10 @@ import {
 } from "@/lib/revendedores/admin.functions";
 
 export const Route = createFileRoute("/admin/revendedores-gestao")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   ssr: false,
   head: () => ({
     meta: [

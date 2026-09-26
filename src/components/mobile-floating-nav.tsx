@@ -35,16 +35,10 @@ type NavItem = {
  * Usa apenas rotas reais do app para evitar links quebrados.
  */
 const items: NavItem[] = [
-  { id: "home", label: "Home", to: "/", icon: Home },
   { id: "agents", label: "Agents", to: "/agents", icon: Bot },
-  { id: "packs", label: "Packs", to: "/packs", icon: Package },
-  { id: "extensao", label: "Extensão", to: "/baixar-extensao", icon: Download },
   { id: "prompts", label: "Prompts", to: "/prompts", icon: MessageSquare },
-  { id: "loja", label: "Loja", to: "/creditos", icon: ShoppingBag },
   { id: "licencas", label: "Licenças", to: "/licencas", icon: KeyRound },
   { id: "clientes", label: "Clientes", to: "/clientes", icon: Users },
-  { id: "aulas", label: "Aulas", to: "/aulas", icon: GraduationCap },
-  { id: "creditos", label: "Créditos", to: "/creditos", icon: Coins, matches: ["/creditos"] },
   { id: "perfil", label: "Perfil", to: "/perfil", icon: User },
 ];
 

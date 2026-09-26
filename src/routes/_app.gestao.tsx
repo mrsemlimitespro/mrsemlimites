@@ -1,10 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Users, KeyRound, Store } from "lucide-react";
 
 import { HubTabs, type HubTab } from "@/components/hub-tabs";
 import { useUserRole } from "@/hooks/useUserRole";
 
 export const Route = createFileRoute("/_app/gestao")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "Gestão — MR Sem Limites" },

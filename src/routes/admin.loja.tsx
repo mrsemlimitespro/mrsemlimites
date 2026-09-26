@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import {
   Package,
   Coins,
@@ -11,6 +11,10 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/loja")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   component: LojaPage,
 });
 

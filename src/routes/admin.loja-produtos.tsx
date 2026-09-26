@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
@@ -18,6 +18,10 @@ import { ProdutoGalleryEditor } from "@/components/admin/produto-gallery-editor"
 import { ProdutoModal, type Produto } from "@/components/home/home-sections";
 
 export const Route = createFileRoute("/admin/loja-produtos")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   component: ProdutosGaleriaPage,
 });
 

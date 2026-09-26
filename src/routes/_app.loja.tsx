@@ -1,9 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ShoppingBag, Users, Boxes, Coins, KeyRound } from "lucide-react";
 
 import { HubTabs, type HubTab } from "@/components/hub-tabs";
 
 export const Route = createFileRoute("/_app/loja")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "Loja — MR Sem Limites" },
