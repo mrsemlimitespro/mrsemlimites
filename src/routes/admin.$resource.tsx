@@ -595,6 +595,9 @@ function ResourceFormDialog({
               onChange={(v) => setValues((s) => ({ ...s, [f.key]: v }))}
             />
           ))}
+          {isEdit && resource.key === "licencas" && initial?.id && (
+            <ComputadorSection licencaId={String(initial.id)} />
+          )}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={onClose} disabled={busy}>
               Cancelar
