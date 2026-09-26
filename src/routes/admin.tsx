@@ -126,34 +126,14 @@ const GROUP_ORDER = [
 ] as const;
 
 const specialLinks: SpecialLink[] = [
-  // 🏠 Dashboard
-  { key: "dashboard", to: "/admin", label: "Central de Controle", icon: LayoutDashboard, exact: true, group: "Dashboard" },
-  { key: "home", to: "/admin/home", label: "Home (vitrine)", icon: HomeIcon, group: "Dashboard" },
-
-  // 👥 Usuários
-  { key: "visualizacao", to: "/admin/visualizacao", label: "Visualização de painéis", icon: ShieldCheck, group: "Usuários" },
+  // Menu enxuto (demais telas escondidas, não apagadas)
+  { key: "licencas-manager", to: "/licencas", label: "Licenças", icon: KeySquare, group: "Usuários" },
+  { key: "clientes-cards", to: "/clientes", label: "Clientes", icon: UserCircle, group: "Usuários" },
   { key: "usuarios", to: "/admin/usuarios", label: "Administradores", icon: UserCircle, group: "Usuários" },
-
-  // 💳 Comercial
-  { key: "licencas-manager", to: "/admin/licencas", label: "Licenças", icon: KeySquare, group: "Comercial" },
-  { key: "pack-autorizacoes", to: "/admin/pack-autorizacoes", label: "Autorizações de Packs", icon: KeySquare, group: "Comercial" },
-  { key: "loja", to: "/admin/loja", label: "Loja (vitrine)", icon: Store, group: "Comercial" },
-  { key: "pagamentos", to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard, group: "Comercial" },
-  { key: "ajustar-creditos", to: "/admin/ajustar-creditos", label: "Ajustar Créditos", icon: Coins, group: "Comercial" },
-
-  // ⚙ Sistema
-  { key: "api-dashboard", to: "/admin/api-dashboard", label: "API de Controle", icon: Server, group: "Sistema" },
-  { key: "modulos", to: "/admin/modulos", label: "Módulos", icon: Blocks, group: "Sistema" },
-  { key: "configuracoes", to: "/admin/configuracoes", label: "Configurações Gerais", icon: Settings2, group: "Sistema" },
-  { key: "personalizacao", to: "/admin/personalizacao", label: "Aparência", icon: Palette, group: "Sistema" },
-  { key: "animacoes", to: "/admin/animacoes", label: "Animações", icon: Sparkles, group: "Sistema" },
-  { key: "sons", to: "/admin/sons", label: "Sons", icon: Volume2, group: "Sistema" },
-  { key: "seguranca", to: "/admin/seguranca", label: "Segurança", icon: ShieldAlert, group: "Sistema" },
-  { key: "backup", to: "/admin/backup", label: "Backup", icon: DatabaseBackup, group: "Sistema" },
-
-  // Rota antiga — mantida acessível via /admin/licencas-dashboard mas fora do menu
-  { key: "licencas-dashboard", to: "/admin/licencas-dashboard", label: "Licenças — Dashboard (legado)", icon: ShieldCheck, group: "__hidden" },
 ];
+
+// Recursos que aparecem no menu do admin
+const MENU_RESOURCES = new Set(["aulas", "imagens", "videos", "logos", "ai-agents", "ai-prompts"]);
 
 function AdminShell() {
   const navigate = useNavigate();
@@ -197,7 +177,7 @@ function AdminShell() {
     (l) => l.group !== "__hidden" && visibleIn("sidebar", l.key),
   );
   const visibleResources = resources.filter(
-    (r) => !r.hiddenFromSidebar && visibleIn("sidebar", r.key),
+    (r) => !r.hiddenFromSidebar && MENU_RESOURCES.has(r.key) && visibleIn("sidebar", r.key),
   );
 
   type MenuEntry =
