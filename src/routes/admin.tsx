@@ -191,7 +191,7 @@ function AdminShell() {
     (grouped.get(g) ?? grouped.set(g, []).get(g)!).push({ kind: "special", link: l });
   }
   for (const r of visibleResources) {
-    const g = r.group ?? "Sistema";
+    const g = "Conteúdo";
     (grouped.get(g) ?? grouped.set(g, []).get(g)!).push({ kind: "resource", res: r });
   }
 
