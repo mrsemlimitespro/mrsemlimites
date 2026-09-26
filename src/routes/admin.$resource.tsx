@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import { setImpersonation } from "@/lib/impersonation";
+import { ComputadorSection } from "@/components/admin/computador-section";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
