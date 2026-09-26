@@ -1,13 +1,10 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { ELEGANT_STYLES, ELEGANT_CSS } from "@/components/animacoes-elegantes";
 import React, { useState } from "react";
 import { Copy, Check, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/animacoes")({
-  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
-  beforeLoad: () => {
-    throw redirect({ to: "/licencas" });
-  },
   head: () => ({
     meta: [
       { title: "Catálogo de Animações — Admin" },
@@ -22,6 +19,7 @@ type Style = {
   nome: string;
   descricao: string;
   render: () => React.ReactElement;
+  code?: string;
 };
 
 const STYLES: Style[] = [
@@ -254,9 +252,11 @@ const STYLES: Style[] = [
     descricao: "Listras coloridas em movimento diagonal.",
     render: () => <CandyStripes />,
   },
+  ...ELEGANT_STYLES,
 ];
 
 function buildSnippet(s: Style): string {
+  if (s.code) return `/* ${s.nome} — ${s.descricao} */\n${s.code}`;
   const componentCode = s.render.toString();
   // Tenta extrair a referência do componente demo (ex: <NeonMarquee />)
   const match = componentCode.match(/<(\w+)\s*\/>/);
@@ -369,7 +369,7 @@ function AnimacoesPage() {
         ))}
       </div>
 
-      <style>{DEMO_CSS}</style>
+      <style>{DEMO_CSS + ELEGANT_CSS}</style>
     </div>
   );
 }

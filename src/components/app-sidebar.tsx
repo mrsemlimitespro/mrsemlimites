@@ -71,6 +71,8 @@ const baseItems: NavItem[] = [
 const adminItems: NavItem[] = [
   { title: "Administradores", url: "/admin/usuarios", icon: ShieldCheck, group: GROUPS.SISTEMA },
   { title: "Biblioteca", url: "/admin/aulas", icon: GraduationCap, group: GROUPS.CONTEUDO },
+  { title: "Animações", url: "/admin/animacoes", icon: Zap, group: GROUPS.CONTEUDO },
+  { title: "Sons", url: "/admin/sons", icon: MessageSquare, group: GROUPS.CONTEUDO },
   { title: "Upload de Imagens", url: "/admin/imagens", icon: Server, group: GROUPS.CONTEUDO },
   { title: "Upload de Vídeos", url: "/admin/videos", icon: Server, group: GROUPS.CONTEUDO },
   { title: "Upload de Logos", url: "/admin/logos", icon: Server, group: GROUPS.CONTEUDO },

@@ -130,6 +130,8 @@ const specialLinks: SpecialLink[] = [
   { key: "licencas-manager", to: "/licencas", label: "Licenças", icon: KeySquare, group: "Usuários" },
   { key: "clientes-cards", to: "/clientes", label: "Clientes", icon: UserCircle, group: "Usuários" },
   { key: "usuarios", to: "/admin/usuarios", label: "Administradores", icon: UserCircle, group: "Usuários" },
+  { key: "animacoes", to: "/admin/animacoes", label: "Animações", icon: Sparkles, group: "Conteúdo" },
+  { key: "sons", to: "/admin/sons", label: "Sons", icon: Blocks, group: "Conteúdo" },
 ];
 
 // Recursos que aparecem no menu do admin
