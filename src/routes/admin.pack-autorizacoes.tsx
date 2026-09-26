@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +14,10 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/pack-autorizacoes")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   ssr: false,
   head: () => ({
     meta: [{ title: "Autorizações de Packs — Admin" }, { name: "robots", content: "noindex" }],

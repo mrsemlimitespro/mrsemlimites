@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AINovaDashboard } from "@/components/ai-modules/AINovaDashboard";
@@ -8,6 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/packs")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   ssr: false,
   head: () => ({
     meta: [

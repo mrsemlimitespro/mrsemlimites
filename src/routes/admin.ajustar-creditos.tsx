@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -19,6 +19,10 @@ import {
 } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/admin/ajustar-creditos")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   component: AjustarCreditosPage,
 });
 

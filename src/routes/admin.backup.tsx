@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Download, DatabaseBackup, Loader2 } from "lucide-react";
@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/button";
 import { resources } from "@/lib/admin/resources";
 
 export const Route = createFileRoute("/admin/backup")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   component: BackupPage,
 });
 

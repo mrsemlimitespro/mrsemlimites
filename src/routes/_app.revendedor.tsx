@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Users, KeyRound, DollarSign, TrendingUp, AlertCircle,
@@ -9,6 +9,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/revendedor")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "Painel do Revendedor — MR sem Limites" },

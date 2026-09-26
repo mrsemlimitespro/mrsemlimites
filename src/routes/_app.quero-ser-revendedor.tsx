@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Check, Sparkles, Users, Wallet, ShieldCheck, Megaphone, LineChart, Headphones } from "lucide-react";
 
@@ -6,6 +6,10 @@ import { BRAND_NAME } from "@/components/brand";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_app/quero-ser-revendedor")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "Quero ser Revendedor — MR Sem Limites" },

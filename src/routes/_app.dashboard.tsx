@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   DollarSign,
   MessageSquare,
@@ -36,6 +36,10 @@ import {
 import { useModules } from "@/lib/admin/use-modules";
 
 export const Route = createFileRoute("/_app/dashboard")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "Dashboard — MR Lova" },

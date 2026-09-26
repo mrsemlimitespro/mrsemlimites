@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { Eye, Loader2, Search, Users, UserCog } from "lucide-react";
@@ -9,6 +9,10 @@ import { cn } from "@/lib/utils";
 import { setImpersonation, type ImpersonationTargetKind } from "@/lib/impersonation";
 
 export const Route = createFileRoute("/admin/visualizacao")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "Visualização — Painel Administrativo" },

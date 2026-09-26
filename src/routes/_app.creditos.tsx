@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Coins, Flame, Package, ShoppingCart, Sparkles, UserCircle2, Zap } from "lucide-react";
@@ -11,6 +11,10 @@ import { getPreset } from "@/lib/gradient-presets";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/creditos")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "Loja — MR sem limites" },

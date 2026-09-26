@@ -1,4 +1,4 @@
-import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
+import { createFileRoute, notFound, useRouter, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
@@ -7,6 +7,10 @@ import { PackDetailPage } from "@/components/premium-packs/PackDetailPage";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/_app/packs/$slug")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   ssr: false,
   head: () => ({
     meta: [{ title: "Pack Premium — MR Sem Limites" }, { name: "robots", content: "noindex" }],

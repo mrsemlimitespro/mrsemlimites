@@ -10,7 +10,7 @@
  * 
  * Nenhuma alteração de dados foi realizada, apenas restauração de acesso.
  */
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import {
   Bot,
@@ -56,6 +56,10 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   head: () => ({
     meta: [
       { title: "MR Sem Limites — Plataforma completa de revenda digital" },

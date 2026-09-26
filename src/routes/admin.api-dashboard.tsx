@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { 
   Server, 
   CheckCircle2, 
@@ -13,6 +13,10 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/api-dashboard")({
+  // HIDDEN_REDIRECT: tela escondida do menu (reversível) — leva para /licencas
+  beforeLoad: () => {
+    throw redirect({ to: "/licencas" });
+  },
   component: ApiDashboard,
 });
 
