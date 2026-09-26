@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Copy,
@@ -607,6 +607,14 @@ function LicencasPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          {(isAdmin || role === "admin") && (
+            <Link
+              to="/admin/licencas"
+              className="text-[11px] font-medium text-muted-foreground underline-offset-4 hover:underline hover:text-foreground"
+            >
+              Ações avançadas
+            </Link>
+          )}
           {canTeste && (
             <button
               onClick={() => setOpenEnviarTeste(true)}
