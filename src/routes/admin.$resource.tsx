@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import { setImpersonation } from "@/lib/impersonation";
+import { ComputadorSection } from "@/components/admin/computador-section";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -595,6 +596,9 @@ function ResourceFormDialog({
               onChange={(v) => setValues((s) => ({ ...s, [f.key]: v }))}
             />
           ))}
+          {isEdit && resource.key === "licencas" && initial?.id && (
+            <ComputadorSection licencaId={String(initial.id)} />
+          )}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={onClose} disabled={busy}>
               Cancelar
