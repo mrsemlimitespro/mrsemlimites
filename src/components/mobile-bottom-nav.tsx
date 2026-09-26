@@ -21,35 +21,10 @@ type TabItem = {
  * é preservada — só muda como o usuário chega até ela no mobile.
  */
 const items: TabItem[] = [
-  { id: "home", title: "Início", to: "/", icon: Home, matches: ["/"] },
-  {
-    id: "ferramentas",
-    title: "Ferramentas",
-    to: "/ferramentas",
-    icon: Wrench,
-    matches: ["/ferramentas", "/agents", "/packs", "/prompts", "/baixar-extensao"],
-  },
-  {
-    id: "loja",
-    title: "Loja",
-    to: "/loja",
-    icon: ShoppingBag,
-    matches: ["/loja", "/creditos", "/dashboard", "/checkout"],
-  },
-  {
-    id: "gestao",
-    title: "Gestão",
-    to: "/gestao",
-    icon: LayoutGrid,
-    matches: ["/gestao", "/clientes", "/licencas", "/admin/revendedores-gestao", "/revendedor"],
-  },
-  {
-    id: "perfil",
-    title: "Perfil",
-    to: "/perfil",
-    icon: User,
-    matches: ["/perfil", "/minha-conta", "/aulas"],
-  },
+  { id: "licencas", title: "Licenças", to: "/licencas", icon: LayoutGrid, matches: ["/licencas"] },
+  { id: "clientes", title: "Clientes", to: "/clientes", icon: Home, matches: ["/clientes"] },
+  { id: "prompts", title: "Prompts", to: "/prompts", icon: Wrench, matches: ["/prompts", "/agents"] },
+  { id: "perfil", title: "Conta", to: "/perfil", icon: User, matches: ["/perfil", "/minha-conta"] },
 ];
 
 function matchTab(pathname: string, tab: TabItem): boolean {
