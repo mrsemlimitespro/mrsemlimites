@@ -1,15 +1,19 @@
 import { normalizeLicenseKey, isValidLicenseFormat } from "@/lib/licenca/utils";
 
-const ALLOWED_EXTENSION_ID = "pbeoifjhgofkbcofabccbcffbpgkpkbk"; // ID oficial MR Sem Limites
+export const ALLOWED_EXTENSION_IDS = [
+  "pbeoifjhgofkbcofabccbcffbpgkpkbk", // ID oficial MR Sem Limites
+  "liafammnfabhbhlkolccllamdlmnipno", // nova extensão
+];
 
 export const getCorsHeaders = (request: Request) => {
   const origin = request.headers.get("origin");
-  const isAllowed = 
-    origin === `chrome-extension://${ALLOWED_EXTENSION_ID}` || 
+  const isAllowed =
+    (!!origin && ALLOWED_EXTENSION_IDS.some((id) => origin === `chrome-extension://${id}`)) ||
     (process.env.NODE_ENV === 'development' && origin?.includes("localhost"));
-  
+
   return {
-    "Access-Control-Allow-Origin": isAllowed ? origin! : `chrome-extension://${ALLOWED_EXTENSION_ID}`,
+    "Access-Control-Allow-Origin": isAllowed ? origin! : `chrome-extension://${ALLOWED_EXTENSION_IDS[0]}`,
+    "Vary": "Origin",
     "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
     "Access-Control-Allow-Headers": "content-type, authorization, x-lovable-project-id, x-extension-trace-id",
     "Access-Control-Max-Age": "86400",
