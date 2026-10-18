@@ -1152,19 +1152,40 @@ function StatusPill({ status }: { status: License["status"] }) {
 }
 
 type PresetKind = "teste" | "premium";
-type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number };
+type Preset = {
+  label: string;
+  kind: PresetKind;
+  dias?: number;
+  minutos?: number;
+  custom?: boolean;
+};
 
 const LICENSE_PRESETS: Preset[] = [
   { label: "1 hora", kind: "teste", minutos: 60 },
   { label: "1 dia", kind: "teste", minutos: 60 * 24 },
   { label: "2 dias", kind: "teste", minutos: 60 * 24 * 2 },
   { label: "3 dias", kind: "teste", minutos: 60 * 24 * 3 },
+  { label: "7 dias", kind: "premium", dias: 7 },
   { label: "30 dias", kind: "premium", dias: 30 },
   { label: "60 dias", kind: "premium", dias: 60 },
   { label: "90 dias", kind: "premium", dias: 90 },
   { label: "180 dias", kind: "premium", dias: 180 },
   { label: "1 ano", kind: "premium", dias: 365 },
+  { label: "Data específica", kind: "premium", custom: true },
 ];
+
+/** "aaaa-mm-dd" → ISO do fim daquele dia (horário local). */
+function fimDoDiaISO(ymd: string): string {
+  const [y, m, d] = ymd.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1, 23, 59, 59).toISOString();
+}
+function toYMD(dt: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}`;
+}
+function diasAte(ymd: string): number {
+  return Math.max(1, Math.ceil((new Date(fimDoDiaISO(ymd)).getTime() - Date.now()) / 86_400_000));
+}
 
 
 export function NovaLicencaModal({
