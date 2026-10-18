@@ -389,13 +389,13 @@ function LicencasPage() {
     });
 
     const onVisible = () => {
-      if (alive && started && document.visibilityState === "visible") void reload();
+      if (alive && started && document.visibilityState === "visible") void reload(true);
     };
     document.addEventListener("visibilitychange", onVisible);
 
     const ch = supabase
       .channel("licencas-live")
-      .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload())
+      .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload(true))
       .subscribe();
     return () => {
       alive = false;
