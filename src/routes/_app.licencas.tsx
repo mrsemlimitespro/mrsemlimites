@@ -1207,6 +1207,7 @@ export function NovaLicencaModal({
   const [busy, setBusy] = useState(false);
   const preset = presets[presetIdx] ?? presets[0];
   const maxQtd = isAdmin ? 500 : 1;
+  const [dataFim, setDataFim] = useState(() => toYMD(new Date(Date.now() + 15 * 86_400_000)));
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -1239,9 +1240,11 @@ export function NovaLicencaModal({
         : (preset.minutos ?? 60) < 60 * 24
           ? `${Math.round((preset.minutos ?? 60) / 60)} hora(s)`
           : `${Math.round((preset.minutos ?? 60) / (60 * 24))} dia(s)`
-      : (preset.dias ?? 30) >= 365
-        ? "1 ano"
-        : `${preset.dias} dias`;
+      : preset.custom
+        ? `até ${new Date(fimDoDiaISO(dataFim)).toLocaleDateString("pt-BR")}`
+        : (preset.dias ?? 30) >= 365
+          ? "1 ano"
+          : `${preset.dias} dias`;
 
   function textoParaCliente() {
     if (!resultado) return "";
@@ -1283,7 +1286,8 @@ export function NovaLicencaModal({
       const { data: created, error } = await (supabase as any).rpc("gerar_licencas_v3", {
         _quantidade: quantidade,
         _tipo: preset.kind,
-        _duracao_dias: preset.kind === "premium" ? (preset.dias ?? 30) : null,
+        _duracao_dias:
+          preset.kind === "premium" ? (preset.custom ? diasAte(dataFim) : (preset.dias ?? 30)) : null,
         _trial_minutos: preset.kind === "teste" ? (preset.minutos ?? 60) : null,
         _email: em || null,
         _metadata: {
@@ -1294,6 +1298,17 @@ export function NovaLicencaModal({
         _modelo_mr: true,
       });
       if (error) throw error;
+
+      if (preset.custom) {
+        const ids = (created ?? []).map((r: any) => r.id).filter(Boolean) as string[];
+        if (ids.length) {
+          const { error: e2 } = await (supabase as any)
+            .from("licencas")
+            .update({ expira_em: fimDoDiaISO(dataFim) })
+            .in("id", ids);
+          if (e2) throw e2;
+        }
+      }
 
       const chaves = (created ?? []).map((r: any) => r.chave).filter(Boolean) as string[];
 
@@ -1489,14 +1504,29 @@ export function NovaLicencaModal({
                             ? p.minutos === 60
                               ? "1 hora"
                               : `${p.minutos} minutos`
-                            : p.dias! >= 365
-                              ? "1 ano"
-                              : `${p.dias} dias`}
+                            : p.custom
+                              ? "Data específica"
+                              : p.dias! >= 365
+                                ? "1 ano"
+                                : `${p.dias} dias`}
                       </span>
                     </button>
                   );
                 })}
               </div>
+              {preset.custom && (
+                <div className="mt-3 space-y-1">
+                  <Input
+                    type="date"
+                    value={dataFim}
+                    min={toYMD(new Date(Date.now() + 86_400_000))}
+                    onChange={(e) => setDataFim(e.target.value)}
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    A licença vence no fim desse dia, independente de quando for ativada.
+                  </p>
+                </div>
+              )}
             </Field>
 
             <Field label="Modelo da Chave">
