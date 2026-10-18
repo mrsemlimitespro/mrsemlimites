@@ -1152,19 +1152,40 @@ function StatusPill({ status }: { status: License["status"] }) {
 }
 
 type PresetKind = "teste" | "premium";
-type Preset = { label: string; kind: PresetKind; dias?: number; minutos?: number };
+type Preset = {
+  label: string;
+  kind: PresetKind;
+  dias?: number;
+  minutos?: number;
+  custom?: boolean;
+};
 
 const LICENSE_PRESETS: Preset[] = [
   { label: "1 hora", kind: "teste", minutos: 60 },
   { label: "1 dia", kind: "teste", minutos: 60 * 24 },
   { label: "2 dias", kind: "teste", minutos: 60 * 24 * 2 },
   { label: "3 dias", kind: "teste", minutos: 60 * 24 * 3 },
+  { label: "7 dias", kind: "premium", dias: 7 },
   { label: "30 dias", kind: "premium", dias: 30 },
   { label: "60 dias", kind: "premium", dias: 60 },
   { label: "90 dias", kind: "premium", dias: 90 },
   { label: "180 dias", kind: "premium", dias: 180 },
   { label: "1 ano", kind: "premium", dias: 365 },
+  { label: "Data específica", kind: "premium", custom: true },
 ];
+
+/** "aaaa-mm-dd" → ISO do fim daquele dia (horário local). */
+function fimDoDiaISO(ymd: string): string {
+  const [y, m, d] = ymd.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1, 23, 59, 59).toISOString();
+}
+function toYMD(dt: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}`;
+}
+function diasAte(ymd: string): number {
+  return Math.max(1, Math.ceil((new Date(fimDoDiaISO(ymd)).getTime() - Date.now()) / 86_400_000));
+}
 
 
 export function NovaLicencaModal({
@@ -1186,6 +1207,7 @@ export function NovaLicencaModal({
   const [busy, setBusy] = useState(false);
   const preset = presets[presetIdx] ?? presets[0];
   const maxQtd = isAdmin ? 500 : 1;
+  const [dataFim, setDataFim] = useState(() => toYMD(new Date(Date.now() + 15 * 86_400_000)));
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -1218,9 +1240,11 @@ export function NovaLicencaModal({
         : (preset.minutos ?? 60) < 60 * 24
           ? `${Math.round((preset.minutos ?? 60) / 60)} hora(s)`
           : `${Math.round((preset.minutos ?? 60) / (60 * 24))} dia(s)`
-      : (preset.dias ?? 30) >= 365
-        ? "1 ano"
-        : `${preset.dias} dias`;
+      : preset.custom
+        ? `até ${new Date(fimDoDiaISO(dataFim)).toLocaleDateString("pt-BR")}`
+        : (preset.dias ?? 30) >= 365
+          ? "1 ano"
+          : `${preset.dias} dias`;
 
   function textoParaCliente() {
     if (!resultado) return "";
@@ -1262,7 +1286,8 @@ export function NovaLicencaModal({
       const { data: created, error } = await (supabase as any).rpc("gerar_licencas_v3", {
         _quantidade: quantidade,
         _tipo: preset.kind,
-        _duracao_dias: preset.kind === "premium" ? (preset.dias ?? 30) : null,
+        _duracao_dias:
+          preset.kind === "premium" ? (preset.custom ? diasAte(dataFim) : (preset.dias ?? 30)) : null,
         _trial_minutos: preset.kind === "teste" ? (preset.minutos ?? 60) : null,
         _email: em || null,
         _metadata: {
@@ -1273,6 +1298,17 @@ export function NovaLicencaModal({
         _modelo_mr: true,
       });
       if (error) throw error;
+
+      if (preset.custom) {
+        const ids = (created ?? []).map((r: any) => r.id).filter(Boolean) as string[];
+        if (ids.length) {
+          const { error: e2 } = await (supabase as any)
+            .from("licencas")
+            .update({ expira_em: fimDoDiaISO(dataFim) })
+            .in("id", ids);
+          if (e2) throw e2;
+        }
+      }
 
       const chaves = (created ?? []).map((r: any) => r.chave).filter(Boolean) as string[];
 
@@ -1468,14 +1504,29 @@ export function NovaLicencaModal({
                             ? p.minutos === 60
                               ? "1 hora"
                               : `${p.minutos} minutos`
-                            : p.dias! >= 365
-                              ? "1 ano"
-                              : `${p.dias} dias`}
+                            : p.custom
+                              ? "Data específica"
+                              : p.dias! >= 365
+                                ? "1 ano"
+                                : `${p.dias} dias`}
                       </span>
                     </button>
                   );
                 })}
               </div>
+              {preset.custom && (
+                <div className="mt-3 space-y-1">
+                  <Input
+                    type="date"
+                    value={dataFim}
+                    min={toYMD(new Date(Date.now() + 86_400_000))}
+                    onChange={(e) => setDataFim(e.target.value)}
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    A licença vence no fim desse dia, independente de quando for ativada.
+                  </p>
+                </div>
+              )}
             </Field>
 
             <Field label="Modelo da Chave">
@@ -2240,6 +2291,16 @@ function EditarLicencaModal({
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [observacoes, setObservacoes] = useState("");
+  const [venc, setVenc] = useState("");
+  const [dur, setDur] = useState(30);
+  function ajustarDias(d: number) {
+    if (licenca?.expira_em) {
+      const [y, m, dd] = (venc || toYMD(new Date())).split("-").map(Number);
+      setVenc(toYMD(new Date(y, m - 1, dd + d)));
+    } else {
+      setDur((x) => Math.max(1, x + d));
+    }
+  }
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -2248,6 +2309,11 @@ function EditarLicencaModal({
       setNome(licenca.clientes?.nome ?? "");
       setEmail(licenca.email ?? "");
       setObservacoes(licenca.observacoes_admin ?? "");
+      setVenc(licenca.expira_em ? toYMD(new Date(licenca.expira_em)) : "");
+      setDur(
+        licenca.duracao_dias ??
+          (licenca.trial_duracao_minutos ? Math.max(1, Math.round(licenca.trial_duracao_minutos / 1440)) : 30),
+      );
     }
   }, [licenca]);
 
@@ -2266,6 +2332,18 @@ function EditarLicencaModal({
         chave: novaChave,
         email: email.trim() ? email.trim().toLowerCase() : null,
         observacoes_admin: observacoes.trim() || null,
+      };
+      if (licenca.expira_em) {
+        if (venc && venc !== toYMD(new Date(licenca.expira_em))) {
+          const iso = fimDoDiaISO(venc);
+          patch.expira_em = iso;
+          if (new Date(iso).getTime() > Date.now() && licenca.status === "expirada") {
+            patch.status = "ativa";
+          }
+        }
+      } else if (dur !== (licenca.duracao_dias ?? 30)) {
+        patch.duracao_dias = dur;
+        if ((licenca.tipo ?? "") === "teste") patch.trial_duracao_minutos = dur * 1440;
       };
       const { error: upErr } = await (supabase as any)
         .from("licencas")
@@ -2337,6 +2415,32 @@ function EditarLicencaModal({
               onChange={(e) => setEmail(e.target.value)}
               placeholder="cliente@email.com"
             />
+          </Field>
+          <Field label={licenca?.expira_em ? "Vencimento" : "Duração (conta a partir da ativação)"}>
+            {licenca?.expira_em ? (
+              <Input type="date" value={venc} onChange={(e) => setVenc(e.target.value)} />
+            ) : (
+              <Input
+                type="number"
+                min={1}
+                value={dur}
+                onChange={(e) => setDur(Math.max(1, parseInt(e.target.value) || 1))}
+              />
+            )}
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {[-30, -7, -1, 1, 7, 30].map((d) => (
+                <Button
+                  key={d}
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 px-2 text-xs"
+                  onClick={() => ajustarDias(d)}
+                >
+                  {d > 0 ? `+${d}` : d} dia{Math.abs(d) > 1 ? "s" : ""}
+                </Button>
+              ))}
+            </div>
           </Field>
           {licenca && <ProdutosEditBlock licenca={licenca} onSaved={onSaved} />}
           <Field label="Observações (interno)">
