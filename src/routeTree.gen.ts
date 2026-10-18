@@ -9,107 +9,86 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as RegistroRouteImport } from './routes/registro'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
-import { Route as CheckoutRouteImport } from './routes/checkout'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegistroRouteImport } from './routes/registro'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
-import { Route as AdminVisualizacaoRouteImport } from './routes/admin.visualizacao'
-import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
-import { Route as AdminSonsRouteImport } from './routes/admin.sons'
-import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
-import { Route as AdminRevendedoresGestaoRouteImport } from './routes/admin.revendedores-gestao'
-import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
-import { Route as AdminPagamentosRouteImport } from './routes/admin.pagamentos'
-import { Route as AdminPackAutorizacoesRouteImport } from './routes/admin.pack-autorizacoes'
-import { Route as AdminModulosRouteImport } from './routes/admin.modulos'
-import { Route as AdminLojaProdutosRouteImport } from './routes/admin.loja-produtos'
-import { Route as AdminLojaRouteImport } from './routes/admin.loja'
-import { Route as AdminLicencasDashboardRouteImport } from './routes/admin.licencas-dashboard'
-import { Route as AdminLicencasRouteImport } from './routes/admin.licencas'
-import { Route as AdminHomeRouteImport } from './routes/admin.home'
-import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
-import { Route as AdminComunicacaoRouteImport } from './routes/admin.comunicacao'
-import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
-import { Route as AdminBackupRouteImport } from './routes/admin.backup'
-import { Route as AdminApiDashboardRouteImport } from './routes/admin.api-dashboard'
-import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
-import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
-import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
-import { Route as AppRevendedorRouteImport } from './routes/_app.revendedor'
-import { Route as AppRedefinirSenhaRouteImport } from './routes/_app.redefinir-senha'
-import { Route as AppRankingRouteImport } from './routes/_app.ranking'
-import { Route as AppQueroSerRevendedorRouteImport } from './routes/_app.quero-ser-revendedor'
-import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
-import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
-import { Route as AppPacksRouteImport } from './routes/_app.packs'
-import { Route as AppMinhaContaRouteImport } from './routes/_app.minha-conta'
-import { Route as AppLojaRouteImport } from './routes/_app.loja'
-import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
-import { Route as AppGestaoRouteImport } from './routes/_app.gestao'
-import { Route as AppFerramentasRouteImport } from './routes/_app.ferramentas'
-import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
-import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
-import { Route as AppClientesRouteImport } from './routes/_app.clientes'
-import { Route as AppBaixarExtensaoRouteImport } from './routes/_app.baixar-extensao'
-import { Route as AppAulasRouteImport } from './routes/_app.aulas'
 import { Route as AppAgentsRouteImport } from './routes/_app.agents'
-import { Route as ApiPublicValidarLicencaRouteImport } from './routes/api/public/validar-licenca'
-import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
-import { Route as AdminClientesIdRouteImport } from './routes/admin.clientes.$id'
+import { Route as AppAulasRouteImport } from './routes/_app.aulas'
+import { Route as AppBaixarExtensaoRouteImport } from './routes/_app.baixar-extensao'
+import { Route as AppClientesRouteImport } from './routes/_app.clientes'
+import { Route as AppCreditosRouteImport } from './routes/_app.creditos'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppFerramentasRouteImport } from './routes/_app.ferramentas'
+import { Route as AppGestaoRouteImport } from './routes/_app.gestao'
+import { Route as AppLicencasRouteImport } from './routes/_app.licencas'
+import { Route as AppLojaRouteImport } from './routes/_app.loja'
+import { Route as AppMinhaContaRouteImport } from './routes/_app.minha-conta'
+import { Route as AppPacksRouteImport } from './routes/_app.packs'
+import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
+import { Route as AppPromptsRouteImport } from './routes/_app.prompts'
+import { Route as AppQueroSerRevendedorRouteImport } from './routes/_app.quero-ser-revendedor'
+import { Route as AppRankingRouteImport } from './routes/_app.ranking'
+import { Route as AppRedefinirSenhaRouteImport } from './routes/_app.redefinir-senha'
+import { Route as AppRevendedorRouteImport } from './routes/_app.revendedor'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminResourceRouteImport } from './routes/admin.$resource'
+import { Route as AdminAjustarCreditosRouteImport } from './routes/admin.ajustar-creditos'
+import { Route as AdminAnimacoesRouteImport } from './routes/admin.animacoes'
+import { Route as AdminApiDashboardRouteImport } from './routes/admin.api-dashboard'
+import { Route as AdminBackupRouteImport } from './routes/admin.backup'
+import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
+import { Route as AdminComunicacaoRouteImport } from './routes/admin.comunicacao'
+import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
+import { Route as AdminHomeRouteImport } from './routes/admin.home'
+import { Route as AdminLicencasRouteImport } from './routes/admin.licencas'
+import { Route as AdminLicencasDashboardRouteImport } from './routes/admin.licencas-dashboard'
+import { Route as AdminLojaRouteImport } from './routes/admin.loja'
+import { Route as AdminLojaProdutosRouteImport } from './routes/admin.loja-produtos'
+import { Route as AdminModulosRouteImport } from './routes/admin.modulos'
+import { Route as AdminPackAutorizacoesRouteImport } from './routes/admin.pack-autorizacoes'
+import { Route as AdminPagamentosRouteImport } from './routes/admin.pagamentos'
+import { Route as AdminPersonalizacaoRouteImport } from './routes/admin.personalizacao'
+import { Route as AdminRevendedoresGestaoRouteImport } from './routes/admin.revendedores-gestao'
+import { Route as AdminSegurancaRouteImport } from './routes/admin.seguranca'
+import { Route as AdminSonsRouteImport } from './routes/admin.sons'
+import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
+import { Route as AdminVisualizacaoRouteImport } from './routes/admin.visualizacao'
 import { Route as AppPacksSlugRouteImport } from './routes/_app.packs.$slug'
-import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
-import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
-import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/webhooks/cakto'
-import { Route as ApiPublicPremiumCoverSplatRouteImport } from './routes/api/public/premium-cover.$'
-import { Route as ApiPublicLicencaRevogarRouteImport } from './routes/api/public/licenca/revogar'
-import { Route as ApiPublicLicencaResetHwidRouteImport } from './routes/api/public/licenca/reset-hwid'
-import { Route as ApiPublicLicencaResetDispositivoRouteImport } from './routes/api/public/licenca/reset-dispositivo'
-import { Route as ApiPublicLicencaRenovarRouteImport } from './routes/api/public/licenca/renovar'
-import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/public/licenca/heartbeat'
-import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
-import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
-import { Route as ApiPublicHooksEmailWorkerRouteImport } from './routes/api/public/hooks/email-worker'
-import { Route as ApiPublicExtV17ValidateLicenseRouteImport } from './routes/api/public/ext-v17/validate-license'
-import { Route as ApiPublicExtV17UploadRouteImport } from './routes/api/public/ext-v17/upload'
-import { Route as ApiPublicExtV17SendLovableMessageRouteImport } from './routes/api/public/ext-v17/send-lovable-message'
-import { Route as ApiPublicExtV17SendCommandRouteImport } from './routes/api/public/ext-v17/send-command'
-import { Route as ApiPublicExtV17SendChatRouteImport } from './routes/api/public/ext-v17/send-chat'
-import { Route as ApiPublicExtV17PublishProjectRouteImport } from './routes/api/public/ext-v17/publish-project'
-import { Route as ApiPublicExtV17ProxyCommandRouteImport } from './routes/api/public/ext-v17/proxy-command'
-import { Route as ApiPublicExtV17ProcessPaymentRouteImport } from './routes/api/public/ext-v17/process-payment'
-import { Route as ApiPublicExtV17HeartbeatRouteImport } from './routes/api/public/ext-v17/heartbeat'
-import { Route as ApiPublicExtV17FixStreamRouteImport } from './routes/api/public/ext-v17/fix-stream'
-import { Route as ApiPublicExtV17DownloadZipRouteImport } from './routes/api/public/ext-v17/download-zip'
+import { Route as AdminClientesIdRouteImport } from './routes/admin.clientes.$id'
+import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
+import { Route as ApiPublicValidarLicencaRouteImport } from './routes/api/public/validar-licenca'
 import { Route as ApiPublicExtV17CreateProjectRouteImport } from './routes/api/public/ext-v17/create-project'
+import { Route as ApiPublicExtV17DownloadZipRouteImport } from './routes/api/public/ext-v17/download-zip'
+import { Route as ApiPublicExtV17FixStreamRouteImport } from './routes/api/public/ext-v17/fix-stream'
+import { Route as ApiPublicExtV17HeartbeatRouteImport } from './routes/api/public/ext-v17/heartbeat'
+import { Route as ApiPublicExtV17ProcessPaymentRouteImport } from './routes/api/public/ext-v17/process-payment'
+import { Route as ApiPublicExtV17ProxyCommandRouteImport } from './routes/api/public/ext-v17/proxy-command'
+import { Route as ApiPublicExtV17PublishProjectRouteImport } from './routes/api/public/ext-v17/publish-project'
+import { Route as ApiPublicExtV17SendChatRouteImport } from './routes/api/public/ext-v17/send-chat'
+import { Route as ApiPublicExtV17SendCommandRouteImport } from './routes/api/public/ext-v17/send-command'
+import { Route as ApiPublicExtV17SendLovableMessageRouteImport } from './routes/api/public/ext-v17/send-lovable-message'
+import { Route as ApiPublicExtV17UploadRouteImport } from './routes/api/public/ext-v17/upload'
+import { Route as ApiPublicExtV17ValidateLicenseRouteImport } from './routes/api/public/ext-v17/validate-license'
+import { Route as ApiPublicHooksEmailWorkerRouteImport } from './routes/api/public/hooks/email-worker'
+import { Route as ApiPublicLicencaConfigRouteImport } from './routes/api/public/licenca/config'
+import { Route as ApiPublicLicencaConsultaRouteImport } from './routes/api/public/licenca/consulta'
+import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/public/licenca/heartbeat'
+import { Route as ApiPublicLicencaRenovarRouteImport } from './routes/api/public/licenca/renovar'
+import { Route as ApiPublicLicencaResetDispositivoRouteImport } from './routes/api/public/licenca/reset-dispositivo'
+import { Route as ApiPublicLicencaResetHwidRouteImport } from './routes/api/public/licenca/reset-hwid'
+import { Route as ApiPublicLicencaRevogarRouteImport } from './routes/api/public/licenca/revogar'
+import { Route as ApiPublicPremiumCoverSplatRouteImport } from './routes/api/public/premium-cover.$'
+import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/webhooks/cakto'
+import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
+import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegistroRoute = RegistroRouteImport.update({
-  id: '/registro',
-  path: '/registro',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EsqueciSenhaRoute = EsqueciSenhaRouteImport.update({
-  id: '/esqueci-senha',
-  path: '/esqueci-senha',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckoutRoute = CheckoutRouteImport.update({
-  id: '/checkout',
-  path: '/checkout',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -117,213 +96,34 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
+const EsqueciSenhaRoute = EsqueciSenhaRouteImport.update({
+  id: '/esqueci-senha',
+  path: '/esqueci-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistroRoute = RegistroRouteImport.update({
+  id: '/registro',
+  path: '/registro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AdminVisualizacaoRoute = AdminVisualizacaoRouteImport.update({
-  id: '/visualizacao',
-  path: '/visualizacao',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
-  id: '/usuarios',
-  path: '/usuarios',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSonsRoute = AdminSonsRouteImport.update({
-  id: '/sons',
-  path: '/sons',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSegurancaRoute = AdminSegurancaRouteImport.update({
-  id: '/seguranca',
-  path: '/seguranca',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRevendedoresGestaoRoute = AdminRevendedoresGestaoRouteImport.update({
-  id: '/revendedores-gestao',
-  path: '/revendedores-gestao',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPersonalizacaoRoute = AdminPersonalizacaoRouteImport.update({
-  id: '/personalizacao',
-  path: '/personalizacao',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPagamentosRoute = AdminPagamentosRouteImport.update({
-  id: '/pagamentos',
-  path: '/pagamentos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPackAutorizacoesRoute = AdminPackAutorizacoesRouteImport.update({
-  id: '/pack-autorizacoes',
-  path: '/pack-autorizacoes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminModulosRoute = AdminModulosRouteImport.update({
-  id: '/modulos',
-  path: '/modulos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLojaProdutosRoute = AdminLojaProdutosRouteImport.update({
-  id: '/loja-produtos',
-  path: '/loja-produtos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLojaRoute = AdminLojaRouteImport.update({
-  id: '/loja',
-  path: '/loja',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLicencasDashboardRoute = AdminLicencasDashboardRouteImport.update({
-  id: '/licencas-dashboard',
-  path: '/licencas-dashboard',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLicencasRoute = AdminLicencasRouteImport.update({
-  id: '/licencas',
-  path: '/licencas',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminHomeRoute = AdminHomeRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
-  id: '/configuracoes',
-  path: '/configuracoes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminComunicacaoRoute = AdminComunicacaoRouteImport.update({
-  id: '/comunicacao',
-  path: '/comunicacao',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminClientesRoute = AdminClientesRouteImport.update({
-  id: '/clientes',
-  path: '/clientes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminBackupRoute = AdminBackupRouteImport.update({
-  id: '/backup',
-  path: '/backup',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminApiDashboardRoute = AdminApiDashboardRouteImport.update({
-  id: '/api-dashboard',
-  path: '/api-dashboard',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAnimacoesRoute = AdminAnimacoesRouteImport.update({
-  id: '/animacoes',
-  path: '/animacoes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAjustarCreditosRoute = AdminAjustarCreditosRouteImport.update({
-  id: '/ajustar-creditos',
-  path: '/ajustar-creditos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminResourceRoute = AdminResourceRouteImport.update({
-  id: '/$resource',
-  path: '/$resource',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AppRevendedorRoute = AppRevendedorRouteImport.update({
-  id: '/revendedor',
-  path: '/revendedor',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppRedefinirSenhaRoute = AppRedefinirSenhaRouteImport.update({
-  id: '/redefinir-senha',
-  path: '/redefinir-senha',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppRankingRoute = AppRankingRouteImport.update({
-  id: '/ranking',
-  path: '/ranking',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppQueroSerRevendedorRoute = AppQueroSerRevendedorRouteImport.update({
-  id: '/quero-ser-revendedor',
-  path: '/quero-ser-revendedor',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPromptsRoute = AppPromptsRouteImport.update({
-  id: '/prompts',
-  path: '/prompts',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPerfilRoute = AppPerfilRouteImport.update({
-  id: '/perfil',
-  path: '/perfil',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPacksRoute = AppPacksRouteImport.update({
-  id: '/packs',
-  path: '/packs',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppMinhaContaRoute = AppMinhaContaRouteImport.update({
-  id: '/minha-conta',
-  path: '/minha-conta',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLojaRoute = AppLojaRouteImport.update({
-  id: '/loja',
-  path: '/loja',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLicencasRoute = AppLicencasRouteImport.update({
-  id: '/licencas',
-  path: '/licencas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppGestaoRoute = AppGestaoRouteImport.update({
-  id: '/gestao',
-  path: '/gestao',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFerramentasRoute = AppFerramentasRouteImport.update({
-  id: '/ferramentas',
-  path: '/ferramentas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCreditosRoute = AppCreditosRouteImport.update({
-  id: '/creditos',
-  path: '/creditos',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppClientesRoute = AppClientesRouteImport.update({
-  id: '/clientes',
-  path: '/clientes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppBaixarExtensaoRoute = AppBaixarExtensaoRouteImport.update({
-  id: '/baixar-extensao',
-  path: '/baixar-extensao',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAulasRoute = AppAulasRouteImport.update({
-  id: '/aulas',
-  path: '/aulas',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAgentsRoute = AppAgentsRouteImport.update({
@@ -331,10 +131,215 @@ const AppAgentsRoute = AppAgentsRouteImport.update({
   path: '/agents',
   getParentRoute: () => AppRoute,
 } as any)
-const ApiPublicValidarLicencaRoute = ApiPublicValidarLicencaRouteImport.update({
-  id: '/api/public/validar-licenca',
-  path: '/api/public/validar-licenca',
-  getParentRoute: () => rootRouteImport,
+const AppAulasRoute = AppAulasRouteImport.update({
+  id: '/aulas',
+  path: '/aulas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBaixarExtensaoRoute = AppBaixarExtensaoRouteImport.update({
+  id: '/baixar-extensao',
+  path: '/baixar-extensao',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientesRoute = AppClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCreditosRoute = AppCreditosRouteImport.update({
+  id: '/creditos',
+  path: '/creditos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFerramentasRoute = AppFerramentasRouteImport.update({
+  id: '/ferramentas',
+  path: '/ferramentas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGestaoRoute = AppGestaoRouteImport.update({
+  id: '/gestao',
+  path: '/gestao',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLicencasRoute = AppLicencasRouteImport.update({
+  id: '/licencas',
+  path: '/licencas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLojaRoute = AppLojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMinhaContaRoute = AppMinhaContaRouteImport.update({
+  id: '/minha-conta',
+  path: '/minha-conta',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPacksRoute = AppPacksRouteImport.update({
+  id: '/packs',
+  path: '/packs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPerfilRoute = AppPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPromptsRoute = AppPromptsRouteImport.update({
+  id: '/prompts',
+  path: '/prompts',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppQueroSerRevendedorRoute = AppQueroSerRevendedorRouteImport.update({
+  id: '/quero-ser-revendedor',
+  path: '/quero-ser-revendedor',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRankingRoute = AppRankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRedefinirSenhaRoute = AppRedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRevendedorRoute = AppRevendedorRouteImport.update({
+  id: '/revendedor',
+  path: '/revendedor',
+  getParentRoute: () => AppRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminResourceRoute = AdminResourceRouteImport.update({
+  id: '/$resource',
+  path: '/$resource',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAjustarCreditosRoute = AdminAjustarCreditosRouteImport.update({
+  id: '/ajustar-creditos',
+  path: '/ajustar-creditos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnimacoesRoute = AdminAnimacoesRouteImport.update({
+  id: '/animacoes',
+  path: '/animacoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApiDashboardRoute = AdminApiDashboardRouteImport.update({
+  id: '/api-dashboard',
+  path: '/api-dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBackupRoute = AdminBackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminClientesRoute = AdminClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComunicacaoRoute = AdminComunicacaoRouteImport.update({
+  id: '/comunicacao',
+  path: '/comunicacao',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHomeRoute = AdminHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicencasRoute = AdminLicencasRouteImport.update({
+  id: '/licencas',
+  path: '/licencas',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicencasDashboardRoute = AdminLicencasDashboardRouteImport.update({
+  id: '/licencas-dashboard',
+  path: '/licencas-dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLojaRoute = AdminLojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLojaProdutosRoute = AdminLojaProdutosRouteImport.update({
+  id: '/loja-produtos',
+  path: '/loja-produtos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminModulosRoute = AdminModulosRouteImport.update({
+  id: '/modulos',
+  path: '/modulos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPackAutorizacoesRoute = AdminPackAutorizacoesRouteImport.update({
+  id: '/pack-autorizacoes',
+  path: '/pack-autorizacoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPagamentosRoute = AdminPagamentosRouteImport.update({
+  id: '/pagamentos',
+  path: '/pagamentos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPersonalizacaoRoute = AdminPersonalizacaoRouteImport.update({
+  id: '/personalizacao',
+  path: '/personalizacao',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRevendedoresGestaoRoute = AdminRevendedoresGestaoRouteImport.update({
+  id: '/revendedores-gestao',
+  path: '/revendedores-gestao',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSegurancaRoute = AdminSegurancaRouteImport.update({
+  id: '/seguranca',
+  path: '/seguranca',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSonsRoute = AdminSonsRouteImport.update({
+  id: '/sons',
+  path: '/sons',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVisualizacaoRoute = AdminVisualizacaoRouteImport.update({
+  id: '/visualizacao',
+  path: '/visualizacao',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AppPacksSlugRoute = AppPacksSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AppPacksRoute,
+} as any)
+const AdminClientesIdRoute = AdminClientesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminClientesRoute,
 } as any)
 const ApiPublicDownloadExtensaoRoute =
   ApiPublicDownloadExtensaoRouteImport.update({
@@ -342,139 +347,15 @@ const ApiPublicDownloadExtensaoRoute =
     path: '/api/public/download-extensao',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AdminClientesIdRoute = AdminClientesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminClientesRoute,
-} as any)
-const AppPacksSlugRoute = AppPacksSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => AppPacksRoute,
-} as any)
-const ApiPublicWebhooksMercadopagoRoute =
-  ApiPublicWebhooksMercadopagoRouteImport.update({
-    id: '/api/public/webhooks/mercadopago',
-    path: '/api/public/webhooks/mercadopago',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicWebhooksKiwifyRoute = ApiPublicWebhooksKiwifyRouteImport.update({
-  id: '/api/public/webhooks/kiwify',
-  path: '/api/public/webhooks/kiwify',
+const ApiPublicValidarLicencaRoute = ApiPublicValidarLicencaRouteImport.update({
+  id: '/api/public/validar-licenca',
+  path: '/api/public/validar-licenca',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicWebhooksCaktoRoute = ApiPublicWebhooksCaktoRouteImport.update({
-  id: '/api/public/webhooks/cakto',
-  path: '/api/public/webhooks/cakto',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicPremiumCoverSplatRoute =
-  ApiPublicPremiumCoverSplatRouteImport.update({
-    id: '/api/public/premium-cover/$',
-    path: '/api/public/premium-cover/$',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicLicencaRevogarRoute = ApiPublicLicencaRevogarRouteImport.update({
-  id: '/api/public/licenca/revogar',
-  path: '/api/public/licenca/revogar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicLicencaResetHwidRoute =
-  ApiPublicLicencaResetHwidRouteImport.update({
-    id: '/api/public/licenca/reset-hwid',
-    path: '/api/public/licenca/reset-hwid',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicLicencaResetDispositivoRoute =
-  ApiPublicLicencaResetDispositivoRouteImport.update({
-    id: '/api/public/licenca/reset-dispositivo',
-    path: '/api/public/licenca/reset-dispositivo',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicLicencaRenovarRoute = ApiPublicLicencaRenovarRouteImport.update({
-  id: '/api/public/licenca/renovar',
-  path: '/api/public/licenca/renovar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicLicencaHeartbeatRoute =
-  ApiPublicLicencaHeartbeatRouteImport.update({
-    id: '/api/public/licenca/heartbeat',
-    path: '/api/public/licenca/heartbeat',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicLicencaConsultaRoute =
-  ApiPublicLicencaConsultaRouteImport.update({
-    id: '/api/public/licenca/consulta',
-    path: '/api/public/licenca/consulta',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicLicencaConfigRoute = ApiPublicLicencaConfigRouteImport.update({
-  id: '/api/public/licenca/config',
-  path: '/api/public/licenca/config',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicHooksEmailWorkerRoute =
-  ApiPublicHooksEmailWorkerRouteImport.update({
-    id: '/api/public/hooks/email-worker',
-    path: '/api/public/hooks/email-worker',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtV17ValidateLicenseRoute =
-  ApiPublicExtV17ValidateLicenseRouteImport.update({
-    id: '/api/public/ext-v17/validate-license',
-    path: '/api/public/ext-v17/validate-license',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtV17UploadRoute = ApiPublicExtV17UploadRouteImport.update({
-  id: '/api/public/ext-v17/upload',
-  path: '/api/public/ext-v17/upload',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicExtV17SendLovableMessageRoute =
-  ApiPublicExtV17SendLovableMessageRouteImport.update({
-    id: '/api/public/ext-v17/send-lovable-message',
-    path: '/api/public/ext-v17/send-lovable-message',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtV17SendCommandRoute =
-  ApiPublicExtV17SendCommandRouteImport.update({
-    id: '/api/public/ext-v17/send-command',
-    path: '/api/public/ext-v17/send-command',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtV17SendChatRoute = ApiPublicExtV17SendChatRouteImport.update({
-  id: '/api/public/ext-v17/send-chat',
-  path: '/api/public/ext-v17/send-chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicExtV17PublishProjectRoute =
-  ApiPublicExtV17PublishProjectRouteImport.update({
-    id: '/api/public/ext-v17/publish-project',
-    path: '/api/public/ext-v17/publish-project',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtV17ProxyCommandRoute =
-  ApiPublicExtV17ProxyCommandRouteImport.update({
-    id: '/api/public/ext-v17/proxy-command',
-    path: '/api/public/ext-v17/proxy-command',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtV17ProcessPaymentRoute =
-  ApiPublicExtV17ProcessPaymentRouteImport.update({
-    id: '/api/public/ext-v17/process-payment',
-    path: '/api/public/ext-v17/process-payment',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtV17HeartbeatRoute =
-  ApiPublicExtV17HeartbeatRouteImport.update({
-    id: '/api/public/ext-v17/heartbeat',
-    path: '/api/public/ext-v17/heartbeat',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtV17FixStreamRoute =
-  ApiPublicExtV17FixStreamRouteImport.update({
-    id: '/api/public/ext-v17/fix-stream',
-    path: '/api/public/ext-v17/fix-stream',
+const ApiPublicExtV17CreateProjectRoute =
+  ApiPublicExtV17CreateProjectRouteImport.update({
+    id: '/api/public/ext-v17/create-project',
+    path: '/api/public/ext-v17/create-project',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicExtV17DownloadZipRoute =
@@ -483,10 +364,129 @@ const ApiPublicExtV17DownloadZipRoute =
     path: '/api/public/ext-v17/download-zip',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicExtV17CreateProjectRoute =
-  ApiPublicExtV17CreateProjectRouteImport.update({
-    id: '/api/public/ext-v17/create-project',
-    path: '/api/public/ext-v17/create-project',
+const ApiPublicExtV17FixStreamRoute =
+  ApiPublicExtV17FixStreamRouteImport.update({
+    id: '/api/public/ext-v17/fix-stream',
+    path: '/api/public/ext-v17/fix-stream',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17HeartbeatRoute =
+  ApiPublicExtV17HeartbeatRouteImport.update({
+    id: '/api/public/ext-v17/heartbeat',
+    path: '/api/public/ext-v17/heartbeat',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17ProcessPaymentRoute =
+  ApiPublicExtV17ProcessPaymentRouteImport.update({
+    id: '/api/public/ext-v17/process-payment',
+    path: '/api/public/ext-v17/process-payment',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17ProxyCommandRoute =
+  ApiPublicExtV17ProxyCommandRouteImport.update({
+    id: '/api/public/ext-v17/proxy-command',
+    path: '/api/public/ext-v17/proxy-command',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17PublishProjectRoute =
+  ApiPublicExtV17PublishProjectRouteImport.update({
+    id: '/api/public/ext-v17/publish-project',
+    path: '/api/public/ext-v17/publish-project',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17SendChatRoute = ApiPublicExtV17SendChatRouteImport.update({
+  id: '/api/public/ext-v17/send-chat',
+  path: '/api/public/ext-v17/send-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicExtV17SendCommandRoute =
+  ApiPublicExtV17SendCommandRouteImport.update({
+    id: '/api/public/ext-v17/send-command',
+    path: '/api/public/ext-v17/send-command',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17SendLovableMessageRoute =
+  ApiPublicExtV17SendLovableMessageRouteImport.update({
+    id: '/api/public/ext-v17/send-lovable-message',
+    path: '/api/public/ext-v17/send-lovable-message',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtV17UploadRoute = ApiPublicExtV17UploadRouteImport.update({
+  id: '/api/public/ext-v17/upload',
+  path: '/api/public/ext-v17/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicExtV17ValidateLicenseRoute =
+  ApiPublicExtV17ValidateLicenseRouteImport.update({
+    id: '/api/public/ext-v17/validate-license',
+    path: '/api/public/ext-v17/validate-license',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksEmailWorkerRoute =
+  ApiPublicHooksEmailWorkerRouteImport.update({
+    id: '/api/public/hooks/email-worker',
+    path: '/api/public/hooks/email-worker',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicencaConfigRoute = ApiPublicLicencaConfigRouteImport.update({
+  id: '/api/public/licenca/config',
+  path: '/api/public/licenca/config',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLicencaConsultaRoute =
+  ApiPublicLicencaConsultaRouteImport.update({
+    id: '/api/public/licenca/consulta',
+    path: '/api/public/licenca/consulta',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicencaHeartbeatRoute =
+  ApiPublicLicencaHeartbeatRouteImport.update({
+    id: '/api/public/licenca/heartbeat',
+    path: '/api/public/licenca/heartbeat',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicencaRenovarRoute = ApiPublicLicencaRenovarRouteImport.update({
+  id: '/api/public/licenca/renovar',
+  path: '/api/public/licenca/renovar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLicencaResetDispositivoRoute =
+  ApiPublicLicencaResetDispositivoRouteImport.update({
+    id: '/api/public/licenca/reset-dispositivo',
+    path: '/api/public/licenca/reset-dispositivo',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicencaResetHwidRoute =
+  ApiPublicLicencaResetHwidRouteImport.update({
+    id: '/api/public/licenca/reset-hwid',
+    path: '/api/public/licenca/reset-hwid',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicencaRevogarRoute = ApiPublicLicencaRevogarRouteImport.update({
+  id: '/api/public/licenca/revogar',
+  path: '/api/public/licenca/revogar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPremiumCoverSplatRoute =
+  ApiPublicPremiumCoverSplatRouteImport.update({
+    id: '/api/public/premium-cover/$',
+    path: '/api/public/premium-cover/$',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksCaktoRoute = ApiPublicWebhooksCaktoRouteImport.update({
+  id: '/api/public/webhooks/cakto',
+  path: '/api/public/webhooks/cakto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksKiwifyRoute = ApiPublicWebhooksKiwifyRouteImport.update({
+  id: '/api/public/webhooks/kiwify',
+  path: '/api/public/webhooks/kiwify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksMercadopagoRoute =
+  ApiPublicWebhooksMercadopagoRouteImport.update({
+    id: '/api/public/webhooks/mercadopago',
+    path: '/api/public/webhooks/mercadopago',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -1000,39 +1000,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/registro': {
-      id: '/registro'
-      path: '/registro'
-      fullPath: '/registro'
-      preLoaderRoute: typeof RegistroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/esqueci-senha': {
-      id: '/esqueci-senha'
-      path: '/esqueci-senha'
-      fullPath: '/esqueci-senha'
-      preLoaderRoute: typeof EsqueciSenhaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/checkout': {
-      id: '/checkout'
-      path: '/checkout'
-      fullPath: '/checkout'
-      preLoaderRoute: typeof CheckoutRouteImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -1042,298 +1014,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
+    '/esqueci-senha': {
+      id: '/esqueci-senha'
+      path: '/esqueci-senha'
+      fullPath: '/esqueci-senha'
+      preLoaderRoute: typeof EsqueciSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registro': {
+      id: '/registro'
+      path: '/registro'
+      fullPath: '/registro'
+      preLoaderRoute: typeof RegistroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/': {
       id: '/_app/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/admin/visualizacao': {
-      id: '/admin/visualizacao'
-      path: '/visualizacao'
-      fullPath: '/admin/visualizacao'
-      preLoaderRoute: typeof AdminVisualizacaoRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/usuarios': {
-      id: '/admin/usuarios'
-      path: '/usuarios'
-      fullPath: '/admin/usuarios'
-      preLoaderRoute: typeof AdminUsuariosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sons': {
-      id: '/admin/sons'
-      path: '/sons'
-      fullPath: '/admin/sons'
-      preLoaderRoute: typeof AdminSonsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/seguranca': {
-      id: '/admin/seguranca'
-      path: '/seguranca'
-      fullPath: '/admin/seguranca'
-      preLoaderRoute: typeof AdminSegurancaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/revendedores-gestao': {
-      id: '/admin/revendedores-gestao'
-      path: '/revendedores-gestao'
-      fullPath: '/admin/revendedores-gestao'
-      preLoaderRoute: typeof AdminRevendedoresGestaoRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/personalizacao': {
-      id: '/admin/personalizacao'
-      path: '/personalizacao'
-      fullPath: '/admin/personalizacao'
-      preLoaderRoute: typeof AdminPersonalizacaoRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pagamentos': {
-      id: '/admin/pagamentos'
-      path: '/pagamentos'
-      fullPath: '/admin/pagamentos'
-      preLoaderRoute: typeof AdminPagamentosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pack-autorizacoes': {
-      id: '/admin/pack-autorizacoes'
-      path: '/pack-autorizacoes'
-      fullPath: '/admin/pack-autorizacoes'
-      preLoaderRoute: typeof AdminPackAutorizacoesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/modulos': {
-      id: '/admin/modulos'
-      path: '/modulos'
-      fullPath: '/admin/modulos'
-      preLoaderRoute: typeof AdminModulosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/loja-produtos': {
-      id: '/admin/loja-produtos'
-      path: '/loja-produtos'
-      fullPath: '/admin/loja-produtos'
-      preLoaderRoute: typeof AdminLojaProdutosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/loja': {
-      id: '/admin/loja'
-      path: '/loja'
-      fullPath: '/admin/loja'
-      preLoaderRoute: typeof AdminLojaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/licencas-dashboard': {
-      id: '/admin/licencas-dashboard'
-      path: '/licencas-dashboard'
-      fullPath: '/admin/licencas-dashboard'
-      preLoaderRoute: typeof AdminLicencasDashboardRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/licencas': {
-      id: '/admin/licencas'
-      path: '/licencas'
-      fullPath: '/admin/licencas'
-      preLoaderRoute: typeof AdminLicencasRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/home': {
-      id: '/admin/home'
-      path: '/home'
-      fullPath: '/admin/home'
-      preLoaderRoute: typeof AdminHomeRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes': {
-      id: '/admin/configuracoes'
-      path: '/configuracoes'
-      fullPath: '/admin/configuracoes'
-      preLoaderRoute: typeof AdminConfiguracoesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/comunicacao': {
-      id: '/admin/comunicacao'
-      path: '/comunicacao'
-      fullPath: '/admin/comunicacao'
-      preLoaderRoute: typeof AdminComunicacaoRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/clientes': {
-      id: '/admin/clientes'
-      path: '/clientes'
-      fullPath: '/admin/clientes'
-      preLoaderRoute: typeof AdminClientesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/backup': {
-      id: '/admin/backup'
-      path: '/backup'
-      fullPath: '/admin/backup'
-      preLoaderRoute: typeof AdminBackupRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/api-dashboard': {
-      id: '/admin/api-dashboard'
-      path: '/api-dashboard'
-      fullPath: '/admin/api-dashboard'
-      preLoaderRoute: typeof AdminApiDashboardRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/animacoes': {
-      id: '/admin/animacoes'
-      path: '/animacoes'
-      fullPath: '/admin/animacoes'
-      preLoaderRoute: typeof AdminAnimacoesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/ajustar-creditos': {
-      id: '/admin/ajustar-creditos'
-      path: '/ajustar-creditos'
-      fullPath: '/admin/ajustar-creditos'
-      preLoaderRoute: typeof AdminAjustarCreditosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/$resource': {
-      id: '/admin/$resource'
-      path: '/$resource'
-      fullPath: '/admin/$resource'
-      preLoaderRoute: typeof AdminResourceRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/_app/revendedor': {
-      id: '/_app/revendedor'
-      path: '/revendedor'
-      fullPath: '/revendedor'
-      preLoaderRoute: typeof AppRevendedorRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/redefinir-senha': {
-      id: '/_app/redefinir-senha'
-      path: '/redefinir-senha'
-      fullPath: '/redefinir-senha'
-      preLoaderRoute: typeof AppRedefinirSenhaRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/ranking': {
-      id: '/_app/ranking'
-      path: '/ranking'
-      fullPath: '/ranking'
-      preLoaderRoute: typeof AppRankingRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/quero-ser-revendedor': {
-      id: '/_app/quero-ser-revendedor'
-      path: '/quero-ser-revendedor'
-      fullPath: '/quero-ser-revendedor'
-      preLoaderRoute: typeof AppQueroSerRevendedorRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/prompts': {
-      id: '/_app/prompts'
-      path: '/prompts'
-      fullPath: '/prompts'
-      preLoaderRoute: typeof AppPromptsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/perfil': {
-      id: '/_app/perfil'
-      path: '/perfil'
-      fullPath: '/perfil'
-      preLoaderRoute: typeof AppPerfilRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/packs': {
-      id: '/_app/packs'
-      path: '/packs'
-      fullPath: '/packs'
-      preLoaderRoute: typeof AppPacksRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/minha-conta': {
-      id: '/_app/minha-conta'
-      path: '/minha-conta'
-      fullPath: '/minha-conta'
-      preLoaderRoute: typeof AppMinhaContaRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/loja': {
-      id: '/_app/loja'
-      path: '/loja'
-      fullPath: '/loja'
-      preLoaderRoute: typeof AppLojaRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/licencas': {
-      id: '/_app/licencas'
-      path: '/licencas'
-      fullPath: '/licencas'
-      preLoaderRoute: typeof AppLicencasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/gestao': {
-      id: '/_app/gestao'
-      path: '/gestao'
-      fullPath: '/gestao'
-      preLoaderRoute: typeof AppGestaoRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/ferramentas': {
-      id: '/_app/ferramentas'
-      path: '/ferramentas'
-      fullPath: '/ferramentas'
-      preLoaderRoute: typeof AppFerramentasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/dashboard': {
-      id: '/_app/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/creditos': {
-      id: '/_app/creditos'
-      path: '/creditos'
-      fullPath: '/creditos'
-      preLoaderRoute: typeof AppCreditosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/clientes': {
-      id: '/_app/clientes'
-      path: '/clientes'
-      fullPath: '/clientes'
-      preLoaderRoute: typeof AppClientesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/baixar-extensao': {
-      id: '/_app/baixar-extensao'
-      path: '/baixar-extensao'
-      fullPath: '/baixar-extensao'
-      preLoaderRoute: typeof AppBaixarExtensaoRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/aulas': {
-      id: '/_app/aulas'
-      path: '/aulas'
-      fullPath: '/aulas'
-      preLoaderRoute: typeof AppAulasRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/agents': {
@@ -1343,26 +1063,285 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgentsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/api/public/validar-licenca': {
-      id: '/api/public/validar-licenca'
-      path: '/api/public/validar-licenca'
-      fullPath: '/api/public/validar-licenca'
-      preLoaderRoute: typeof ApiPublicValidarLicencaRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_app/aulas': {
+      id: '/_app/aulas'
+      path: '/aulas'
+      fullPath: '/aulas'
+      preLoaderRoute: typeof AppAulasRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/api/public/download-extensao': {
-      id: '/api/public/download-extensao'
-      path: '/api/public/download-extensao'
-      fullPath: '/api/public/download-extensao'
-      preLoaderRoute: typeof ApiPublicDownloadExtensaoRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_app/baixar-extensao': {
+      id: '/_app/baixar-extensao'
+      path: '/baixar-extensao'
+      fullPath: '/baixar-extensao'
+      preLoaderRoute: typeof AppBaixarExtensaoRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/admin/clientes/$id': {
-      id: '/admin/clientes/$id'
-      path: '/$id'
-      fullPath: '/admin/clientes/$id'
-      preLoaderRoute: typeof AdminClientesIdRouteImport
-      parentRoute: typeof AdminClientesRoute
+    '/_app/clientes': {
+      id: '/_app/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof AppClientesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/creditos': {
+      id: '/_app/creditos'
+      path: '/creditos'
+      fullPath: '/creditos'
+      preLoaderRoute: typeof AppCreditosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ferramentas': {
+      id: '/_app/ferramentas'
+      path: '/ferramentas'
+      fullPath: '/ferramentas'
+      preLoaderRoute: typeof AppFerramentasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/gestao': {
+      id: '/_app/gestao'
+      path: '/gestao'
+      fullPath: '/gestao'
+      preLoaderRoute: typeof AppGestaoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/licencas': {
+      id: '/_app/licencas'
+      path: '/licencas'
+      fullPath: '/licencas'
+      preLoaderRoute: typeof AppLicencasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/loja': {
+      id: '/_app/loja'
+      path: '/loja'
+      fullPath: '/loja'
+      preLoaderRoute: typeof AppLojaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/minha-conta': {
+      id: '/_app/minha-conta'
+      path: '/minha-conta'
+      fullPath: '/minha-conta'
+      preLoaderRoute: typeof AppMinhaContaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/packs': {
+      id: '/_app/packs'
+      path: '/packs'
+      fullPath: '/packs'
+      preLoaderRoute: typeof AppPacksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/perfil': {
+      id: '/_app/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/prompts': {
+      id: '/_app/prompts'
+      path: '/prompts'
+      fullPath: '/prompts'
+      preLoaderRoute: typeof AppPromptsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/quero-ser-revendedor': {
+      id: '/_app/quero-ser-revendedor'
+      path: '/quero-ser-revendedor'
+      fullPath: '/quero-ser-revendedor'
+      preLoaderRoute: typeof AppQueroSerRevendedorRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ranking': {
+      id: '/_app/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof AppRankingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/redefinir-senha': {
+      id: '/_app/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof AppRedefinirSenhaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/revendedor': {
+      id: '/_app/revendedor'
+      path: '/revendedor'
+      fullPath: '/revendedor'
+      preLoaderRoute: typeof AppRevendedorRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/$resource': {
+      id: '/admin/$resource'
+      path: '/$resource'
+      fullPath: '/admin/$resource'
+      preLoaderRoute: typeof AdminResourceRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ajustar-creditos': {
+      id: '/admin/ajustar-creditos'
+      path: '/ajustar-creditos'
+      fullPath: '/admin/ajustar-creditos'
+      preLoaderRoute: typeof AdminAjustarCreditosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/animacoes': {
+      id: '/admin/animacoes'
+      path: '/animacoes'
+      fullPath: '/admin/animacoes'
+      preLoaderRoute: typeof AdminAnimacoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/api-dashboard': {
+      id: '/admin/api-dashboard'
+      path: '/api-dashboard'
+      fullPath: '/admin/api-dashboard'
+      preLoaderRoute: typeof AdminApiDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/backup': {
+      id: '/admin/backup'
+      path: '/backup'
+      fullPath: '/admin/backup'
+      preLoaderRoute: typeof AdminBackupRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/clientes': {
+      id: '/admin/clientes'
+      path: '/clientes'
+      fullPath: '/admin/clientes'
+      preLoaderRoute: typeof AdminClientesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/comunicacao': {
+      id: '/admin/comunicacao'
+      path: '/comunicacao'
+      fullPath: '/admin/comunicacao'
+      preLoaderRoute: typeof AdminComunicacaoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes': {
+      id: '/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes'
+      preLoaderRoute: typeof AdminConfiguracoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/home': {
+      id: '/admin/home'
+      path: '/home'
+      fullPath: '/admin/home'
+      preLoaderRoute: typeof AdminHomeRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/licencas': {
+      id: '/admin/licencas'
+      path: '/licencas'
+      fullPath: '/admin/licencas'
+      preLoaderRoute: typeof AdminLicencasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/licencas-dashboard': {
+      id: '/admin/licencas-dashboard'
+      path: '/licencas-dashboard'
+      fullPath: '/admin/licencas-dashboard'
+      preLoaderRoute: typeof AdminLicencasDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/loja': {
+      id: '/admin/loja'
+      path: '/loja'
+      fullPath: '/admin/loja'
+      preLoaderRoute: typeof AdminLojaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/loja-produtos': {
+      id: '/admin/loja-produtos'
+      path: '/loja-produtos'
+      fullPath: '/admin/loja-produtos'
+      preLoaderRoute: typeof AdminLojaProdutosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/modulos': {
+      id: '/admin/modulos'
+      path: '/modulos'
+      fullPath: '/admin/modulos'
+      preLoaderRoute: typeof AdminModulosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pack-autorizacoes': {
+      id: '/admin/pack-autorizacoes'
+      path: '/pack-autorizacoes'
+      fullPath: '/admin/pack-autorizacoes'
+      preLoaderRoute: typeof AdminPackAutorizacoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pagamentos': {
+      id: '/admin/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/admin/pagamentos'
+      preLoaderRoute: typeof AdminPagamentosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/personalizacao': {
+      id: '/admin/personalizacao'
+      path: '/personalizacao'
+      fullPath: '/admin/personalizacao'
+      preLoaderRoute: typeof AdminPersonalizacaoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/revendedores-gestao': {
+      id: '/admin/revendedores-gestao'
+      path: '/revendedores-gestao'
+      fullPath: '/admin/revendedores-gestao'
+      preLoaderRoute: typeof AdminRevendedoresGestaoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seguranca': {
+      id: '/admin/seguranca'
+      path: '/seguranca'
+      fullPath: '/admin/seguranca'
+      preLoaderRoute: typeof AdminSegurancaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sons': {
+      id: '/admin/sons'
+      path: '/sons'
+      fullPath: '/admin/sons'
+      preLoaderRoute: typeof AdminSonsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/usuarios': {
+      id: '/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminUsuariosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/visualizacao': {
+      id: '/admin/visualizacao'
+      path: '/visualizacao'
+      fullPath: '/admin/visualizacao'
+      preLoaderRoute: typeof AdminVisualizacaoRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_app/packs/$slug': {
       id: '/_app/packs/$slug'
@@ -1371,158 +1350,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPacksSlugRouteImport
       parentRoute: typeof AppPacksRoute
     }
-    '/api/public/webhooks/mercadopago': {
-      id: '/api/public/webhooks/mercadopago'
-      path: '/api/public/webhooks/mercadopago'
-      fullPath: '/api/public/webhooks/mercadopago'
-      preLoaderRoute: typeof ApiPublicWebhooksMercadopagoRouteImport
+    '/admin/clientes/$id': {
+      id: '/admin/clientes/$id'
+      path: '/$id'
+      fullPath: '/admin/clientes/$id'
+      preLoaderRoute: typeof AdminClientesIdRouteImport
+      parentRoute: typeof AdminClientesRoute
+    }
+    '/api/public/download-extensao': {
+      id: '/api/public/download-extensao'
+      path: '/api/public/download-extensao'
+      fullPath: '/api/public/download-extensao'
+      preLoaderRoute: typeof ApiPublicDownloadExtensaoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/webhooks/kiwify': {
-      id: '/api/public/webhooks/kiwify'
-      path: '/api/public/webhooks/kiwify'
-      fullPath: '/api/public/webhooks/kiwify'
-      preLoaderRoute: typeof ApiPublicWebhooksKiwifyRouteImport
+    '/api/public/validar-licenca': {
+      id: '/api/public/validar-licenca'
+      path: '/api/public/validar-licenca'
+      fullPath: '/api/public/validar-licenca'
+      preLoaderRoute: typeof ApiPublicValidarLicencaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/webhooks/cakto': {
-      id: '/api/public/webhooks/cakto'
-      path: '/api/public/webhooks/cakto'
-      fullPath: '/api/public/webhooks/cakto'
-      preLoaderRoute: typeof ApiPublicWebhooksCaktoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/premium-cover/$': {
-      id: '/api/public/premium-cover/$'
-      path: '/api/public/premium-cover/$'
-      fullPath: '/api/public/premium-cover/$'
-      preLoaderRoute: typeof ApiPublicPremiumCoverSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/licenca/revogar': {
-      id: '/api/public/licenca/revogar'
-      path: '/api/public/licenca/revogar'
-      fullPath: '/api/public/licenca/revogar'
-      preLoaderRoute: typeof ApiPublicLicencaRevogarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/licenca/reset-hwid': {
-      id: '/api/public/licenca/reset-hwid'
-      path: '/api/public/licenca/reset-hwid'
-      fullPath: '/api/public/licenca/reset-hwid'
-      preLoaderRoute: typeof ApiPublicLicencaResetHwidRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/licenca/reset-dispositivo': {
-      id: '/api/public/licenca/reset-dispositivo'
-      path: '/api/public/licenca/reset-dispositivo'
-      fullPath: '/api/public/licenca/reset-dispositivo'
-      preLoaderRoute: typeof ApiPublicLicencaResetDispositivoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/licenca/renovar': {
-      id: '/api/public/licenca/renovar'
-      path: '/api/public/licenca/renovar'
-      fullPath: '/api/public/licenca/renovar'
-      preLoaderRoute: typeof ApiPublicLicencaRenovarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/licenca/heartbeat': {
-      id: '/api/public/licenca/heartbeat'
-      path: '/api/public/licenca/heartbeat'
-      fullPath: '/api/public/licenca/heartbeat'
-      preLoaderRoute: typeof ApiPublicLicencaHeartbeatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/licenca/consulta': {
-      id: '/api/public/licenca/consulta'
-      path: '/api/public/licenca/consulta'
-      fullPath: '/api/public/licenca/consulta'
-      preLoaderRoute: typeof ApiPublicLicencaConsultaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/licenca/config': {
-      id: '/api/public/licenca/config'
-      path: '/api/public/licenca/config'
-      fullPath: '/api/public/licenca/config'
-      preLoaderRoute: typeof ApiPublicLicencaConfigRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/email-worker': {
-      id: '/api/public/hooks/email-worker'
-      path: '/api/public/hooks/email-worker'
-      fullPath: '/api/public/hooks/email-worker'
-      preLoaderRoute: typeof ApiPublicHooksEmailWorkerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/validate-license': {
-      id: '/api/public/ext-v17/validate-license'
-      path: '/api/public/ext-v17/validate-license'
-      fullPath: '/api/public/ext-v17/validate-license'
-      preLoaderRoute: typeof ApiPublicExtV17ValidateLicenseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/upload': {
-      id: '/api/public/ext-v17/upload'
-      path: '/api/public/ext-v17/upload'
-      fullPath: '/api/public/ext-v17/upload'
-      preLoaderRoute: typeof ApiPublicExtV17UploadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/send-lovable-message': {
-      id: '/api/public/ext-v17/send-lovable-message'
-      path: '/api/public/ext-v17/send-lovable-message'
-      fullPath: '/api/public/ext-v17/send-lovable-message'
-      preLoaderRoute: typeof ApiPublicExtV17SendLovableMessageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/send-command': {
-      id: '/api/public/ext-v17/send-command'
-      path: '/api/public/ext-v17/send-command'
-      fullPath: '/api/public/ext-v17/send-command'
-      preLoaderRoute: typeof ApiPublicExtV17SendCommandRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/send-chat': {
-      id: '/api/public/ext-v17/send-chat'
-      path: '/api/public/ext-v17/send-chat'
-      fullPath: '/api/public/ext-v17/send-chat'
-      preLoaderRoute: typeof ApiPublicExtV17SendChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/publish-project': {
-      id: '/api/public/ext-v17/publish-project'
-      path: '/api/public/ext-v17/publish-project'
-      fullPath: '/api/public/ext-v17/publish-project'
-      preLoaderRoute: typeof ApiPublicExtV17PublishProjectRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/proxy-command': {
-      id: '/api/public/ext-v17/proxy-command'
-      path: '/api/public/ext-v17/proxy-command'
-      fullPath: '/api/public/ext-v17/proxy-command'
-      preLoaderRoute: typeof ApiPublicExtV17ProxyCommandRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/process-payment': {
-      id: '/api/public/ext-v17/process-payment'
-      path: '/api/public/ext-v17/process-payment'
-      fullPath: '/api/public/ext-v17/process-payment'
-      preLoaderRoute: typeof ApiPublicExtV17ProcessPaymentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/heartbeat': {
-      id: '/api/public/ext-v17/heartbeat'
-      path: '/api/public/ext-v17/heartbeat'
-      fullPath: '/api/public/ext-v17/heartbeat'
-      preLoaderRoute: typeof ApiPublicExtV17HeartbeatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-v17/fix-stream': {
-      id: '/api/public/ext-v17/fix-stream'
-      path: '/api/public/ext-v17/fix-stream'
-      fullPath: '/api/public/ext-v17/fix-stream'
-      preLoaderRoute: typeof ApiPublicExtV17FixStreamRouteImport
+    '/api/public/ext-v17/create-project': {
+      id: '/api/public/ext-v17/create-project'
+      path: '/api/public/ext-v17/create-project'
+      fullPath: '/api/public/ext-v17/create-project'
+      preLoaderRoute: typeof ApiPublicExtV17CreateProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/ext-v17/download-zip': {
@@ -1532,11 +1385,158 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtV17DownloadZipRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/ext-v17/create-project': {
-      id: '/api/public/ext-v17/create-project'
-      path: '/api/public/ext-v17/create-project'
-      fullPath: '/api/public/ext-v17/create-project'
-      preLoaderRoute: typeof ApiPublicExtV17CreateProjectRouteImport
+    '/api/public/ext-v17/fix-stream': {
+      id: '/api/public/ext-v17/fix-stream'
+      path: '/api/public/ext-v17/fix-stream'
+      fullPath: '/api/public/ext-v17/fix-stream'
+      preLoaderRoute: typeof ApiPublicExtV17FixStreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/heartbeat': {
+      id: '/api/public/ext-v17/heartbeat'
+      path: '/api/public/ext-v17/heartbeat'
+      fullPath: '/api/public/ext-v17/heartbeat'
+      preLoaderRoute: typeof ApiPublicExtV17HeartbeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/process-payment': {
+      id: '/api/public/ext-v17/process-payment'
+      path: '/api/public/ext-v17/process-payment'
+      fullPath: '/api/public/ext-v17/process-payment'
+      preLoaderRoute: typeof ApiPublicExtV17ProcessPaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/proxy-command': {
+      id: '/api/public/ext-v17/proxy-command'
+      path: '/api/public/ext-v17/proxy-command'
+      fullPath: '/api/public/ext-v17/proxy-command'
+      preLoaderRoute: typeof ApiPublicExtV17ProxyCommandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/publish-project': {
+      id: '/api/public/ext-v17/publish-project'
+      path: '/api/public/ext-v17/publish-project'
+      fullPath: '/api/public/ext-v17/publish-project'
+      preLoaderRoute: typeof ApiPublicExtV17PublishProjectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/send-chat': {
+      id: '/api/public/ext-v17/send-chat'
+      path: '/api/public/ext-v17/send-chat'
+      fullPath: '/api/public/ext-v17/send-chat'
+      preLoaderRoute: typeof ApiPublicExtV17SendChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/send-command': {
+      id: '/api/public/ext-v17/send-command'
+      path: '/api/public/ext-v17/send-command'
+      fullPath: '/api/public/ext-v17/send-command'
+      preLoaderRoute: typeof ApiPublicExtV17SendCommandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/send-lovable-message': {
+      id: '/api/public/ext-v17/send-lovable-message'
+      path: '/api/public/ext-v17/send-lovable-message'
+      fullPath: '/api/public/ext-v17/send-lovable-message'
+      preLoaderRoute: typeof ApiPublicExtV17SendLovableMessageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/upload': {
+      id: '/api/public/ext-v17/upload'
+      path: '/api/public/ext-v17/upload'
+      fullPath: '/api/public/ext-v17/upload'
+      preLoaderRoute: typeof ApiPublicExtV17UploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext-v17/validate-license': {
+      id: '/api/public/ext-v17/validate-license'
+      path: '/api/public/ext-v17/validate-license'
+      fullPath: '/api/public/ext-v17/validate-license'
+      preLoaderRoute: typeof ApiPublicExtV17ValidateLicenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/email-worker': {
+      id: '/api/public/hooks/email-worker'
+      path: '/api/public/hooks/email-worker'
+      fullPath: '/api/public/hooks/email-worker'
+      preLoaderRoute: typeof ApiPublicHooksEmailWorkerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/config': {
+      id: '/api/public/licenca/config'
+      path: '/api/public/licenca/config'
+      fullPath: '/api/public/licenca/config'
+      preLoaderRoute: typeof ApiPublicLicencaConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/consulta': {
+      id: '/api/public/licenca/consulta'
+      path: '/api/public/licenca/consulta'
+      fullPath: '/api/public/licenca/consulta'
+      preLoaderRoute: typeof ApiPublicLicencaConsultaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/heartbeat': {
+      id: '/api/public/licenca/heartbeat'
+      path: '/api/public/licenca/heartbeat'
+      fullPath: '/api/public/licenca/heartbeat'
+      preLoaderRoute: typeof ApiPublicLicencaHeartbeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/renovar': {
+      id: '/api/public/licenca/renovar'
+      path: '/api/public/licenca/renovar'
+      fullPath: '/api/public/licenca/renovar'
+      preLoaderRoute: typeof ApiPublicLicencaRenovarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/reset-dispositivo': {
+      id: '/api/public/licenca/reset-dispositivo'
+      path: '/api/public/licenca/reset-dispositivo'
+      fullPath: '/api/public/licenca/reset-dispositivo'
+      preLoaderRoute: typeof ApiPublicLicencaResetDispositivoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/reset-hwid': {
+      id: '/api/public/licenca/reset-hwid'
+      path: '/api/public/licenca/reset-hwid'
+      fullPath: '/api/public/licenca/reset-hwid'
+      preLoaderRoute: typeof ApiPublicLicencaResetHwidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/revogar': {
+      id: '/api/public/licenca/revogar'
+      path: '/api/public/licenca/revogar'
+      fullPath: '/api/public/licenca/revogar'
+      preLoaderRoute: typeof ApiPublicLicencaRevogarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/premium-cover/$': {
+      id: '/api/public/premium-cover/$'
+      path: '/api/public/premium-cover/$'
+      fullPath: '/api/public/premium-cover/$'
+      preLoaderRoute: typeof ApiPublicPremiumCoverSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/cakto': {
+      id: '/api/public/webhooks/cakto'
+      path: '/api/public/webhooks/cakto'
+      fullPath: '/api/public/webhooks/cakto'
+      preLoaderRoute: typeof ApiPublicWebhooksCaktoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/kiwify': {
+      id: '/api/public/webhooks/kiwify'
+      path: '/api/public/webhooks/kiwify'
+      fullPath: '/api/public/webhooks/kiwify'
+      preLoaderRoute: typeof ApiPublicWebhooksKiwifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/mercadopago': {
+      id: '/api/public/webhooks/mercadopago'
+      path: '/api/public/webhooks/mercadopago'
+      fullPath: '/api/public/webhooks/mercadopago'
+      preLoaderRoute: typeof ApiPublicWebhooksMercadopagoRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
