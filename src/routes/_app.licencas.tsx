@@ -2291,6 +2291,16 @@ function EditarLicencaModal({
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [observacoes, setObservacoes] = useState("");
+  const [venc, setVenc] = useState("");
+  const [dur, setDur] = useState(30);
+  function ajustarDias(d: number) {
+    if (licenca?.expira_em) {
+      const [y, m, dd] = (venc || toYMD(new Date())).split("-").map(Number);
+      setVenc(toYMD(new Date(y, m - 1, dd + d)));
+    } else {
+      setDur((x) => Math.max(1, x + d));
+    }
+  }
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -2299,6 +2309,11 @@ function EditarLicencaModal({
       setNome(licenca.clientes?.nome ?? "");
       setEmail(licenca.email ?? "");
       setObservacoes(licenca.observacoes_admin ?? "");
+      setVenc(licenca.expira_em ? toYMD(new Date(licenca.expira_em)) : "");
+      setDur(
+        licenca.duracao_dias ??
+          (licenca.trial_duracao_minutos ? Math.max(1, Math.round(licenca.trial_duracao_minutos / 1440)) : 30),
+      );
     }
   }, [licenca]);
 
@@ -2317,6 +2332,18 @@ function EditarLicencaModal({
         chave: novaChave,
         email: email.trim() ? email.trim().toLowerCase() : null,
         observacoes_admin: observacoes.trim() || null,
+      };
+      if (licenca.expira_em) {
+        if (venc && venc !== toYMD(new Date(licenca.expira_em))) {
+          const iso = fimDoDiaISO(venc);
+          patch.expira_em = iso;
+          if (new Date(iso).getTime() > Date.now() && licenca.status === "expirada") {
+            patch.status = "ativa";
+          }
+        }
+      } else if (dur !== (licenca.duracao_dias ?? 30)) {
+        patch.duracao_dias = dur;
+        if ((licenca.tipo ?? "") === "teste") patch.trial_duracao_minutos = dur * 1440;
       };
       const { error: upErr } = await (supabase as any)
         .from("licencas")
@@ -2388,6 +2415,32 @@ function EditarLicencaModal({
               onChange={(e) => setEmail(e.target.value)}
               placeholder="cliente@email.com"
             />
+          </Field>
+          <Field label={licenca?.expira_em ? "Vencimento" : "Duração (conta a partir da ativação)"}>
+            {licenca?.expira_em ? (
+              <Input type="date" value={venc} onChange={(e) => setVenc(e.target.value)} />
+            ) : (
+              <Input
+                type="number"
+                min={1}
+                value={dur}
+                onChange={(e) => setDur(Math.max(1, parseInt(e.target.value) || 1))}
+              />
+            )}
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {[-30, -7, -1, 1, 7, 30].map((d) => (
+                <Button
+                  key={d}
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 px-2 text-xs"
+                  onClick={() => ajustarDias(d)}
+                >
+                  {d > 0 ? `+${d}` : d} dia{Math.abs(d) > 1 ? "s" : ""}
+                </Button>
+              ))}
+            </div>
           </Field>
           {licenca && <ProdutosEditBlock licenca={licenca} onSaved={onSaved} />}
           <Field label="Observações (interno)">
