@@ -1,3 +1,4 @@
+import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createFileRoute, notFound, useRouter, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -73,7 +74,7 @@ function PackNotFound() {
   );
 }
 
-function PackError({ error, reset }: { error: Error; reset: () => void }) {
+function PackError({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
   return (
     <div
@@ -82,7 +83,7 @@ function PackError({ error, reset }: { error: Error; reset: () => void }) {
     >
       <div>
         <h1 className="mb-2 text-2xl font-semibold">Não foi possível carregar o pack</h1>
-        <p className="mb-6 text-sm text-white/60">{error.message}</p>
+        <p className="mb-6 text-sm text-white/60">{(error as Error)?.message}</p>
         <button
           type="button"
           onClick={() => {
