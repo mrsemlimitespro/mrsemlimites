@@ -328,21 +328,29 @@ function LicencasPage() {
   const [bulkRenovarOpen, setBulkRenovarOpen] = useState(false);
   const [bulkBusy, setBulkBusy] = useState(false);
 
-  async function reload() {
-    setLoading(true);
-    const { data, error } = await (supabase as any)
-      .from("licencas")
-      .select(
-        "id, chave, cliente_id, email, status, device_id, device_vinculado_em, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, mr_social_growth_ativo, mr_sem_limites_ativo, clientes(nome)",
-      )
-      .order("created_at", { ascending: false });
-    if (error) {
-      toast.error(error.message);
-      setRows([]);
-    } else {
-      setRows((data ?? []) as LicencaRow[]);
+  async function reload(silent = false) {
+    if (!silent) setLoading(true);
+    try {
+      const query = (supabase as any)
+        .from("licencas")
+        .select(
+          "id, chave, cliente_id, email, status, device_id, device_vinculado_em, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, mr_social_growth_ativo, mr_sem_limites_ativo, clientes(nome)",
+        )
+        .order("created_at", { ascending: false });
+      const timeout = new Promise<{ data: null; error: { message: string } }>((r) =>
+        setTimeout(() => r({ data: null, error: { message: "Tempo esgotado ao carregar licenças" } }), 15000),
+      );
+      const { data, error } = await Promise.race([query, timeout]);
+      if (error) {
+        toast.error(error.message);
+      } else {
+        setRows((data ?? []) as LicencaRow[]);
+      }
+    } catch (e: any) {
+      toast.error(e?.message ?? "Erro ao carregar licenças");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -369,20 +377,25 @@ function LicencasPage() {
 
     void start();
 
-    const { data: authSub } = supabase.auth.onAuthStateChange(() => {
+    // Nunca consultar o banco dentro do callback de auth (trava o cliente); adiar.
+    const { data: authSub } = supabase.auth.onAuthStateChange((event) => {
       if (!alive) return;
-      if (!started) void start();
-      else void reload();
+      if (event !== "SIGNED_IN" && event !== "INITIAL_SESSION") return;
+      setTimeout(() => {
+        if (!alive) return;
+        if (!started) void start();
+        else void reload(true);
+      }, 0);
     });
 
     const onVisible = () => {
-      if (alive && started && document.visibilityState === "visible") void reload();
+      if (alive && started && document.visibilityState === "visible") void reload(true);
     };
     document.addEventListener("visibilitychange", onVisible);
 
     const ch = supabase
       .channel("licencas-live")
-      .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload())
+      .on("postgres_changes", { event: "*", schema: "public", table: "licencas" }, () => reload(true))
       .subscribe();
     return () => {
       alive = false;
