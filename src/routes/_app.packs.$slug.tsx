@@ -1,3 +1,4 @@
+import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createFileRoute, notFound, useRouter, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -73,7 +74,7 @@ function PackNotFound() {
   );
 }
 
-function PackError({ error, reset }: { error: Error; reset: () => void }) {
+function PackError({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
   return (
     <div
