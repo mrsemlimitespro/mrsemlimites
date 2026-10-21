@@ -321,6 +321,8 @@ function LicencasPage() {
   const [openEnviarTeste, setOpenEnviarTeste] = useState(false);
   const [rows, setRows] = useState<LicencaRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [noSession, setNoSession] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [historyOf, setHistoryOf] = useState<LicencaRow | null>(null);
   const [renovarOf, setRenovarOf] = useState<LicencaRow | null>(null);
   const [editarOf, setEditarOf] = useState<LicencaRow | null>(null);
@@ -331,6 +333,13 @@ function LicencasPage() {
   async function reload(silent = false) {
     if (!silent) setLoading(true);
     try {
+      // Guarda: nunca consultar sem sessão (sem ela o banco devolve lista vazia sem erro).
+      const { data: sess } = await supabase.auth.getSession();
+      if (!sess.session) {
+        setNoSession(true);
+        return;
+      }
+      setNoSession(false);
       const query = (supabase as any)
         .from("licencas")
         .select(
@@ -343,14 +352,29 @@ function LicencasPage() {
       const { data, error } = await Promise.race([query, timeout]);
       if (error) {
         toast.error(error.message);
+        setLoadError(error.message);
       } else {
+        setLoadError(null);
         setRows((data ?? []) as LicencaRow[]);
       }
     } catch (e: any) {
-      toast.error(e?.message ?? "Erro ao carregar licenças");
+      const msg = e?.message ?? "Erro ao carregar licenças";
+      toast.error(msg);
+      setLoadError(msg);
     } finally {
       setLoading(false);
     }
+  }
+
+  async function retryLoad() {
+    setLoading(true);
+    const t0 = Date.now();
+    while (Date.now() - t0 < 3000) {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) break;
+      await new Promise((r) => setTimeout(r, 200));
+    }
+    await reload();
   }
 
   useEffect(() => {
@@ -378,9 +402,10 @@ function LicencasPage() {
     void start();
 
     // Nunca consultar o banco dentro do callback de auth (trava o cliente); adiar.
-    const { data: authSub } = supabase.auth.onAuthStateChange((event) => {
+    const { data: authSub } = supabase.auth.onAuthStateChange((event, session) => {
       if (!alive) return;
       if (event !== "SIGNED_IN" && event !== "INITIAL_SESSION") return;
+      if (!session) return;
       setTimeout(() => {
         if (!alive) return;
         if (!started) void start();
@@ -816,6 +841,17 @@ function LicencasPage() {
         {loading ? (
           <div className="flex items-center justify-center px-6 py-14 text-sm text-muted-foreground">
             <Loader2 className="mr-2 size-4 animate-spin" /> Carregando...
+          </div>
+        ) : noSession || loadError ? (
+          <div className="flex flex-col items-center gap-3 px-6 py-14 text-center text-sm text-muted-foreground">
+            <span>
+              {noSession
+                ? "Sessão não detectada. Faça login novamente para ver as licenças."
+                : `Não foi possível carregar as licenças: ${loadError}`}
+            </span>
+            <Button size="sm" variant="outline" onClick={() => void retryLoad()}>
+              Tentar novamente
+            </Button>
           </div>
         ) : filtered.length === 0 ? (
           <div className="px-6 py-14 text-center text-sm text-muted-foreground">
