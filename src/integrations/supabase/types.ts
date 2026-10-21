@@ -1170,6 +1170,51 @@ export type Database = {
           },
         ]
       }
+      ext_v17_dispositivos: {
+        Row: {
+          device_id: string
+          device_nome: string | null
+          id: string
+          licenca_id: string
+          primeiro_acesso: string
+          produto: string
+          ultimo_acesso: string
+        }
+        Insert: {
+          device_id: string
+          device_nome?: string | null
+          id?: string
+          licenca_id: string
+          primeiro_acesso?: string
+          produto?: string
+          ultimo_acesso?: string
+        }
+        Update: {
+          device_id?: string
+          device_nome?: string | null
+          id?: string
+          licenca_id?: string
+          primeiro_acesso?: string
+          produto?: string
+          ultimo_acesso?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ext_v17_dispositivos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ext_v17_dispositivos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ext_v17_requests: {
         Row: {
           created_at: string | null
@@ -1179,6 +1224,7 @@ export type Database = {
           method: string
           path: string
           payload: Json | null
+          produto: string | null
           status_code: number | null
         }
         Insert: {
@@ -1189,6 +1235,7 @@ export type Database = {
           method: string
           path: string
           payload?: Json | null
+          produto?: string | null
           status_code?: number | null
         }
         Update: {
@@ -1199,6 +1246,7 @@ export type Database = {
           method?: string
           path?: string
           payload?: Json | null
+          produto?: string | null
           status_code?: number | null
         }
         Relationships: [
@@ -1537,6 +1585,48 @@ export type Database = {
           },
           {
             foreignKeyName: "licenca_dispositivos_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licenca_produto_ativo: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          licenca_id: string
+          produto: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          licenca_id: string
+          produto: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          licenca_id?: string
+          produto?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licenca_produto_ativo_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licenca_produto_ativo_licenca_id_fkey"
             columns: ["licenca_id"]
             isOneToOne: false
             referencedRelation: "v_licenca_estado"
@@ -3355,6 +3445,33 @@ export type Database = {
         }
         Relationships: []
       }
+      v_ext_v17_stats: {
+        Row: {
+          licenca_id: string | null
+          path: string | null
+          produto: string | null
+          total: number | null
+          ultimas_24h: number | null
+          ultimo_acesso: string | null
+          ultimos_7d: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ext_v17_requests_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licencas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ext_v17_requests_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "v_licenca_estado"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_hierarquia_clientes: {
         Row: {
           cliente_criado_em: string | null
@@ -3709,6 +3826,7 @@ export type Database = {
       }
       expirar_licencas_vencidas: { Args: never; Returns: number }
       expirar_trials_vencidos: { Args: never; Returns: undefined }
+      ext_v17_stats: { Args: { _chave: string }; Returns: Json }
       gerar_chave_licenca: { Args: never; Returns: string }
       gerar_chave_licenca_v1: { Args: never; Returns: string }
       gerar_chave_licenca_v2: { Args: never; Returns: string }
@@ -4035,6 +4153,23 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "licencas"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_licenca_produto_ativo: {
+        Args: { _ativo: boolean; _licenca_id: string; _produto: string }
+        Returns: {
+          ativo: boolean
+          created_at: string
+          id: string
+          licenca_id: string
+          produto: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "licenca_produto_ativo"
           isOneToOne: true
           isSetofReturn: false
         }
