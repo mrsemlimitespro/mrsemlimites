@@ -404,7 +404,7 @@ function LicencasPage() {
     // Nunca consultar o banco dentro do callback de auth (trava o cliente); adiar.
     const { data: authSub } = supabase.auth.onAuthStateChange((event, session) => {
       if (!alive) return;
-      if (event !== "SIGNED_IN" && event !== "INITIAL_SESSION" && event !== "TOKEN_REFRESHED") return;
+      if (event !== "SIGNED_IN" && event !== "INITIAL_SESSION") return;
       if (!session) return;
       setTimeout(() => {
         if (!alive) return;
