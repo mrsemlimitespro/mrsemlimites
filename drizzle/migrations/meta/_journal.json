@@ -29,6 +29,13 @@
       "when": 1790420441678,
       "tag": "0003_reset_device_keep_last_access",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792545882313,
+      "tag": "0004_leque_multi_extensao_v17",
+      "breakpoints": true
     }
   ]
 }

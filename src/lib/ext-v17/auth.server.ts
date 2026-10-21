@@ -39,7 +39,8 @@ function maskSensitiveData(data: any): any {
 export type LicenseValidationResult = {
   ok: boolean;
   valid: boolean;
-  status: "active" | "expired" | "revoked" | "not_found" | "invalid_format" | "hwid_mismatch" | "session_conflict";
+  status: "active" | "expired" | "revoked" | "blocked" | "unknown_product" | "not_found" | "invalid_format" | "hwid_mismatch" | "session_conflict";
+  reason?: string;
   license_key: string;
   licenca_id?: string; // UUID from public.licencas
   user_name?: string;
@@ -58,6 +59,7 @@ export async function validateExtensionLicense(
   const rawKey = body?.license_key || body?.user_license_key || body?.key || body?.licenseKey || body?.license_key_input;
   const hwid = body?.hwid || body?.device_id || body?.deviceId;
   const sessionId = body?.session_id;
+  const extensionSlug = body?.extension_id ? String(body.extension_id).trim().slice(0, 80) : null;
 
   const key = normalizeLicenseKey(rawKey);
 
@@ -66,6 +68,21 @@ export async function validateExtensionLicense(
   }
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+  // Produto (opcional): só valida quando enviado. Sem extension_id = comportamento antigo.
+  let produto: string | null = null;
+  if (extensionSlug) {
+    const { data: prod } = await supabaseAdmin
+      .from("licenca_produtos")
+      .select("slug")
+      .eq("slug", extensionSlug)
+      .eq("ativo", true)
+      .maybeSingle();
+    if (!prod) {
+      return { ok: false, valid: false, status: "unknown_product", license_key: key, error: "unknown_product" };
+    }
+    produto = prod.slug;
+  }
 
   // Trial expiration lazy check
   try {
@@ -76,7 +93,7 @@ export async function validateExtensionLicense(
 
   const { data: lic, error: licError } = await supabaseAdmin
     .from("licencas")
-    .select("id, status, expira_em, device_id, max_dispositivos, email")
+    .select("id, status, tipo, expira_em, ativada_em, duracao_dias, trial_iniciado_em, trial_duracao_minutos, device_id, max_dispositivos, email")
     .eq("chave", key)
     .maybeSingle();
 
@@ -88,7 +105,30 @@ export async function validateExtensionLicense(
     return { ok: false, valid: false, status: "revoked", license_key: key, error: "license_revoked" };
   }
 
-  if (lic.expira_em && new Date(lic.expira_em).getTime() < Date.now()) {
+  if (lic.status === "bloqueada" || lic.status === "suspensa") {
+    return { ok: false, valid: false, status: "blocked", reason: "blocked", license_key: key, error: "Licença bloqueada." };
+  }
+
+  // Ativação na 1ª validação (espelha a rota clássica; só preenche campos nulos)
+  let expiraEm: string | null = lic.expira_em;
+  const nowIso = new Date().toISOString();
+  if (lic.tipo === "teste" && !lic.trial_iniciado_em) {
+    const mins = Number(lic.trial_duracao_minutos ?? 30);
+    expiraEm = lic.expira_em ?? new Date(Date.now() + mins * 60_000).toISOString();
+    await supabaseAdmin
+      .from("licencas")
+      .update({ trial_iniciado_em: nowIso, expira_em: expiraEm, ativada_em: lic.ativada_em ?? nowIso })
+      .eq("id", lic.id);
+  } else if (lic.tipo !== "teste" && !lic.expira_em) {
+    const dias = Number(lic.duracao_dias ?? 30);
+    expiraEm = new Date(Date.now() + dias * 86_400_000).toISOString();
+    await supabaseAdmin
+      .from("licencas")
+      .update({ expira_em: expiraEm, ativada_em: lic.ativada_em ?? nowIso })
+      .eq("id", lic.id);
+  }
+
+  if (expiraEm && new Date(expiraEm).getTime() < Date.now()) {
     return { ok: false, valid: false, status: "expired", license_key: key, error: "license_expired" };
   }
 
@@ -114,18 +154,31 @@ export async function validateExtensionLicense(
         user_agent: userAgent
       });
     }
+
+    // Vínculo adicional por chave+produto (só raio v17; não substitui a checagem acima)
+    try {
+      await supabaseAdmin.from("ext_v17_dispositivos").upsert({
+        licenca_id: lic.id,
+        produto: produto ?? "motor-v17",
+        device_id: String(hwid),
+        device_nome: "V17.0 Extension",
+        ultimo_acesso: nowIso,
+      }, { onConflict: "licenca_id,produto,device_id" });
+    } catch {
+      /* best-effort */
+    }
   }
 
   // Session & Audit
   const finalSessionId = sessionId || `sess_${crypto.randomUUID()}`;
   
   await Promise.all([
-    supabaseAdmin.from("licencas").update({ ultimo_acesso: new Date().toISOString() }).eq("id", lic.id),
+    supabaseAdmin.from("licencas").update({ ultimo_acesso: nowIso }).eq("id", lic.id),
     supabaseAdmin.from("ext_v17_sessions").upsert({
       licenca_id: lic.id,
       session_id: finalSessionId,
       device_id: hwid || "unknown",
-      last_heartbeat: new Date().toISOString(),
+      last_heartbeat: nowIso,
       ip,
       user_agent: userAgent
     }, { onConflict: 'session_id' }),
@@ -134,7 +187,8 @@ export async function validateExtensionLicense(
       path,
       method: "POST",
       payload: maskSensitiveData(body),
-      ip
+      ip,
+      produto,
     })
   ]);
 
@@ -145,7 +199,7 @@ export async function validateExtensionLicense(
     license_key: key,
     licenca_id: lic.id,
     user_name: lic.email?.split('@')[0] || "Usuário MR",
-    expires_at: lic.expira_em || undefined,
+    expires_at: expiraEm || undefined,
     session_id: finalSessionId,
     device_id: hwid
   };

@@ -72,6 +72,7 @@ import { Route as ApiPublicExtV17PublishProjectRouteImport } from './routes/api/
 import { Route as ApiPublicExtV17SendChatRouteImport } from './routes/api/public/ext-v17/send-chat'
 import { Route as ApiPublicExtV17SendCommandRouteImport } from './routes/api/public/ext-v17/send-command'
 import { Route as ApiPublicExtV17SendLovableMessageRouteImport } from './routes/api/public/ext-v17/send-lovable-message'
+import { Route as ApiPublicExtV17StatsRouteImport } from './routes/api/public/ext-v17/stats'
 import { Route as ApiPublicExtV17UploadRouteImport } from './routes/api/public/ext-v17/upload'
 import { Route as ApiPublicExtV17ValidateLicenseRouteImport } from './routes/api/public/ext-v17/validate-license'
 import { Route as ApiPublicHooksEmailWorkerRouteImport } from './routes/api/public/hooks/email-worker'
@@ -411,6 +412,11 @@ const ApiPublicExtV17SendLovableMessageRoute =
     path: '/api/public/ext-v17/send-lovable-message',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtV17StatsRoute = ApiPublicExtV17StatsRouteImport.update({
+  id: '/api/public/ext-v17/stats',
+  path: '/api/public/ext-v17/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicExtV17UploadRoute = ApiPublicExtV17UploadRouteImport.update({
   id: '/api/public/ext-v17/upload',
   path: '/api/public/ext-v17/upload',
@@ -553,6 +559,7 @@ export interface FileRoutesByFullPath {
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
   '/api/public/ext-v17/send-lovable-message': typeof ApiPublicExtV17SendLovableMessageRoute
+  '/api/public/ext-v17/stats': typeof ApiPublicExtV17StatsRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
@@ -630,6 +637,7 @@ export interface FileRoutesByTo {
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
   '/api/public/ext-v17/send-lovable-message': typeof ApiPublicExtV17SendLovableMessageRoute
+  '/api/public/ext-v17/stats': typeof ApiPublicExtV17StatsRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
@@ -710,6 +718,7 @@ export interface FileRoutesById {
   '/api/public/ext-v17/send-chat': typeof ApiPublicExtV17SendChatRoute
   '/api/public/ext-v17/send-command': typeof ApiPublicExtV17SendCommandRoute
   '/api/public/ext-v17/send-lovable-message': typeof ApiPublicExtV17SendLovableMessageRoute
+  '/api/public/ext-v17/stats': typeof ApiPublicExtV17StatsRoute
   '/api/public/ext-v17/upload': typeof ApiPublicExtV17UploadRoute
   '/api/public/ext-v17/validate-license': typeof ApiPublicExtV17ValidateLicenseRoute
   '/api/public/hooks/email-worker': typeof ApiPublicHooksEmailWorkerRoute
@@ -790,6 +799,7 @@ export interface FileRouteTypes {
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
     | '/api/public/ext-v17/send-lovable-message'
+    | '/api/public/ext-v17/stats'
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/hooks/email-worker'
@@ -867,6 +877,7 @@ export interface FileRouteTypes {
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
     | '/api/public/ext-v17/send-lovable-message'
+    | '/api/public/ext-v17/stats'
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/hooks/email-worker'
@@ -946,6 +957,7 @@ export interface FileRouteTypes {
     | '/api/public/ext-v17/send-chat'
     | '/api/public/ext-v17/send-command'
     | '/api/public/ext-v17/send-lovable-message'
+    | '/api/public/ext-v17/stats'
     | '/api/public/ext-v17/upload'
     | '/api/public/ext-v17/validate-license'
     | '/api/public/hooks/email-worker'
@@ -982,6 +994,7 @@ export interface RootRouteChildren {
   ApiPublicExtV17SendChatRoute: typeof ApiPublicExtV17SendChatRoute
   ApiPublicExtV17SendCommandRoute: typeof ApiPublicExtV17SendCommandRoute
   ApiPublicExtV17SendLovableMessageRoute: typeof ApiPublicExtV17SendLovableMessageRoute
+  ApiPublicExtV17StatsRoute: typeof ApiPublicExtV17StatsRoute
   ApiPublicExtV17UploadRoute: typeof ApiPublicExtV17UploadRoute
   ApiPublicExtV17ValidateLicenseRoute: typeof ApiPublicExtV17ValidateLicenseRoute
   ApiPublicHooksEmailWorkerRoute: typeof ApiPublicHooksEmailWorkerRoute
@@ -1441,6 +1454,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtV17SendLovableMessageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext-v17/stats': {
+      id: '/api/public/ext-v17/stats'
+      path: '/api/public/ext-v17/stats'
+      fullPath: '/api/public/ext-v17/stats'
+      preLoaderRoute: typeof ApiPublicExtV17StatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext-v17/upload': {
       id: '/api/public/ext-v17/upload'
       path: '/api/public/ext-v17/upload'
@@ -1687,6 +1707,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicExtV17SendCommandRoute: ApiPublicExtV17SendCommandRoute,
   ApiPublicExtV17SendLovableMessageRoute:
     ApiPublicExtV17SendLovableMessageRoute,
+  ApiPublicExtV17StatsRoute: ApiPublicExtV17StatsRoute,
   ApiPublicExtV17UploadRoute: ApiPublicExtV17UploadRoute,
   ApiPublicExtV17ValidateLicenseRoute: ApiPublicExtV17ValidateLicenseRoute,
   ApiPublicHooksEmailWorkerRoute: ApiPublicHooksEmailWorkerRoute,
