@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Auth-state callbacks must return synchronously and defer database reads to a later task, because awaiting a read while the auth session lock is held can deadlock all panel requests.
+- License loading uses a single 15-second deadline spanning session restoration and the authenticated query, so a stalled session cannot leave the list loading indefinitely.

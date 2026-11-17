@@ -47,7 +47,8 @@ export function useUserRole(): UserRole {
 
     supabase.auth.getSession().then(({ data }) => check(data.session));
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      void check(session);
+      // Database reads need the auth lock released first.
+      setTimeout(() => { if (alive) void check(session); }, 0);
     });
 
     return () => {

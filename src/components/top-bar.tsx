@@ -87,7 +87,10 @@ export function TopBar() {
       }
     }
     supabase.auth.getSession().then(({ data }) => check(data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => check(s));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      // Return before querying: auth holds its session lock during this callback.
+      setTimeout(() => { if (mounted) void check(s); }, 0);
+    });
     return () => {
       mounted = false;
       sub.subscription.unsubscribe();

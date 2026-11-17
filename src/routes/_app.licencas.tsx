@@ -70,6 +70,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { RequireAuth } from "@/components/require-auth";
+import { loadWithLicenseSession } from "@/lib/license-loading";
 
 export const Route = createFileRoute("/_app/licencas")({
   validateSearch: (search: Record<string, unknown>): { novo?: boolean } =>
@@ -78,6 +79,10 @@ export const Route = createFileRoute("/_app/licencas")({
     meta: [
       { title: "Licenças — MR Sem Limites" },
       { name: "description", content: "Gestão de licenças no MR Sem Limites." },
+      { property: "og:title", content: "Licenças — MR Sem Limites" },
+      { property: "og:description", content: "Gestão de licenças no MR Sem Limites." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => (
@@ -333,23 +338,21 @@ function LicencasPage() {
   async function reload(silent = false) {
     if (!silent) setLoading(true);
     try {
-      // Guarda: nunca consultar sem sessão (sem ela o banco devolve lista vazia sem erro).
-      const { data: sess } = await supabase.auth.getSession();
-      if (!sess.session) {
+      const result = await loadWithLicenseSession(
+        () => supabase.auth.getSession(),
+        () => (supabase as any)
+          .from("licencas")
+          .select(
+            "id, chave, cliente_id, email, status, device_id, device_vinculado_em, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, mr_social_growth_ativo, mr_sem_limites_ativo, clientes(nome)",
+          )
+          .order("created_at", { ascending: false }),
+      ) as { data: LicencaRow[] | null; error: { message: string } | null } | null;
+      if (!result) {
         setNoSession(true);
         return;
       }
       setNoSession(false);
-      const query = (supabase as any)
-        .from("licencas")
-        .select(
-          "id, chave, cliente_id, email, status, device_id, device_vinculado_em, expira_em, ativada_em, duracao_dias, trial_duracao_minutos, tipo, observacoes_admin, metadata, mr_social_growth_ativo, mr_sem_limites_ativo, clientes(nome)",
-        )
-        .order("created_at", { ascending: false });
-      const timeout = new Promise<{ data: null; error: { message: string } }>((r) =>
-        setTimeout(() => r({ data: null, error: { message: "Tempo esgotado ao carregar licenças" } }), 15000),
-      );
-      const { data, error } = await Promise.race([query, timeout]);
+      const { data, error } = result;
       if (error) {
         toast.error(error.message);
         setLoadError(error.message);
@@ -367,13 +370,6 @@ function LicencasPage() {
   }
 
   async function retryLoad() {
-    setLoading(true);
-    const t0 = Date.now();
-    while (Date.now() - t0 < 3000) {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) break;
-      await new Promise((r) => setTimeout(r, 200));
-    }
     await reload();
   }
 
@@ -381,21 +377,9 @@ function LicencasPage() {
     let alive = true;
     let started = false;
 
-    // A sessão pode demorar alguns ms para hidratar do storage; sem ela o RLS devolve vazio.
-    async function waitForSession(maxMs = 8000) {
-      const t0 = Date.now();
-      while (alive && Date.now() - t0 < maxMs) {
-        const { data } = await supabase.auth.getSession();
-        if (data.session) return data.session;
-        await new Promise((r) => setTimeout(r, 200));
-      }
-      return null;
-    }
-
     const start = async () => {
       if (!alive || started) return;
       started = true;
-      await waitForSession();
       if (alive) await reload();
     };
 
