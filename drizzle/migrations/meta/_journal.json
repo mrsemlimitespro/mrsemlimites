@@ -36,6 +36,13 @@
       "when": 1792545882313,
       "tag": "0004_leque_multi_extensao_v17",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794959070197,
+      "tag": "0005_tighten_permissive_read_policies",
+      "breakpoints": true
     }
   ]
 }

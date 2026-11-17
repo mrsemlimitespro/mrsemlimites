@@ -1,0 +1,12 @@
+DROP POLICY IF EXISTS "aulas public read" ON public.aulas;
+CREATE POLICY "aulas signed-in read" ON public.aulas FOR SELECT TO authenticated USING (auth.uid() IS NOT NULL);
+DROP POLICY IF EXISTS "public read logos" ON public.logos;
+CREATE POLICY "logos signed-in read" ON public.logos FOR SELECT TO authenticated USING (auth.uid() IS NOT NULL);
+DROP POLICY IF EXISTS "videos public read" ON public.videos;
+CREATE POLICY "videos signed-in read" ON public.videos FOR SELECT TO authenticated USING (auth.uid() IS NOT NULL);
+DROP POLICY IF EXISTS "Public can view prompts" ON public.ai_prompts;
+CREATE POLICY "prompts signed-in read" ON public.ai_prompts FOR SELECT TO authenticated USING (auth.uid() IS NOT NULL);
+DROP POLICY IF EXISTS "email_templates_read_authed" ON public.email_templates;
+DROP POLICY IF EXISTS "authenticated_read_modules" ON public.system_modules;
+CREATE POLICY "admin_read_modules" ON public.system_modules FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::app_role));
+DROP POLICY IF EXISTS "authenticated read admin branding" ON public.admin_settings;
