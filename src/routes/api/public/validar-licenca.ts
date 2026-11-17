@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { normalizeLicenseKey, isValidLicenseFormat } from "@/lib/licenca/utils";
+import { REMOTE_ACCESS_PRODUCT, remoteAccessEnabled } from "@/lib/remote-access";
 
 /**
  * Endpoint público de validação de licenças da MR Sem Limites.
@@ -257,6 +258,9 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
 
         const mrSemLimitesAtivo = (lic as any).mr_sem_limites_ativo !== false;
         const mrSocialAtivo = (lic as any).mr_social_growth_ativo !== false;
+        const { data: remoteAccess, error: remoteAccessError } = await sb
+          .from("licenca_produto_ativo").select("ativo")
+          .eq("licenca_id", lic.id).eq("produto", REMOTE_ACCESS_PRODUCT).maybeSingle();
 
         return jsonResp(cors, {
           ok: true,
@@ -273,6 +277,7 @@ export const Route = createFileRoute("/api/public/validar-licenca")({
           produtos: {
             mr_sem_limites: mrSemLimitesAtivo,
             mr_social: mrSocialAtivo,
+            mr_acesso_remoto: !remoteAccessError && remoteAccessEnabled(remoteAccess),
           },
         });
       },

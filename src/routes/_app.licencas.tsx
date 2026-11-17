@@ -71,6 +71,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { RequireAuth } from "@/components/require-auth";
 import { loadWithLicenseSession } from "@/lib/license-loading";
+import { REMOTE_ACCESS_PRODUCT, REMOTE_ACCESS_PRESET } from "@/lib/remote-access";
+import { RemoteAccessSwitch } from "@/components/admin/remote-access-switch";
 
 export const Route = createFileRoute("/_app/licencas")({
   validateSearch: (search: Record<string, unknown>): { novo?: boolean } =>
@@ -1186,6 +1188,7 @@ const LICENSE_PRESETS: Preset[] = [
   { label: "2 dias", kind: "teste", minutos: 60 * 24 * 2 },
   { label: "3 dias", kind: "teste", minutos: 60 * 24 * 3 },
   { label: "7 dias", kind: "premium", dias: 7 },
+  REMOTE_ACCESS_PRESET,
   { label: "30 dias", kind: "premium", dias: 30 },
   { label: "60 dias", kind: "premium", dias: 60 },
   { label: "90 dias", kind: "premium", dias: 90 },
@@ -1233,6 +1236,7 @@ export function NovaLicencaModal({
   const [telefone, setTelefone] = useState("");
   const [socialGrowth, setSocialGrowth] = useState(true);
   const [semLimites, setSemLimites] = useState(true);
+  const [remoteAccess, setRemoteAccess] = useState(false);
   const [resultado, setResultado] = useState<{
     chaves: string[];
     validade: string;
@@ -1248,6 +1252,7 @@ export function NovaLicencaModal({
       setTelefone("");
       setSocialGrowth(true);
       setSemLimites(true);
+      setRemoteAccess(false);
       setQuantidade(1);
       setResultado(null);
     }
@@ -1350,6 +1355,15 @@ export function NovaLicencaModal({
               _ativo: false,
             });
           }
+        }
+      }
+
+      if (remoteAccess) {
+        for (const row of created ?? []) {
+          const { error } = await supabase.rpc("set_licenca_produto_ativo", {
+            _licenca_id: row.id, _produto: REMOTE_ACCESS_PRODUCT, _ativo: true,
+          });
+          if (error) throw new Error(error.message);
         }
       }
 
@@ -1484,6 +1498,11 @@ export function NovaLicencaModal({
                     onCheckedChange={(v) => setSemLimites(Boolean(v))}
                     aria-label="MR Sem Limites nesta licença"
                   />
+                </label>
+                <label className="flex items-center justify-between gap-3 text-sm">
+                  <span>MR Acesso Remoto</span>
+                  <Switch checked={remoteAccess} onCheckedChange={setRemoteAccess}
+                    aria-label="MR Acesso Remoto nesta licença" />
                 </label>
               </div>
             </Field>
@@ -2543,6 +2562,7 @@ function ProdutosEditBlock({ licenca, onSaved }: { licenca: LicencaRow; onSaved:
           ? "Licença encerrada — renove ou reative para alterar os produtos."
           : "O cliente vê a mudança na próxima vez que abrir a extensão, ou em até 15 minutos se ela já estiver aberta."}
       </p>
+      <RemoteAccessSwitch licencaId={licenca.id} disabled={encerrada} />
     </div>
   );
 }

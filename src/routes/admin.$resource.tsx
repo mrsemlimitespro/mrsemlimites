@@ -20,6 +20,7 @@ import {
 import { z } from "zod";
 import { setImpersonation } from "@/lib/impersonation";
 import { ComputadorSection } from "@/components/admin/computador-section";
+import { RemoteAccessSwitch } from "@/components/admin/remote-access-switch";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -597,7 +598,10 @@ function ResourceFormDialog({
             />
           ))}
           {isEdit && resource.key === "licencas" && initial?.id && (
-            <ComputadorSection licencaId={String(initial.id)} />
+            <>
+              <RemoteAccessSwitch licencaId={String(initial.id)} />
+              <ComputadorSection licencaId={String(initial.id)} />
+            </>
           )}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={onClose} disabled={busy}>
