@@ -71,7 +71,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { RequireAuth } from "@/components/require-auth";
 import { loadWithLicenseSession } from "@/lib/license-loading";
-import { REMOTE_ACCESS_PRODUCT, REMOTE_ACCESS_PRESET } from "@/lib/remote-access";
+import { REMOTE_ACCESS_PRODUCT } from "@/lib/remote-access";
+import { LICENSE_DURATIONS, bucketOfRow, countDurationBuckets, type Bucket } from "@/lib/license-durations";
 import { RemoteAccessSwitch } from "@/components/admin/remote-access-switch";
 
 export const Route = createFileRoute("/_app/licencas")({
@@ -135,44 +136,6 @@ type License = {
 };
 
 type Filter = "todos" | "ativas" | "expiradas" | "revogadas" | "bloqueadas";
-
-/** Sub-abas por duração. */
-type Bucket = "todos" | "teste" | "1d" | "2d" | "3d" | "30d" | "60d" | "90d" | "180d" | "1ano" | "outros";
-
-const BUCKETS: { id: Bucket; label: string; sub: string }[] = [
-  { id: "todos", label: "Todas", sub: "geral" },
-  { id: "teste", label: "Trial (1h)", sub: "teste" },
-  { id: "1d", label: "1 dia", sub: "premium" },
-  { id: "2d", label: "2 dias", sub: "premium" },
-  { id: "3d", label: "3 dias", sub: "premium" },
-  { id: "30d", label: "Mensal", sub: "premium" },
-  { id: "60d", label: "Bimestral", sub: "premium" },
-  { id: "90d", label: "Trimestral", sub: "premium" },
-  { id: "180d", label: "Semestral", sub: "premium" },
-  { id: "1ano", label: "Anual", sub: "premium" },
-];
-
-function bucketOfRow(row: LicencaRow): Bucket {
-  const min = row.trial_duracao_minutos ?? null;
-  if ((row.tipo ?? "").toLowerCase() === "teste" || min) {
-    if (min === 60 * 24) return "1d";
-    if (min === 60 * 24 * 2) return "2d";
-    if (min === 60 * 24 * 3) return "3d";
-    return "teste";
-  }
-  const dias = row.duracao_dias ?? null;
-  if (dias === 1) return "1d";
-  if (dias === 2) return "2d";
-  if (dias === 3) return "3d";
-  if (dias === 30) return "30d";
-  if (dias === 60) return "60d";
-  if (dias === 90) return "90d";
-  if (dias === 180) return "180d";
-  if (dias === 365) return "1ano";
-  return "outros";
-}
-
-
 
 /** Mostra o identificador do computador encurtado (ex.: a1b2…f9). */
 function shortDevice(id: string): string {
@@ -426,28 +389,11 @@ function LicencasPage() {
     return m;
   }, [rows]);
 
-  const bucketCounts = useMemo(() => {
-    const c: Record<string, number> = {
-      todos: 0,
-      teste: 0,
-      "1d": 0,
-      "2d": 0,
-      "3d": 0,
-      "30d": 0,
-      "60d": 0,
-      "90d": 0,
-      "180d": 0,
-      "1ano": 0,
-      outros: 0,
-    };
-    bucketOfId.forEach((b) => {
-      c[b] = (c[b] ?? 0) + 1;
-      c.todos += 1;
-    });
-    return c;
-  }, [bucketOfId]);
-
-  const hasOutros = bucketCounts.outros > 0;
+  const bucketCounts = useMemo(() => countDurationBuckets(rows), [rows]);
+  const durationBuckets: { id: Bucket; label: string }[] = [
+    ...LICENSE_DURATIONS,
+    ...(bucketCounts.outros > 0 ? [{ id: "outros" as const, label: "Outras durações" }] : []),
+  ];
 
   const filtered = licenses.filter((l) => {
     const q = query.trim().toLowerCase();
@@ -467,8 +413,6 @@ function LicencasPage() {
 
   });
 
-  const available = licenses.filter((l) => l.status === "ativa" && !l.client).length;
-  const total = licenses.length;
 
   async function resetDevice(id: string) {
     const { error } = await (supabase as any).rpc("resetar_device_licenca", {
@@ -590,26 +534,28 @@ function LicencasPage() {
   }) => {
     const active = target !== undefined && bucket === target;
     return (
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        aria-label={`${title}: ${value}`}
         onClick={() => target !== undefined && setBucket(active ? "todos" : target)}
         className={cn(
-          "glass-strong p-4 rounded-2xl flex flex-col gap-2 border relative overflow-hidden group text-left transition-all",
+          "glass-strong h-auto items-stretch p-4 rounded-2xl flex flex-col gap-2 border relative overflow-hidden group text-left transition-all",
           active
             ? "border-brand-blue/70 shadow-lg shadow-brand-blue/20"
-            : "border-white/5 hover:border-white/15",
+            : "border-border/50 hover:border-border",
           target === undefined && "cursor-default",
         )}
       >
         <div className={cn("absolute top-0 right-0 w-16 h-16 bg-current opacity-[0.03] blur-2xl rounded-full translate-x-1/2 -translate-y-1/2", color)} />
         <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">{title}</span>
         <div className="flex items-end justify-between">
-          <span className="text-2xl font-black text-white">{value}</span>
-          <div className={cn("size-6 rounded-lg grid place-items-center bg-white/5", color)}>
+          <span className="text-2xl font-black text-foreground">{value}</span>
+          <div className={cn("size-6 rounded-lg grid place-items-center bg-muted/50", color)}>
             <div className={cn("size-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]", color)} />
           </div>
         </div>
-      </button>
+      </Button>
     );
   };
 
@@ -665,16 +611,13 @@ function LicencasPage() {
         </div>
       </header>
 
-      {/* 7 KPI Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <KpiCard title="Mensais" value={bucketCounts["30d"] ?? 0} color="text-brand-blue" target="30d" />
-        <KpiCard title="Trimestrais" value={bucketCounts["90d"] ?? 0} color="text-brand-cyan" target="90d" />
-        <KpiCard title="Semestrais" value={bucketCounts["180d"] ?? 0} color="text-brand-violet" target="180d" />
-        <KpiCard title="Anuais" value={bucketCounts["1ano"] ?? 0} color="text-brand-magenta" target="1ano" />
-        <KpiCard title="Vitalícias" value={bucketCounts["outros"] ?? 0} color="text-brand-yellow" target="outros" />
-        <KpiCard title="Trials" value={bucketCounts["teste"] ?? 0} color="text-brand-orange" target="teste" />
-        <KpiCard title="Ativas Hoje" value={total} color="text-brand-emerald" target="todos" />
-
+      {/* Cards and filters share the same duration catalog and counts. */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" aria-label="Contagens por duração">
+        {durationBuckets.map((duration, index) => (
+          <KpiCard key={duration.id} title={duration.label} value={bucketCounts[duration.id]}
+            color={["text-brand-blue", "text-brand-cyan", "text-brand-violet", "text-brand-magenta", "text-brand-orange", "text-brand-emerald"][index % 6]}
+            target={duration.id} />
+        ))}
       </div>
 
 
@@ -697,7 +640,7 @@ function LicencasPage() {
         </div>
         
         <div className="glass-strong p-1.5 rounded-2xl flex flex-wrap items-center gap-1.5 border border-white/5">
-          {BUCKETS.map((b) => {
+          {[{ id: "todos" as const, label: "Todas" }, ...durationBuckets].map((b) => {
             const active = bucket === b.id;
             const count = bucketCounts[b.id] ?? 0;
             return (
@@ -1183,17 +1126,7 @@ type Preset = {
 };
 
 const LICENSE_PRESETS: Preset[] = [
-  { label: "1 hora", kind: "teste", minutos: 60 },
-  { label: "1 dia", kind: "teste", minutos: 60 * 24 },
-  { label: "2 dias", kind: "teste", minutos: 60 * 24 * 2 },
-  { label: "3 dias", kind: "teste", minutos: 60 * 24 * 3 },
-  { label: "7 dias", kind: "premium", dias: 7 },
-  REMOTE_ACCESS_PRESET,
-  { label: "30 dias", kind: "premium", dias: 30 },
-  { label: "60 dias", kind: "premium", dias: 60 },
-  { label: "90 dias", kind: "premium", dias: 90 },
-  { label: "180 dias", kind: "premium", dias: 180 },
-  { label: "1 ano", kind: "premium", dias: 365 },
+  ...LICENSE_DURATIONS,
   { label: "Data específica", kind: "premium", custom: true },
 ];
 

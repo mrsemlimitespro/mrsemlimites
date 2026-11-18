@@ -12,3 +12,4 @@
 - Auth-state callbacks must return synchronously and defer database reads to a later task, because awaiting a read while the auth session lock is held can deadlock all panel requests.
 - License loading uses a single 15-second deadline spanning session restoration and the authenticated query, so a stalled session cannot leave the list loading indefinitely.
 - Remote Access entitlement uses licenca_produto_ativo via the existing audited RPC; missing rows deny access, leaving legacy product flags and v17 authorization unchanged.
+- License creation presets, duration cards and filters share one browser-safe catalog and classify saved day durations independently of activation dates; the one-hour trial is the sole minute-based exception.

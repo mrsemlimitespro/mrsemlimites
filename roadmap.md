@@ -1,3 +1,7 @@
+# Duration organization
+- [x] Align duration cards, filters and creation catalog without changing license data.
+- [x] Test exclusive classification and verify all eleven live card/filter/list counts sum to 82 with an authenticated admin session.
+
 # Remote Access additions
 - [x] Add catalog product without changing existing licenses.
 - [x] Add default-off creation/edit switches and premium 15-day option.
